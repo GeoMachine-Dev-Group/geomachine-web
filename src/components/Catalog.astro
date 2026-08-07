@@ -5,7 +5,9 @@ import {
   DEFAULT_TIER,
   DEFAULT_CURRENCY,
   type Item,
+  type Bundle,
   type Unit,
+  type Currency,
 } from '../data/catalog';
 import { ui, type Lang } from '../i18n/ui';
 
@@ -15,7 +17,8 @@ interface Props {
 const { lang } = Astro.props;
 const t = ui[lang];
 
-const nbsp = '\u00A0';
+const nbsp = ' ';
+const CURRENCY_SYMBOL: Record<Currency, string> = { eur: '€', rub: '₽', gel: '₾' };
 
 function group(n: number, sep: string) {
   return String(n).replace(/\B(?=(\d{3})+(?!\d))/g, sep);
@@ -27,15 +30,14 @@ function suffix(unit: Unit) {
   return '';
 }
 
-/** "250–400 €" · "15 000–25 000 ₽" · "25 €/mes" */
-function money(range: readonly number[], currency: 'eur' | 'rub', unit: Unit) {
+/** "250–400 €" · "15 000–25 000 ₽" · "750–1 200 ₾" · "25 €/mes" */
+function money(range: readonly number[], currency: Currency, unit: Unit) {
   const sep = currency === 'eur' ? '.' : nbsp;
-  const symbol = currency === 'eur' ? '€' : '₽';
+  const symbol = CURRENCY_SYMBOL[currency];
   const nums = range.map((n) => group(n, sep)).join('–');
   return `${nums}${nbsp}${symbol}${suffix(unit)}`;
 }
 
-/** Texto por defecto: se imprime en el HTML para que se lea sin JavaScript. */
 function initial(item: Item) {
   return money(item[DEFAULT_TIER][DEFAULT_CURRENCY], DEFAULT_CURRENCY, item.unit);
 }
@@ -46,20 +48,32 @@ function initialRecurring(item: Item) {
   return value ? money(value[DEFAULT_CURRENCY], DEFAULT_CURRENCY, 'month') : '';
 }
 
-/** Las cuatro combinaciones viajan en el HTML; el conmutador solo elige. */
+/** Las 6 combinaciones (2 tarifas x 3 monedas) viajan en el HTML; la rotación de Base.astro solo elige. */
 function priceData(item: Item) {
-  const d: Record<string, string> = {
-    'data-price': '',
-    'data-launcheur': money(item.launch.eur, 'eur', item.unit),
-    'data-launchrub': money(item.launch.rub, 'rub', item.unit),
-    'data-standardeur': money(item.standard.eur, 'eur', item.unit),
-    'data-standardrub': money(item.standard.rub, 'rub', item.unit),
-  };
+  const d: Record<string, string> = { 'data-price': '' };
+  for (const tier of ['launch', 'standard'] as const) {
+    for (const currency of ['eur', 'rub', 'gel'] as const) {
+      d[`data-${tier}${currency}`] = money(item[tier][currency], currency, item.unit);
+    }
+  }
   if (item.launchRecurring && item.standardRecurring) {
-    d['data-rlauncheur'] = money(item.launchRecurring.eur, 'eur', 'month');
-    d['data-rlaunchrub'] = money(item.launchRecurring.rub, 'rub', 'month');
-    d['data-rstandardeur'] = money(item.standardRecurring.eur, 'eur', 'month');
-    d['data-rstandardrub'] = money(item.standardRecurring.rub, 'rub', 'month');
+    for (const tier of ['launch', 'standard'] as const) {
+      const rec = item[`${tier}Recurring` as const];
+      if (!rec) continue;
+      for (const currency of ['eur', 'rub', 'gel'] as const) {
+        d[`data-r${tier}${currency}`] = money(rec[currency], currency, 'month');
+      }
+    }
+  }
+  return d;
+}
+
+function bundlePriceData(b: Bundle) {
+  const d: Record<string, string> = { 'data-price': '' };
+  for (const tier of ['launch', 'standard'] as const) {
+    for (const currency of ['eur', 'rub', 'gel'] as const) {
+      d[`data-${tier}${currency}`] = money(b[tier][currency], currency, 'once');
+    }
   }
   return d;
 }
@@ -69,12 +83,39 @@ function priceData(item: Item) {
   <p class="hero__eyebrow">{t.heroEyebrow}</p>
   <h1 class="hero__title">{t.heroTitle}</h1>
   <p class="hero__body">{t.heroBody}</p>
+  <p class="hero__plain">{t.heroPlain}</p>
 
   <aside class="stamp" aria-hidden="true">
     <b>{t.stampLine1}</b>
-    <em>1–5</em>
+    <em>1/5</em>
+    <div class="stamp-dots"><i class="is-active"></i><i class="is-next"></i><i></i><i></i><i></i></div>
     <span>{t.stampLine2}</span>
   </aside>
+
+  <div class="showcase">
+    <div class="showcase__card reveal">
+      <div class="showcase__header">
+        <span class="showcase__seal" aria-hidden="true">
+          <svg viewBox="0 0 16 16" width="14" height="14">
+            <polygon points="4,0 12,0 16,4 16,12 12,16 4,16 0,12 0,4" fill="var(--accent)"></polygon>
+            <path d="M4.5 8.2l2.2 2.2L11.5 5" stroke="var(--paper)" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round"></path>
+          </svg>
+        </span>
+        <span class="showcase__tag">{t.statusDelivered}</span>
+      </div>
+      <a href="https://gagraservis.ru/" target="_blank" rel="noopener" class="showcase__link">gagraservis.ru ↗</a>
+      <p class="showcase__desc">{t.deliveredProjectDesc}</p>
+    </div>
+
+    <div class="showcase__card showcase__card--dev reveal">
+      <div class="showcase__header">
+        <span class="credentials__bar" aria-hidden="true"></span>
+        <span class="showcase__tag">{t.statusDev}</span>
+      </div>
+      <span class="showcase__link showcase__link--text">{t.devProjectName}</span>
+      <p class="showcase__desc">{t.devProjectDesc}</p>
+    </div>
+  </div>
 </section>
 
 <div class="panel" data-tier-launch-label={t.tierLaunch} data-tier-standard-label={t.tierStandard}>
@@ -83,12 +124,10 @@ function priceData(item: Item) {
       <span class="control__label">{t.tierLabel}</span>
       <span class="badge" data-badge="tier">{t.tierLaunch}</span>
     </div>
-
     <div class="control">
       <span class="control__label">{t.currencyLabel}</span>
       <span class="badge" data-badge="currency">EUR €</span>
     </div>
-
     <div class="panel__notes" aria-live="polite">
       <p class="panel__note" data-note="launch">{t.launchNote}</p>
       <p class="panel__note" data-note="standard" hidden>{t.standardNote}</p>
@@ -96,7 +135,7 @@ function priceData(item: Item) {
   </div>
 </div>
 
-<nav class="jump shell" aria-label={t.sectionsLabel}>
+<nav class="jump shell" aria-label={t.bundlesTitle}>
   {
     lines.map((line) => (
       <a class="jump__link" href={`#${line.prefix.toLowerCase()}`}>
@@ -122,24 +161,35 @@ function priceData(item: Item) {
         </div>
       </header>
 
-      <div class="rows">
+      <div class="cards" data-cards>
         {line.items.map((item) => (
-          <article class="row reveal">
-            <span class="row__code">{item.code}</span>
-            <div>
-              <h3 class="row__name">{item.name[lang]}</h3>
-              <p class="row__spec">{item.spec[lang]}</p>
-            </div>
-            <span class="row__time">{item.time ? item.time[lang] : ''}</span>
-            <div class="row__price" {...priceData(item)}>
-              <span class="price-value">{initial(item)}</span>
-              <small class="row__recurring" hidden={!item.launchRecurring}>
-                {t.thenMonthly} <span class="price-value">{initialRecurring(item)}</span>
-              </small>
+          <article class="card reveal" tabindex="0">
+            <div class="card__inner">
+              <div class="card__header">
+                <span class="card__code">{item.code}</span>
+                {item.time && <span class="card__time">{item.time[lang]}</span>}
+              </div>
+              <h3 class="card__name">{item.name[lang]}</h3>
+              <p class="card__spec">{item.spec[lang]}</p>
+              <div class="card__price" {...priceData(item)}>
+                <span class="price-value">{initial(item)}</span>
+                <small class="card__recurring" hidden={!item.launchRecurring}>
+                  {t.thenMonthly} <span class="price-value">{initialRecurring(item)}</span>
+                </small>
+              </div>
+              <div class="card__details">
+                <p class="card__human-label">{t.colService}</p>
+                <p class="card__human">{item.human[lang]}</p>
+              </div>
             </div>
           </article>
         ))}
       </div>
+      {line.items.length > 3 && (
+        <button type="button" class="cards-toggle" data-toggle-more={t.showMore} data-toggle-less={t.showLess}>
+          {t.showMore}
+        </button>
+      )}
     </section>
   ))
 }
@@ -153,37 +203,50 @@ function priceData(item: Item) {
     </div>
   </header>
 
-  <div class="bundles__grid">
+  <div class="cards" data-cards>
     {
       bundles.map((b) => (
-        <article class="bundle reveal">
-          <span class="bundle__code">{b.code}</span>
-          <h3 class="bundle__name">{b.name[lang]}</h3>
-          <ul class="bundle__list">
-            {b.includes[lang].map((i) => (
-              <li>{i}</li>
-            ))}
-          </ul>
-          <div
-            class="bundle__price"
-            data-price
-            data-launcheur={money(b.launch.eur, 'eur', 'once')}
-            data-launchrub={money(b.launch.rub, 'rub', 'once')}
-            data-standardeur={money(b.standard.eur, 'eur', 'once')}
-            data-standardrub={money(b.standard.rub, 'rub', 'once')}
-          >
-            <span class="price-value">{money(b[DEFAULT_TIER][DEFAULT_CURRENCY], DEFAULT_CURRENCY, 'once')}</span>
+        <article class="card reveal" tabindex="0">
+          <div class="card__inner">
+            <div class="card__header">
+              <span class="card__code">{b.code}</span>
+              {b.time && <span class="card__time">{b.time[lang]}</span>}
+            </div>
+            <h3 class="card__name">{b.name[lang]}</h3>
+            <ul class="card__list">
+              {b.includes[lang].map((i) => <li>{i}</li>)}
+            </ul>
+            <div class="card__price" {...bundlePriceData(b)}>
+              <span class="price-value">{money(b[DEFAULT_TIER][DEFAULT_CURRENCY], DEFAULT_CURRENCY, 'once')}</span>
+            </div>
+            <div class="card__details">
+              <p class="card__human-label">{t.bundleIncludes}</p>
+              <p class="card__human">{b.human[lang]}</p>
+            </div>
           </div>
         </article>
       ))
     }
   </div>
+  {bundles.length > 3 && (
+    <button type="button" class="cards-toggle" data-toggle-more={t.showMore} data-toggle-less={t.showLess}>
+      {t.showMore}
+    </button>
+  )}
 </section>
 
 <section class="close shell">
   <div>
     <h2 class="close__title">{t.ctaTitle}</h2>
     <p class="close__body">{t.ctaBody}</p>
+    <div class="close__steps">
+      {t.closeSteps.map((step, i) => (
+        <div>
+          <span>{`0${i + 1}`}</span>
+          {step}
+        </div>
+      ))}
+    </div>
     <div class="actions">
       <a class="btn btn--solid" href="mailto:hola@geomachine.es">{t.ctaButton}</a>
       <a class="btn btn--ghost" href="https://t.me/geomachine">{t.ctaSecondary}</a>
@@ -197,3 +260,15 @@ function priceData(item: Item) {
     </ul>
   </div>
 </section>
+
+<script>
+  document.querySelectorAll<HTMLElement>('[data-cards]').forEach((container) => {
+    const toggle = container.nextElementSibling as HTMLButtonElement | null;
+    if (!toggle || !toggle.matches('[data-toggle-more]')) return;
+    toggle.addEventListener('click', () => {
+      const expanded = container.classList.toggle('is-expanded');
+      toggle.textContent = expanded ? toggle.dataset.toggleLess ?? '' : toggle.dataset.toggleMore ?? '';
+      if (expanded) container.querySelectorAll('.reveal').forEach((el) => el.classList.add('is-in'));
+    });
+  });
+</script>

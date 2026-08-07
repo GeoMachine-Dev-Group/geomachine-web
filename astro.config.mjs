@@ -12,10 +12,12 @@ const SITE = 'https://geomachine.es';
 const SERVICES = {
   es: '/es/servicios/',
   ru: '/ru/uslugi/',
+  en: '/en/services/',
+  ka: '/ka/momsakhurebebi/',
 };
 
 const DEFAULT_LOCALE = 'es';
-const HREFLANG = { es: 'es', ru: 'ru' };
+const HREFLANG = { es: 'es', ru: 'ru', en: 'en', ka: 'ka' };
 
 const serviceUrls = Object.values(SERVICES).map((p) => SITE + p);
 
@@ -34,7 +36,7 @@ export default defineConfig({
   },
   i18n: {
     defaultLocale: 'es',
-    locales: ['es', 'ru'],
+    locales: ['es', 'ru', 'en', 'ka'],
     routing: {
       prefixDefaultLocale: true,
     },
