@@ -1,0 +1,19 @@
+# Dependencias
+node_modules/
+
+# Salida de build (se regenera con `npm run build`)
+dist/
+.astro/
+
+# Entorno
+.env
+.env.*
+!.env.example
+
+# Sistema
+.DS_Store
+Thumbs.db
+
+# Logs
+npm-debug.log*
+yarn-error.log*

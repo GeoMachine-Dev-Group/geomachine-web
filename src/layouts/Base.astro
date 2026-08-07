@@ -1,0 +1,178 @@
+---
+import '../styles/global.css';
+import { ui, servicesPath, languages, type Lang } from '../i18n/ui';
+import { DEFAULT_TIER, DEFAULT_CURRENCY } from '../data/catalog';
+import Schema from '../components/Schema.astro';
+
+interface Props {
+  lang: Lang;
+  /** Excluye la página de los índices (404, borradores…). */
+  noindex?: boolean;
+}
+const { lang, noindex = false } = Astro.props;
+const t = ui[lang];
+const site = Astro.site?.origin ?? 'https://geomachine.dev';
+const pageUrl = site + servicesPath[lang];
+const ogLocale: Record<Lang, string> = { es: 'es_ES', ru: 'ru_RU' };
+const ogImage = `${site}/og/og-${lang}.png`;
+/** Fuente del H1 (elemento LCP) que se precarga en cada idioma.
+    Al añadir un idioma, apunta aquí a la cara que realmente use su alfabeto:
+    el georgiano, por ejemplo, no está en Unbounded sino en Noto Sans Georgian. */
+const preloadFont: Record<Lang, string> = {
+  es: '/fonts/unbounded-700-latin.woff2',
+  ru: '/fonts/unbounded-700-cyrillic.woff2',
+};
+---
+
+<!doctype html>
+<html lang={t.htmlLang} data-tier={DEFAULT_TIER} data-currency={DEFAULT_CURRENCY}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{t.metaTitle}</title>
+    <meta name="description" content={t.metaDescription} />
+    {noindex && <meta name="robots" content="noindex, follow" />}
+
+    <link rel="canonical" href={pageUrl} />
+    {
+      Object.entries(servicesPath).map(([code, path]) => (
+        <link rel="alternate" hreflang={code} href={site + path} />
+      ))
+    }
+    <link rel="alternate" hreflang="x-default" href={site + servicesPath.es} />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content={t.company} />
+    <meta property="og:url" content={pageUrl} />
+    <meta property="og:title" content={t.metaTitle} />
+    <meta property="og:description" content={t.metaDescription} />
+    <meta property="og:locale" content={ogLocale[lang]} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:type" content="image/png" />
+    <meta property="og:image:alt" content={t.metaTitle} />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={t.metaTitle} />
+    <meta name="twitter:description" content={t.metaDescription} />
+    <meta name="twitter:image" content={ogImage} />
+    <meta name="twitter:image:alt" content={t.metaTitle} />
+
+    <link
+      rel="preload"
+      as="font"
+      type="font/woff2"
+      href={preloadFont[lang]}
+      crossorigin
+    />
+
+    <Schema lang={lang} />
+  </head>
+
+  <body>
+    <header class="plate">
+      <div class="shell plate__row">
+        <span class="plate__mark">GEO<span>·</span>MACHINE</span>
+        <span>{t.plate} — {t.rev}</span>
+        <nav class="plate__links">
+          {
+            (Object.keys(languages) as Lang[])
+              .filter((l) => l !== lang)
+              .map((l) => (
+                <a href={servicesPath[l]} hreflang={l} lang={l}>
+                  {languages[l]}
+                </a>
+              ))
+          }
+        </nav>
+      </div>
+    </header>
+
+    <main>
+      <slot />
+    </main>
+
+    <footer class="foot">
+      <div class="shell foot__row">
+        <span>{t.footer}</span>
+        <span>{t.rev}</span>
+      </div>
+    </footer>
+
+    <script>
+      const root = document.documentElement;
+
+      /** Repinta cada precio según la tarifa y la moneda activas. */
+      function paint() {
+        const tier = root.dataset.tier;
+        const currency = root.dataset.currency;
+        document.querySelectorAll<HTMLElement>('[data-price]').forEach((cell) => {
+          const main = cell.querySelector<HTMLElement>('.price-value');
+          if (main) main.textContent = cell.dataset[`${tier}${currency}`] ?? '';
+          const rec = cell.querySelector<HTMLElement>('.row__recurring .price-value');
+          const recText = cell.dataset[`r${tier}${currency}`];
+          const recWrap = cell.querySelector<HTMLElement>('.row__recurring');
+          if (recWrap) recWrap.hidden = !recText;
+          if (rec && recText) rec.textContent = recText;
+        });
+      }
+
+      /** Cambia tarifa o moneda con un parpadeo corto para que se note. */
+      function set(key: 'tier' | 'currency', value: string) {
+        if (root.dataset[key] === value) return;
+        root.dataset[key] = value;
+        document.body.classList.add('is-swapping');
+        window.setTimeout(() => {
+          paint();
+          document.body.classList.remove('is-swapping');
+        }, 160);
+
+        document.querySelectorAll<HTMLButtonElement>(`[data-set="${key}"]`).forEach((b) => {
+          b.setAttribute('aria-pressed', String(b.dataset.value === value));
+        });
+
+        const stamp = document.querySelector<HTMLElement>('.stamp');
+        if (stamp) stamp.hidden = root.dataset.tier !== 'launch';
+
+        document.querySelectorAll<HTMLElement>('[data-note]').forEach((n) => {
+          n.hidden = n.dataset.note !== root.dataset.tier;
+        });
+
+        try {
+          localStorage.setItem(`gm-${key}`, value);
+        } catch {}
+      }
+
+      document.querySelectorAll<HTMLButtonElement>('[data-set]').forEach((btn) => {
+        btn.addEventListener('click', () =>
+          set(btn.dataset.set as 'tier' | 'currency', btn.dataset.value ?? '')
+        );
+      });
+
+      // Restaura la última elección del visitante.
+      try {
+        const savedTier = localStorage.getItem('gm-tier');
+        const savedCurrency = localStorage.getItem('gm-currency');
+        if (savedTier) set('tier', savedTier);
+        if (savedCurrency) set('currency', savedCurrency);
+      } catch {}
+
+      paint();
+
+      // Aparición progresiva de las filas.
+      const io = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((e) => {
+            if (e.isIntersecting) {
+              e.target.classList.add('is-in');
+              io.unobserve(e.target);
+            }
+          });
+        },
+        { rootMargin: '0px 0px -8% 0px' }
+      );
+      document.querySelectorAll('.reveal').forEach((el) => io.observe(el));
+    </script>
+  </body>
+</html>

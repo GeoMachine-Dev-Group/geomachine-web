@@ -1,0 +1,207 @@
+---
+import {
+  lines,
+  bundles,
+  DEFAULT_TIER,
+  DEFAULT_CURRENCY,
+  type Item,
+  type Unit,
+} from '../data/catalog';
+import { ui, type Lang } from '../i18n/ui';
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const t = ui[lang];
+
+const nbsp = '\u00A0';
+
+function group(n: number, sep: string) {
+  return String(n).replace(/\B(?=(\d{3})+(?!\d))/g, sep);
+}
+
+function suffix(unit: Unit) {
+  if (unit === 'month') return t.perMonth;
+  if (unit === 'hour') return t.perHour;
+  return '';
+}
+
+/** "250–400 €" · "15 000–25 000 ₽" · "25 €/mes" */
+function money(range: readonly number[], currency: 'eur' | 'rub', unit: Unit) {
+  const sep = currency === 'eur' ? '.' : nbsp;
+  const symbol = currency === 'eur' ? '€' : '₽';
+  const nums = range.map((n) => group(n, sep)).join('–');
+  return `${nums}${nbsp}${symbol}${suffix(unit)}`;
+}
+
+/** Texto por defecto: se imprime en el HTML para que se lea sin JavaScript. */
+function initial(item: Item) {
+  return money(item[DEFAULT_TIER][DEFAULT_CURRENCY], DEFAULT_CURRENCY, item.unit);
+}
+
+function initialRecurring(item: Item) {
+  const key = DEFAULT_TIER === 'launch' ? 'launchRecurring' : 'standardRecurring';
+  const value = item[key];
+  return value ? money(value[DEFAULT_CURRENCY], DEFAULT_CURRENCY, 'month') : '';
+}
+
+/** Las cuatro combinaciones viajan en el HTML; el conmutador solo elige. */
+function priceData(item: Item) {
+  const d: Record<string, string> = {
+    'data-price': '',
+    'data-launcheur': money(item.launch.eur, 'eur', item.unit),
+    'data-launchrub': money(item.launch.rub, 'rub', item.unit),
+    'data-standardeur': money(item.standard.eur, 'eur', item.unit),
+    'data-standardrub': money(item.standard.rub, 'rub', item.unit),
+  };
+  if (item.launchRecurring && item.standardRecurring) {
+    d['data-rlauncheur'] = money(item.launchRecurring.eur, 'eur', 'month');
+    d['data-rlaunchrub'] = money(item.launchRecurring.rub, 'rub', 'month');
+    d['data-rstandardeur'] = money(item.standardRecurring.eur, 'eur', 'month');
+    d['data-rstandardrub'] = money(item.standardRecurring.rub, 'rub', 'month');
+  }
+  return d;
+}
+---
+
+<section class="hero shell">
+  <p class="hero__eyebrow">{t.heroEyebrow}</p>
+  <h1 class="hero__title">{t.heroTitle}</h1>
+  <p class="hero__body">{t.heroBody}</p>
+
+  <aside class="stamp" aria-hidden="true">
+    <b>{t.stampLine1}</b>
+    <em>1–5</em>
+    <span>{t.stampLine2}</span>
+  </aside>
+</section>
+
+<div class="panel">
+  <div class="shell panel__inner">
+    <div class="control">
+      <span class="control__label" id="tier-label">{t.tierLabel}</span>
+      <div class="switch" role="group" aria-labelledby="tier-label">
+        <button type="button" data-set="tier" data-value="launch" aria-pressed="true">
+          {t.tierLaunch}
+        </button>
+        <button type="button" data-set="tier" data-value="standard" aria-pressed="false">
+          {t.tierStandard}
+        </button>
+      </div>
+    </div>
+
+    <div class="control">
+      <span class="control__label" id="cur-label">{t.currencyLabel}</span>
+      <div class="switch" role="group" aria-labelledby="cur-label">
+        <button type="button" data-set="currency" data-value="eur" aria-pressed="true">EUR €</button>
+        <button type="button" data-set="currency" data-value="rub" aria-pressed="false">RUB ₽</button>
+      </div>
+    </div>
+
+    <p class="panel__note" data-note="launch">{t.launchNote}</p>
+    <p class="panel__note" data-note="standard" hidden>{t.standardNote}</p>
+  </div>
+</div>
+
+<nav class="jump shell" aria-label={t.sectionsLabel}>
+  {
+    lines.map((line) => (
+      <a class="jump__link" href={`#${line.prefix.toLowerCase()}`}>
+        <span class="jump__code">{line.prefix}</span>
+        <span>{line.title[lang]}</span>
+      </a>
+    ))
+  }
+  <a class="jump__link" href="#paquetes">
+    <span class="jump__code">PACK</span>
+    <span>{t.bundlesTitle}</span>
+  </a>
+</nav>
+
+{
+  lines.map((line) => (
+    <section class="line shell" id={line.prefix.toLowerCase()}>
+      <header class="line__head">
+        <span class="line__prefix">{line.prefix}</span>
+        <div>
+          <h2 class="line__title">{line.title[lang]}</h2>
+          <p class="line__note">{line.note[lang]}</p>
+        </div>
+      </header>
+
+      <div class="rows">
+        {line.items.map((item) => (
+          <article class="row reveal">
+            <span class="row__code">{item.code}</span>
+            <div>
+              <h3 class="row__name">{item.name[lang]}</h3>
+              <p class="row__spec">{item.spec[lang]}</p>
+            </div>
+            <span class="row__time">{item.time ? item.time[lang] : ''}</span>
+            <div class="row__price" {...priceData(item)}>
+              <span class="price-value">{initial(item)}</span>
+              <small class="row__recurring" hidden={!item.launchRecurring}>
+                {t.thenMonthly} <span class="price-value">{initialRecurring(item)}</span>
+              </small>
+            </div>
+          </article>
+        ))}
+      </div>
+    </section>
+  ))
+}
+
+<section class="bundles shell" id="paquetes">
+  <header class="line__head">
+    <span class="line__prefix">PACK</span>
+    <div>
+      <h2 class="line__title">{t.bundlesTitle}</h2>
+      <p class="line__note">{t.bundlesNote}</p>
+    </div>
+  </header>
+
+  <div class="bundles__grid">
+    {
+      bundles.map((b) => (
+        <article class="bundle reveal">
+          <span class="bundle__code">{b.code}</span>
+          <h3 class="bundle__name">{b.name[lang]}</h3>
+          <ul class="bundle__list">
+            {b.includes[lang].map((i) => (
+              <li>{i}</li>
+            ))}
+          </ul>
+          <div
+            class="bundle__price"
+            data-price
+            data-launcheur={money(b.launch.eur, 'eur', 'once')}
+            data-launchrub={money(b.launch.rub, 'rub', 'once')}
+            data-standardeur={money(b.standard.eur, 'eur', 'once')}
+            data-standardrub={money(b.standard.rub, 'rub', 'once')}
+          >
+            <span class="price-value">{money(b[DEFAULT_TIER][DEFAULT_CURRENCY], DEFAULT_CURRENCY, 'once')}</span>
+          </div>
+        </article>
+      ))
+    }
+  </div>
+</section>
+
+<section class="close shell">
+  <div>
+    <h2 class="close__title">{t.ctaTitle}</h2>
+    <p class="close__body">{t.ctaBody}</p>
+    <div class="actions">
+      <a class="btn btn--solid" href="mailto:hola@geomachine.dev">{t.ctaButton}</a>
+      <a class="btn btn--ghost" href="https://t.me/geomachine">{t.ctaSecondary}</a>
+    </div>
+  </div>
+
+  <div>
+    <p class="terms__label">{t.terms}</p>
+    <ul class="terms__list">
+      {t.termsList.map((item) => <li>{item}</li>)}
+    </ul>
+  </div>
+</section>

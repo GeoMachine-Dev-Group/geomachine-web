@@ -1,0 +1,31 @@
+---
+/**
+ * 404 estático: se sirve en cualquier ruta, así que no puede saber el idioma.
+ * Muestra los dos y deja que el visitante elija.
+ */
+import Base from '../layouts/Base.astro';
+import { ui, servicesPath, languages, type Lang } from '../i18n/ui';
+
+const langs = Object.keys(languages) as Lang[];
+---
+
+<Base lang="es" noindex>
+  <section class="notfound shell">
+    <p class="notfound__code">404</p>
+    {
+      langs.map((l, i) => (
+        <div class="notfound__block" lang={l}>
+          {i === 0 ? (
+            <h1 class="notfound__title">{ui[l].notFoundTitle}</h1>
+          ) : (
+            <h2 class="notfound__title">{ui[l].notFoundTitle}</h2>
+          )}
+          <p class="notfound__body">{ui[l].notFoundBody}</p>
+          <a class="btn btn--solid" href={servicesPath[l]} hreflang={l}>
+            {ui[l].notFoundCta}
+          </a>
+        </div>
+      ))
+    }
+  </section>
+</Base>
