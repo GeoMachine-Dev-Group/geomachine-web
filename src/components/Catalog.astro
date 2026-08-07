@@ -77,30 +77,22 @@ function priceData(item: Item) {
   </aside>
 </section>
 
-<div class="panel">
+<div class="panel" data-tier-launch-label={t.tierLaunch} data-tier-standard-label={t.tierStandard}>
   <div class="shell panel__inner">
     <div class="control">
-      <span class="control__label" id="tier-label">{t.tierLabel}</span>
-      <div class="switch" role="group" aria-labelledby="tier-label">
-        <button type="button" data-set="tier" data-value="launch" aria-pressed="true">
-          {t.tierLaunch}
-        </button>
-        <button type="button" data-set="tier" data-value="standard" aria-pressed="false">
-          {t.tierStandard}
-        </button>
-      </div>
+      <span class="control__label">{t.tierLabel}</span>
+      <span class="badge" data-badge="tier">{t.tierLaunch}</span>
     </div>
 
     <div class="control">
-      <span class="control__label" id="cur-label">{t.currencyLabel}</span>
-      <div class="switch" role="group" aria-labelledby="cur-label">
-        <button type="button" data-set="currency" data-value="eur" aria-pressed="true">EUR €</button>
-        <button type="button" data-set="currency" data-value="rub" aria-pressed="false">RUB ₽</button>
-      </div>
+      <span class="control__label">{t.currencyLabel}</span>
+      <span class="badge" data-badge="currency">EUR €</span>
     </div>
 
-    <p class="panel__note" data-note="launch">{t.launchNote}</p>
-    <p class="panel__note" data-note="standard" hidden>{t.standardNote}</p>
+    <div class="panel__notes" aria-live="polite">
+      <p class="panel__note" data-note="launch">{t.launchNote}</p>
+      <p class="panel__note" data-note="standard" hidden>{t.standardNote}</p>
+    </div>
   </div>
 </div>
 

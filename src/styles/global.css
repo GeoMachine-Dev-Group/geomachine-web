@@ -186,36 +186,29 @@ a {
   color: var(--ink-soft);
 }
 
-.switch {
-  display: flex;
+/* Insignia no interactiva: muestra la combinación activa, no se puede tocar. */
+.badge {
+  display: inline-flex;
+  align-items: center;
   border: 1px solid var(--ink);
-  background: var(--paper);
-  padding: 2px;
-  gap: 2px;
-}
-
-.switch button {
-  appearance: none;
-  border: 0;
-  background: transparent;
-  cursor: pointer;
+  background: var(--ink);
+  color: var(--paper);
   font-family: var(--data);
   font-size: 0.74rem;
   font-weight: 500;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: var(--ink-soft);
   padding: 0.42rem 0.9rem;
-  transition: background 0.15s, color 0.15s;
+  transition: opacity 0.18s ease, filter 0.18s ease;
 }
 
-.switch button:hover {
-  color: var(--ink);
+.is-swapping .badge {
+  opacity: 0;
+  filter: blur(3px);
 }
 
-.switch button[aria-pressed='true'] {
-  background: var(--ink);
-  color: var(--paper);
+.panel__notes {
+  display: contents;
 }
 
 .panel__note {

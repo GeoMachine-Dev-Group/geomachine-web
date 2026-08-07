@@ -118,47 +118,79 @@ const preloadFont: Record<Lang, string> = {
         });
       }
 
-      /** Cambia tarifa o moneda con un parpadeo corto para que se note. */
-      function set(key: 'tier' | 'currency', value: string) {
-        if (root.dataset[key] === value) return;
-        root.dataset[key] = value;
+      const badges: Record<'tier' | 'currency', HTMLElement | null> = {
+        tier: document.querySelector('[data-badge="tier"]'),
+        currency: document.querySelector('[data-badge="currency"]'),
+      };
+      const panel = document.querySelector<HTMLElement>('.panel');
+      const tierLabel = { launch: panel?.dataset.tierLaunchLabel ?? '', standard: panel?.dataset.tierStandardLabel ?? '' };
+      const currencyLabel: Record<string, string> = { eur: 'EUR €', rub: 'RUB ₽' };
+
+      /** Aplica una combinación tarifa/moneda con el mismo parpadeo que antes daba el clic manual. */
+      function apply(tier: string, currency: string) {
+        if (root.dataset.tier === tier && root.dataset.currency === currency) return;
+        root.dataset.tier = tier;
+        root.dataset.currency = currency;
         document.body.classList.add('is-swapping');
         window.setTimeout(() => {
           paint();
           document.body.classList.remove('is-swapping');
         }, 160);
 
-        document.querySelectorAll<HTMLButtonElement>(`[data-set="${key}"]`).forEach((b) => {
-          b.setAttribute('aria-pressed', String(b.dataset.value === value));
-        });
+        if (badges.tier) badges.tier.textContent = tierLabel[tier as 'launch' | 'standard'];
+        if (badges.currency) badges.currency.textContent = currencyLabel[currency] ?? currency.toUpperCase();
 
         const stamp = document.querySelector<HTMLElement>('.stamp');
-        if (stamp) stamp.hidden = root.dataset.tier !== 'launch';
+        if (stamp) stamp.hidden = tier !== 'launch';
 
         document.querySelectorAll<HTMLElement>('[data-note]').forEach((n) => {
-          n.hidden = n.dataset.note !== root.dataset.tier;
+          n.hidden = n.dataset.note !== tier;
         });
-
-        try {
-          localStorage.setItem(`gm-${key}`, value);
-        } catch {}
       }
 
-      document.querySelectorAll<HTMLButtonElement>('[data-set]').forEach((btn) => {
-        btn.addEventListener('click', () =>
-          set(btn.dataset.set as 'tier' | 'currency', btn.dataset.value ?? '')
-        );
-      });
-
-      // Restaura la última elección del visitante.
-      try {
-        const savedTier = localStorage.getItem('gm-tier');
-        const savedCurrency = localStorage.getItem('gm-currency');
-        if (savedTier) set('tier', savedTier);
-        if (savedCurrency) set('currency', savedCurrency);
-      } catch {}
-
       paint();
+
+      /**
+       * El panel manual se sustituyó por una rotación automática: no hay
+       * botones, nadie —ni el visitante ni el dueño del sitio— la controla.
+       * Se detiene con prefers-reduced-motion y al pasar el ratón por encima,
+       * para no mover precios mientras alguien los está leyendo (WCAG 2.2.2).
+       */
+      const combos = [
+        ['launch', 'eur'],
+        ['launch', 'rub'],
+        ['standard', 'eur'],
+        ['standard', 'rub'],
+      ] as const;
+      const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      let comboIndex = 0;
+      let rotateTimer: ReturnType<typeof setInterval> | null = null;
+
+      function startRotation() {
+        if (reduceMotion || rotateTimer) return;
+        rotateTimer = setInterval(() => {
+          comboIndex = (comboIndex + 1) % combos.length;
+          const [tier, currency] = combos[comboIndex];
+          apply(tier, currency);
+        }, 9000);
+      }
+      function stopRotation() {
+        if (rotateTimer) {
+          clearInterval(rotateTimer);
+          rotateTimer = null;
+        }
+      }
+
+      if (!reduceMotion) {
+        const main = document.querySelector('main');
+        main?.addEventListener('mouseenter', stopRotation);
+        main?.addEventListener('mouseleave', startRotation);
+        document.addEventListener('visibilitychange', () => {
+          if (document.hidden) stopRotation();
+          else startRotation();
+        });
+        startRotation();
+      }
 
       // Aparición progresiva de las filas.
       const io = new IntersectionObserver(
