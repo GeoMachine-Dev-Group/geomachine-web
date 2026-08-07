@@ -105,42 +105,35 @@ const preloadFont: Record<Lang, string> = {
     <script>
       const root = document.documentElement;
 
-      /** Repinta cada precio según la tarifa y la moneda activas. */
+      /** Repinta cada precio según la tarifa activa. Las 3 monedas van siempre juntas en el texto. */
       function paint() {
         const tier = root.dataset.tier;
-        const currency = root.dataset.currency;
         document.querySelectorAll<HTMLElement>('[data-price]').forEach((cell) => {
           const main = cell.querySelector<HTMLElement>('.price-value');
-          if (main) main.textContent = cell.dataset[`${tier}${currency}`] ?? '';
+          if (main) main.textContent = cell.dataset[tier ?? ''] ?? '';
           const rec = cell.querySelector<HTMLElement>('.card__recurring .price-value');
-          const recText = cell.dataset[`r${tier}${currency}`];
+          const recText = cell.dataset[`r${tier}`];
           const recWrap = cell.querySelector<HTMLElement>('.card__recurring');
           if (recWrap) recWrap.hidden = !recText;
           if (rec && recText) rec.textContent = recText;
         });
       }
 
-      const badges: Record<'tier' | 'currency', HTMLElement | null> = {
-        tier: document.querySelector('[data-badge="tier"]'),
-        currency: document.querySelector('[data-badge="currency"]'),
-      };
+      const tierBadge = document.querySelector<HTMLElement>('[data-badge="tier"]');
       const panel = document.querySelector<HTMLElement>('.panel');
       const tierLabel = { launch: panel?.dataset.tierLaunchLabel ?? '', standard: panel?.dataset.tierStandardLabel ?? '' };
-      const currencyLabel: Record<string, string> = { eur: 'EUR €', rub: 'RUB ₽', gel: 'GEL ₾' };
 
-      /** Aplica una combinación tarifa/moneda con el mismo parpadeo que antes daba el clic manual. */
-      function apply(tier: string, currency: string) {
-        if (root.dataset.tier === tier && root.dataset.currency === currency) return;
+      /** Aplica una tarifa con el mismo parpadeo que antes daba el clic manual. */
+      function apply(tier: string) {
+        if (root.dataset.tier === tier) return;
         root.dataset.tier = tier;
-        root.dataset.currency = currency;
         document.body.classList.add('is-swapping');
         window.setTimeout(() => {
           paint();
           document.body.classList.remove('is-swapping');
         }, 160);
 
-        if (badges.tier) badges.tier.textContent = tierLabel[tier as 'launch' | 'standard'];
-        if (badges.currency) badges.currency.textContent = currencyLabel[currency] ?? currency.toUpperCase();
+        if (tierBadge) tierBadge.textContent = tierLabel[tier as 'launch' | 'standard'];
 
         const stamp = document.querySelector<HTMLElement>('.stamp');
         if (stamp) stamp.hidden = tier !== 'launch';
@@ -157,15 +150,9 @@ const preloadFont: Record<Lang, string> = {
        * botones, nadie —ni el visitante ni el dueño del sitio— la controla.
        * Se detiene con prefers-reduced-motion y al pasar el ratón por encima,
        * para no mover precios mientras alguien los está leyendo (WCAG 2.2.2).
+       * Las 3 monedas se muestran siempre juntas; solo rota la tarifa.
        */
-      const combos = [
-        ['launch', 'eur'],
-        ['launch', 'rub'],
-        ['launch', 'gel'],
-        ['standard', 'eur'],
-        ['standard', 'rub'],
-        ['standard', 'gel'],
-      ] as const;
+      const combos = ['launch', 'standard'] as const;
       const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
       let comboIndex = 0;
       let rotateTimer: ReturnType<typeof setInterval> | null = null;
@@ -174,8 +161,7 @@ const preloadFont: Record<Lang, string> = {
         if (reduceMotion || rotateTimer) return;
         rotateTimer = setInterval(() => {
           comboIndex = (comboIndex + 1) % combos.length;
-          const [tier, currency] = combos[comboIndex];
-          apply(tier, currency);
+          apply(combos[comboIndex]);
         }, 15 * 60 * 1000);
       }
       function stopRotation() {

@@ -200,7 +200,9 @@ a.showcase__link:hover { color: var(--accent); }
   transition: color .2s, border-color .2s;
 }
 .cards-toggle:hover { color: var(--accent); border-color: var(--accent); }
-.card { height: 310px; position: relative; }
+/* 380px, no 310: con las 3 monedas siempre visibles (más la cuota
+   recurrente cuando la hay) el precio ocupa hasta 4 líneas. */
+.card { height: 380px; position: relative; }
 .card__inner {
   position: absolute; inset: 0; background: var(--panel); border: 1px solid var(--rule); border-radius: 12px;
   padding: 1.6rem; display: flex; flex-direction: column; overflow: hidden;
@@ -214,7 +216,7 @@ a.showcase__link:hover { color: var(--accent); }
 .card__list { margin: .65rem 0 0; padding: 0; list-style: none; font-size: .86rem; color: var(--ink-soft); flex: 1; }
 .card__list li { padding-left: 1.1rem; position: relative; margin-bottom: .35rem; }
 .card__list li:before { content: ""; position: absolute; left: 0; top: .62em; width: .5rem; height: 1px; background: var(--accent); }
-.card__price { margin-top: 1rem; padding-top: .8rem; border-top: 1px solid var(--rule-soft); font-family: var(--data); font-size: 1.2rem; font-weight: 600; transition: opacity .3s ease; }
+.card__price { margin-top: 1rem; padding-top: .8rem; border-top: 1px solid var(--rule-soft); font-family: var(--data); font-size: 1.05rem; line-height: 1.35; font-weight: 600; transition: opacity .3s ease; }
 .card:hover .card__price, .card:focus-within .card__price { opacity: .05; }
 .card__recurring { display: block; margin-top: .2rem; font-size: .65rem; font-weight: 400; color: var(--accent); }
 .card__recurring[hidden] { display: none; }

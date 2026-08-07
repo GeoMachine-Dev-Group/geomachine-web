@@ -3,7 +3,6 @@ import {
   lines,
   bundles,
   DEFAULT_TIER,
-  DEFAULT_CURRENCY,
   type Item,
   type Bundle,
   type Unit,
@@ -19,6 +18,7 @@ const t = ui[lang];
 
 const nbsp = ' ';
 const CURRENCY_SYMBOL: Record<Currency, string> = { eur: '€', rub: '₽', gel: '₾' };
+const CURRENCIES = ['eur', 'rub', 'gel'] as const;
 
 function group(n: number, sep: string) {
   return String(n).replace(/\B(?=(\d{3})+(?!\d))/g, sep);
@@ -30,7 +30,7 @@ function suffix(unit: Unit) {
   return '';
 }
 
-/** "250–400 €" · "15 000–25 000 ₽" · "750–1 200 ₾" · "25 €/mes" */
+/** "250–400 €" · "15 000–25 000 ₽" · "750–1 200 ₾" */
 function money(range: readonly number[], currency: Currency, unit: Unit) {
   const sep = currency === 'eur' ? '.' : nbsp;
   const symbol = CURRENCY_SYMBOL[currency];
@@ -38,44 +38,41 @@ function money(range: readonly number[], currency: Currency, unit: Unit) {
   return `${nums}${nbsp}${symbol}${suffix(unit)}`;
 }
 
+/** Las 3 monedas se muestran siempre juntas -- solo la tarifa rota. */
+function moneyAll(byCurrency: Record<Currency, readonly number[]>, unit: Unit) {
+  return CURRENCIES.map((c) => money(byCurrency[c], c, unit)).join(' · ');
+}
+
 function initial(item: Item) {
-  return money(item[DEFAULT_TIER][DEFAULT_CURRENCY], DEFAULT_CURRENCY, item.unit);
+  return moneyAll(item[DEFAULT_TIER], item.unit);
 }
 
 function initialRecurring(item: Item) {
   const key = DEFAULT_TIER === 'launch' ? 'launchRecurring' : 'standardRecurring';
   const value = item[key];
-  return value ? money(value[DEFAULT_CURRENCY], DEFAULT_CURRENCY, 'month') : '';
+  return value ? moneyAll(value, 'month') : '';
 }
 
-/** Las 6 combinaciones (2 tarifas x 3 monedas) viajan en el HTML; la rotación de Base.astro solo elige. */
+/** Las 2 tarifas viajan en el HTML; la rotación de Base.astro solo elige entre ellas. */
 function priceData(item: Item) {
-  const d: Record<string, string> = { 'data-price': '' };
-  for (const tier of ['launch', 'standard'] as const) {
-    for (const currency of ['eur', 'rub', 'gel'] as const) {
-      d[`data-${tier}${currency}`] = money(item[tier][currency], currency, item.unit);
-    }
-  }
+  const d: Record<string, string> = {
+    'data-price': '',
+    'data-launch': moneyAll(item.launch, item.unit),
+    'data-standard': moneyAll(item.standard, item.unit),
+  };
   if (item.launchRecurring && item.standardRecurring) {
-    for (const tier of ['launch', 'standard'] as const) {
-      const rec = item[`${tier}Recurring` as const];
-      if (!rec) continue;
-      for (const currency of ['eur', 'rub', 'gel'] as const) {
-        d[`data-r${tier}${currency}`] = money(rec[currency], currency, 'month');
-      }
-    }
+    d['data-rlaunch'] = moneyAll(item.launchRecurring, 'month');
+    d['data-rstandard'] = moneyAll(item.standardRecurring, 'month');
   }
   return d;
 }
 
 function bundlePriceData(b: Bundle) {
-  const d: Record<string, string> = { 'data-price': '' };
-  for (const tier of ['launch', 'standard'] as const) {
-    for (const currency of ['eur', 'rub', 'gel'] as const) {
-      d[`data-${tier}${currency}`] = money(b[tier][currency], currency, 'once');
-    }
-  }
-  return d;
+  return {
+    'data-price': '',
+    'data-launch': moneyAll(b.launch, 'once'),
+    'data-standard': moneyAll(b.standard, 'once'),
+  };
 }
 ---
 
@@ -126,7 +123,7 @@ function bundlePriceData(b: Bundle) {
     </div>
     <div class="control">
       <span class="control__label">{t.currencyLabel}</span>
-      <span class="badge" data-badge="currency">EUR €</span>
+      <span class="badge">EUR € · RUB ₽ · GEL ₾</span>
     </div>
     <div class="panel__notes" aria-live="polite">
       <p class="panel__note" data-note="launch">{t.launchNote}</p>
@@ -217,7 +214,7 @@ function bundlePriceData(b: Bundle) {
               {b.includes[lang].map((i) => <li>{i}</li>)}
             </ul>
             <div class="card__price" {...bundlePriceData(b)}>
-              <span class="price-value">{money(b[DEFAULT_TIER][DEFAULT_CURRENCY], DEFAULT_CURRENCY, 'once')}</span>
+              <span class="price-value">{moneyAll(b[DEFAULT_TIER], 'once')}</span>
             </div>
             <div class="card__details">
               <p class="card__human-label">{t.bundleIncludes}</p>
