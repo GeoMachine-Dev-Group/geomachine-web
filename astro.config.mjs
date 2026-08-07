@@ -1,7 +1,7 @@
 import { defineConfig } from 'astro/config';
 import sitemap from '@astrojs/sitemap';
 
-const SITE = 'https://geomachine.dev';
+const SITE = 'https://geomachine.es';
 
 /**
  * Rutas de servicios por idioma. Los slugs son distintos en cada idioma, así

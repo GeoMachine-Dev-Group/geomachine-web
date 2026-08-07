@@ -11,7 +11,7 @@ interface Props {
 }
 const { lang, noindex = false } = Astro.props;
 const t = ui[lang];
-const site = Astro.site?.origin ?? 'https://geomachine.dev';
+const site = Astro.site?.origin ?? 'https://geomachine.es';
 const pageUrl = site + servicesPath[lang];
 const ogLocale: Record<Lang, string> = { es: 'es_ES', ru: 'ru_RU' };
 const ogImage = `${site}/og/og-${lang}.png`;

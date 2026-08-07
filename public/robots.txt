@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://geomachine.dev/sitemap-index.xml
+Sitemap: https://geomachine.es/sitemap-index.xml
