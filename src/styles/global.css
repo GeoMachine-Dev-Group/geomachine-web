@@ -1,8 +1,9 @@
 /* ==========================================================================
    GeoMachine — sistema visual v2
-   Paleta "Original" del prototipo (única que se sirve: sin selector, sin
-   las otras 5 paletas ni las variantes alternativas de tarjeta/sello/
-   iconos -- se eligieron los valores por defecto y se retiró todo lo demás).
+   La paleta "Original" vive en :root; las otras 6 se activan con el atributo
+   data-palette en <html> y solo redefinen los tokens de color. El estilo de
+   tarjeta alternativo va por data-cardstyle. Ambos los fija el selector del
+   panel y los recuerda localStorage (ver Base.astro).
    ========================================================================== */
 
 @import './fonts.css';
@@ -27,6 +28,57 @@
 
   --pad: clamp(1.25rem, 4vw, 3.5rem);
   --shell: 1180px;
+}
+
+/* --- Paletas alternativas (data-palette en <html>) ------------------------- */
+
+html[data-palette="terminal"] {
+  --paper: #0d1117; --panel: #161b22; --panel-2: #21262d;
+  --ink: #c9d1d9; --ink-soft: #8b949e;
+  --rule: #30363d; --rule-soft: #21262d;
+  --accent: #58a6ff; --accent-soft: rgba(88,166,255,.2);
+  --stamp: #bf87fc; --stamp-glow: rgba(191,135,252,.18);
+  --bg-glow: #161b22;
+}
+html[data-palette="agencia"] {
+  --paper: #0a0a0a; --panel: #141414; --panel-2: #1f1f1f;
+  --ink: #f0f0f0; --ink-soft: #999999;
+  --rule: #2e2e2e; --rule-soft: #1a1a1a;
+  --accent: #e11d48; --accent-soft: rgba(225,29,72,.2);
+  --stamp: #fbbf24; --stamp-glow: rgba(251,191,36,.15);
+  --bg-glow: #1f1f1f;
+}
+html[data-palette="esmeralda"] {
+  --paper: #0f172a; --panel: #1e293b; --panel-2: #334155;
+  --ink: #f8fafc; --ink-soft: #94a3b8;
+  --rule: #475569; --rule-soft: #334155;
+  --accent: #10b981; --accent-soft: rgba(16,185,129,.2);
+  --stamp: #f43f5e; --stamp-glow: rgba(244,63,94,.18);
+  --bg-glow: #1e293b;
+}
+html[data-palette="premium"] {
+  --paper: #121110; --panel: #1c1a17; --panel-2: #26221d;
+  --ink: #f2ede2; --ink-soft: #a89a83;
+  --rule: #3a352c; --rule-soft: #2a251e;
+  --accent: #c9a227; --accent-soft: rgba(201,162,39,.18);
+  --stamp: #7a2c3b; --stamp-glow: rgba(122,44,59,.2);
+  --bg-glow: #26221d;
+}
+html[data-palette="cobalto"] {
+  --paper: #0b1220; --panel: #131c2e; --panel-2: #1c2740;
+  --ink: #e8ecf2; --ink-soft: #8b96ab;
+  --rule: #2c3852; --rule-soft: #1c2740;
+  --accent: #6f8fc7; --accent-soft: rgba(111,143,199,.18);
+  --stamp: #9c2b3e; --stamp-glow: rgba(156,43,62,.18);
+  --bg-glow: #1c2740;
+}
+html[data-palette="botella"] {
+  --paper: #10160f; --panel: #182016; --panel-2: #212b1d;
+  --ink: #eee6d3; --ink-soft: #9c9a80;
+  --rule: #3a4030; --rule-soft: #2a3021;
+  --accent: #a97445; --accent-soft: rgba(169,116,69,.2);
+  --stamp: #6b1f1f; --stamp-glow: rgba(107,31,31,.18);
+  --bg-glow: #212b1d;
 }
 
 *, *::before, *::after { box-sizing: border-box; }
@@ -154,19 +206,28 @@ a.showcase__link:hover { color: var(--accent); }
   .stamp, .stamp-dots i.is-next { animation: none; }
 }
 
-/* --- Panel de estado (tarifa/moneda -- solo lectura, rota sola) ------------ */
+/* --- Panel de control (tarifa/moneda/paleta/tarjetas) --------------------- */
 
 .panel { position: sticky; top: 0; z-index: 20; background: var(--panel); border-block: 1px solid var(--rule); box-shadow: 0 1px #00000040; }
 .panel__inner { display: flex; flex-wrap: wrap; gap: 1rem 2.5rem; align-items: center; padding-block: .85rem; }
 .control { display: flex; align-items: center; gap: .75rem; }
 .control__label { font-family: var(--data); font-size: .66rem; letter-spacing: .16em; text-transform: uppercase; color: var(--ink-soft); }
-.badge {
-  display: inline-flex; align-items: center; border: 1px solid var(--rule); background: var(--paper);
-  color: var(--ink); font-family: var(--data); font-size: .72rem; font-weight: 600;
-  letter-spacing: .08em; text-transform: uppercase; padding: .42rem .9rem; border-radius: 6px;
-  transition: opacity .18s ease, filter .18s ease, background .2s, color .2s;
+.switch { display: flex; border: 1px solid var(--rule); background: var(--paper); padding: 4px; gap: 4px; border-radius: 6px; }
+.switch button {
+  appearance: none; border: 0; background: transparent; cursor: pointer;
+  font-family: var(--data); font-size: .72rem; font-weight: 600; letter-spacing: .08em;
+  text-transform: uppercase; color: var(--ink-soft); padding: .42rem .9rem; border-radius: 4px;
+  transition: all .2s ease;
 }
-.is-swapping .badge { opacity: 0; filter: blur(4px); }
+.switch button:hover { color: var(--ink); }
+.switch button[aria-pressed='true'] { background: var(--accent); color: var(--paper); box-shadow: 0 2px 8px var(--accent-soft); }
+.palette-select {
+  appearance: none; border: 1px solid var(--rule); background: var(--paper); color: var(--ink);
+  font-family: var(--data); font-size: .72rem; font-weight: 600; letter-spacing: .06em;
+  text-transform: uppercase; padding: .5rem .8rem; border-radius: 6px; cursor: pointer;
+}
+.palette-select:hover { border-color: var(--accent); }
+.palette-select:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 .panel__notes { display: contents; }
 .panel__note { flex: 1 1 22ch; min-width: 0; font-size: .82rem; line-height: 1.4; color: var(--ink-soft); border-left: 2px solid var(--accent); padding-left: .9rem; }
 
@@ -200,9 +261,7 @@ a.showcase__link:hover { color: var(--accent); }
   transition: color .2s, border-color .2s;
 }
 .cards-toggle:hover { color: var(--accent); border-color: var(--accent); }
-/* 380px, no 310: con las 3 monedas siempre visibles (más la cuota
-   recurrente cuando la hay) el precio ocupa hasta 4 líneas. */
-.card { height: 380px; position: relative; }
+.card { height: 310px; position: relative; cursor: pointer; }
 .card__inner {
   position: absolute; inset: 0; background: var(--panel); border: 1px solid var(--rule); border-radius: 12px;
   padding: 1.6rem; display: flex; flex-direction: column; overflow: hidden;
@@ -216,7 +275,7 @@ a.showcase__link:hover { color: var(--accent); }
 .card__list { margin: .65rem 0 0; padding: 0; list-style: none; font-size: .86rem; color: var(--ink-soft); flex: 1; }
 .card__list li { padding-left: 1.1rem; position: relative; margin-bottom: .35rem; }
 .card__list li:before { content: ""; position: absolute; left: 0; top: .62em; width: .5rem; height: 1px; background: var(--accent); }
-.card__price { margin-top: 1rem; padding-top: .8rem; border-top: 1px solid var(--rule-soft); font-family: var(--data); font-size: 1.05rem; line-height: 1.35; font-weight: 600; transition: opacity .3s ease; }
+.card__price { margin-top: 1rem; padding-top: .8rem; border-top: 1px solid var(--rule-soft); font-family: var(--data); font-size: 1.2rem; line-height: 1.35; font-weight: 600; transition: opacity .3s ease; }
 .card:hover .card__price, .card:focus-within .card__price { opacity: .05; }
 .card__recurring { display: block; margin-top: .2rem; font-size: .65rem; font-weight: 400; color: var(--accent); }
 .card__recurring[hidden] { display: none; }
@@ -237,6 +296,25 @@ a.showcase__link:hover { color: var(--accent); }
 .card:hover:before { transform: translate(8px, 8px); border-color: var(--rule-soft); }
 .card:hover .card__inner { transform: translate(-4px, -4px); border-color: var(--accent); }
 @media (prefers-reduced-motion: reduce) { .card:before, .card__inner, .card__details { transition: none; } }
+
+/* Estilo alternativo: inclinación 3D siguiendo al cursor (data-cardstyle="tilt").
+   Sustituye la capa apilada de .card:before, así que esa se oculta. */
+html[data-cardstyle='tilt'] .card:before { display: none; }
+html[data-cardstyle='tilt'] .card { perspective: 900px; }
+html[data-cardstyle='tilt'] .card__inner {
+  transform: perspective(900px) rotateX(var(--ry, 0deg)) rotateY(var(--rx, 0deg));
+  transition: transform .15s ease-out, border-color .3s;
+}
+html[data-cardstyle='tilt'] .card:hover .card__inner { border-color: var(--accent); }
+html[data-cardstyle='tilt'] .card:hover .card__price { opacity: 1; }
+html[data-cardstyle='tilt'] .card__inner:after {
+  content: ''; position: absolute; inset: 0; pointer-events: none; opacity: 0; transition: opacity .3s;
+  background: radial-gradient(circle at var(--mx, 50%) var(--my, 50%), var(--accent-soft), transparent 60%);
+}
+html[data-cardstyle='tilt'] .card:hover .card__inner:after { opacity: 1; }
+@media (prefers-reduced-motion: reduce) {
+  html[data-cardstyle='tilt'] .card__inner { transform: none !important; transition: none; }
+}
 
 /* --- Paquetes (usa el mismo grid .cards que arriba) ------------------------- */
 

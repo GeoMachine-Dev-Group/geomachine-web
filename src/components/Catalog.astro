@@ -3,6 +3,7 @@ import {
   lines,
   bundles,
   DEFAULT_TIER,
+  DEFAULT_CURRENCY,
   type Item,
   type Bundle,
   type Unit,
@@ -38,41 +39,42 @@ function money(range: readonly number[], currency: Currency, unit: Unit) {
   return `${nums}${nbsp}${symbol}${suffix(unit)}`;
 }
 
-/** Las 3 monedas se muestran siempre juntas -- solo la tarifa rota. */
-function moneyAll(byCurrency: Record<Currency, readonly number[]>, unit: Unit) {
-  return CURRENCIES.map((c) => money(byCurrency[c], c, unit)).join(' · ');
-}
+const TIERS = ['launch', 'standard'] as const;
 
-function initial(item: Item) {
-  return moneyAll(item[DEFAULT_TIER], item.unit);
-}
-
-function initialRecurring(item: Item) {
-  const key = DEFAULT_TIER === 'launch' ? 'launchRecurring' : 'standardRecurring';
-  const value = item[key];
-  return value ? moneyAll(value, 'month') : '';
-}
-
-/** Las 2 tarifas viajan en el HTML; la rotación de Base.astro solo elige entre ellas. */
+/**
+ * Las 6 combinaciones tarifa×moneda viajan ya formateadas en el HTML estático;
+ * el script de Base.astro solo elige entre ellas con dataset[tier + currency].
+ * De ahí los nombres pegados: data-launcheur, data-standardgel… y los mismos
+ * con prefijo r para la cuota recurrente (data-rlauncheur).
+ */
 function priceData(item: Item) {
-  const d: Record<string, string> = {
-    'data-price': '',
-    'data-launch': moneyAll(item.launch, item.unit),
-    'data-standard': moneyAll(item.standard, item.unit),
-  };
-  if (item.launchRecurring && item.standardRecurring) {
-    d['data-rlaunch'] = moneyAll(item.launchRecurring, 'month');
-    d['data-rstandard'] = moneyAll(item.standardRecurring, 'month');
+  const d: Record<string, string> = { 'data-price': '' };
+  for (const tier of TIERS) {
+    const rec = item[tier === 'launch' ? 'launchRecurring' : 'standardRecurring'];
+    for (const c of CURRENCIES) {
+      d[`data-${tier}${c}`] = money(item[tier][c], c, item.unit);
+      if (rec) d[`data-r${tier}${c}`] = money(rec[c], c, 'month');
+    }
   }
   return d;
 }
 
 function bundlePriceData(b: Bundle) {
-  return {
-    'data-price': '',
-    'data-launch': moneyAll(b.launch, 'once'),
-    'data-standard': moneyAll(b.standard, 'once'),
-  };
+  const d: Record<string, string> = { 'data-price': '' };
+  for (const tier of TIERS) {
+    for (const c of CURRENCIES) d[`data-${tier}${c}`] = money(b[tier][c], c, 'once');
+  }
+  return d;
+}
+
+/** Lo que se ve antes de que corra nada de JS: tarifa y moneda por defecto. */
+function initial(item: Item) {
+  return money(item[DEFAULT_TIER][DEFAULT_CURRENCY], DEFAULT_CURRENCY, item.unit);
+}
+
+function initialRecurring(item: Item) {
+  const rec = item[DEFAULT_TIER === 'launch' ? 'launchRecurring' : 'standardRecurring'];
+  return rec ? money(rec[DEFAULT_CURRENCY], DEFAULT_CURRENCY, 'month') : '';
 }
 ---
 
@@ -115,15 +117,42 @@ function bundlePriceData(b: Bundle) {
   </div>
 </section>
 
-<div class="panel" data-tier-launch-label={t.tierLaunch} data-tier-standard-label={t.tierStandard}>
+<div class="panel">
   <div class="shell panel__inner">
     <div class="control">
-      <span class="control__label">{t.tierLabel}</span>
-      <span class="badge" data-badge="tier">{t.tierLaunch}</span>
+      <span class="control__label" id="tier-label">{t.tierLabel}</span>
+      <div class="switch" role="group" aria-labelledby="tier-label">
+        <button type="button" data-set="tier" data-value="launch" aria-pressed={String(DEFAULT_TIER === 'launch')}>
+          {t.tierLaunch}
+        </button>
+        <button type="button" data-set="tier" data-value="standard" aria-pressed={String(DEFAULT_TIER === 'standard')}>
+          {t.tierStandard}
+        </button>
+      </div>
     </div>
     <div class="control">
-      <span class="control__label">{t.currencyLabel}</span>
-      <span class="badge">EUR € · RUB ₽ · GEL ₾</span>
+      <span class="control__label" id="cur-label">{t.currencyLabel}</span>
+      <div class="switch" role="group" aria-labelledby="cur-label">
+        {
+          CURRENCIES.map((c) => (
+            <button type="button" data-set="currency" data-value={c} aria-pressed={String(c === DEFAULT_CURRENCY)}>
+              {c.toUpperCase()} {CURRENCY_SYMBOL[c]}
+            </button>
+          ))
+        }
+      </div>
+    </div>
+    <div class="control">
+      <label class="control__label" for="palette-select">{t.paletteLabel}</label>
+      <select id="palette-select" class="palette-select">
+        {Object.entries(t.palettes).map(([value, label]) => <option value={value}>{label}</option>)}
+      </select>
+    </div>
+    <div class="control">
+      <label class="control__label" for="cardstyle-select">{t.cardStyleLabel}</label>
+      <select id="cardstyle-select" class="palette-select">
+        {Object.entries(t.cardStyles).map(([value, label]) => <option value={value}>{label}</option>)}
+      </select>
     </div>
     <div class="panel__notes" aria-live="polite">
       <p class="panel__note" data-note="launch">{t.launchNote}</p>
@@ -214,7 +243,7 @@ function bundlePriceData(b: Bundle) {
               {b.includes[lang].map((i) => <li>{i}</li>)}
             </ul>
             <div class="card__price" {...bundlePriceData(b)}>
-              <span class="price-value">{moneyAll(b[DEFAULT_TIER], 'once')}</span>
+              <span class="price-value">{money(b[DEFAULT_TIER][DEFAULT_CURRENCY], DEFAULT_CURRENCY, 'once')}</span>
             </div>
             <div class="card__details">
               <p class="card__human-label">{t.bundleIncludes}</p>

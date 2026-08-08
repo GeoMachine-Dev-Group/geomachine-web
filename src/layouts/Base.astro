@@ -69,6 +69,17 @@ const preloadFont: Record<Lang, string> = {
       crossorigin
     />
 
+    <script is:inline>
+      // Aplica la paleta y el estilo de tarjeta guardados antes del primer
+      // pintado: sin esto, una elección previa parpadea la paleta original.
+      try {
+        var p = localStorage.getItem('gm-palette');
+        if (p && p !== 'default') document.documentElement.dataset.palette = p;
+        var c = localStorage.getItem('gm-cardstyle');
+        if (c && c !== 'stack') document.documentElement.dataset.cardstyle = c;
+      } catch (e) {}
+    </script>
+
     <Schema lang={lang} />
   </head>
 
@@ -105,81 +116,118 @@ const preloadFont: Record<Lang, string> = {
     <script>
       const root = document.documentElement;
 
-      /** Repinta cada precio según la tarifa activa. Las 3 monedas van siempre juntas en el texto. */
+      /** Repinta cada precio con la combinación tarifa+moneda activa. */
       function paint() {
-        const tier = root.dataset.tier;
+        const combo = (root.dataset.tier ?? '') + (root.dataset.currency ?? '');
         document.querySelectorAll<HTMLElement>('[data-price]').forEach((cell) => {
           const main = cell.querySelector<HTMLElement>('.price-value');
-          if (main) main.textContent = cell.dataset[tier ?? ''] ?? '';
-          const rec = cell.querySelector<HTMLElement>('.card__recurring .price-value');
-          const recText = cell.dataset[`r${tier}`];
+          if (main) main.textContent = cell.dataset[combo] ?? '';
+
           const recWrap = cell.querySelector<HTMLElement>('.card__recurring');
-          if (recWrap) recWrap.hidden = !recText;
+          if (!recWrap) return;
+          const recText = cell.dataset['r' + combo];
+          recWrap.hidden = !recText;
+          const rec = recWrap.querySelector<HTMLElement>('.price-value');
           if (rec && recText) rec.textContent = recText;
         });
       }
 
-      const tierBadge = document.querySelector<HTMLElement>('[data-badge="tier"]');
-      const panel = document.querySelector<HTMLElement>('.panel');
-      const tierLabel = { launch: panel?.dataset.tierLaunchLabel ?? '', standard: panel?.dataset.tierStandardLabel ?? '' };
-
-      /** Aplica una tarifa con el mismo parpadeo que antes daba el clic manual. */
-      function apply(tier: string) {
-        if (root.dataset.tier === tier) return;
-        root.dataset.tier = tier;
+      /** Cambia tarifa o moneda con el desenfoque de 160 ms que ya define el CSS. */
+      function setVal(key: 'tier' | 'currency', val: string) {
+        if (root.dataset[key] === val) return;
+        root.dataset[key] = val;
         document.body.classList.add('is-swapping');
         window.setTimeout(() => {
           paint();
           document.body.classList.remove('is-swapping');
         }, 160);
 
-        if (tierBadge) tierBadge.textContent = tierLabel[tier as 'launch' | 'standard'];
-
-        const stamp = document.querySelector<HTMLElement>('.stamp');
-        if (stamp) stamp.hidden = tier !== 'launch';
-
-        document.querySelectorAll<HTMLElement>('[data-note]').forEach((n) => {
-          n.hidden = n.dataset.note !== tier;
+        document.querySelectorAll<HTMLElement>(`[data-set="${key}"]`).forEach((btn) => {
+          btn.setAttribute('aria-pressed', String(btn.dataset.value === val));
         });
+
+        // El sello y la nota del panel solo dependen de la tarifa.
+        if (key === 'tier') {
+          const stamp = document.querySelector<HTMLElement>('.stamp');
+          if (stamp) stamp.hidden = val !== 'launch';
+          document.querySelectorAll<HTMLElement>('[data-note]').forEach((n) => {
+            n.hidden = n.dataset.note !== val;
+          });
+        }
+
+        try {
+          localStorage.setItem('gm-' + key, val);
+        } catch (e) {}
       }
+
+      document.querySelectorAll<HTMLElement>('[data-set]').forEach((btn) => {
+        btn.addEventListener('click', () =>
+          setVal(btn.dataset.set as 'tier' | 'currency', btn.dataset.value ?? '')
+        );
+      });
+
+      try {
+        const savedTier = localStorage.getItem('gm-tier');
+        const savedCurrency = localStorage.getItem('gm-currency');
+        if (savedTier) setVal('tier', savedTier);
+        if (savedCurrency) setVal('currency', savedCurrency);
+      } catch (e) {}
 
       paint();
 
-      /**
-       * El panel manual se sustituyó por una rotación automática: no hay
-       * botones, nadie —ni el visitante ni el dueño del sitio— la controla.
-       * Se detiene con prefers-reduced-motion y al pasar el ratón por encima,
-       * para no mover precios mientras alguien los está leyendo (WCAG 2.2.2).
-       * Las 3 monedas se muestran siempre juntas; solo rota la tarifa.
-       */
-      const combos = ['launch', 'standard'] as const;
+      /* Paleta y estilo de tarjeta. Lo guardado ya se aplicó en <head> para
+         evitar el destello; aquí solo se sincroniza el select y se escucha. */
+      const paletteSelect = document.getElementById('palette-select') as HTMLSelectElement | null;
+      function setPalette(name: string) {
+        if (name === 'default') delete root.dataset.palette;
+        else root.dataset.palette = name;
+        if (paletteSelect) paletteSelect.value = name;
+        try {
+          localStorage.setItem('gm-palette', name);
+        } catch (e) {}
+      }
+      if (paletteSelect) {
+        paletteSelect.value = root.dataset.palette ?? 'default';
+        paletteSelect.addEventListener('change', () => setPalette(paletteSelect.value));
+      }
+
+      const cardStyleSelect = document.getElementById('cardstyle-select') as HTMLSelectElement | null;
+      function setCardStyle(name: string) {
+        if (name === 'stack') delete root.dataset.cardstyle;
+        else root.dataset.cardstyle = name;
+        if (cardStyleSelect) cardStyleSelect.value = name;
+        try {
+          localStorage.setItem('gm-cardstyle', name);
+        } catch (e) {}
+      }
+      if (cardStyleSelect) {
+        cardStyleSelect.value = root.dataset.cardstyle ?? 'stack';
+        cardStyleSelect.addEventListener('change', () => setCardStyle(cardStyleSelect.value));
+      }
+
+      /* Inclinación 3D siguiendo al cursor: solo en modo tilt y con movimiento
+         permitido. Delegado en document para no atar un oyente por tarjeta. */
       const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-      let comboIndex = 0;
-      let rotateTimer: ReturnType<typeof setInterval> | null = null;
-
-      function startRotation() {
-        if (reduceMotion || rotateTimer) return;
-        rotateTimer = setInterval(() => {
-          comboIndex = (comboIndex + 1) % combos.length;
-          apply(combos[comboIndex]);
-        }, 15 * 60 * 1000);
-      }
-      function stopRotation() {
-        if (rotateTimer) {
-          clearInterval(rotateTimer);
-          rotateTimer = null;
-        }
-      }
-
       if (!reduceMotion) {
-        const main = document.querySelector('main');
-        main?.addEventListener('mouseenter', stopRotation);
-        main?.addEventListener('mouseleave', startRotation);
-        document.addEventListener('visibilitychange', () => {
-          if (document.hidden) stopRotation();
-          else startRotation();
+        document.addEventListener('mousemove', (e) => {
+          if (root.dataset.cardstyle !== 'tilt') return;
+          const card = (e.target as Element | null)?.closest<HTMLElement>('.card');
+          if (!card) return;
+          const rect = card.getBoundingClientRect();
+          const px = (e.clientX - rect.left) / rect.width;
+          const py = (e.clientY - rect.top) / rect.height;
+          card.style.setProperty('--rx', (px - 0.5) * 14 + 'deg');
+          card.style.setProperty('--ry', -(py - 0.5) * 14 + 'deg');
+          card.style.setProperty('--mx', px * 100 + '%');
+          card.style.setProperty('--my', py * 100 + '%');
         });
-        startRotation();
+        document.addEventListener('mouseout', (e) => {
+          const card = (e.target as Element | null)?.closest<HTMLElement>('.card');
+          if (card && !card.contains(e.relatedTarget as Node | null)) {
+            card.style.setProperty('--rx', '0deg');
+            card.style.setProperty('--ry', '0deg');
+          }
+        });
       }
 
       // Aparición progresiva de las filas.
