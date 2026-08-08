@@ -24,11 +24,11 @@ con hash de builds anteriores se acumulan indefinidamente.
 
     server {
         listen 443 ssl http2;
-        server_name geomachine.dev www.geomachine.dev;
+        server_name geomachine.es www.geomachine.es;
         root /var/www/geomachine;
 
-        ssl_certificate     /etc/letsencrypt/live/geomachine.dev/fullchain.pem;
-        ssl_certificate_key /etc/letsencrypt/live/geomachine.dev/privkey.pem;
+        ssl_certificate     /etc/letsencrypt/live/geomachine.es/fullchain.pem;
+        ssl_certificate_key /etc/letsencrypt/live/geomachine.es/privkey.pem;
 
         # La raíz redirige al catálogo en español. Astro genera un dist/index.html
         # con meta-refresh como respaldo, pero un 301 real es más rápido y mejor
@@ -70,16 +70,16 @@ con hash de builds anteriores se acumulan indefinidamente.
 
     server {
         listen 80;
-        server_name geomachine.dev www.geomachine.dev;
-        return 301 https://geomachine.dev$request_uri;
+        server_name geomachine.es www.geomachine.es;
+        return 301 https://geomachine.es$request_uri;
     }
 
-TLS con `certbot --nginx -d geomachine.dev -d www.geomachine.dev`.
+TLS con `certbot --nginx -d geomachine.es -d www.geomachine.es`.
 
 ## 4. Después de publicar, una vez
 
 - Dar de alta el sitio en Google Search Console y enviar
-  `https://geomachine.dev/sitemap-index.xml`.
+  `https://geomachine.es/sitemap-index.xml`.
 - Comprobar el JSON-LD en <https://validator.schema.org/> con la URL ya publicada.
 - Comprobar la tarjeta social pegando la URL en Telegram (es el canal del CTA).
 - Verificar que `/es/servicios/` y `/ru/uslugi/` se referencian entre sí en el
@@ -87,8 +87,10 @@ TLS con `certbot --nginx -d geomachine.dev -d www.geomachine.dev`.
 
 ## Lo que NO está resuelto
 
-- **El proyecto no está en git.** Antes de exponerlo en un VPS conviene
-  `git init` y un primer commit: hoy no hay forma de revertir un despliegue malo.
+- **No hay remoto.** El repo es local, con una copia desnuda en
+  `~/Documentos/WorkSpace/repos/geomachine-astro.git` (remoto `backup`, se
+  actualiza con `git push backup --all`). Está en el mismo disco: no protege
+  de un fallo de hardware.
 - **No hay despliegue automatizado.** El `rsync` de arriba es manual.
-- **Faltan los idiomas `en` y `ka`** — ver `PENDIENTE.md`. Se puede publicar en
-  ES/RU y añadirlos después sin rehacer nada.
+- **El georgiano no lo ha revisado un nativo** — ver la cabecera de
+  `src/data/catalog.ts`. Se puede publicar y corregir después.

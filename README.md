@@ -37,6 +37,5 @@ El `hreflang` del layout se genera solo a partir de `servicesPath`.
 
 ## Antes de publicar
 
-- [ ] Cambiar `site` en `astro.config.mjs` al dominio real.
-- [ ] Sustituir `hola@geomachine.dev` y `t.me/geomachine`.
+- [ ] Confirmar que `t.me/geomachine` es el canal correcto del CTA.
 - [ ] Dar de alta el sitio en Google Search Console y Yandex Webmaster.
