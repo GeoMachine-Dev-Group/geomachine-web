@@ -17,3 +17,6 @@ Thumbs.db
 # Logs
 npm-debug.log*
 yarn-error.log*
+
+# Configuración de despliegue (contiene host y usuario del VPS)
+.env.deploy
