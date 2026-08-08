@@ -88,7 +88,7 @@ echo "tamaño: $(du -sh dist | cut -f1)"
 # ficheros con hash de builds anteriores se acumulan sin límite.
 step "Sincronizando con $DEPLOY_USER@$DEPLOY_HOST:$DEPLOY_PATH${DRY:+  (simulacro)}"
 rsync -avz --delete $DRY \
-  -e "ssh -p $DEPLOY_PORT" \
+  -e "ssh -p $DEPLOY_PORT -o ConnectTimeout=15" \
   --chmod=D755,F644 \
   dist/ "$DEPLOY_USER@$DEPLOY_HOST:$DEPLOY_PATH/"
 
