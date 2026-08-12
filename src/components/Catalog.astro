@@ -10,12 +10,17 @@ import {
   type Currency,
 } from '../data/catalog';
 import { ui, type Lang } from '../i18n/ui';
+import ServiceCard from './ServiceCard.astro';
 
 interface Props {
   lang: Lang;
 }
 const { lang } = Astro.props;
 const t = ui[lang];
+
+/** Opciones del selector "qué necesitas" del formulario — mismas categorías
+    del catálogo, para no mantener una lista de servicios por separado. */
+const serviceOptions = [...lines.map((l) => l.title[lang]), t.bundlesTitle];
 
 const nbsp = ' ';
 const CURRENCY_SYMBOL: Record<Currency, string> = { eur: '€', rub: '₽', gel: '₾' };
@@ -189,26 +194,18 @@ function initialRecurring(item: Item) {
 
       <div class="cards" data-cards>
         {line.items.map((item) => (
-          <article class="card reveal" tabindex="0">
-            <div class="card__inner">
-              <div class="card__header">
-                <span class="card__code">{item.code}</span>
-                {item.time && <span class="card__time">{item.time[lang]}</span>}
-              </div>
-              <h3 class="card__name">{item.name[lang]}</h3>
-              <p class="card__spec">{item.spec[lang]}</p>
-              <div class="card__price" {...priceData(item)}>
-                <span class="price-value">{initial(item)}</span>
-                <small class="card__recurring" hidden={!item.launchRecurring}>
-                  {t.thenMonthly} <span class="price-value">{initialRecurring(item)}</span>
-                </small>
-              </div>
-              <div class="card__details">
-                <p class="card__human-label">{t.colService}</p>
-                <p class="card__human">{item.human[lang]}</p>
-              </div>
-            </div>
-          </article>
+          <ServiceCard
+            code={item.code}
+            name={item.name[lang]}
+            time={item.time?.[lang]}
+            description={item.spec[lang]}
+            humanLabel={t.colService}
+            human={item.human[lang]}
+            priceAttrs={priceData(item)}
+            initialPrice={initial(item)}
+            initialRecurring={item.launchRecurring ? initialRecurring(item) : undefined}
+            recurringLabel={t.thenMonthly}
+          />
         ))}
       </div>
       {line.items.length > 3 && (
@@ -232,25 +229,18 @@ function initialRecurring(item: Item) {
   <div class="cards" data-cards>
     {
       bundles.map((b) => (
-        <article class="card reveal" tabindex="0">
-          <div class="card__inner">
-            <div class="card__header">
-              <span class="card__code">{b.code}</span>
-              {b.time && <span class="card__time">{b.time[lang]}</span>}
-            </div>
-            <h3 class="card__name">{b.name[lang]}</h3>
-            <ul class="card__list">
-              {b.includes[lang].map((i) => <li>{i}</li>)}
-            </ul>
-            <div class="card__price" {...bundlePriceData(b)}>
-              <span class="price-value">{money(b[DEFAULT_TIER][DEFAULT_CURRENCY], DEFAULT_CURRENCY, 'once')}</span>
-            </div>
-            <div class="card__details">
-              <p class="card__human-label">{t.bundleIncludes}</p>
-              <p class="card__human">{b.human[lang]}</p>
-            </div>
-          </div>
-        </article>
+        <ServiceCard
+          code={b.code}
+          name={b.name[lang]}
+          time={b.time?.[lang]}
+          description={b.includes[lang]}
+          humanLabel={t.bundleIncludes}
+          human={b.human[lang]}
+          priceAttrs={bundlePriceData(b)}
+          initialPrice={money(b[DEFAULT_TIER][DEFAULT_CURRENCY], DEFAULT_CURRENCY, 'once')}
+          featured={b.code === 'PACK-02'}
+          featuredLabel={t.featuredBadge}
+        />
       ))
     }
   </div>
@@ -273,10 +263,49 @@ function initialRecurring(item: Item) {
         </div>
       ))}
     </div>
-    <div class="actions">
-      <a class="btn btn--solid" href="mailto:hola@geomachine.es">{t.ctaButton}</a>
-      <a class="btn btn--ghost" href="https://t.me/geomachine">{t.ctaSecondary}</a>
-    </div>
+    <form
+      id="contact-form"
+      class="contact-form"
+      data-msg-sending={t.formSending}
+      data-msg-success={t.formSuccess}
+      data-msg-error={t.formError}
+      novalidate
+    >
+      <!-- honeypot: campo oculto que un humano nunca rellena -->
+      <input type="text" name="website" class="visually-hidden" tabindex="-1" autocomplete="off" />
+      <input type="hidden" name="startedAt" />
+
+      <label class="contact-form__field">
+        <span class="control__label">{t.formName}</span>
+        <input type="text" name="name" required />
+      </label>
+      <label class="contact-form__field">
+        <span class="control__label">{t.formContact}</span>
+        <input type="text" name="contact" required />
+      </label>
+      <label class="contact-form__field">
+        <span class="control__label">{t.formService}</span>
+        <select name="service">
+          <option value="">{t.formServiceOther}</option>
+          {serviceOptions.map((opt) => <option value={opt}>{opt}</option>)}
+        </select>
+      </label>
+      <label class="contact-form__field">
+        <span class="control__label">{t.formBudget}</span>
+        <input type="text" name="budget" />
+      </label>
+      <label class="contact-form__field">
+        <span class="control__label">{t.formMessage}</span>
+        <textarea name="message" rows="3" required></textarea>
+      </label>
+
+      <div class="actions">
+        <button type="submit" class="btn btn--solid">{t.ctaButton}</button>
+        <a class="btn btn--ghost" href="https://t.me/geomachine">{t.ctaSecondary}</a>
+        <p class="actions__note">{t.ctaResponseTime}</p>
+      </div>
+      <p class="contact-form__status" role="status" aria-live="polite" hidden></p>
+    </form>
   </div>
 
   <div>
@@ -286,6 +315,10 @@ function initialRecurring(item: Item) {
     </ul>
   </div>
 </section>
+
+<a href="mailto:hola@geomachine.es" class="fab" data-fab hidden>
+  {t.ctaButton}
+</a>
 
 <script>
   document.querySelectorAll<HTMLElement>('[data-cards]').forEach((container) => {
@@ -297,4 +330,63 @@ function initialRecurring(item: Item) {
       if (expanded) container.querySelectorAll('.reveal').forEach((el) => el.classList.add('is-in'));
     });
   });
+
+  /* Sticky CTA: visible tras pasar el Hero, oculto de nuevo junto al CTA de
+     cierre para no duplicar el botón en la misma pantalla. */
+  const hero = document.querySelector('.hero');
+  const closeSection = document.querySelector('.close');
+  const fab = document.querySelector<HTMLElement>('[data-fab]');
+
+  if (hero && closeSection && fab) {
+    fab.hidden = false;
+    let pastHero = false;
+    let inClose = false;
+    const sync = () => fab.classList.toggle('is-visible', pastHero && !inClose);
+
+    new IntersectionObserver(
+      ([entry]) => { pastHero = !entry.isIntersecting; sync(); },
+      { rootMargin: '-10% 0px 0px 0px' }
+    ).observe(hero);
+
+    new IntersectionObserver(
+      ([entry]) => { inClose = entry.isIntersecting; sync(); },
+      { threshold: 0.15 }
+    ).observe(closeSection);
+  }
+
+  /* Formulario de contacto: envía a la Netlify Function, que reenvía a
+     Telegram. Los textos de estado viajan por data-attrs porque este script
+     corre en el navegador, sin acceso al objeto de traducciones de Astro. */
+  const form = document.getElementById('contact-form') as HTMLFormElement | null;
+  if (form) {
+    const startedAtInput = form.elements.namedItem('startedAt') as HTMLInputElement;
+    startedAtInput.value = String(Date.now());
+
+    const status = form.querySelector<HTMLElement>('.contact-form__status')!;
+    const submitBtn = form.querySelector<HTMLButtonElement>('button[type="submit"]')!;
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      submitBtn.disabled = true;
+      status.hidden = false;
+      status.textContent = form.dataset.msgSending ?? '';
+
+      try {
+        const payload = Object.fromEntries(new FormData(form).entries());
+        const res = await fetch('/.netlify/functions/contact', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload),
+        });
+        if (!res.ok) throw new Error('bad status');
+        form.querySelectorAll('input, select, textarea, button').forEach((el) => {
+          (el as HTMLElement).hidden = true;
+        });
+        status.textContent = form.dataset.msgSuccess ?? '';
+      } catch {
+        status.textContent = form.dataset.msgError ?? '';
+        submitBtn.disabled = false;
+      }
+    });
+  }
 </script>

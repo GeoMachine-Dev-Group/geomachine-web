@@ -1,0 +1,54 @@
+---
+interface Props {
+  code: string;
+  name: string;
+  time?: string;
+  /** Párrafo (servicios) o lista de bullets (paquetes) — un solo componente cubre los dos casos. */
+  description: string | string[];
+  humanLabel: string;
+  human: string;
+  priceAttrs: Record<string, string>;
+  initialPrice: string;
+  initialRecurring?: string;
+  recurringLabel?: string;
+  featured?: boolean;
+  featuredLabel?: string;
+}
+const {
+  code, name, time, description, humanLabel, human,
+  priceAttrs, initialPrice, initialRecurring, recurringLabel,
+  featured = false, featuredLabel,
+} = Astro.props;
+---
+
+<article class:list={['card', 'reveal', { 'card--featured': featured }]} tabindex="0">
+  <div class="card__inner">
+    {featured && featuredLabel && <span class="card__badge">{featuredLabel}</span>}
+    <div class="card__header">
+      <span class="card__code">{code}</span>
+      {time && <span class="card__time">{time}</span>}
+    </div>
+    <h3 class="card__name">{name}</h3>
+
+    {Array.isArray(description) ? (
+      <ul class="card__list">
+        {description.map((line) => <li>{line}</li>)}
+      </ul>
+    ) : (
+      <p class="card__spec">{description}</p>
+    )}
+
+    <div class="card__price" {...priceAttrs}>
+      <span class="price-value">{initialPrice}</span>
+      {initialRecurring && (
+        <small class="card__recurring">
+          {recurringLabel} <span class="price-value">{initialRecurring}</span>
+        </small>
+      )}
+    </div>
+    <div class="card__details">
+      <p class="card__human-label">{humanLabel}</p>
+      <p class="card__human">{human}</p>
+    </div>
+  </div>
+</article>

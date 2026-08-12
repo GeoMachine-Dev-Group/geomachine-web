@@ -254,10 +254,14 @@ const preloadFont: Record<Lang, string> = {
         cardStyleSelect.addEventListener('change', () => setCardStyle(cardStyleSelect.value));
       }
 
-      /* Inclinación 3D siguiendo al cursor: solo en modo tilt y con movimiento
-         permitido. Delegado en document para no atar un oyente por tarjeta. */
+      /* Inclinación 3D siguiendo al cursor: solo en modo tilt, con movimiento
+         permitido y en dispositivos con puntero fino de verdad — sin esto el
+         listener se registraba en toda visita táctil aunque el tilt nunca
+         fuera a activarse ahí. Delegado en document para no atar un oyente
+         por tarjeta. */
       const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-      if (!reduceMotion) {
+      const supportsHover = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+      if (!reduceMotion && supportsHover) {
         document.addEventListener('mousemove', (e) => {
           if (root.dataset.cardstyle !== 'tilt') return;
           const card = (e.target as Element | null)?.closest<HTMLElement>('.card');
