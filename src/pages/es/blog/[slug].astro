@@ -1,0 +1,69 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../../../layouts/Base.astro';
+import ArticleSchema from '../../../components/ArticleSchema.astro';
+import { ui, servicesPath, blogPath } from '../../../i18n/ui';
+import { buildHreflang, isPublished } from '../../../lib/blog';
+
+export async function getStaticPaths() {
+  const [esEntries, ruEntries] = await Promise.all([
+    getCollection('blog', (e) => e.id.startsWith('es/') && isPublished(e)),
+    // La pareja de hreflang solo puede apuntar a un post ru que exista de
+    // verdad en el build actual — un borrador en ru no genera página en
+    // producción, así que no puede ser destino de un enlace.
+    getCollection('blog', (e) => e.id.startsWith('ru/') && isPublished(e)),
+  ]);
+  return esEntries.map((entry) => {
+    const slug = entry.slug.replace(/^es\//, '');
+    const counterpart = entry.data.translationSlug
+      ? ruEntries.find((e) => e.slug === `ru/${entry.data.translationSlug}`)
+      : undefined;
+    return { params: { slug }, props: { entry, counterpart } };
+  });
+}
+
+const { entry, counterpart } = Astro.props;
+const { Content } = await entry.render();
+const t = ui.es;
+const site = Astro.site?.origin ?? 'https://geomachine.es';
+const slug = entry.slug.replace(/^es\//, '');
+const pageUrl = `${site}${blogPath.es}${slug}/`;
+const alternates = buildHreflang({ site, lang: 'es', slug, counterpart });
+---
+
+<Base
+  lang="es"
+  noindex={entry.data.draft}
+  pageUrl={pageUrl}
+  title={`${entry.data.title} — ${t.company}`}
+  description={entry.data.description}
+  ogType="article"
+  hreflangAlternates={alternates}
+  schema="none"
+>
+  <ArticleSchema
+    slot="head"
+    lang="es"
+    title={entry.data.title}
+    description={entry.data.description}
+    pubDate={entry.data.pubDate}
+    updatedDate={entry.data.updatedDate}
+    pageUrl={pageUrl}
+  />
+  <article class="shell">
+    <p><a href={blogPath.es}>{t.blogBack}</a></p>
+    <p data-pillar>{entry.data.pillar}</p>
+    <h1>{entry.data.title}</h1>
+    <time datetime={entry.data.pubDate.toISOString()}>
+      {entry.data.pubDate.toLocaleDateString('es-ES')}
+    </time>
+    <Content />
+    {entry.data.relatedService && (
+      <p>
+        <a href={`${servicesPath.es}#${entry.data.pillar.toLowerCase()}`}>
+          {t.blogRelated}: {entry.data.relatedService}
+        </a>
+      </p>
+    )}
+  </article>
+</Base>

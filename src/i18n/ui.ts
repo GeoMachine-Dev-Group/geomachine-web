@@ -21,6 +21,13 @@ export const servicesPath: Record<Lang, string> = {
   ka: '/ka/momsakhurebebi/',
 };
 
+/** El blog solo existe en es/ru por ahora (ver Decisiones/estrategia-contenido.md). */
+export type BlogLang = 'es' | 'ru';
+export const blogPath: Record<BlogLang, string> = {
+  es: '/es/blog/',
+  ru: '/ru/blog/',
+};
+
 export const ui = {
   es: {
     htmlLang: 'es',
@@ -89,6 +96,12 @@ export const ui = {
     showLess: "Ver menos",
     closeSteps: ["Envías tu idea","Recibes precio y fecha","Desarrollo y entrega"],
     footer: 'GeoMachine Developer Group',
+    blogTitle: 'Blog',
+    blogMetaDescription:
+      'Artículos sobre desarrollo web, IA aplicada a negocios, SEO y aplicaciones — sin relleno, con precios y casos reales.',
+    blogEmpty: 'Todavía no hay artículos publicados.',
+    blogBack: '← Volver al blog',
+    blogRelated: 'Servicio relacionado',
   },
   ru: {
     htmlLang: 'ru',
@@ -157,6 +170,12 @@ export const ui = {
     showLess: "Свернуть",
     closeSteps: ["Отправляете идею","Получаете цену и срок","Разработка и сдача"],
     footer: 'GeoMachine Developer Group',
+    blogTitle: 'Блог',
+    blogMetaDescription:
+      'Статьи о веб-разработке, ИИ для бизнеса, SEO и приложениях — без воды, с ценами и реальными кейсами.',
+    blogEmpty: 'Пока нет опубликованных статей.',
+    blogBack: '← Назад в блог',
+    blogRelated: 'Похожая услуга',
   },
   en: {
     htmlLang: 'en',

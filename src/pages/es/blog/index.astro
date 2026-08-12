@@ -1,0 +1,38 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../../../layouts/Base.astro';
+import { ui, blogPath } from '../../../i18n/ui';
+import { isPublished, blogIndexHreflang } from '../../../lib/blog';
+
+const posts = (await getCollection('blog', (e) => e.id.startsWith('es/') && isPublished(e))).sort(
+  (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()
+);
+
+const t = ui.es;
+const site = Astro.site?.origin ?? 'https://geomachine.es';
+---
+
+<Base
+  lang="es"
+  pageUrl={`${site}${blogPath.es}`}
+  title={`${t.blogTitle} — ${t.company}`}
+  description={t.blogMetaDescription}
+  hreflangAlternates={blogIndexHreflang(site)}
+  schema="none"
+>
+  <section class="shell">
+    <h1>{t.blogTitle}</h1>
+    {posts.length === 0 && <p>{t.blogEmpty}</p>}
+    <ul>
+      {posts.map((post) => {
+        const slug = post.slug.replace(/^es\//, '');
+        return (
+          <li>
+            <a href={`${blogPath.es}${slug}/`}>{post.data.title}</a>
+            <span> — {post.data.pillar}</span>
+          </li>
+        );
+      })}
+    </ul>
+  </section>
+</Base>

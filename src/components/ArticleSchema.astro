@@ -1,0 +1,42 @@
+---
+/**
+ * JSON-LD para un artículo del blog. Autocontenido: no depende de que
+ * Schema.astro (el del catálogo) se renderice en la misma página — cada
+ * página se evalúa por separado para rich results.
+ */
+import { ui, type Lang } from '../i18n/ui';
+
+interface Props {
+  lang: Lang;
+  title: string;
+  description: string;
+  pubDate: Date;
+  updatedDate?: Date;
+  pageUrl: string;
+}
+const { lang, title, description, pubDate, updatedDate, pageUrl } = Astro.props;
+const t = ui[lang];
+const site = new URL(pageUrl).origin;
+const orgId = `${site}/#organization`;
+
+const graph = {
+  '@context': 'https://schema.org',
+  '@graph': [
+    { '@type': 'Organization', '@id': orgId, name: t.company, url: site },
+    {
+      '@type': 'BlogPosting',
+      '@id': `${pageUrl}#article`,
+      mainEntityOfPage: { '@type': 'WebPage', '@id': pageUrl },
+      headline: title,
+      description,
+      datePublished: pubDate.toISOString(),
+      ...(updatedDate ? { dateModified: updatedDate.toISOString() } : {}),
+      inLanguage: t.htmlLang,
+      author: { '@id': orgId },
+      publisher: { '@id': orgId },
+    },
+  ],
+};
+---
+
+<script type="application/ld+json" set:html={JSON.stringify(graph)} is:inline />

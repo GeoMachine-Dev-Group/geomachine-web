@@ -4,17 +4,43 @@ import { ui, servicesPath, languages, type Lang } from '../i18n/ui';
 import { DEFAULT_TIER, DEFAULT_CURRENCY } from '../data/catalog';
 import Schema from '../components/Schema.astro';
 
+interface HreflangAlt {
+  hreflang: string;
+  href: string;
+}
+
 interface Props {
   lang: Lang;
   /** Excluye la página de los índices (404, borradores…). */
   noindex?: boolean;
+  /** Overrides opcionales — sin ellos, el layout se comporta exactamente
+      como antes (catálogo). El blog los usa para no heredar canonical,
+      hreflang, título, descripción ni og:image del catálogo. */
+  pageUrl?: string;
+  title?: string;
+  description?: string;
+  ogImage?: string;
+  ogType?: 'website' | 'article';
+  hreflangAlternates?: HreflangAlt[];
+  /** 'catalog' (por defecto) renderiza el JSON-LD del catálogo. 'none' lo
+      omite para que la página inyecte el suyo propio vía el slot "head"
+      (el blog usa BlogPosting, no OfferCatalog). */
+  schema?: 'catalog' | 'none';
 }
-const { lang, noindex = false } = Astro.props;
+const { lang, noindex = false, schema = 'catalog', ogType = 'website' } = Astro.props;
 const t = ui[lang];
 const site = Astro.site?.origin ?? 'https://geomachine.es';
-const pageUrl = site + servicesPath[lang];
+const pageUrl = Astro.props.pageUrl ?? site + servicesPath[lang];
+const title = Astro.props.title ?? t.metaTitle;
+const description = Astro.props.description ?? t.metaDescription;
 const ogLocale: Record<Lang, string> = { es: 'es_ES', ru: 'ru_RU', en: 'en_US', ka: 'ka_GE' };
-const ogImage = `${site}/og/og-${lang}.png`;
+const ogImage = Astro.props.ogImage ?? `${site}/og/og-${lang}.png`;
+const hreflangAlternates: HreflangAlt[] =
+  Astro.props.hreflangAlternates ??
+  [
+    ...Object.entries(servicesPath).map(([code, path]) => ({ hreflang: code, href: site + path })),
+    { hreflang: 'x-default', href: site + servicesPath.es },
+  ];
 /** Fuente del H1 (elemento LCP) que se precarga en cada idioma.
     Al añadir un idioma, apunta aquí a la cara que realmente use su alfabeto:
     el georgiano usa Noto Sans Georgian, no Outfit (que no tiene esos glifos). */
@@ -31,35 +57,34 @@ const preloadFont: Record<Lang, string> = {
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>{t.metaTitle}</title>
-    <meta name="description" content={t.metaDescription} />
+    <title>{title}</title>
+    <meta name="description" content={description} />
     {noindex && <meta name="robots" content="noindex, follow" />}
 
     <link rel="canonical" href={pageUrl} />
     {
-      Object.entries(servicesPath).map(([code, path]) => (
-        <link rel="alternate" hreflang={code} href={site + path} />
+      hreflangAlternates.map(({ hreflang, href }) => (
+        <link rel="alternate" hreflang={hreflang} href={href} />
       ))
     }
-    <link rel="alternate" hreflang="x-default" href={site + servicesPath.es} />
 
-    <meta property="og:type" content="website" />
+    <meta property="og:type" content={ogType} />
     <meta property="og:site_name" content={t.company} />
     <meta property="og:url" content={pageUrl} />
-    <meta property="og:title" content={t.metaTitle} />
-    <meta property="og:description" content={t.metaDescription} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
     <meta property="og:locale" content={ogLocale[lang]} />
     <meta property="og:image" content={ogImage} />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
     <meta property="og:image:type" content="image/png" />
-    <meta property="og:image:alt" content={t.metaTitle} />
+    <meta property="og:image:alt" content={title} />
 
     <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content={t.metaTitle} />
-    <meta name="twitter:description" content={t.metaDescription} />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={ogImage} />
-    <meta name="twitter:image:alt" content={t.metaTitle} />
+    <meta name="twitter:image:alt" content={title} />
 
     <link
       rel="preload"
@@ -80,7 +105,8 @@ const preloadFont: Record<Lang, string> = {
       } catch (e) {}
     </script>
 
-    <Schema lang={lang} />
+    {schema === 'catalog' && <Schema lang={lang} />}
+    <slot name="head" />
   </head>
 
   <body>
