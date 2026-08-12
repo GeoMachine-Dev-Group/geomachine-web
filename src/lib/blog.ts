@@ -42,6 +42,17 @@ export function buildHreflang({ site, lang, slug, counterpart }: HreflangArgs): 
   return alternates;
 }
 
+/**
+ * Ancla de la sección del catálogo para un `relatedService` (p.ej. "WEB-01"
+ * -> "web"). No se puede derivar del `pillar` del artículo: los paquetes
+ * (`PACK-0N`) pertenecen al pilar APP/IA/etc. según el caso, pero viven en
+ * su propia sección del catálogo (`id="paquetes"`), no en la del pilar.
+ */
+export function catalogAnchor(relatedService: string): string {
+  const prefix = relatedService.split('-')[0];
+  return prefix === 'PACK' ? 'paquetes' : prefix.toLowerCase();
+}
+
 export function blogIndexHreflang(site: string): HreflangAlt[] {
   return [
     { hreflang: 'es', href: `${site}${blogPath.es}` },

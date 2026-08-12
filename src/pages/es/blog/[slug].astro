@@ -3,7 +3,7 @@ import { getCollection } from 'astro:content';
 import Base from '../../../layouts/Base.astro';
 import ArticleSchema from '../../../components/ArticleSchema.astro';
 import { ui, servicesPath, blogPath } from '../../../i18n/ui';
-import { buildHreflang, isPublished } from '../../../lib/blog';
+import { buildHreflang, catalogAnchor, isPublished } from '../../../lib/blog';
 
 export async function getStaticPaths() {
   const [esEntries, ruEntries] = await Promise.all([
@@ -60,7 +60,7 @@ const alternates = buildHreflang({ site, lang: 'es', slug, counterpart });
     <Content />
     {entry.data.relatedService && (
       <p>
-        <a href={`${servicesPath.es}#${entry.data.pillar.toLowerCase()}`}>
+        <a href={`${servicesPath.es}#${catalogAnchor(entry.data.relatedService)}`}>
           {t.blogRelated}: {entry.data.relatedService}
         </a>
       </p>
