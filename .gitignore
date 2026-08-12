@@ -20,3 +20,6 @@ yarn-error.log*
 
 # Configuración de despliegue (contiene host y usuario del VPS)
 .env.deploy
+
+# Estado local de la CLI de Netlify (site_id de esta máquina, no del proyecto)
+.netlify/

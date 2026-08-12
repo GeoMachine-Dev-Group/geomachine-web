@@ -24,9 +24,9 @@ export const servicesPath: Record<Lang, string> = {
 export const ui = {
   es: {
     htmlLang: 'es',
-    metaTitle: 'Catálogo de servicios — GeoMachine Developer Group',
+    metaTitle: 'Webs, apps, IA, mantenimiento y SEO — GeoMachine Developer Group',
     metaDescription:
-      'Webs, aplicaciones, inteligencia artificial, mantenimiento y posicionamiento. Precios abiertos en euros, rublos y lari georgiano.',
+      'Webs, aplicaciones, inteligencia artificial, mantenimiento y SEO. Precio cerrado desde el primer mensaje, entrega en días. Precios en euros, rublos y lari.',
     plate: 'Catálogo de servicios',
     rev: 'Rev. 2026.08',
     company: 'GeoMachine Developer Group',
@@ -92,9 +92,9 @@ export const ui = {
   },
   ru: {
     htmlLang: 'ru',
-    metaTitle: 'Каталог услуг — GeoMachine Developer Group',
+    metaTitle: 'Сайты, приложения, ИИ, сервис и SEO — GeoMachine Developer Group',
     metaDescription:
-      'Сайты, приложения, искусственный интеллект, обслуживание и продвижение. Открытые цены в евро, рублях и лари.',
+      'Сайты, приложения, искусственный интеллект, обслуживание и SEO. Цена фиксируется с первого сообщения, результат — за дни. Цены в евро, рублях и грузинском лари.',
     plate: 'Каталог услуг',
     rev: 'Ред. 2026.08',
     company: 'GeoMachine Developer Group',
@@ -160,9 +160,9 @@ export const ui = {
   },
   en: {
     htmlLang: 'en',
-    metaTitle: 'Service catalog — GeoMachine Developer Group',
+    metaTitle: 'Websites, apps, AI, support and SEO — GeoMachine Developer Group',
     metaDescription:
-      'Websites, applications, artificial intelligence, maintenance and search positioning. Open pricing in euros, rubles and Georgian lari.',
+      'Websites, applications, artificial intelligence, maintenance and SEO. Price closed from the first message, delivered in days. Pricing in euros, rubles and lari.',
     plate: 'Service catalog',
     rev: 'Rev. 2026.08',
     company: 'GeoMachine Developer Group',
@@ -228,9 +228,9 @@ export const ui = {
   },
   ka: {
     htmlLang: 'ka',
-    metaTitle: 'სერვისების კატალოგი — GeoMachine Developer Group',
+    metaTitle: 'საიტები, აპები, AI, მოვლა და SEO — GeoMachine Developer Group',
     metaDescription:
-      'ვებგვერდები, აპლიკაციები, ხელოვნური ინტელექტი, მოვლა და პოზიციონირება. ღია ფასები ევროში, რუბლში და ლარში.',
+      'ვებგვერდები, აპლიკაციები, ხელოვნური ინტელექტი, მოვლა და SEO. ფასი ფიქსირდება პირველივე შეტყობინებიდან, მზადდება დღეებში. ფასები ევროში, რუბლში და ლარში.',
     plate: 'სერვისების კატალოგი',
     rev: 'რედ. 2026.08',
     company: 'GeoMachine Developer Group',
