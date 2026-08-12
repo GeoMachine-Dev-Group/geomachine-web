@@ -162,6 +162,10 @@ const preloadFont: Record<Lang, string> = {
       </div>
     </footer>
 
+    <a href="mailto:hola@geomachine.es" class="fab" data-fab hidden>
+      {t.ctaButton}
+    </a>
+
     <script>
       const root = document.documentElement;
 
@@ -296,6 +300,33 @@ const preloadFont: Record<Lang, string> = {
         { rootMargin: '0px 0px -8% 0px' }
       );
       document.querySelectorAll('.reveal').forEach((el) => io.observe(el));
+
+      /* Sticky CTA: aparece al perder de vista la cabecera — vive aquí, no en
+         Catalog.astro, porque ahora sale también en el blog. Se oculta de
+         nuevo cerca de un CTA de cierre si la página declara uno con
+         data-fab-hide-near (el catálogo lo hace en su sección de cierre; el
+         blog no tiene uno, así que ahí se queda visible una vez aparece). */
+      const headerPlate = document.querySelector('.plate');
+      const fabHideTarget = document.querySelector('[data-fab-hide-near]');
+      const fab = document.querySelector<HTMLElement>('[data-fab]');
+      if (headerPlate && fab) {
+        fab.hidden = false;
+        let pastHeader = false;
+        let nearHideTarget = false;
+        const syncFab = () => fab.classList.toggle('is-visible', pastHeader && !nearHideTarget);
+
+        new IntersectionObserver(
+          ([entry]) => { pastHeader = !entry.isIntersecting; syncFab(); },
+          { rootMargin: '-10% 0px 0px 0px' }
+        ).observe(headerPlate);
+
+        if (fabHideTarget) {
+          new IntersectionObserver(
+            ([entry]) => { nearHideTarget = entry.isIntersecting; syncFab(); },
+            { threshold: 0.15 }
+          ).observe(fabHideTarget);
+        }
+      }
     </script>
   </body>
 </html>

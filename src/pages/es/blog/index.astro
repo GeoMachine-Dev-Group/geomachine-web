@@ -1,8 +1,9 @@
 ---
 import { getCollection } from 'astro:content';
 import Base from '../../../layouts/Base.astro';
+import BlogNav from '../../../components/BlogNav.astro';
 import { ui, blogPath } from '../../../i18n/ui';
-import { isPublished, blogIndexHreflang } from '../../../lib/blog';
+import { isPublished, blogIndexHreflang, excerpt, readingTime } from '../../../lib/blog';
 
 const posts = (await getCollection('blog', (e) => e.id.startsWith('es/') && isPublished(e))).sort(
   (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()
@@ -20,19 +21,25 @@ const site = Astro.site?.origin ?? 'https://geomachine.es';
   hreflangAlternates={blogIndexHreflang(site)}
   schema="none"
 >
+  <BlogNav lang="es" />
   <section class="shell">
     <h1>{t.blogTitle}</h1>
     {posts.length === 0 && <p>{t.blogEmpty}</p>}
-    <ul>
+    <div class="blog-cards">
       {posts.map((post) => {
         const slug = post.slug.replace(/^es\//, '');
         return (
-          <li>
-            <a href={`${blogPath.es}${slug}/`}>{post.data.title}</a>
-            <span> — {post.data.pillar}</span>
-          </li>
+          <article class="blog-card">
+            <a class="blog-card__link" href={`${blogPath.es}${slug}/`}>
+              <span class="blog-card__meta">
+                {post.data.pillar} · {readingTime(post.body)} {t.readingTimeSuffix}
+              </span>
+              <h2 class="blog-card__title">{post.data.title}</h2>
+              <p class="blog-card__excerpt">{excerpt(post.body)}</p>
+            </a>
+          </article>
         );
       })}
-    </ul>
+    </div>
   </section>
 </Base>

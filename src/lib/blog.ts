@@ -60,3 +60,29 @@ export function blogIndexHreflang(site: string): HreflangAlt[] {
     { hreflang: 'x-default', href: `${site}${blogPath.es}` },
   ];
 }
+
+/**
+ * Extracto de ~N palabras a partir del markdown crudo del artículo (sin
+ * renderizar), para la tarjeta del índice del blog. Quita la sintaxis más
+ * común (código, imágenes, enlaces, encabezados) en vez de cortar el
+ * markdown a lo bruto, que dejaría "#" o "[" sueltos en medio del texto.
+ */
+export function excerpt(body: string, wordCount = 18): string {
+  const plain = body
+    .replace(/```[\s\S]*?```/g, ' ')
+    .replace(/!\[[^\]]*\]\([^)]*\)/g, ' ')
+    .replace(/\[([^\]]*)\]\([^)]*\)/g, '$1')
+    .replace(/^#{1,6}\s+/gm, '')
+    .replace(/[*_`>#]/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+  const words = plain.split(' ');
+  if (words.length <= wordCount) return plain;
+  return `${words.slice(0, wordCount).join(' ')}…`;
+}
+
+/** Minutos de lectura estimados a 200 palabras/min, mínimo 1. */
+export function readingTime(body: string, wordsPerMinute = 200): number {
+  const wordCount = body.trim().split(/\s+/).filter(Boolean).length;
+  return Math.max(1, Math.ceil(wordCount / wordsPerMinute));
+}

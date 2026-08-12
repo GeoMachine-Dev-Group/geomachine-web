@@ -205,6 +205,8 @@ function initialRecurring(item: Item) {
             initialPrice={initial(item)}
             initialRecurring={item.launchRecurring ? initialRecurring(item) : undefined}
             recurringLabel={t.thenMonthly}
+            featured={item.code === 'IA-04'}
+            featuredLabel={t.privacyBadge}
           />
         ))}
       </div>
@@ -251,7 +253,27 @@ function initialRecurring(item: Item) {
   )}
 </section>
 
-<section class="close shell">
+<section class="faq shell">
+  <h2 class="faq__title">{t.faqTitle}</h2>
+  <div class="faq__list">
+    <div class="faq__item">
+      <h3 class="faq__q">{t.faqQ1}</h3>
+      <p class="faq__a">{t.faqA1}</p>
+    </div>
+    <div class="faq__item">
+      <h3 class="faq__q">{t.faqQ2}</h3>
+      <p class="faq__a">{t.faqA2}</p>
+    </div>
+    <div class="faq__item">
+      <h3 class="faq__q">{t.faqQ3}</h3>
+      <p class="faq__a">
+        {t.faqA3Before}<a href="#mnt">{t.faqMntLink}</a>{t.faqA3After}
+      </p>
+    </div>
+  </div>
+</section>
+
+<section class="close shell" id="contacto" data-fab-hide-near>
   <div>
     <h2 class="close__title">{t.ctaTitle}</h2>
     <p class="close__body">{t.ctaBody}</p>
@@ -316,10 +338,6 @@ function initialRecurring(item: Item) {
   </div>
 </section>
 
-<a href="mailto:hola@geomachine.es" class="fab" data-fab hidden>
-  {t.ctaButton}
-</a>
-
 <script>
   document.querySelectorAll<HTMLElement>('[data-cards]').forEach((container) => {
     const toggle = container.nextElementSibling as HTMLButtonElement | null;
@@ -330,29 +348,6 @@ function initialRecurring(item: Item) {
       if (expanded) container.querySelectorAll('.reveal').forEach((el) => el.classList.add('is-in'));
     });
   });
-
-  /* Sticky CTA: visible tras pasar el Hero, oculto de nuevo junto al CTA de
-     cierre para no duplicar el botón en la misma pantalla. */
-  const hero = document.querySelector('.hero');
-  const closeSection = document.querySelector('.close');
-  const fab = document.querySelector<HTMLElement>('[data-fab]');
-
-  if (hero && closeSection && fab) {
-    fab.hidden = false;
-    let pastHero = false;
-    let inClose = false;
-    const sync = () => fab.classList.toggle('is-visible', pastHero && !inClose);
-
-    new IntersectionObserver(
-      ([entry]) => { pastHero = !entry.isIntersecting; sync(); },
-      { rootMargin: '-10% 0px 0px 0px' }
-    ).observe(hero);
-
-    new IntersectionObserver(
-      ([entry]) => { inClose = entry.isIntersecting; sync(); },
-      { threshold: 0.15 }
-    ).observe(closeSection);
-  }
 
   /* Formulario de contacto: envía a la Netlify Function, que reenvía a
      Telegram. Los textos de estado viajan por data-attrs porque este script
