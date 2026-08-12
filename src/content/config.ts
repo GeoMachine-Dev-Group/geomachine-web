@@ -1,7 +1,7 @@
 import { defineCollection, z } from 'astro:content';
 
 /** Debe coincidir con los prefijos reales de src/data/catalog.ts (lines[].prefix). */
-const PILLARS = ['WEB', 'IA', 'SEO', 'APP', 'MNT'] as const;
+const PILLARS = ['WEB', 'IA', 'SEO', 'APP', 'MNT', 'SYS'] as const;
 
 const blog = defineCollection({
   type: 'content',
