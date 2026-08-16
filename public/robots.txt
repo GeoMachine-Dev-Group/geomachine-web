@@ -1,4 +1,36 @@
+# robots.txt for GeoMachine Developer Group (https://geomachine.es)
+# LLM Indexing Protocol: https://geomachine.es/llms.txt
+
 User-agent: *
 Allow: /
 
+# Explicitly allow Yandex & AI Engine Bots & Crawlers (Generative Engine Optimization - GEO)
+User-agent: Yandex
+Allow: /
+
+User-agent: YandexBot
+Allow: /
+
+User-agent: GPTBot
+Allow: /
+
+User-agent: ChatGPT-User
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+User-agent: DeepSeekBot
+Allow: /
+
+User-agent: Applebot-Extended
+Allow: /
+
+# Sitemap Index
 Sitemap: https://geomachine.es/sitemap-index.xml

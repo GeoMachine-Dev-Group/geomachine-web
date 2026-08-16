@@ -23,9 +23,11 @@ const {
 
 <article class:list={['card', 'reveal', { 'card--featured': featured }]} tabindex="0">
   <div class="card__inner">
-    {featured && featuredLabel && <span class="card__badge">{featuredLabel}</span>}
     <div class="card__header">
-      <span class="card__code">{code}</span>
+      <div class="card__tags">
+        <span class="card__code">{code}</span>
+        {featured && featuredLabel && <span class="card__badge">{featuredLabel}</span>}
+      </div>
       {time && <span class="card__time">{time}</span>}
     </div>
     <h3 class="card__name">{name}</h3>

@@ -1,8 +1,9 @@
 ---
 import '../styles/global.css';
-import { ui, servicesPath, languages, type Lang } from '../i18n/ui';
+import { ui, servicesPath, blogPath, languages, type Lang } from '../i18n/ui';
 import { DEFAULT_TIER, DEFAULT_CURRENCY } from '../data/catalog';
 import Schema from '../components/Schema.astro';
+import FloatingChat from '../components/FloatingChat.astro';
 
 interface HreflangAlt {
   hreflang: string;
@@ -58,6 +59,9 @@ const preloadFont: Record<Lang, string> = {
   en: '/fonts/outfit-700-latin.woff2',
   ka: '/fonts/noto-sans-georgian-700-georgian.woff2',
 };
+
+/** Google Analytics 4 ID — Modifica esta constante con tu ID real de GA4 */
+const googleAnalyticsId = 'G-XXXXXXXXXX';
 ---
 
 <!doctype html>
@@ -76,6 +80,15 @@ const preloadFont: Record<Lang, string> = {
             plausible.init = plausible.init || function (i) { plausible.o = i || {} };
             plausible.init();
           </script>
+
+          <!-- Google Analytics (gtag.js) -->
+          <script async is:inline src={`https://www.googletagmanager.com/gtag/js?id=${googleAnalyticsId}`}></script>
+          <script is:inline define:vars={{ googleAnalyticsId }}>
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', googleAnalyticsId);
+          </script>
         </Fragment>
       )
     }
@@ -83,6 +96,9 @@ const preloadFont: Record<Lang, string> = {
     <title>{title}</title>
     <meta name="description" content={description} />
     {noindex && <meta name="robots" content="noindex, follow" />}
+
+    <!-- Yandex Webmaster & Google Verification Tags -->
+    <meta name="yandex-verification" content="ea3ef14ef294e971" />
 
     <link rel="canonical" href={pageUrl} />
     {
@@ -109,6 +125,31 @@ const preloadFont: Record<Lang, string> = {
     <meta name="twitter:image" content={ogImage} />
     <meta name="twitter:image:alt" content={title} />
 
+    <link rel="manifest" href="/site.webmanifest" />
+
+    <!-- Datos estructurados JSON-LD para Google Rich Snippets & Indexación por IAs -->
+    <script type="application/ld+json" is:inline set:html={JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": ["Organization", "ProfessionalService"],
+      "name": t.company,
+      "url": site,
+      "logo": `${site}/favicon.svg`,
+      "description": t.metaDescription,
+      "sameAs": [
+        "https://t.me/geomachine"
+      ],
+      "knowsAbout": [
+        "Web Development",
+        "Mobile App Development",
+        "Local Private AI",
+        "Search Engine Optimization",
+        "Cloud Infrastructure",
+        "Astro",
+        "React",
+        "Flutter"
+      ]
+    })} />
+
     <link
       rel="preload"
       as="font"
@@ -118,13 +159,17 @@ const preloadFont: Record<Lang, string> = {
     />
 
     <script is:inline>
-      // Aplica la paleta y el estilo de tarjeta guardados antes del primer
-      // pintado: sin esto, una elección previa parpadea la paleta original.
+      // Paleta por defecto: verde botella y bronce ('botella')
+      // Modo tarjeta: Inclinación 3D ('tilt')
+      // Sello de lanzamiento: Rotación automática cada 30 min ('gold_liquid', 'radar', 'cli')
       try {
-        var p = localStorage.getItem('gm-palette');
-        if (p && p !== 'default') document.documentElement.dataset.palette = p;
-        var c = localStorage.getItem('gm-cardstyle');
-        if (c && c !== 'stack') document.documentElement.dataset.cardstyle = c;
+        var p = localStorage.getItem('gm-palette') || 'botella';
+        document.documentElement.dataset.palette = p;
+        document.documentElement.dataset.cardstyle = 'tilt';
+
+        var stampList = ['gold_liquid', 'radar', 'cli'];
+        var idx = Math.floor(Date.now() / (30 * 60 * 1000)) % stampList.length;
+        document.documentElement.dataset.stampstyle = stampList[idx];
       } catch (e) {}
     </script>
 
@@ -138,6 +183,13 @@ const preloadFont: Record<Lang, string> = {
         <span class="plate__mark">GEO<span>·</span>MACHINE</span>
         <span>{t.plate} — {t.rev}</span>
         <nav class="plate__links">
+          {
+            (lang === 'es' || lang === 'ru') && (
+              <a href={blogPath[lang]} class="plate__blog-link">
+                {t.blogTitle}
+              </a>
+            )
+          }
           {
             (Object.keys(languages) as Lang[])
               .filter((l) => l !== lang)
@@ -162,7 +214,9 @@ const preloadFont: Record<Lang, string> = {
       </div>
     </footer>
 
-    <a href="mailto:hola@geomachine.es" class="fab" data-fab hidden>
+    <FloatingChat lang={lang} />
+
+    <a href="#contacto" class="fab" data-fab hidden>
       {t.ctaButton}
     </a>
 
@@ -228,35 +282,71 @@ const preloadFont: Record<Lang, string> = {
 
       paint();
 
-      /* Paleta y estilo de tarjeta. Lo guardado ya se aplicó en <head> para
-         evitar el destello; aquí solo se sincroniza el select y se escucha. */
-      const paletteSelect = document.getElementById('palette-select') as HTMLSelectElement | null;
-      function setPalette(name: string) {
-        if (name === 'default') delete root.dataset.palette;
-        else root.dataset.palette = name;
-        if (paletteSelect) paletteSelect.value = name;
-        try {
-          localStorage.setItem('gm-palette', name);
-        } catch (e) {}
-      }
-      if (paletteSelect) {
-        paletteSelect.value = root.dataset.palette ?? 'default';
-        paletteSelect.addEventListener('change', () => setPalette(paletteSelect.value));
+      /* Botón de cambio directo de paleta de colores */
+      const paletteBtn = document.getElementById('palette-toggle-btn');
+      const activePalettes = ['botella', 'agencia', 'esmeralda', 'premium', 'cobalto'];
+      if (paletteBtn) {
+        paletteBtn.addEventListener('click', () => {
+          const current = root.dataset.palette || 'botella';
+          const nextIdx = (activePalettes.indexOf(current) + 1) % activePalettes.length;
+          const nextPalette = activePalettes[nextIdx];
+          root.dataset.palette = nextPalette;
+          try {
+            localStorage.setItem('gm-palette', nextPalette);
+          } catch (e) {}
+        });
       }
 
-      const cardStyleSelect = document.getElementById('cardstyle-select') as HTMLSelectElement | null;
-      function setCardStyle(name: string) {
-        if (name === 'stack') delete root.dataset.cardstyle;
-        else root.dataset.cardstyle = name;
-        if (cardStyleSelect) cardStyleSelect.value = name;
-        try {
-          localStorage.setItem('gm-cardstyle', name);
-        } catch (e) {}
+      /* Rotación continua del sello cada 30 minutos */
+      setInterval(() => {
+        var stampList = ['gold_liquid', 'radar', 'cli'];
+        var idx = Math.floor(Date.now() / (30 * 60 * 1000)) % stampList.length;
+        root.dataset.stampstyle = stampList[idx];
+      }, 60000);
+
+      /* Modal de contacto profesional */
+      const modal = document.getElementById('contact-modal') as HTMLElement | null;
+      const modalServiceSelect = document.getElementById('modal-service-select') as HTMLSelectElement | null;
+
+      function openModal(serviceName?: string) {
+        if (!modal) return;
+        modal.classList.add('is-open');
+        modal.setAttribute('aria-hidden', 'false');
+        document.body.style.overflow = 'hidden';
+        if (serviceName && modalServiceSelect) {
+          const matchingOpt = Array.from(modalServiceSelect.options).find(
+            (opt) => opt.value.toLowerCase().includes(serviceName.toLowerCase()) || serviceName.toLowerCase().includes(opt.value.toLowerCase())
+          );
+          if (matchingOpt) modalServiceSelect.value = matchingOpt.value;
+        }
       }
-      if (cardStyleSelect) {
-        cardStyleSelect.value = root.dataset.cardstyle ?? 'stack';
-        cardStyleSelect.addEventListener('change', () => setCardStyle(cardStyleSelect.value));
+
+      function closeModal() {
+        if (!modal) return;
+        modal.classList.remove('is-open');
+        modal.setAttribute('aria-hidden', 'true');
+        document.body.style.overflow = '';
       }
+
+      document.addEventListener('click', (e) => {
+        const target = e.target as HTMLElement | null;
+        const trigger = target?.closest<HTMLElement>('a[href="#contacto"], [data-open-modal], .fab');
+        if (trigger && modal) {
+          e.preventDefault();
+          const card = trigger.closest<HTMLElement>('.card');
+          const serviceName = card?.querySelector('.card__name')?.textContent?.trim();
+          openModal(serviceName);
+        }
+        if (target?.closest('[data-close-modal]') || target === modal) {
+          closeModal();
+        }
+      });
+
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && modal?.classList.contains('is-open')) {
+          closeModal();
+        }
+      });
 
       /* Inclinación 3D siguiendo al cursor: solo en modo tilt, con movimiento
          permitido y en dispositivos con puntero fino de verdad — sin esto el
@@ -264,8 +354,7 @@ const preloadFont: Record<Lang, string> = {
          fuera a activarse ahí. Delegado en document para no atar un oyente
          por tarjeta. */
       const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-      const supportsHover = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
-      if (!reduceMotion && supportsHover) {
+      if (!reduceMotion) {
         document.addEventListener('mousemove', (e) => {
           if (root.dataset.cardstyle !== 'tilt') return;
           const card = (e.target as Element | null)?.closest<HTMLElement>('.card');
@@ -284,6 +373,13 @@ const preloadFont: Record<Lang, string> = {
             card.style.setProperty('--rx', '0deg');
             card.style.setProperty('--ry', '0deg');
           }
+        });
+        document.addEventListener('click', (e) => {
+          const targetCard = (e.target as Element | null)?.closest<HTMLElement>('.card');
+          document.querySelectorAll('.card.is-active').forEach((c) => {
+            if (c !== targetCard) c.classList.remove('is-active');
+          });
+          if (targetCard) targetCard.classList.toggle('is-active');
         });
       }
 

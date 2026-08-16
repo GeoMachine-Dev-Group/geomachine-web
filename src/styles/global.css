@@ -170,40 +170,158 @@ a.showcase__link:hover { color: var(--accent); }
 .hero__body { margin: 1.75rem 0 0; max-width: 46ch; font-size: clamp(1rem, 1.6vw, 1.15rem); color: var(--ink-soft); }
 .hero__plain { margin-top: 1.25rem; max-width: 46ch; font-size: .92rem; line-height: 1.55; color: var(--ink-soft); padding-left: 1rem; border-left: 2px solid var(--accent-soft); }
 
-/* --- Sello de tarifa de lanzamiento ----------------------------------------- */
+/* --- Sello de tarifa de lanzamiento (6 Variantes Filtradas) ------------------- */
+
+.stamp__view { display: none; }
+html:not([data-stampstyle]) .stamp__view--gold-crystal,
+html[data-stampstyle='gold_crystal'] .stamp__view--gold-crystal { display: block; }
+html[data-stampstyle='gold_shield'] .stamp__view--gold-shield { display: block; }
+html[data-stampstyle='gold_liquid'] .stamp__view--gold-liquid { display: block; }
+html[data-stampstyle='vip'] .stamp__view--vip { display: block; }
+html[data-stampstyle='radar'] .stamp__view--radar { display: block; }
+html[data-stampstyle='cli'] .stamp__view--cli { display: block; }
 
 .stamp {
   position: absolute; top: clamp(1rem, 4vw, 2.5rem); right: var(--pad);
-  transform: rotate(-9deg); border: 2px solid var(--stamp);
-  clip-path: polygon(8% 0,92% 0,100% 15%,100% 85%,92% 100%,8% 100%,0 85%,0 15%);
-  color: var(--stamp); padding: .7rem 1.35rem; text-align: center;
-  font-family: var(--data); text-transform: uppercase; line-height: 1.25;
   opacity: .95; pointer-events: none; transition: opacity .25s, transform .25s;
+  z-index: 10;
+}
+.stamp[hidden] { display: block; opacity: 0; transform: scale(1.08); }
+
+/* 1. Glass Gold · Crystal Octagon */
+html:not([data-stampstyle]) .stamp,
+html[data-stampstyle='gold_crystal'] .stamp {
+  transform: rotate(-7deg); border: 2px solid var(--stamp);
+  clip-path: polygon(8% 0,92% 0,100% 15%,100% 85%,92% 100%,8% 100%,0 85%,0 15%);
+  color: var(--stamp); padding: .75rem 1.4rem; text-align: center;
+  font-family: var(--data); text-transform: uppercase; line-height: 1.25;
   background: linear-gradient(155deg, var(--stamp-glow) 0%, transparent 60%), var(--panel-2);
-  box-shadow: 0 0 0 1px #0000, inset 0 0 18px var(--stamp-glow), 0 8px 24px -8px #00000060;
-  animation: stamp-pulse 3s infinite ease-in-out;
+  box-shadow: 0 0 25px -4px var(--stamp-glow), inset 0 0 20px var(--stamp-glow);
+  animation: stamp-pulse 2.8s infinite ease-in-out;
+  position: relative; overflow: hidden;
 }
 @keyframes stamp-pulse {
   0% { box-shadow: 0 0 0 1px #0000, inset 0 0 18px var(--stamp-glow); }
   50% { box-shadow: 0 0 0 1px var(--stamp), inset 0 0 30px var(--stamp-glow); }
   100% { box-shadow: 0 0 0 1px #0000, inset 0 0 18px var(--stamp-glow); }
 }
-.stamp[hidden] { display: block; opacity: 0; transform: rotate(-9deg) scale(1.08); }
-.stamp b { display: block; font-size: .84rem; font-weight: 600; letter-spacing: .13em; }
-.stamp span { display: block; font-size: .64rem; letter-spacing: .2em; }
-.stamp em { display: block; font-style: normal; font-family: var(--display); font-size: 1.7rem; font-weight: 600; line-height: 1; margin: .2rem 0; }
-.stamp-dots { display: flex; gap: 4px; justify-content: center; margin: .3rem 0; }
-.stamp-dots i { width: 6px; height: 6px; border-radius: 50%; background: var(--stamp); opacity: .25; display: block; }
-.stamp-dots i.is-active { opacity: 1; box-shadow: 0 0 4px var(--stamp); }
-.stamp-dots i.is-next { animation: dot-next 1.6s infinite ease-in-out; }
-@keyframes dot-next { 0%,100% { opacity: .25; transform: scale(1); } 50% { opacity: .85; transform: scale(1.35); } }
+.glass-shimmer {
+  position: absolute; inset: 0;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+  transform: translateX(-100%);
+  animation: shimmer-sweep 3.5s infinite ease-in-out;
+}
+@keyframes shimmer-sweep {
+  0% { transform: translateX(-100%); }
+  35%, 100% { transform: translateX(100%); }
+}
+
+/* 2. Glass Gold · Monogram Shield */
+html[data-stampstyle='gold_shield'] .stamp {
+  transform: rotate(0deg); border: 2px solid var(--stamp);
+  border-radius: 12px; padding: .7rem 1.2rem;
+  background: radial-gradient(circle at top left, var(--stamp-glow), var(--panel-2));
+  color: var(--stamp); box-shadow: 0 10px 30px rgba(0,0,0,0.5), inset 0 0 15px var(--stamp-glow);
+  font-family: var(--data); text-align: center; clip-path: none;
+  animation: float-soft 4s infinite ease-in-out;
+}
+@keyframes float-soft { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-4px); } }
+.shield-badge { font-family: var(--display); font-size: 1.3rem; font-weight: 800; letter-spacing: .05em; color: var(--stamp); text-shadow: 0 0 10px var(--stamp-glow); }
+.shield-title { font-size: .62rem; font-weight: 700; letter-spacing: .14em; margin-top: .1rem; }
+.shield-dots { font-size: .65rem; color: var(--ink-soft); margin-top: .2rem; font-weight: 600; }
+
+/* 3. Glass Gold · Liquid Amber */
+html[data-stampstyle='gold_liquid'] .stamp {
+  transform: rotate(0deg); border: 1px solid var(--stamp);
+  border-radius: 999px; padding: .6rem 1.2rem;
+  background: rgba(15, 23, 42, 0.9); color: var(--stamp);
+  box-shadow: 0 0 20px var(--stamp-glow);
+  font-family: var(--data); text-align: center; clip-path: none;
+}
+.liquid-pill { font-size: .68rem; font-weight: 800; letter-spacing: .1em; display: block; color: var(--stamp); }
+.liquid-drops { display: flex; gap: 5px; justify-content: center; margin: .3rem 0; }
+.liquid-drops i { width: 7px; height: 7px; border-radius: 50%; background: var(--rule); display: block; }
+.liquid-drops i.active { background: #22c55e; box-shadow: 0 0 6px #22c55e; }
+.liquid-drops i.busy { background: #f59e0b; box-shadow: 0 0 6px #f59e0b; animation: blink 1.2s infinite; }
+.liquid-sub { font-size: .58rem; color: var(--ink-soft); display: block; letter-spacing: .08em; }
+
+/* 4. Pase VIP Animado (Luxury Metallic Floating Pass) */
+html[data-stampstyle='vip'] .stamp {
+  transform: rotate(-3deg); border: 1.5px dashed var(--stamp);
+  border-radius: 10px; padding: .75rem 1.3rem;
+  background: linear-gradient(135deg, var(--stamp-glow) 0%, rgba(15, 23, 42, 0.95) 70%);
+  color: var(--ink); box-shadow: 0 12px 30px rgba(0,0,0,0.5), 0 0 20px var(--stamp-glow);
+  font-family: var(--data); text-align: left; clip-path: none;
+  animation: vip-float 3.5s infinite ease-in-out;
+  position: relative; overflow: hidden;
+}
+@keyframes vip-float {
+  0%, 100% { transform: rotate(-3deg) translateY(0); box-shadow: 0 12px 30px rgba(0,0,0,0.5), 0 0 20px var(--stamp-glow); }
+  50% { transform: rotate(-1deg) translateY(-5px); box-shadow: 0 18px 35px rgba(0,0,0,0.6), 0 0 30px var(--stamp-glow); }
+}
+.vip-shimmer {
+  position: absolute; inset: 0;
+  background: linear-gradient(110deg, transparent 40%, rgba(251,191,36,0.25) 50%, transparent 60%);
+  transform: translateX(-100%);
+  animation: shimmer-sweep 4s infinite ease-in-out;
+}
+.vip-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: .3rem; }
+.vip-badge { font-size: .62rem; font-weight: 800; color: var(--stamp); letter-spacing: .14em; text-shadow: 0 0 6px var(--stamp-glow); }
+.vip-code { font-size: .7rem; font-weight: 800; color: var(--ink); }
+.vip-body { font-size: .84rem; font-weight: 800; letter-spacing: .08em; color: var(--ink); }
+.vip-footer { display: flex; justify-content: space-between; align-items: center; margin-top: .4rem; gap: 1rem; }
+.vip-footer span { font-size: .6rem; color: #f59e0b; font-weight: 700; letter-spacing: .06em; }
+.vip-dots { display: flex; gap: 4px; }
+.vip-dots i { width: 5px; height: 5px; border-radius: 50%; background: var(--rule); display: block; }
+.vip-dots i.is-done { background: #22c55e; box-shadow: 0 0 4px #22c55e; }
+.vip-dots i.is-busy { background: #f59e0b; box-shadow: 0 0 4px #f59e0b; animation: blink 1.2s infinite; }
+
+/* 5. Radar de Proyectos 360° (Con 5 plazas integradas) */
+html[data-stampstyle='radar'] .stamp {
+  transform: rotate(0deg); border: 1px solid #10b981;
+  border-radius: 12px; padding: .65rem 1.15rem;
+  background: rgba(6, 78, 59, 0.35); color: #34d399;
+  box-shadow: 0 0 25px rgba(16, 185, 129, 0.3);
+  font-family: var(--data); clip-path: none;
+}
+.radar-box { display: flex; align-items: center; gap: .85rem; }
+.radar-circle { width: 38px; height: 38px; border: 1px solid #10b981; border-radius: 50%; position: relative; overflow: hidden; flex-shrink: 0; background: rgba(0,0,0,0.3); }
+.radar-sweep { position: absolute; inset: 0; background: conic-gradient(from 0deg, rgba(16,185,129,0.65), transparent 70deg); animation: radar-spin 2.8s infinite linear; border-radius: 50%; }
+@keyframes radar-spin { to { transform: rotate(360deg); } }
+.radar-dot { width: 5px; height: 5px; border-radius: 50%; position: absolute; }
+.radar-dot.dot-1 { top: 28%; left: 38%; background: #34d399; box-shadow: 0 0 6px #34d399; }
+.radar-dot.dot-2 { top: 58%; right: 25%; background: #f59e0b; box-shadow: 0 0 6px #f59e0b; animation: blink 1.2s infinite; }
+.radar-title { display: block; font-size: .68rem; font-weight: 800; letter-spacing: .1em; color: #34d399; }
+.radar-slots { display: flex; gap: 4px; margin: .25rem 0; }
+.r-slot { font-size: .6rem; padding: 1px 4px; border-radius: 3px; background: rgba(0,0,0,0.4); border: 1px solid rgba(16,185,129,0.3); color: #94a3b8; font-weight: 600; }
+.r-slot.done { border-color: #34d399; color: #34d399; background: rgba(52,211,153,0.15); }
+.r-slot.busy { border-color: #f59e0b; color: #f59e0b; background: rgba(245,158,11,0.15); animation: blink 1.5s infinite; }
+.radar-sub { display: block; font-size: .58rem; color: #a7f3d0; opacity: .9; }
+
+/* 6. Terminal CLI (Geek Linux Consola) */
+html[data-stampstyle='cli'] .stamp {
+  transform: rotate(0deg); border: 1px solid #22c55e;
+  border-radius: 8px; padding: .75rem 1.1rem;
+  background: #090d0b; color: #4ade80;
+  box-shadow: 0 0 22px rgba(34, 197, 94, 0.28);
+  font-family: monospace, var(--data); font-size: .74rem; text-align: left;
+  clip-path: none;
+}
+.cli-prompt { color: #86efac; font-size: .62rem; display: block; margin-bottom: .4rem; opacity: .85; }
+.cli-list { display: flex; flex-direction: column; gap: .2rem; }
+.cli-done { color: #22c55e; font-weight: 600; }
+.cli-busy { color: #f59e0b; font-weight: 600; }
+.cli-idle { color: #64748b; }
+.cli-cursor { display: inline-block; animation: blink 1s infinite steps(2, start); margin-left: 4px; color: #f59e0b; }
+@keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+
 @media (max-width: 720px) {
   .stamp { position: static; display: inline-block; margin-top: 2rem; transform: rotate(-3deg); }
   .stamp[hidden] { display: none; }
   .showcase { margin-top: 1.5rem; }
 }
 @media (prefers-reduced-motion: reduce) {
-  .stamp, .stamp-dots i.is-next { animation: none; }
+  .stamp, .stamp-dots i.is-next, .cli-cursor, .cyber-scanline { animation: none; }
 }
 
 /* --- Panel de control (tarifa/moneda/paleta/tarjetas) --------------------- */
@@ -228,6 +346,21 @@ a.showcase__link:hover { color: var(--accent); }
 }
 .palette-select:hover { border-color: var(--accent); }
 .palette-select:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+.palette-toggle-btn {
+  display: inline-flex; align-items: center; gap: .6rem;
+  border: 1px solid var(--rule); background: var(--paper); color: var(--ink);
+  font-family: var(--data); font-size: .74rem; font-weight: 700; letter-spacing: .08em;
+  text-transform: uppercase; padding: .45rem 1rem; border-radius: 6px; cursor: pointer;
+  transition: all .25s ease; box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+}
+.palette-toggle-btn:hover {
+  border-color: var(--accent); color: var(--accent);
+  transform: translateY(-1px); box-shadow: 0 4px 15px var(--accent-soft);
+}
+.palette-toggle-btn:active { transform: translateY(0); }
+.theme-icon { font-size: .95rem; }
+
 .panel__notes { display: contents; }
 .panel__note { flex: 1 1 22ch; min-width: 0; font-size: .82rem; line-height: 1.4; color: var(--ink-soft); border-left: 2px solid var(--accent); padding-left: .9rem; }
 
@@ -243,11 +376,15 @@ a.showcase__link:hover { color: var(--accent); }
 .jump__link:hover, .jump__link:focus-visible { border-color: var(--accent); background: var(--panel-2); color: var(--ink); }
 .jump__code { font-family: var(--data); font-size: .66rem; font-weight: 600; letter-spacing: .14em; color: var(--accent); }
 .line, .bundles { scroll-margin-top: 5.5rem; }
-.line__head { display: grid; grid-template-columns: 7.5rem 1fr; gap: 1.5rem; align-items: start; margin-bottom: .5rem; }
+.line__head { display: grid; grid-template-columns: 7.5rem 1fr auto; gap: 1.5rem; align-items: start; margin-bottom: .5rem; }
 .line__prefix { font-family: var(--data); font-size: .72rem; font-weight: 600; letter-spacing: .16em; color: var(--paper); background: var(--accent); padding: .3rem .55rem; justify-self: start; height: fit-content; }
 .line__title { font-family: var(--display); font-weight: 600; font-size: clamp(1.5rem, 3.2vw, 2.1rem); letter-spacing: -.02em; line-height: 1.1; margin: 0; }
 .line__note { margin: .6rem 0 0; max-width: 54ch; color: var(--ink-soft); font-size: .94rem; }
-@media (max-width: 720px) { .line__head { grid-template-columns: 1fr; gap: .75rem; } }
+.plate__blog-link { color: var(--accent); font-weight: 600; padding: .25rem .6rem; border: 1px solid var(--rule-soft); border-radius: 4px; text-decoration: none; transition: border-color .15s, background .15s; }
+.plate__blog-link:hover { border-color: var(--accent); background: var(--panel-2); }
+.line__blog-badge { display: inline-flex; align-items: center; gap: .4rem; font-family: var(--data); font-size: .78rem; font-weight: 600; color: var(--accent); text-decoration: none; border: 1px solid var(--rule); padding: .4rem .8rem; border-radius: 6px; background: var(--panel); justify-self: end; transition: all .2s ease; }
+.line__blog-badge:hover { background: var(--panel-2); border-color: var(--accent); transform: translateX(2px); }
+@media (max-width: 720px) { .line__head { grid-template-columns: 1fr; gap: .75rem; } .line__blog-badge { justify-self: start; margin-top: .4rem; } }
 
 /* --- Tarjetas (servicios y paquetes) ---------------------------------------- */
 
@@ -267,7 +404,8 @@ a.showcase__link:hover { color: var(--accent); }
   padding: 1.6rem; display: flex; flex-direction: column; overflow: hidden;
   transition: transform .4s cubic-bezier(.2,.8,.2,1), border-color .4s;
 }
-.card__header { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: .75rem; }
+.card__header { display: flex; justify-content: space-between; align-items: center; margin-bottom: .75rem; }
+.card__tags { display: flex; align-items: center; gap: .55rem; flex-wrap: wrap; }
 .card__code { font-family: var(--data); font-size: .68rem; letter-spacing: .1em; color: var(--accent); }
 .card__time { font-family: var(--data); font-size: .65rem; color: var(--ink-soft); }
 .card__name { font-family: var(--display); font-weight: 600; font-size: 1.25rem; line-height: 1.15; margin: 0; }
@@ -275,16 +413,22 @@ a.showcase__link:hover { color: var(--accent); }
 .card__list { margin: .65rem 0 0; padding: 0; list-style: none; font-size: .86rem; color: var(--ink-soft); flex: 1; }
 .card__list li { padding-left: 1.1rem; position: relative; margin-bottom: .35rem; }
 .card__list li:before { content: ""; position: absolute; left: 0; top: .62em; width: .5rem; height: 1px; background: var(--accent); }
-.card__price { margin-top: 1rem; padding-top: .8rem; border-top: 1px solid var(--rule-soft); font-family: var(--data); font-size: 1.2rem; line-height: 1.35; font-weight: 600; transition: opacity .3s ease; }
-.card:focus-within .card__price { opacity: .05; }
-.card__recurring { display: block; margin-top: .2rem; font-size: .65rem; font-weight: 400; color: var(--accent); }
-.card__recurring[hidden] { display: none; }
 .card__details {
   position: absolute; bottom: 0; left: 0; right: 0; background: var(--panel-2); padding: 1.25rem 1.6rem;
   border-top: 1px solid var(--rule); transform: translateY(101%);
   transition: transform .4s cubic-bezier(.2,.8,.2,1);
 }
-.card:focus-within .card__details { transform: translateY(0); }
+.card:hover .card__price,
+.card:focus-within .card__price,
+.card.is-active .card__price { opacity: .05; }
+
+.card:hover .card__details,
+.card:focus-within .card__details,
+.card.is-active .card__details { transform: translateY(0); }
+
+.card:hover:before { transform: translate(8px, 8px); border-color: var(--rule-soft); }
+.card:hover .card__inner { transform: translate(-4px, -4px); border-color: var(--accent); }
+
 .card__human-label { font-family: var(--data); font-size: .62rem; letter-spacing: .16em; text-transform: uppercase; color: var(--accent); }
 .card__human { font-size: .9rem; line-height: 1.5; color: var(--ink); margin: .4rem 0 0; }
 .price-value { transition: opacity .18s ease, filter .18s ease, transform .18s cubic-bezier(.4,0,.2,1); display: inline-block; }
@@ -295,18 +439,7 @@ a.showcase__link:hover { color: var(--accent); }
 }
 @media (prefers-reduced-motion: reduce) { .card:before, .card__inner, .card__details { transition: none; } }
 
-/* :hover solo donde el dispositivo puede hacer hover de verdad — en táctil,
-   :hover se dispara con el primer toque y revelaba el detalle/ocultaba el
-   precio por accidente. :focus-within (arriba) cubre el teclado siempre. */
-@media (hover: hover) and (pointer: fine) {
-  .card:hover .card__price { opacity: .05; }
-  .card:hover .card__details { transform: translateY(0); }
-  .card:hover:before { transform: translate(8px, 8px); border-color: var(--rule-soft); }
-  .card:hover .card__inner { transform: translate(-4px, -4px); border-color: var(--accent); }
-}
-
-/* Estilo alternativo: inclinación 3D siguiendo al cursor (data-cardstyle="tilt").
-   Sustituye la capa apilada de .card:before, así que esa se oculta. */
+/* Estilo alternativo: inclinación 3D siguiendo al cursor (data-cardstyle="tilt"). */
 html[data-cardstyle='tilt'] .card:before { display: none; }
 html[data-cardstyle='tilt'] .card { perspective: 900px; }
 html[data-cardstyle='tilt'] .card__inner {
@@ -317,23 +450,33 @@ html[data-cardstyle='tilt'] .card__inner:after {
   content: ''; position: absolute; inset: 0; pointer-events: none; opacity: 0; transition: opacity .3s;
   background: radial-gradient(circle at var(--mx, 50%) var(--my, 50%), var(--accent-soft), transparent 60%);
 }
-@media (hover: hover) and (pointer: fine) {
-  html[data-cardstyle='tilt'] .card:hover .card__inner { border-color: var(--accent); }
-  html[data-cardstyle='tilt'] .card:hover .card__price { opacity: 1; }
-  html[data-cardstyle='tilt'] .card:hover .card__inner:after { opacity: 1; }
-}
+html[data-cardstyle='tilt'] .card:hover .card__inner { border-color: var(--accent); }
+html[data-cardstyle='tilt'] .card:hover .card__price { opacity: 1; }
+html[data-cardstyle='tilt'] .card:hover .card__inner:after { opacity: 1; }
+
 @media (prefers-reduced-motion: reduce) {
   html[data-cardstyle='tilt'] .card__inner { transform: none !important; transition: none; }
 }
 
-/* --- Tarjeta destacada (paquete estrella) ----------------------------------- */
-.card--featured .card__inner { border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent-soft); }
+/* --- Tarjeta destacada (paquete estrella y servicios recomendados) ----------- */
+.card--featured .card__inner {
+  border-color: var(--accent);
+  box-shadow: 0 0 22px -4px var(--accent-soft), inset 0 0 0 1px var(--accent-soft);
+}
 .card__badge {
-  position: absolute; top: -.65rem; left: 1.4rem; z-index: 1;
-  background: var(--accent); color: var(--paper);
-  font-family: var(--data); font-size: .62rem; font-weight: 600;
-  letter-spacing: .12em; text-transform: uppercase;
-  padding: .3rem .7rem; border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  background: var(--accent);
+  color: #0d0f12;
+  font-family: var(--data);
+  font-size: .58rem;
+  font-weight: 700;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+  padding: .2rem .55rem;
+  border-radius: 4px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.25);
+  line-height: 1;
 }
 
 /* --- Paquetes (usa el mismo grid .cards que arriba) ------------------------- */
@@ -373,8 +516,182 @@ html[data-cardstyle='tilt'] .card__inner:after {
 .contact-form textarea:focus-visible {
   outline: 2px solid var(--accent); outline-offset: 2px;
 }
-.contact-form__status { font-size: .85rem; color: var(--accent); margin-top: .5rem; }
-.btn { display: inline-block; font-family: var(--data); font-size: .76rem; font-weight: 500; letter-spacing: .12em; text-transform: uppercase; text-decoration: none; padding: .85rem 1.5rem; border: 1px solid var(--rule); transition: background .15s, color .15s, transform .15s, border-color .15s; }
+.contact-form__status {
+  display: inline-flex; align-items: center; gap: .5rem;
+  font-size: .86rem; font-weight: 600; color: #22c55e;
+  padding: .6rem .95rem; border-radius: 8px;
+  background: rgba(34, 197, 94, 0.12); border: 1px solid rgba(34, 197, 94, 0.3);
+  margin-top: .75rem; width: fit-content;
+}
+
+/* --- Floating Chat Widget (WhatsApp & Telegram) --------------------------- */
+.floating-chat {
+  position: fixed; bottom: 1.25rem; left: 1.25rem; z-index: 99;
+  display: flex; flex-direction: column; align-items: flex-start; gap: .75rem;
+}
+.floating-chat__trigger {
+  appearance: none; border: 1px solid var(--rule); background: var(--panel);
+  color: var(--ink); font-family: var(--data); font-size: .8rem; font-weight: 700;
+  letter-spacing: .08em; text-transform: uppercase; padding: .7rem 1.2rem;
+  border-radius: 999px; cursor: pointer; display: inline-flex; align-items: center; gap: .6rem;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.5), 0 0 15px var(--accent-soft);
+  transition: all .25s ease; position: relative;
+}
+.floating-chat__trigger:hover {
+  border-color: var(--accent); color: var(--accent); transform: translateY(-2px);
+  box-shadow: 0 12px 35px var(--accent-soft);
+}
+.floating-chat__badge {
+  position: absolute; top: 0; right: 0; width: 10px; height: 10px;
+  border-radius: 50%; background: #22c55e; box-shadow: 0 0 8px #22c55e;
+}
+.floating-chat__menu {
+  display: none; flex-direction: column; gap: .5rem; background: var(--panel);
+  border: 1px solid var(--rule); padding: .75rem; border-radius: 12px;
+  box-shadow: 0 15px 40px rgba(0,0,0,0.6); backdrop-filter: blur(16px);
+  min-width: 220px; animation: modal-in .2s ease-out;
+}
+.floating-chat__menu.is-open {
+  display: flex !important;
+}
+.floating-chat__item {
+  display: flex; align-items: center; gap: .75rem; padding: .6rem 1rem;
+  border-radius: 8px; font-family: var(--data); font-size: .78rem; font-weight: 700;
+  text-decoration: none; color: var(--ink); border: 1px solid var(--rule-soft);
+  transition: all .2s ease;
+}
+.floating-chat__item--tg:hover { background: rgba(0, 136, 204, 0.15); border-color: #0088cc; color: #0088cc; }
+.floating-chat__item--wa:hover { background: rgba(37, 211, 102, 0.15); border-color: #25d366; color: #25d366; }
+
+/* --- Calculadora Interactiva de Presupuesto ------------------------------ */
+.calculator { margin-top: 3rem; padding-top: 3rem; border-top: 1px solid var(--rule-soft); }
+.calculator__header { margin-bottom: 2rem; }
+.calculator__title { font-family: var(--heading); font-size: clamp(1.4rem, 3vw, 2.2rem); font-weight: 700; color: var(--ink); }
+.calculator__subtitle { color: var(--ink-soft); font-size: .95rem; margin-top: .4rem; }
+.calculator__step { font-family: var(--data); font-size: .8rem; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--accent); }
+
+.calculator__grid { display: grid; grid-template-columns: 1fr; gap: 2rem; }
+@media (min-width: 860px) {
+  .calculator__grid { grid-template-columns: 1.4fr 1fr; align-items: start; }
+}
+.calc-type-selector { display: flex; flex-direction: column; gap: .75rem; margin-top: .75rem; }
+.calc-type-card {
+  display: flex; align-items: center; justify-content: space-between; gap: 1rem;
+  border: 1px solid var(--rule); background: var(--panel-2); padding: .85rem 1.1rem;
+  border-radius: 8px; cursor: pointer; transition: all .2s ease;
+}
+.calc-type-card.is-selected,
+.calc-type-card:hover { border-color: var(--accent); background: var(--paper); box-shadow: 0 4px 15px var(--accent-soft); }
+.calc-type-card input { appearance: none; display: none; }
+.calc-type-name { font-weight: 700; font-size: .92rem; color: var(--ink); display: block; }
+.calc-type-desc { font-size: .78rem; color: var(--ink-soft); display: block; }
+.calc-type-price { font-family: var(--data); font-weight: 700; font-size: .9rem; color: var(--accent); white-space: nowrap; }
+
+.calc-addons-list { display: flex; flex-direction: column; gap: .6rem; margin-top: .75rem; }
+.calc-addon-item {
+  display: flex; align-items: center; justify-content: space-between;
+  border: 1px solid var(--rule); background: var(--panel-2); padding: .65rem .95rem;
+  border-radius: 6px; cursor: pointer; font-size: .84rem; color: var(--ink-soft); transition: all .15s ease;
+}
+.calc-addon-item:hover { border-color: var(--accent); color: var(--ink); }
+.calc-addon-item input { accent-color: var(--accent); }
+.calc-addon-price { font-family: var(--data); font-size: .78rem; font-weight: 600; color: var(--accent); }
+
+.calc-summary-card {
+  border: 1px solid var(--rule); background: var(--panel); padding: 1.5rem;
+  border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); display: flex; flex-direction: column; gap: 1.2rem;
+}
+.calc-badge { font-family: var(--data); font-size: .66rem; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: #22c55e; background: rgba(34,197,94,0.12); padding: .3rem .6rem; border-radius: 4px; border: 1px solid rgba(34,197,94,0.3); width: fit-content; }
+.calc-summary-row { display: flex; flex-direction: column; gap: .2rem; }
+.calc-summary-label { font-family: var(--data); font-size: .72rem; letter-spacing: .1em; text-transform: uppercase; color: var(--ink-soft); }
+.calc-summary-val { font-family: var(--heading); font-size: 2.2rem; font-weight: 800; color: var(--ink); }
+.calc-summary-time { font-family: var(--data); font-size: 1.1rem; font-weight: 700; color: var(--accent); }
+.btn--full { width: 100%; justify-content: center; margin-top: .5rem; }
+/* --- Variantes de animación de precios ------------------------------------- */
+
+/* 1. Vertical Slide Odometer (Estilo SaaS Vercel/Stripe) */
+html[data-priceanim='odometer'] .price-value {
+  transition: transform .22s cubic-bezier(.4,0,.2,1), opacity .22s ease, filter .22s ease;
+}
+html[data-priceanim='odometer'] .is-swapping .price-value {
+  opacity: 0;
+  filter: blur(2px);
+  transform: translateY(-8px);
+}
+
+/* 2. Glow Pulse (Pulso de Brillo Ámbar de Lanzamiento) */
+html[data-priceanim='glow'] .price-value {
+  transition: opacity .22s ease, filter .22s ease, text-shadow .25s ease;
+}
+html[data-priceanim='glow'] .is-swapping .price-value {
+  opacity: 0.2;
+  filter: blur(3px);
+  text-shadow: 0 0 16px var(--accent);
+}
+
+/* 3. Card Flip 3D (Giro 3D Físico en 180°) */
+html[data-priceanim='flip'] .price-value {
+  transition: transform .24s cubic-bezier(.4,0,.2,1), opacity .2s ease;
+  transform-origin: center center;
+  backface-visibility: hidden;
+}
+html[data-priceanim='flip'] .is-swapping .price-value {
+  opacity: 0;
+  transform: rotateX(90deg);
+}
+
+/* 4. Blur & Scale Smooth (Desenfoque Suave Estándar) */
+html[data-priceanim='blur'] .price-value {
+  transition: opacity .18s ease, filter .18s ease, transform .18s cubic-bezier(.4,0,.2,1);
+}
+
+/* --- Modal de contacto profesional ---------------------------------------- */
+.modal-overlay {
+  position: fixed; inset: 0; z-index: 1000;
+  background: rgba(10, 12, 16, 0.82);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  display: flex; align-items: center; justify-content: center;
+  padding: 1.5rem;
+  opacity: 0; visibility: hidden;
+  transition: opacity .3s cubic-bezier(.2,.8,.2,1), visibility .3s;
+}
+.modal-overlay.is-open {
+  opacity: 1; visibility: visible;
+}
+.modal-window {
+  background: var(--panel);
+  border: 1px solid var(--rule);
+  box-shadow: 0 24px 60px rgba(0,0,0,0.7), 0 0 35px var(--accent-soft);
+  border-radius: 16px;
+  width: 100%; max-width: 540px;
+  max-height: 90vh; overflow-y: auto;
+  padding: 2.2rem;
+  position: relative;
+  transform: scale(.93) translateY(18px);
+  transition: transform .35s cubic-bezier(.2,.8,.2,1);
+}
+.modal-overlay.is-open .modal-window {
+  transform: scale(1) translateY(0);
+}
+.modal-close {
+  position: absolute; top: 1.2rem; right: 1.2rem;
+  background: transparent; border: 1px solid var(--rule);
+  color: var(--ink); border-radius: 8px;
+  width: 2.2rem; height: 2.2rem;
+  display: inline-flex; align-items: center; justify-content: center;
+  font-size: 1.2rem; cursor: pointer;
+  transition: color .2s, border-color .2s, background .2s;
+}
+.modal-close:hover {
+  color: var(--accent); border-color: var(--accent); background: var(--panel-2);
+}
+.modal-header { margin-bottom: 1.5rem; padding-right: 2.5rem; }
+.modal-title { font-family: var(--display); font-weight: 700; font-size: 1.6rem; margin: 0 0 .4rem; line-height: 1.2; }
+.modal-subtitle { color: var(--ink-soft); font-size: .88rem; line-height: 1.5; margin: 0; }
+.modal-window .contact-form { max-width: 100%; }
+
+.btn { display: inline-block; font-family: var(--data); font-size: .76rem; font-weight: 500; letter-spacing: .12em; text-transform: uppercase; text-decoration: none; padding: .85rem 1.5rem; border: 1px solid var(--rule); transition: background .15s, color .15s, transform .15s, border-color .15s; cursor: pointer; }
 .btn--solid { background: var(--accent); color: var(--paper); border-color: var(--accent); }
 .btn--solid:hover { background: var(--ink); border-color: var(--ink); transform: translateY(-2px); box-shadow: 0 8px 20px var(--accent-soft); }
 .btn--ghost:hover { background: var(--ink); color: var(--paper); border-color: var(--ink); transform: translateY(-2px); }

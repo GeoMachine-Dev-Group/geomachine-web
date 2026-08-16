@@ -1,0 +1,44 @@
+# GeoMachine Developer Group — Full Technical Documentation & Service Catalog
+
+## Overview
+GeoMachine Developer Group provides end-to-end software development, private AI infrastructure, web development, mobile app development, SEO, and cloud maintenance. All projects feature fixed upfront pricing, direct engineer communication, zero sales rep overhead, and rapid delivery cycles.
+
+## Comprehensive Service Breakdown
+
+### Service 1: Landing Pages & High-Performance Webs
+- Description: Custom responsive web pages built with Astro 4 and modern TypeScript/CSS, optimized for maximum conversion and speed.
+- Key Specs: 100/100 Lighthouse score, zero bloatware, SEO base included, dark mode premium design system.
+- Pricing Tiers: Launch Discount Tier (€375 / 37,500 ₽ / 1,125 ₾) and Standard Tier (€500 / 50,000 ₽ / 1,500 ₾).
+
+### Service 2: Full-Stack Web Apps & Custom E-Commerce
+- Description: Custom web applications, administrative panels, SaaS platforms, and online stores.
+- Key Specs: Relational/NoSQL database integration, auth, payment gateways, custom APIs.
+- Pricing Tiers: Launch Discount Tier (€1,125 / 112,500 ₽ / 3,375 ₾) and Standard Tier (€1,500 / 150,000 ₽ / 4,500 ₾).
+
+### Service 3: Native & Cross-Platform Mobile Applications
+- Description: Mobile applications for iOS and Android built with Flutter / React Native.
+- Key Specs: Store submission, push notifications, offline mode, native device integrations.
+- Pricing Tiers: Launch Discount Tier (€1,875 / 187,500 ₽ / 5,625 ₾) and Standard Tier (€2,500 / 250,000 ₽ / 7,500 ₾).
+
+### Service 4: Private AI Servers & Autonomous AI Assistants
+- Description: Deployment of open-weights LLMs (DeepSeek, Llama 3, Qwen) on private dedicated VPS hardware with custom RAG knowledge bases.
+- Key Specs: 100% data confidentiality, WhatsApp/Telegram integration, zero per-token third-party fees.
+- Pricing Tiers: Launch Discount Tier (€900 / 90,000 ₽ / 2,700 ₾) and Standard Tier (€1,200 / 120,000 ₽ / 3,600 ₾).
+
+### Service 5: Managed Cloud VPS & Technical Maintenance
+- Description: Server administration, security patches, automated backups, and uptime protection.
+- Pricing Tiers: Launch Discount Tier (€60/month) and Standard Tier (€80/month).
+
+### Service 6: Multilingual SEO & Audit
+- Description: Technical SEO audit, page speed optimization, hreflang multi-language setup, and AI Generative Engine Optimization (GEO).
+- Pricing Tiers: Launch Discount Tier (€300 / 30,000 ₽ / 900 ₾) and Standard Tier (€400 / 40,000 ₽ / 1,200 ₾).
+
+## Business Terms & Commitments
+1. Direct Communication: The client communicates directly with the lead software engineer.
+2. Closed Fixed Pricing: Final budget established before project start.
+3. Fast Turnaround: Projects delivered in days to weeks.
+4. Multilingual: Native support in Spanish, Russian, English, and Georgian.
+
+## Contact Information
+- Website: https://geomachine.es
+- Telegram: https://t.me/geomachine

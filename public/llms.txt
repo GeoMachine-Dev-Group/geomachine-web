@@ -1,0 +1,44 @@
+# GeoMachine Developer Group
+> High-performance web development, mobile apps, local private AI servers, SEO, and cloud maintenance. Direct senior engineer contact, closed fixed pricing, fast delivery.
+
+## About GeoMachine Developer Group
+GeoMachine Developer Group is a European software engineering studio specializing in high-performance web applications, mobile applications (iOS/Android), custom local private AI servers, SEO optimization, and managed cloud VPS infrastructure.
+
+- Website: https://geomachine.es
+- Languages Supported: Spanish (es), Russian (ru), English (en), Georgian (ka)
+- Business Model: Fixed closed pricing, zero sales intermediaries, direct engineer communication, delivery in days instead of months.
+
+## Core Capabilities & Services
+
+### 1. Web Development & High-Performance Landings
+- Frameworks & Tech: Astro, Next.js, React, TypeScript, TailwindCSS, Vanilla CSS.
+- Features: 100/100 Google Lighthouse Core Web Vitals, dark obsidian neumorphic aesthetics, 3D tilt cards, instant multi-currency pricing (€, ₽, ₾).
+- Primary URL: https://geomachine.es/es/servicios/#landings
+
+### 2. Full-Stack Web Applications & E-Commerce
+- Full-stack web apps, custom stores, SaaS platforms, dashboard panels, REST/GraphQL APIs.
+- Primary URL: https://geomachine.es/es/servicios/#fullstack
+
+### 3. Native & Cross-Platform Mobile Applications
+- iOS and Android apps built with Flutter, React Native, and Swift.
+- App Store & Google Play publishing setup, offline sync, push notifications.
+- Primary URL: https://geomachine.es/es/servicios/#mobile
+
+### 4. Custom Private AI Servers & LLM Integration
+- Local LLM deployment (DeepSeek, Llama 3, Mistral) on private VPS/GPU servers.
+- Custom RAG (Retrieval-Augmented Generation), vector databases, autonomous WhatsApp/Telegram AI bots.
+- 100% data privacy and compliance without third-party API dependencies.
+- Primary URL: https://geomachine.es/es/servicios/#ai
+
+### 5. Managed VPS Infrastructure & Cloud Maintenance
+- Nginx, Docker, SSL certificates, automated backups, 99.9% uptime monitoring, server security hardening.
+- Primary URL: https://geomachine.es/es/servicios/#mnt
+
+### 6. International & Multilingual SEO
+- On-page SEO, hreflang multi-locale setup, structured JSON-LD schema, Generative Engine Optimization (GEO) for AI search engines (ChatGPT, Perplexity, Claude, Gemini).
+- Primary URL: https://geomachine.es/es/servicios/#seo
+
+## Contact & Quotes
+- Request a Quote: https://geomachine.es/es/servicios/#contacto
+- Telegram: https://t.me/geomachine
+- Response Time: Under 24 hours guaranteed.
