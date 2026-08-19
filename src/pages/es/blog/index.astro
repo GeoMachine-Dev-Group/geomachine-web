@@ -29,7 +29,7 @@ const site = Astro.site?.origin ?? 'https://geomachine.es';
       {posts.map((post) => {
         const slug = post.slug.replace(/^es\//, '');
         return (
-          <article class="blog-card">
+          <article class="blog-card" id={post.data.pillar.toLowerCase()} data-pillar={post.data.pillar}>
             <a class="blog-card__link" href={`${blogPath.es}${slug}/`}>
               <span class="blog-card__meta">
                 {post.data.pillar} · {readingTime(post.body)} {t.readingTimeSuffix}

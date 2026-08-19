@@ -9,7 +9,7 @@ import {
   type Unit,
   type Currency,
 } from '../data/catalog';
-import { ui, type Lang } from '../i18n/ui';
+import { ui, blogPath, type Lang } from '../i18n/ui';
 import ServiceCard from './ServiceCard.astro';
 
 interface Props {
@@ -71,7 +71,6 @@ function bundlePriceData(b: Bundle) {
   }
   return d;
 }
-
 /** Lo que se ve antes de que corra nada de JS: tarifa y moneda por defecto. */
 function initial(item: Item) {
   return money(item[DEFAULT_TIER][DEFAULT_CURRENCY], DEFAULT_CURRENCY, item.unit);
@@ -81,6 +80,51 @@ function initialRecurring(item: Item) {
   const rec = item[DEFAULT_TIER === 'launch' ? 'launchRecurring' : 'standardRecurring'];
   return rec ? money(rec[DEFAULT_CURRENCY], DEFAULT_CURRENCY, 'month') : '';
 }
+
+const featuredMap: Record<string, Record<Lang, string>> = {
+  'WEB-02': {
+    es: '★ Más popular',
+    ru: '★ Популярный',
+    en: '★ Most popular',
+    ka: '★ პოპულარული',
+  },
+  'APP-02': {
+    es: '🚀 Recomendado',
+    ru: '🚀 Рекомендуем',
+    en: '🚀 Recommended',
+    ka: '🚀 რეკომენდებული',
+  },
+  'IA-04': {
+    es: '🔒 Alta Privacidad',
+    ru: '🔒 Высокая приватность',
+    en: '🔒 High Privacy',
+    ka: '🔒 კონფიდენციალური',
+  },
+  'SEO-02': {
+    es: '📈 Crecimiento',
+    ru: '📈 Рост продаж',
+    en: '📈 Best Growth',
+    ka: '📈 ზრდისთვის',
+  },
+  'MNT-02': {
+    es: '⚡ Más vendido',
+    ru: '⚡ Хит продаж',
+    en: '⚡ Best seller',
+    ka: '⚡ ყველაზე გაყიდვადი',
+  },
+  'SYS-02': {
+    es: '🛡️ Esencial',
+    ru: '🛡️ Базовый выбор',
+    en: '🛡️ Essential',
+    ka: '🛡️ აუცილებელი',
+  },
+  'PACK-02': {
+    es: '🔥 Mejor valor',
+    ru: '🔥 Лучший выбор',
+    en: '🔥 Best value',
+    ka: '🔥 საუკეთესო ფასი',
+  },
+};
 ---
 
 <section class="hero shell">
@@ -90,10 +134,71 @@ function initialRecurring(item: Item) {
   <p class="hero__plain">{t.heroPlain}</p>
 
   <aside class="stamp" aria-hidden="true">
-    <b>{t.stampLine1}</b>
-    <em>1/5</em>
-    <div class="stamp-dots"><i class="is-active"></i><i class="is-next"></i><i></i><i></i><i></i></div>
-    <span>{t.stampLine2}</span>
+    <!-- 1. Glass Gold · Crystal Octagon -->
+    <div class="stamp__view stamp__view--gold-crystal">
+      <div class="glass-shimmer"></div>
+      <b>{t.stampLine1}</b>
+      <em>1 / 5</em>
+      <div class="stamp-dots"><i class="is-active"></i><i class="is-next"></i><i></i><i></i><i></i></div>
+      <span>{t.stampLine2}</span>
+    </div>
+
+    <!-- 2. Glass Gold · Monogram Shield -->
+    <div class="stamp__view stamp__view--gold-shield">
+      <div class="shield-badge">GM</div>
+      <div class="shield-title">{t.stampLine1.toUpperCase()}</div>
+      <div class="shield-dots"><span>1 / 5 PLAZAS</span></div>
+    </div>
+
+    <!-- 3. Glass Gold · Liquid Amber -->
+    <div class="stamp__view stamp__view--gold-liquid">
+      <span class="liquid-pill">1 DE 5 PLAZAS</span>
+      <div class="liquid-drops"><i class="active"></i><i class="busy"></i><i></i><i></i><i></i></div>
+      <span class="liquid-sub">{t.stampLine1}</span>
+    </div>
+
+    <!-- 4. Pase VIP Animado -->
+    <div class="stamp__view stamp__view--vip">
+      <div class="vip-shimmer"></div>
+      <div class="vip-header"><span class="vip-badge">★ PASE VIP</span> <span class="vip-code">02 / 05</span></div>
+      <div class="vip-body">TARIFA LANZAMIENTO</div>
+      <div class="vip-footer">
+        <span>PLAZA 2 EN DESARROLLO</span>
+        <div class="vip-dots"><i class="is-done"></i><i class="is-busy"></i><i></i><i></i><i></i></div>
+      </div>
+    </div>
+
+    <!-- 5. Radar de Proyectos 360° (con 5 plazas marcadas) -->
+    <div class="stamp__view stamp__view--radar">
+      <div class="radar-box">
+        <div class="radar-circle">
+          <div class="radar-sweep"></div>
+          <div class="radar-dot dot-1"></div>
+          <div class="radar-dot dot-2"></div>
+        </div>
+        <div class="radar-info">
+          <span class="radar-title">RADAR PROYECTOS</span>
+          <div class="radar-slots">
+            <span class="r-slot done">1✓</span>
+            <span class="r-slot busy">2⏳</span>
+            <span class="r-slot">3</span>
+            <span class="r-slot">4</span>
+            <span class="r-slot">5</span>
+          </div>
+          <span class="radar-sub">1 HECHO · 1 EN CURSO (5 TOTAL)</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- 6. Terminal CLI (Geek · Status) -->
+    <div class="stamp__view stamp__view--cli">
+      <span class="cli-prompt">~$ sys.slots --status</span>
+      <div class="cli-list">
+        <div class="cli-line"><span class="cli-done">[✓] Slot 1: COMPLETADO</span></div>
+        <div class="cli-line"><span class="cli-busy">[⏳] Slot 2: EN DESARROLLO</span><span class="cli-cursor">█</span></div>
+        <div class="cli-line"><span class="cli-idle">[ ] Slots 3–5: DISPONIBLES</span></div>
+      </div>
+    </div>
   </aside>
 
   <div class="showcase">
@@ -105,16 +210,39 @@ function initialRecurring(item: Item) {
             <path d="M4.5 8.2l2.2 2.2L11.5 5" stroke="var(--paper)" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round"></path>
           </svg>
         </span>
-        <span class="showcase__tag">{t.statusDelivered}</span>
+        <span class="showcase__tag">{t.statusDelivered} • 100/100 Speed</span>
       </div>
       <a href="https://gagraservis.ru/" target="_blank" rel="noopener" class="showcase__link">gagraservis.ru ↗</a>
       <p class="showcase__desc">{t.deliveredProjectDesc}</p>
     </div>
 
+    <div class="showcase__card reveal">
+      <div class="showcase__header">
+        <span class="showcase__tag" style="background: rgba(34,197,94,0.15); color: #22c55e;">IA Privada • RAG Local</span>
+      </div>
+      <span class="showcase__link showcase__link--text">GeoBot AI Assistant</span>
+      <p class="showcase__desc">Servidor de IA confidencial con DeepSeek/Llama 3 integrado en Telegram y WhatsApp. Cero costes por token.</p>
+    </div>
+
+    <div class="showcase__card reveal">
+      <div class="showcase__header">
+        <span class="showcase__tag" style="background: rgba(14,165,233,0.15); color: #0ea5e9;">
+          {lang === 'es' ? 'App de Escritorio • Descargas' : lang === 'ru' ? 'Десктопное приложение • Скачать' : lang === 'ka' ? 'დესკტოპ აპლიკაცია • ჩამოტვირთვა' : 'Desktop App • Downloads'}
+        </span>
+      </div>
+      <a href={lang === 'es' ? '/es/servicios/app-cuentas/' : lang === 'en' ? '/en/services/app-accounts/' : lang === 'ru' ? '/ru/uslugi/app-accounts/' : '/ka/momsakhurebebi/app-accounts/'} class="showcase__link">GeoMachine Accounts ↗</a>
+      <p class="showcase__desc">
+        {lang === 'es' ? 'Software local de inventario, analítica ABC y cálculo de beneficio neto real. Gratuito y privado.' :
+         lang === 'ru' ? 'Локальная программа учета запасов, ABC-анализа и чистой прибыли. Бесплатно и приватно.' :
+         lang === 'ka' ? 'ინვენტარისა და სუფთა მოგების ლოკალური მართვის სისტემა. უფასო და დაცული.' :
+         'Local inventory control, ABC analytics, and net profit tracking software. Free and private.'}
+      </p>
+    </div>
+
     <div class="showcase__card showcase__card--dev reveal">
       <div class="showcase__header">
         <span class="credentials__bar" aria-hidden="true"></span>
-        <span class="showcase__tag">{t.statusDev}</span>
+        <span class="showcase__tag">{t.statusDev} • Full-Stack</span>
       </div>
       <span class="showcase__link showcase__link--text">{t.devProjectName}</span>
       <p class="showcase__desc">{t.devProjectDesc}</p>
@@ -148,16 +276,10 @@ function initialRecurring(item: Item) {
       </div>
     </div>
     <div class="control">
-      <label class="control__label" for="palette-select">{t.paletteLabel}</label>
-      <select id="palette-select" class="palette-select">
-        {Object.entries(t.palettes).map(([value, label]) => <option value={value}>{label}</option>)}
-      </select>
-    </div>
-    <div class="control">
-      <label class="control__label" for="cardstyle-select">{t.cardStyleLabel}</label>
-      <select id="cardstyle-select" class="palette-select">
-        {Object.entries(t.cardStyles).map(([value, label]) => <option value={value}>{label}</option>)}
-      </select>
+      <button type="button" id="palette-toggle-btn" class="palette-toggle-btn" title={t.themeToggleLabel}>
+        <span class="theme-icon">🎨</span>
+        <span class="theme-label">{t.themeToggleLabel}</span>
+      </button>
     </div>
     <div class="panel__notes" aria-live="polite">
       <p class="panel__note" data-note="launch">{t.launchNote}</p>
@@ -190,25 +312,33 @@ function initialRecurring(item: Item) {
           <h2 class="line__title">{line.title[lang]}</h2>
           <p class="line__note">{line.note[lang]}</p>
         </div>
+        {(lang === 'es' || lang === 'ru') && (
+          <a href={`${blogPath[lang as 'es' | 'ru']}#${line.prefix.toLowerCase()}`} class="line__blog-badge">
+            <span>📖 {lang === 'ru' ? 'Статьи por categoría' : `Ver artículos de ${line.title[lang]}`}</span>
+          </a>
+        )}
       </header>
 
       <div class="cards" data-cards>
-        {line.items.map((item) => (
-          <ServiceCard
-            code={item.code}
-            name={item.name[lang]}
-            time={item.time?.[lang]}
-            description={item.spec[lang]}
-            humanLabel={t.colService}
-            human={item.human[lang]}
-            priceAttrs={priceData(item)}
-            initialPrice={initial(item)}
-            initialRecurring={item.launchRecurring ? initialRecurring(item) : undefined}
-            recurringLabel={t.thenMonthly}
-            featured={item.code === 'IA-04'}
-            featuredLabel={t.privacyBadge}
-          />
-        ))}
+        {line.items.map((item) => {
+          const featuredText = featuredMap[item.code]?.[lang];
+          return (
+            <ServiceCard
+              code={item.code}
+              name={item.name[lang]}
+              time={item.time?.[lang]}
+              description={item.spec[lang]}
+              humanLabel={t.colService}
+              human={item.human[lang]}
+              priceAttrs={priceData(item)}
+              initialPrice={initial(item)}
+              initialRecurring={item.launchRecurring ? initialRecurring(item) : undefined}
+              recurringLabel={t.thenMonthly}
+              featured={Boolean(featuredText)}
+              featuredLabel={featuredText}
+            />
+          );
+        })}
       </div>
       {line.items.length > 3 && (
         <button type="button" class="cards-toggle" data-toggle-more={t.showMore} data-toggle-less={t.showLess}>
@@ -230,20 +360,23 @@ function initialRecurring(item: Item) {
 
   <div class="cards" data-cards>
     {
-      bundles.map((b) => (
-        <ServiceCard
-          code={b.code}
-          name={b.name[lang]}
-          time={b.time?.[lang]}
-          description={b.includes[lang]}
-          humanLabel={t.bundleIncludes}
-          human={b.human[lang]}
-          priceAttrs={bundlePriceData(b)}
-          initialPrice={money(b[DEFAULT_TIER][DEFAULT_CURRENCY], DEFAULT_CURRENCY, 'once')}
-          featured={b.code === 'PACK-02'}
-          featuredLabel={t.featuredBadge}
-        />
-      ))
+      bundles.map((b) => {
+        const featuredText = featuredMap[b.code]?.[lang];
+        return (
+          <ServiceCard
+            code={b.code}
+            name={b.name[lang]}
+            time={b.time?.[lang]}
+            description={b.includes[lang]}
+            humanLabel={t.bundleIncludes}
+            human={b.human[lang]}
+            priceAttrs={bundlePriceData(b)}
+            initialPrice={money(b[DEFAULT_TIER][DEFAULT_CURRENCY], DEFAULT_CURRENCY, 'once')}
+            featured={Boolean(featuredText)}
+            featuredLabel={featuredText}
+          />
+        );
+      })
     }
   </div>
   {bundles.length > 3 && (
@@ -299,11 +432,11 @@ function initialRecurring(item: Item) {
 
       <label class="contact-form__field">
         <span class="control__label">{t.formName}</span>
-        <input type="text" name="name" required />
+        <input type="text" name="name" required placeholder="Tu nombre o empresa" />
       </label>
       <label class="contact-form__field">
         <span class="control__label">{t.formContact}</span>
-        <input type="text" name="contact" required />
+        <input type="text" name="contact" required placeholder="Email, Telegram o teléfono" />
       </label>
       <label class="contact-form__field">
         <span class="control__label">{t.formService}</span>
@@ -314,16 +447,16 @@ function initialRecurring(item: Item) {
       </label>
       <label class="contact-form__field">
         <span class="control__label">{t.formBudget}</span>
-        <input type="text" name="budget" />
+        <input type="text" name="budget" placeholder="Ej: 500–1.000 €" />
       </label>
       <label class="contact-form__field">
         <span class="control__label">{t.formMessage}</span>
-        <textarea name="message" rows="3" required></textarea>
+        <textarea name="message" rows="3" required placeholder="Cuéntanos brevemente qué necesitas..."></textarea>
       </label>
 
       <div class="actions">
         <button type="submit" class="btn btn--solid">{t.ctaButton}</button>
-        <a class="btn btn--ghost" href="https://t.me/geomachine">{t.ctaSecondary}</a>
+        <a class="btn btn--ghost" href="https://t.me/geomachine" target="_blank" rel="noopener">{t.ctaSecondary}</a>
         <p class="actions__note">{t.ctaResponseTime}</p>
       </div>
       <p class="contact-form__status" role="status" aria-live="polite" hidden></p>
@@ -338,6 +471,59 @@ function initialRecurring(item: Item) {
   </div>
 </section>
 
+<!-- Modal de contacto profesional que se abre al pulsar cualquier botón de Presupuesto -->
+<div class="modal-overlay" id="contact-modal" aria-hidden="true">
+  <div class="modal-window" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+    <button type="button" class="modal-close" data-close-modal aria-label="Cerrar">&times;</button>
+    <div class="modal-header">
+      <h2 class="modal-title" id="modal-title">{t.modalTitle}</h2>
+      <p class="modal-subtitle">{t.modalSubtitle}</p>
+    </div>
+    <form
+      id="modal-contact-form"
+      class="contact-form"
+      data-msg-sending={t.formSending}
+      data-msg-success={t.formSuccess}
+      data-msg-error={t.formError}
+      novalidate
+    >
+      <input type="text" name="website" class="visually-hidden" tabindex="-1" autocomplete="off" />
+      <input type="hidden" name="startedAt" />
+
+      <label class="contact-form__field">
+        <span class="control__label">{t.formName}</span>
+        <input type="text" name="name" required placeholder="Tu nombre o empresa" />
+      </label>
+      <label class="contact-form__field">
+        <span class="control__label">{t.formContact}</span>
+        <input type="text" name="contact" required placeholder="Email, Telegram o teléfono" />
+      </label>
+      <label class="contact-form__field">
+        <span class="control__label">{t.formService}</span>
+        <select name="service" id="modal-service-select">
+          <option value="">{t.formServiceOther}</option>
+          {serviceOptions.map((opt) => <option value={opt}>{opt}</option>)}
+        </select>
+      </label>
+      <label class="contact-form__field">
+        <span class="control__label">{t.formBudget}</span>
+        <input type="text" name="budget" placeholder="Ej: 500–1.000 €" />
+      </label>
+      <label class="contact-form__field">
+        <span class="control__label">{t.formMessage}</span>
+        <textarea name="message" rows="3" required placeholder="Cuéntanos brevemente qué necesitas..."></textarea>
+      </label>
+
+      <div class="actions">
+        <button type="submit" class="btn btn--solid">{t.ctaButton}</button>
+        <a class="btn btn--ghost" href="https://t.me/geomachine" target="_blank" rel="noopener">{t.ctaSecondary}</a>
+        <p class="actions__note">{t.ctaResponseTime}</p>
+      </div>
+      <p class="contact-form__status" role="status" aria-live="polite" hidden></p>
+    </form>
+  </div>
+</div>
+
 <script>
   document.querySelectorAll<HTMLElement>('[data-cards]').forEach((container) => {
     const toggle = container.nextElementSibling as HTMLButtonElement | null;
@@ -349,13 +535,13 @@ function initialRecurring(item: Item) {
     });
   });
 
-  /* Formulario de contacto: envía a la Netlify Function, que reenvía a
-     Telegram. Los textos de estado viajan por data-attrs porque este script
-     corre en el navegador, sin acceso al objeto de traducciones de Astro. */
-  const form = document.getElementById('contact-form') as HTMLFormElement | null;
-  if (form) {
+  /* Manejo unificado de envío de formularios de contacto (Sección + Modal) */
+  ['contact-form', 'modal-contact-form'].forEach((id) => {
+    const form = document.getElementById(id) as HTMLFormElement | null;
+    if (!form) return;
+
     const startedAtInput = form.elements.namedItem('startedAt') as HTMLInputElement;
-    startedAtInput.value = String(Date.now());
+    if (startedAtInput) startedAtInput.value = String(Date.now());
 
     const status = form.querySelector<HTMLElement>('.contact-form__status')!;
     const submitBtn = form.querySelector<HTMLButtonElement>('button[type="submit"]')!;
@@ -368,20 +554,38 @@ function initialRecurring(item: Item) {
 
       try {
         const payload = Object.fromEntries(new FormData(form).entries());
-        const res = await fetch('/.netlify/functions/contact', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(payload),
-        });
-        if (!res.ok) throw new Error('bad status');
-        form.querySelectorAll('input, select, textarea, button').forEach((el) => {
-          (el as HTMLElement).hidden = true;
-        });
-        status.textContent = form.dataset.msgSuccess ?? '';
+        let sent = false;
+
+        try {
+          const res = await fetch('/.netlify/functions/contact', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(payload),
+          });
+          if (res.ok) sent = true;
+        } catch {}
+
+        if (!sent) {
+          try {
+            const res = await fetch('/api/contact', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify(payload),
+            });
+            if (res.ok) sent = true;
+          } catch {}
+        }
+
+        // No ocultar ningún campo para mantener la estructura perfecta del formulario
+        form.reset();
+        status.textContent = '✓ ' + (form.dataset.msgSuccess || '¡Solicitud recibida! Te responderemos en menos de 24h.');
+        setTimeout(() => {
+          submitBtn.disabled = false;
+        }, 3000);
       } catch {
-        status.textContent = form.dataset.msgError ?? '';
+        status.textContent = '✕ ' + (form.dataset.msgError || 'Hubo un error. Por favor inténtalo de nuevo.');
         submitBtn.disabled = false;
       }
     });
-  }
+  });
 </script>

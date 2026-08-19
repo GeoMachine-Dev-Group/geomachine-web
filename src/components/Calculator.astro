@@ -1,0 +1,360 @@
+---
+import { type Lang } from '../i18n/ui';
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+
+const labels: Record<Lang, {
+  title: string;
+  subtitle: string;
+  step1: string;
+  step2: string;
+  estimatedTotal: string;
+  estimatedTime: string;
+  days: string;
+  weeks: string;
+  cta: string;
+  badgeLaunch: string;
+  badgeStandard: string;
+}> = {
+  es: {
+    title: 'Calculadora Interactiva de Presupuesto',
+    subtitle: 'Configura tu proyecto en 3 clics. Se sincroniza automáticamente con la tarifa (Lanzamiento / Estándar) y moneda seleccionadas arriba.',
+    step1: '1. Selecciona el servicio principal',
+    step2: '2. Módulos y servicios adicionales (opcional)',
+    estimatedTotal: 'Presupuesto Estimado:',
+    estimatedTime: 'Plazo Estimado:',
+    days: 'días',
+    weeks: 'semanas',
+    cta: 'Solicitar este presupuesto',
+    badgeLaunch: 'Tarifa Lanzamiento -25% Aplicada',
+    badgeStandard: 'Tarifa Estándar Aplicada',
+  },
+  ru: {
+    title: 'Интерактивный калькулятор стоимости',
+    subtitle: 'Настройте проект в 3 клика. Синхронизируется с выбранным тарифом и валютой.',
+    step1: '1. Выберите основную услугу',
+    step2: '2. Дополнительные модули (опционально)',
+    estimatedTotal: 'Ориентировочный бюджет:',
+    estimatedTime: 'Срок выполнения:',
+    days: 'дней',
+    weeks: 'недель',
+    cta: 'Запросить этот бюджет',
+    badgeLaunch: 'Скидка запуска -25% примнена',
+    badgeStandard: 'Стандартный тариф',
+  },
+  en: {
+    title: 'Interactive Budget Estimator',
+    subtitle: 'Configure your project in 3 clicks. Automatically syncs with the active tier and currency.',
+    step1: '1. Select primary service',
+    step2: '2. Additional modules & services (optional)',
+    estimatedTotal: 'Estimated Budget:',
+    estimatedTime: 'Estimated Delivery:',
+    days: 'days',
+    weeks: 'weeks',
+    cta: 'Request this quote',
+    badgeLaunch: '25% Launch Discount Applied',
+    badgeStandard: 'Standard Tier Applied',
+  },
+  ka: {
+    title: 'ბიუჯეტის ინტერაქტიული კალკულატორი',
+    subtitle: 'მოარგეთ პროექტი 3 დაწკაპუნებით. სინქრონიზებულია არჩეულ ტარიფთან და ვალუტასთან.',
+    step1: '1. აირჩიეთ ძირითადი მომსახურება',
+    step2: '2. დამატებითი მოდულები (არასავალდებულო)',
+    estimatedTotal: 'სავარაუდო ბიუჯეტი:',
+    estimatedTime: 'სავარაუდო ვადა:',
+    days: 'დღე',
+    weeks: 'კვირა',
+    cta: 'ამ ბიუჯეტის მოთხოვნა',
+    badgeLaunch: '-25% გაშვების ფასდაკლება',
+    badgeStandard: 'სტანდარტული ტარიფი',
+  },
+};
+
+const t = labels[lang];
+
+/** Datos de servicios sincronizados con los precios exactos del catálogo catalog.ts */
+const projectServices = [
+  {
+    id: 'landing',
+    code: 'WEB-01',
+    name: { es: 'Landing Page / Web Estática', ru: 'Лендинг / Сайт', en: 'Landing Page / Static Site', ka: 'ლენდინგ გვერდი / საიტი' },
+    desc: { es: 'Formulario, analítica, SEO base y 100/100 Lighthouse', ru: 'Форма, аналитика, базовое SEO', en: 'Form, analytics, base SEO, 100/100 speed', ka: 'ფორმა, ანალიტიკა, საბაზისო SEO' },
+    days: 3,
+    launcheur: 375, standardeur: 500,
+    launchrub: 22500, standardrub: 30000,
+    launchgel: 1125, standardgel: 1500,
+  },
+  {
+    id: 'fullstack',
+    code: 'WEB-03',
+    name: { es: 'Web App Full-Stack & Tienda', ru: 'Веб-приложение / Магазин', en: 'Full-Stack Web App & Store', ka: 'ვებ აპლიკაცია / მაღაზია' },
+    desc: { es: 'Base de datos, autenticación, pagos y panel admin', ru: 'База данных, авторизация, оплаты и админка', en: 'Database, auth, payments, and admin panel', ka: 'მონაცემთა ბაზა, ავტორიზაცია, გადახდები' },
+    days: 8,
+    launcheur: 1125, standardeur: 1500,
+    launchrub: 67500, standardrub: 90000,
+    launchgel: 3375, standardgel: 4500,
+  },
+  {
+    id: 'mobile',
+    code: 'APP-01',
+    name: { es: 'App Móvil Native/Cross (iOS & Android)', ru: 'Мобильное приложение (iOS & Android)', en: 'Mobile App (iOS & Android)', ka: 'მობილური აპი (iOS & Android)' },
+    desc: { es: 'Flutter/React Native, notificación push, publicación en stores', ru: 'Flutter/React Native, пуши, публикация в сторах', en: 'Flutter/React Native, push notifications, stores submission', ka: 'Flutter/React Native, პუშ-შეტყობინებები' },
+    days: 14,
+    launcheur: 1875, standardeur: 2500,
+    launchrub: 112500, standardrub: 150000,
+    launchgel: 5625, standardgel: 7500,
+  },
+  {
+    id: 'ai',
+    code: 'AI-01',
+    name: { es: 'Servidor de IA Privada & Bot RAG', ru: 'Приватный ИИ-сервер и бот RAG', en: 'Private AI Server & RAG Bot', ka: 'კერძო AI სერვერი და ბოტი' },
+    desc: { es: 'LLM local (DeepSeek/Llama 3), RAG confidencial sin fugas de datos', ru: 'Локальная LLM, RAG без утечек данных', en: 'Local LLM, confidential RAG without data leaks', ka: 'ლოკალური LLM და კონფიდენციალური RAG' },
+    days: 6,
+    launcheur: 900, standardeur: 1200,
+    launchrub: 54000, standardrub: 72000,
+    launchgel: 2700, standardgel: 3600,
+  },
+  {
+    id: 'pack-mvp',
+    code: 'PACK-04',
+    name: { es: 'Paquete Completo MVP App Transporte', ru: 'Комплекс MVP Такси / Транспорт', en: 'Full Transport App MVP Package', ka: 'ტრანსპორტის აპის MVP პაკეტი' },
+    desc: { es: 'Backend a medida, asignación en tiempo real y panel de rutas', ru: 'Бэкенд, управление бронированиями и маршруты', en: 'Custom backend, real-time dispatch, and route admin panel', ka: 'მორგებული ბექენდი და რეალური დროის ჯავშნები' },
+    days: 21,
+    launcheur: 3800, standardeur: 8500,
+    launchrub: 220000, standardrub: 510000,
+    launchgel: 11400, standardgel: 25500,
+  },
+];
+
+const addonServices = [
+  {
+    id: 'seo',
+    code: 'SEO-01',
+    name: { es: 'SEO Internacional Multi-idioma', ru: 'Многоязычное SEO', en: 'International Multilingual SEO', ka: 'მრავალენოვანი SEO' },
+    launcheur: 300, standardeur: 400,
+    launchrub: 18000, standardrub: 24000,
+    launchgel: 900, standardgel: 1200,
+  },
+  {
+    id: 'bot',
+    code: 'SYS-01',
+    name: { es: 'Bot de Telegram / WhatsApp Integrado', ru: 'Интегрированный бот Telegram/WhatsApp', en: 'Integrated Telegram / WhatsApp Bot', ka: 'ინტეგრირებული Telegram / WhatsApp ბოტი' },
+    launcheur: 225, standardeur: 300,
+    launchrub: 13500, standardrub: 18000,
+    launchgel: 675, standardgel: 900,
+  },
+  {
+    id: 'mnt',
+    code: 'MNT-01',
+    name: { es: 'Mantenimiento Cloud VPS (Mensual)', ru: 'Обслуживание Cloud VPS (в месяц)', en: 'Managed Cloud VPS (Monthly)', ka: 'VPS სერვერის მხარდაჭერა (თვიური)' },
+    launcheur: 60, standardeur: 80,
+    launchrub: 3600, standardrub: 4800,
+    launchgel: 180, standardgel: 240,
+  },
+];
+---
+
+<section class="calculator shell" id="calculadora">
+  <div class="calculator__header">
+    <span class="credentials__bar" aria-hidden="true"></span>
+    <h2 class="calculator__title">{t.title}</h2>
+    <p class="calculator__subtitle">{t.subtitle}</p>
+  </div>
+
+  <div class="calculator__grid">
+    <div class="calculator__options">
+      <h3 class="calculator__step">{t.step1}</h3>
+      <div class="calc-type-selector" role="radiogroup">
+        {projectServices.map((srv, i) => (
+          <label class={`calc-type-card ${i === 0 ? 'is-selected' : ''}`}>
+            <input
+              type="radio"
+              name="calc-project-type"
+              value={srv.id}
+              data-days={srv.days}
+              data-name={srv.name[lang]}
+              data-launcheur={srv.launcheur}
+              data-standardeur={srv.standardeur}
+              data-launchrub={srv.launchrub}
+              data-standardrub={srv.standardrub}
+              data-launchgel={srv.launchgel}
+              data-standardgel={srv.standardgel}
+              checked={i === 0}
+            />
+            <div class="calc-type-content">
+              <span class="calc-type-name">{srv.name[lang]}</span>
+              <span class="calc-type-desc">{srv.desc[lang]}</span>
+            </div>
+            <span class="calc-type-price price-tag"></span>
+          </label>
+        ))}
+      </div>
+
+      <h3 class="calculator__step" style="margin-top: 1.5rem;">{t.step2}</h3>
+      <div class="calc-addons-list">
+        {addonServices.map((addon) => (
+          <label class="calc-addon-item">
+            <input
+              type="checkbox"
+              name="calc-addon"
+              value={addon.id}
+              data-name={addon.name[lang]}
+              data-launcheur={addon.launcheur}
+              data-standardeur={addon.standardeur}
+              data-launchrub={addon.launchrub}
+              data-standardrub={addon.standardrub}
+              data-launchgel={addon.launchgel}
+              data-standardgel={addon.standardgel}
+            />
+            <span class="calc-addon-name">{addon.name[lang]}</span>
+            <span class="calc-addon-price price-tag"></span>
+          </label>
+        ))}
+      </div>
+    </div>
+
+    <div class="calculator__summary">
+      <div class="calc-summary-card">
+        <span class="calc-badge" id="calc-badge-display">{t.badgeLaunch}</span>
+        <div class="calc-summary-row">
+          <span class="calc-summary-label">{t.estimatedTotal}</span>
+          <span class="calc-summary-val" id="calc-total-display">375 €</span>
+        </div>
+        <div class="calc-summary-row">
+          <span class="calc-summary-label">{t.estimatedTime}</span>
+          <span class="calc-summary-time" id="calc-time-display">3–5 {t.days}</span>
+        </div>
+        <button type="button" class="btn btn--solid btn--full" id="calc-submit-btn">
+          {t.cta}
+        </button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script is:inline>
+  (function() {
+    var root = document.documentElement;
+    var typeInputs = document.querySelectorAll('input[name="calc-project-type"]');
+    var addonInputs = document.querySelectorAll('input[name="calc-addon"]');
+    var totalDisplay = document.getElementById('calc-total-display');
+    var timeDisplay = document.getElementById('calc-time-display');
+    var badgeDisplay = document.getElementById('calc-badge-display');
+    var submitBtn = document.getElementById('calc-submit-btn');
+
+    var currencySymbols = { eur: '€', rub: '₽', gel: '₾' };
+
+    function formatVal(num, cur) {
+      return num.toLocaleString() + ' ' + (currencySymbols[cur] || '€');
+    }
+
+    function recalculate() {
+      var tier = root.dataset.tier || 'launch';
+      var currency = root.dataset.currency || 'eur';
+      var key = tier + currency;
+
+      if (badgeDisplay) {
+        if (tier === 'launch') {
+          badgeDisplay.textContent = 'Tarifa Lanzamiento -25% Aplicada';
+          badgeDisplay.style.borderColor = 'rgba(34,197,94,0.3)';
+          badgeDisplay.style.color = '#22c55e';
+        } else {
+          badgeDisplay.textContent = 'Tarifa Estándar Aplicada';
+          badgeDisplay.style.borderColor = 'rgba(217,119,6,0.3)';
+          badgeDisplay.style.color = '#d97706';
+        }
+      }
+
+      // Actualizar precios de cada tarjeta de tipo de proyecto
+      typeInputs.forEach(function(input) {
+        var card = input.closest('.calc-type-card');
+        var tag = card ? card.querySelector('.price-tag') : null;
+        var val = parseFloat(input.dataset[key] || '0');
+        if (tag) tag.textContent = formatVal(val, currency);
+
+        if (input.checked) {
+          card && card.classList.add('is-selected');
+        } else {
+          card && card.classList.remove('is-selected');
+        }
+      });
+
+      // Actualizar precios de add-ons
+      addonInputs.forEach(function(input) {
+        var item = input.closest('.calc-addon-item');
+        var tag = item ? item.querySelector('.price-tag') : null;
+        var val = parseFloat(input.dataset[key] || '0');
+        if (tag) tag.textContent = '+' + formatVal(val, currency);
+      });
+
+      // Calcular total acumulado
+      var total = 0;
+      var baseDays = 4;
+      var selectedAddonCount = 0;
+
+      typeInputs.forEach(function(input) {
+        if (input.checked) {
+          total += parseFloat(input.dataset[key] || '0');
+          baseDays = parseInt(input.dataset.days || '4', 10);
+        }
+      });
+
+      addonInputs.forEach(function(input) {
+        if (input.checked) {
+          total += parseFloat(input.dataset[key] || '0');
+          selectedAddonCount++;
+        }
+      });
+
+      if (totalDisplay) {
+        totalDisplay.textContent = formatVal(total, currency);
+      }
+
+      if (timeDisplay) {
+        var maxDays = baseDays + (selectedAddonCount * 2);
+        timeDisplay.textContent = baseDays + '–' + maxDays + ' días';
+      }
+    }
+
+    typeInputs.forEach(function(i) { i.addEventListener('change', recalculate); });
+    addonInputs.forEach(function(i) { i.addEventListener('change', recalculate); });
+
+    // Observar cambios en data-tier o data-currency del HTML para actualizar en tiempo real
+    var observer = new MutationObserver(function() {
+      recalculate();
+    });
+    observer.observe(root, { attributes: true, attributeFilter: ['data-tier', 'data-currency'] });
+
+    if (submitBtn) {
+      submitBtn.addEventListener('click', function() {
+        var selectedName = '';
+        typeInputs.forEach(function(i) { if (i.checked) selectedName = i.dataset.name || ''; });
+
+        var contactForm = document.getElementById('contact-form');
+        var budgetInput = contactForm ? contactForm.querySelector('input[name="budget"]') : null;
+        var msgTextarea = contactForm ? contactForm.querySelector('textarea[name="message"]') : null;
+
+        if (totalDisplay && budgetInput) {
+          budgetInput.value = '~ ' + totalDisplay.textContent;
+        }
+        if (msgTextarea && selectedName) {
+          msgTextarea.value = 'Presupuesto estimado desde calculadora: ' + selectedName + '. Presupuesto total: ' + (totalDisplay ? totalDisplay.textContent : '');
+        }
+
+        var modal = document.getElementById('contact-modal');
+        if (modal) {
+          modal.classList.add('is-open');
+          modal.setAttribute('aria-hidden', 'false');
+        } else {
+          contactForm && contactForm.scrollIntoView({ behavior: 'smooth' });
+        }
+      });
+    }
+
+    recalculate();
+  })();
+</script>

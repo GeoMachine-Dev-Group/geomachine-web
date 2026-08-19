@@ -1,0 +1,235 @@
+---
+import Base from '../layouts/Base.astro';
+import { type Lang } from '../i18n/ui';
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+
+const content = {
+  es: {
+    title: "GeoMachine Accounts — Control de Inventario y Gestión de Cuentas Pymes",
+    description: "Software de gestión local de inventario, analítica ABC y cálculo de beneficio neto real. 100% privado, con base de datos SQLite.",
+    tagline: "Software de Gestión de Inventario y Cuentas",
+    headline: "El sistema definitivo para controlar tu stock y calcular tu beneficio neto",
+    lead: "Gestiona tu inventario diario de forma rápida, visualiza tu margen real de ganancia por producto y automatiza tu logística de reordenación con análisis ABC. Sin internet, sin suscripciones, 100% local y privado.",
+    downloadWin: "Descargar para Windows (.exe)",
+    downloadLin: "Descargar para Linux (Portable)",
+    detailsTitle: "Características principales",
+    feature1Title: "100% Local y Privado",
+    feature1Desc: "Tus datos se almacenan en una base de datos local SQLite. Sin subidas a la nube, garantizando absoluta privacidad comercial.",
+    feature2Title: "Análisis ABC Predictivo",
+    feature2Desc: "Clasifica automáticamente tus productos en categorías A, B y C según su volumen de ingresos, sugiriendo compras para la semana.",
+    feature3Title: "Estadísticas e Historial",
+    feature3Desc: "Gráficos integrados que comparan ingresos frente a beneficio neto real por días de la semana y muestran las tendencias históricas.",
+    feature4Title: "Gestión de Productos Completa",
+    feature4Desc: "Edición instantánea con doble clic de costos, precios, stock inicial y entradas de mercancía de forma visual.",
+    seoSectionTitle: "Distribución y Visibilidad",
+    seoDesc: "Para partners de GeoMachine, esta herramienta incluye en su pie de página un Sello Digital. Al entregarse a tus clientes o usarla en tu negocio, puedes enlazar el botón interactivo de soporte directamente a tu perfil de Google Business Reviews para acumular valoraciones de 5 estrellas automáticamente.",
+    installationTitle: "Instrucciones de Lanzamiento",
+    instStep1: "1. Descarga el ejecutable para tu plataforma.",
+    instStep2: "2. Ejecuta el archivo. En Windows, si aparece el filtro SmartScreen, haz clic en 'Más información' y luego en 'Ejecutar de todos modos'.",
+    instStep3: "3. La base de datos SQLite se creará automáticamente en la misma carpeta que el archivo ejecutable.",
+    backToHome: "Volver a GeoMachine",
+  },
+  en: {
+    title: "GeoMachine Accounts — Inventory Control & Small Business Bookkeeping",
+    description: "Local inventory management software, ABC analytics, and net profit tracking. 100% private with a built-in SQLite database.",
+    tagline: "Inventory & Profit Management Software",
+    headline: "The ultimate system to control your stock and calculate true net profit",
+    lead: "Manage your daily inventory fast, visualize real profit margins per product, and automate your reorder logistics with ABC analysis. Offline, no subscriptions, 100% local and private.",
+    downloadWin: "Download for Windows (.exe)",
+    downloadLin: "Download for Linux (Portable)",
+    detailsTitle: "Key Features",
+    feature1Title: "100% Local & Private",
+    feature1Desc: "Your data is stored in a local SQLite database. No cloud uploads, ensuring absolute commercial privacy.",
+    feature2Title: "Predictive ABC Analysis",
+    feature2Desc: "Automatically classifies products into A, B, and C categories based on revenue, suggesting orders for the week.",
+    feature3Title: "Analytics & History",
+    feature3Desc: "Integrated charts comparing revenues against net profit by day of the week, showing historical trends.",
+    feature4Title: "Full Product Management",
+    feature4Desc: "Instant double-click editing of costs, prices, initial stock, and received stock in a visual grid.",
+    seoSectionTitle: "Distribution & Visibility",
+    seoDesc: "For GeoMachine partners, this tool features an interactive Digital Seal in the footer. When deployed to customers or used in your shop, clicking the seal can redirect users to your Google Business Profile to collect 5-star reviews automatically.",
+    installationTitle: "Launch Instructions",
+    instStep1: "1. Download the executable file for your platform.",
+    instStep2: "2. Run the file. On Windows, if SmartScreen flags it, click 'More info' and then select 'Run anyway'.",
+    instStep3: "3. The SQLite database will be initialized automatically in the same folder as the executable.",
+    backToHome: "Back to GeoMachine",
+  },
+  ru: {
+    title: "GeoMachine Accounts — Контроль инвентаря и управление счетами Pymes",
+    description: "Программа локального управления запасами, ABC-анализ и отслеживание чистой прибыли. 100% приватно на базе SQLite.",
+    tagline: "Программа управления инвентарем и счетами",
+    headline: "Лучшая система для контроля склада и расчета чистой прибыли",
+    lead: "Управляйте ежедневным инвентарем быстро, отслеживайте реальную маржинальность каждого товара и автоматизируйте закупки с помощью встроенного ABC-анализа. Без интернета, без подписок, полностью локально.",
+    downloadWin: "Скачать для Windows (.exe)",
+    downloadLin: "Скачать для Linux (Portable)",
+    detailsTitle: "Основные возможности",
+    feature1Title: "100% Локально и Приватно",
+    feature1Desc: "Все данные хранятся в локальной базе SQLite. Никаких облачных серверов, гарантируя полную конфиденциальность бизнеса.",
+    feature2Title: "Прогностический ABC-анализ",
+    feature2Desc: "Автоматически делит товары на категории A, B и C по выручке, выдавая рекомендации по заказу на выходные и неделю.",
+    feature3Title: "Аналитика и история",
+    feature3Desc: "Встроенные графики динамики продаж и прибыли по дням недели, наглядно показывающие рентабельность.",
+    feature4Title: "Управление каталогом",
+    feature4Desc: "Мгновенное редактирование цен, себестоимости, стартовых остатков и поступления товара по двойному клику.",
+    seoSectionTitle: "Дистрибуция и Видимость",
+    seoDesc: "Для партнеров GeoMachine в подвал программы встроен интерактивный Цифровой Скрипт. При установке клиентам или использовании на торговых точках, клик по логотипу ведет на форму отзывов Google Business Maps для автоматического сбора 5 звезд.",
+    installationTitle: "Инструкция по запуску",
+    instStep1: "1. Скачайте исполняемый файл для вашей платформы.",
+    instStep2: "2. Запустите файл. В Windows при предупреждении SmartScreen нажмите 'Подробнее', затем 'Выполнить в любом случае'.",
+    instStep3: "3. Локальная база SQLite создается автоматически в той же папке, где находится программа.",
+    backToHome: "Назад в GeoMachine",
+  },
+  ka: {
+    title: "GeoMachine Accounts — ინვენტარისა და მცირე ბიზნესის მოგების მართვა",
+    description: "ლოკალური ინვენტარის მართვის პროგრამა, ABC ანალიტიკა და სუფთა მოგების აღრიცხვა. 100% კონფიდენციალური SQLite ბაზით.",
+    tagline: "ინვენტარისა და მოგების მართვის სისტემა",
+    headline: "საუკეთესო სისტემა თქვენი მარაგებისა და სუფთა მოგების საკონტროლებლად",
+    lead: "მართეთ ყოველდღიური ინვენტარი სწრაფად, დაინახეთ თითოეული პროდუქტის რეალური მოგება და ავტომატიზაცია გაუკეთეთ შესყიდვებს ABC ანალიზის მეშვეობით. ინტერნეტის გარეშე, 100% ლოკალური და დაცული.",
+    downloadWin: "ჩამოტვირთვა Windows-ისთვის (.exe)",
+    downloadLin: "ჩამოტვირთვა Linux-ისთვის (Portable)",
+    detailsTitle: "მთავარი მახასიათებლები",
+    feature1Title: "100% ლოკალური და დაცული",
+    feature1Desc: "თქვენი მონაცემები ინახება ლოკალურ SQLite ბაზაში. ღრუბლის გარეშე, რაც უზრუნველყოფს კომერციული საიდუმლოების დაცვას.",
+    feature2Title: "პროგნოზირებადი ABC ანალიზი",
+    feature2Desc: "ავტომატურად ახდენს პროდუქტების კლასიფიკაციას A, B და C კატეგორიებად და გთავაზობთ კვირის შეკვეთის რაოდენობას.",
+    feature3Title: "ანალიტიკა და ისტორია",
+    feature3Desc: "ინტეგრირებული გრაფიკები, რომლებიც ადარებენ შემოსავლებს სუფთა მოგებასთან კვირის დღეების მიხედვით.",
+    feature4Title: "კატალოგის სრული მართვა",
+    feature4Desc: "თვითღირებულების, გასაყიდი ფასისა და მიღებული საქონლის მყისიერი რედაქტირება ცხრილზე ორმაგი დაწკაპუნებით.",
+    seoSectionTitle: "დისტრიბუცია და ცნობადობა",
+    seoDesc: "GeoMachine-ის პარტნიორებისთვის, პროგრამის ქვედა ნაწილში ჩაშენებულია ციფრული ბეჭედი. კლიენტებისთვის მიწოდებისას ან თქვენს მაღაზიაში გამოყენებისას, ბეჭედზე დაწკაპუნებით მომხმარებლები პირდაპირ გადადიან თქვენს Google Business-ის 5-ვარსკვლავიან შეფასებებზე.",
+    installationTitle: "გაშვების ინსტრუქცია",
+    instStep1: "1. ჩამოტვირთეთ თქვენი პლატფორმის შესაბამისი ფაილი.",
+    instStep2: "2. გაუშვით ფაილი. Windows-ზე SmartScreen გაფრთხილებისას დააწკაპუნეთ 'More info' და შემდეგ 'Run anyway'.",
+    instStep3: "3. SQLite მონაცემთა ბაზა ავტომატურად შეიქმნება იმავე საქაღალდეში, სადაც მდებარეობს ფაილი.",
+    backToHome: "GeoMachine-ზე დაბრუნება",
+  }
+};
+
+const t = content[lang];
+const site = 'https://geomachine.es';
+
+// Rutas locales de descarga para alternates hreflang
+const hreflangAlternates = [
+  { hreflang: 'es', href: `${site}/es/servicios/app-cuentas/` },
+  { hreflang: 'en', href: `${site}/en/services/app-accounts/` },
+  { hreflang: 'ru', href: `${site}/ru/uslugi/app-accounts/` },
+  { hreflang: 'ka', href: `${site}/ka/momsakhurebebi/app-accounts/` },
+];
+---
+
+<Base 
+  lang={lang}
+  title={t.title}
+  description={t.description}
+  pageUrl={hreflangAlternates.find(a => a.hreflang === lang)?.href}
+  hreflangAlternates={hreflangAlternates}
+  schema="none"
+>
+  <Fragment slot="head">
+    <script type="application/ld+json" is:inline set:html={JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "SoftwareApplication",
+      "name": "GeoMachine Accounts",
+      "operatingSystem": "Windows, Linux",
+      "applicationCategory": "BusinessApplication",
+      "downloadUrl": "https://geomachine.es/downloads/GeoMachineAccounts.exe",
+      "offers": {
+        "@type": "Offer",
+        "price": "0.00",
+        "priceCurrency": "EUR"
+      }
+    })} />
+  </Fragment>
+
+  <section class="hero shell">
+    <p class="hero__eyebrow">{t.tagline}</p>
+    <h1 class="hero__title" style="max-width: 25ch; white-space: normal;">{t.headline}</h1>
+    <p class="hero__body" style="max-width: 60ch;">{t.lead}</p>
+    
+    <div style="margin-top: 2.5rem; display: flex; flex-wrap: wrap; gap: 1rem;">
+      <a href="/downloads/GeoMachineAccounts.exe" download="GeoMachineAccounts.exe" class="card__button card__button--featured" style="text-decoration: none; padding: 0.9rem 2rem; font-size: 1rem; font-weight: bold; border-radius: 6px; display: inline-flex; align-items: center; gap: 0.5rem; background: var(--accent); color: var(--paper); border: none;">
+        <span>🪟</span> {t.downloadWin}
+      </a>
+      <a href="/downloads/GeoMachineAccounts.tar.gz" download="GeoMachineAccounts.tar.gz" class="card__button" style="text-decoration: none; padding: 0.9rem 2rem; font-size: 1rem; font-weight: bold; border-radius: 6px; display: inline-flex; align-items: center; gap: 0.5rem; background: var(--panel-2); color: var(--ink); border: 1px solid var(--rule);">
+        <span>🐧</span> {t.downloadLin}
+      </a>
+    </div>
+  </section>
+
+  <section class="shell" style="padding-bottom: 5rem;">
+    <h2 style="font-family: var(--display); font-size: 2rem; font-weight: bold; margin-bottom: 2rem; border-bottom: 1px solid var(--rule); padding-bottom: 0.5rem;">
+      {t.detailsTitle}
+    </h2>
+    
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 2rem; margin-bottom: 4rem;">
+      <div style="background: var(--panel); border: 1px solid var(--rule); padding: 1.5rem; border-radius: 8px;">
+        <h3 style="font-family: var(--display); font-size: 1.25rem; font-weight: bold; color: var(--accent); margin: 0 0 0.75rem 0;">
+          🔒 {t.feature1Title}
+        </h3>
+        <p style="margin: 0; font-size: 0.92rem; color: var(--ink-soft); line-height: 1.5;">
+          {t.feature1Desc}
+        </p>
+      </div>
+
+      <div style="background: var(--panel); border: 1px solid var(--rule); padding: 1.5rem; border-radius: 8px;">
+        <h3 style="font-family: var(--display); font-size: 1.25rem; font-weight: bold; color: var(--accent); margin: 0 0 0.75rem 0;">
+          🏷️ {t.feature2Title}
+        </h3>
+        <p style="margin: 0; font-size: 0.92rem; color: var(--ink-soft); line-height: 1.5;">
+          {t.feature2Desc}
+        </p>
+      </div>
+
+      <div style="background: var(--panel); border: 1px solid var(--rule); padding: 1.5rem; border-radius: 8px;">
+        <h3 style="font-family: var(--display); font-size: 1.25rem; font-weight: bold; color: var(--accent); margin: 0 0 0.75rem 0;">
+          📈 {t.feature3Title}
+        </h3>
+        <p style="margin: 0; font-size: 0.92rem; color: var(--ink-soft); line-height: 1.5;">
+          {t.feature3Desc}
+        </p>
+      </div>
+
+      <div style="background: var(--panel); border: 1px solid var(--rule); padding: 1.5rem; border-radius: 8px;">
+        <h3 style="font-family: var(--display); font-size: 1.25rem; font-weight: bold; color: var(--accent); margin: 0 0 0.75rem 0;">
+          📝 {t.feature4Title}
+        </h3>
+        <p style="margin: 0; font-size: 0.92rem; color: var(--ink-soft); line-height: 1.5;">
+          {t.feature4Desc}
+        </p>
+      </div>
+    </div>
+
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 3rem; background: var(--panel-2); border: 1px solid var(--rule); padding: 2.5rem; border-radius: 12px; margin-bottom: 4rem;">
+      <div>
+        <h2 style="font-family: var(--display); font-size: 1.75rem; font-weight: bold; margin: 0 0 1rem 0; color: var(--ink);">
+          ⚙️ {t.installationTitle}
+        </h2>
+        <ul style="list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 1rem; font-size: 0.95rem; color: var(--ink-soft); line-height: 1.6;">
+          <li>{t.instStep1}</li>
+          <li>{t.instStep2}</li>
+          <li>{t.instStep3}</li>
+        </ul>
+      </div>
+
+      <div>
+        <h2 style="font-family: var(--display); font-size: 1.75rem; font-weight: bold; margin: 0 0 1rem 0; color: var(--stamp);">
+          🏢 {t.seoSectionTitle}
+        </h2>
+        <p style="margin: 0; font-size: 0.95rem; color: var(--ink-soft); line-height: 1.6;">
+          {t.seoDesc}
+        </p>
+      </div>
+    </div>
+
+    <div style="text-align: center;">
+      <a href="/" style="font-family: var(--data); text-transform: uppercase; font-size: 0.85rem; letter-spacing: 0.1em; color: var(--ink-soft); text-decoration: none; border-bottom: 1px solid var(--rule); padding-bottom: 4px; transition: color 0.2s, border-color 0.2s;">
+        ← {t.backToHome}
+      </a>
+    </div>
+  </section>
+</Base>
