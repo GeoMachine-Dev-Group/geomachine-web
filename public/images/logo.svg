@@ -1,0 +1,22 @@
+<svg viewBox="18 48 164 104" fill="none" xmlns="http://www.w3.org/2000/svg" class="gm-brand-logo">
+  <defs>
+    <style>
+      @keyframes gmBlink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
+      .gm-term-bg { fill: #0d0f06; stroke: #22c55e; stroke-width: 2; }
+      .gm-term-accent { fill: #22c55e; }
+      .gm-term-cursor { fill: #22c55e; animation: gmBlink 1s step-end infinite; }
+    </style>
+  </defs>
+  <!-- Frame -->
+  <rect class="gm-term-bg" height="100" rx="12" width="160" x="20" y="50"></rect>
+  <!-- Header dots -->
+  <circle cx="45" cy="65" fill="#ef4444" r="4"></circle>
+  <circle cx="60" cy="65" fill="#f59e0b" r="4"></circle>
+  <circle cx="75" cy="65" fill="#22c55e" r="4"></circle>
+  <!-- Terminal Symbol -->
+  <path d="M50 95 L70 110 L50 125" fill="none" stroke="#22c55e" stroke-linecap="round" stroke-linejoin="round" stroke-width="6"></path>
+  <rect class="gm-term-cursor" height="8" width="40" x="80" y="115"></rect>
+  <!-- Decorative code lines -->
+  <rect class="gm-term-accent" height="3" opacity="0.3" width="100" x="50" y="140"></rect>
+  <rect class="gm-term-accent" height="3" opacity="0.2" width="60" x="50" y="148"></rect>
+</svg>

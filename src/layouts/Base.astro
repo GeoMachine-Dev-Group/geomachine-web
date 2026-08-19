@@ -4,6 +4,7 @@ import { ui, servicesPath, blogPath, languages, type Lang } from '../i18n/ui';
 import { DEFAULT_TIER, DEFAULT_CURRENCY } from '../data/catalog';
 import Schema from '../components/Schema.astro';
 import FloatingChat from '../components/FloatingChat.astro';
+import Logo from '../components/Logo.astro';
 
 interface HreflangAlt {
   hreflang: string;
@@ -69,6 +70,9 @@ const googleAnalyticsId = 'G-XXXXXXXXXX';
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon.png" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
 
     {
       analytics && (
@@ -133,7 +137,7 @@ const googleAnalyticsId = 'G-XXXXXXXXXX';
       "@type": ["Organization", "ProfessionalService"],
       "name": t.company,
       "url": site,
-      "logo": `${site}/favicon.svg`,
+      "logo": `${site}/favicon.png`,
       "description": t.metaDescription,
       "sameAs": [
         "https://t.me/geomachine"
@@ -180,7 +184,10 @@ const googleAnalyticsId = 'G-XXXXXXXXXX';
   <body>
     <header class="plate">
       <div class="shell plate__row">
-        <span class="plate__mark">GEO<span>·</span>MACHINE</span>
+        <a href={servicesPath[lang]} class="plate__logo-link" aria-label="GeoMachine">
+          <Logo class="plate__logo" width="46" height="30" />
+          <span class="plate__mark">GEO<span>·</span>MACHINE</span>
+        </a>
         <span>{t.plate} — {t.rev}</span>
         <nav class="plate__links">
           {
