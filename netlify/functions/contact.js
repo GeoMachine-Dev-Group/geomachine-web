@@ -26,7 +26,8 @@ export const handler = async (event) => {
   // Time-trap: un envío en menos de 3s desde que se pintó el formulario es,
   // casi siempre, un bot rellenando el form por script. Mismo criterio de
   // no delatar el filtro: 200 silencioso, no un error visible.
-  if (typeof startedAt !== 'number' || Date.now() - startedAt < 3000) {
+  const startTs = Number(startedAt);
+  if (!startTs || Number.isNaN(startTs) || Date.now() - startTs < 3000) {
     return { statusCode: 200, body: JSON.stringify({ ok: true }) };
   }
 
