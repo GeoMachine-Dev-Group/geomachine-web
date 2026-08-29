@@ -1,0 +1,12 @@
+---
+import Base from '../../layouts/Base.astro';
+import PayPalCheckout from '../../components/PayPalCheckout.astro';
+import { ui } from '../../i18n/ui';
+
+const t = ui['ka'];
+---
+<Base lang="ka" title={`${t.paymentTitle} - ${t.company}`}>
+  <main style="padding-top: 8rem; min-height: 80vh;">
+    <PayPalCheckout />
+  </main>
+</Base>

@@ -23,6 +23,14 @@ export const servicesPath: Record<Lang, string> = {
 
 /** El blog solo existe en es/ru por ahora (ver Decisiones/estrategia-contenido.md). */
 export type BlogLang = 'es' | 'ru';
+
+export const paymentPath: Record<Lang, string> = {
+  es: '/es/pago/',
+  en: '/en/payment/',
+  ru: '/ru/oplata/',
+  ka: '/ka/gadakhda/',
+};
+
 export const blogPath: Record<BlogLang, string> = {
   es: '/es/blog/',
   ru: '/ru/blog/',

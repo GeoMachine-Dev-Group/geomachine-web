@@ -23,3 +23,7 @@ yarn-error.log*
 
 # Estado local de la CLI de Netlify (site_id de esta máquina, no del proyecto)
 .netlify/
+
+# Artefactos de deploy (identificadores de Netlify, no fuente)
+deploy_id.txt
+deploy_info.json

@@ -1,6 +1,6 @@
 ---
 import '../styles/global.css';
-import { ui, servicesPath, blogPath, languages, type Lang } from '../i18n/ui';
+import { ui, servicesPath, blogPath, paymentPath, languages, type Lang } from '../i18n/ui';
 import { DEFAULT_TIER, DEFAULT_CURRENCY } from '../data/catalog';
 import Schema from '../components/Schema.astro';
 import FloatingChat from '../components/FloatingChat.astro';
@@ -190,6 +190,10 @@ const googleAnalyticsId = 'G-XXXXXXXXXX';
         </a>
         <span>{t.plate} — {t.rev}</span>
         <nav class="plate__links">
+          <a href={paymentPath[lang]} class="plate__blog-link" style="color: var(--accent); font-weight: 600;">
+            {t.paymentTitle}
+          </a>
+
           {
             (lang === 'es' || lang === 'ru') && (
               <a href={blogPath[lang]} class="plate__blog-link">
