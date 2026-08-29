@@ -53,8 +53,9 @@ Estado real a 2026-08-29 23:40 (pipeline ya cerrado y funcionando):
 - Framework: **Astro 5**, adaptador **`@astrojs/vercel` v8** (import de
   `'@astrojs/vercel'`, no `/serverless`). Se subió desde Astro 4 + v7 porque
   Node 20.x deja de compilar en Vercel el 2026-10-01 y v7 no soportaba Node 22.
-- Node.js Version del proyecto: **20.x** — cambiar a **22.x** antes del
-  2026-10-01 (Vercel → Settings → Build & Deployment).
+- Node: **fijado a 22.x** vía `engines.node` en `package.json` (Vercel lo
+  respeta en el build; el desplegable del panel es irrelevante). Resuelto el
+  problema del EOL de Node 20 del 2026-10-01.
 - Formulario de contacto: función Vercel `src/pages/api/contact.ts`
   (`prerender: false`), envía a Telegram (bot `@GMDevPBot`, chat `6266899873`).
   `TELEGRAM_BOT_TOKEN` y `TELEGRAM_CHAT_ID` **ya puestas** en las env vars del
