@@ -37,33 +37,38 @@ errores + repasar visualmente las rutas tocadas en `npm run preview`. Para
 la ruta de API (`/api/contact`, ver §5), probar en dev que responde
 `200`/`400`/`405` según el caso, no solo que compila.
 
-## 5. Publicar
-
 **`DEPLOY.md` está obsoleto — no seguirlo sin verificar primero.** Dice
 "el flujo activo es Netlify" (nota fechada 2026-08-12); ya no es así.
 
-Estado real a 2026-08-29:
-- Producción actual (`geomachine.es`) sigue sirviendo un **deploy manual por
-  ZIP** del 2026-08-19, en el proyecto Vercel `geomachine-web-lista`
-  (team `geo-machine`).
-- Repo conectado: **`GeoMachine-Dev-Group/geomachine-web`** (GitHub, privado).
-  El pipeline Git→Vercel ya funciona y construye en verde (adaptador
-  `@astrojs/vercel/serverless`, Node 20.x — la versión 18.x que usaba antes
-  daba `ERROR` de runtime inválido, ya corregido).
-- **Falta conectar el dominio `geomachine.es` a ese proyecto** (hoy el
-  proyecto solo tiene subdominios `*.vercel.app`, `live: false`). Sin eso,
-  ningún commit nuevo llega a producción real. Acción del usuario, panel de
-  Vercel → Settings → Domains.
-- El formulario de contacto usa una función serverless de Vercel
-  (`src/pages/api/contact.ts`, `prerender: false`) — necesita
-  `TELEGRAM_BOT_TOKEN` y `TELEGRAM_CHAT_ID` puestas en las env vars del
-  proyecto Vercel; no están en ningún `.env` del repo.
+Estado real a 2026-08-29 23:40 (pipeline ya cerrado y funcionando):
+- **`git push` a `main` → deploy automático a producción.** Verificado con
+  varios commits (`72ee624`, `16c5614`). Proyecto Vercel `geomachine-web-lista`
+  (team `geo-machine`, `prj_Zz8Tx7iJaW7F3K1ICnmFzpZFUedt`).
+- Repo conectado: **`GeoMachine-Dev-Group/geomachine-web` (GitHub, PÚBLICO)**.
+  Es público a propósito: Vercel Hobby no conecta repos privados de
+  organización, sí públicos. Es un sitio de marketing sin secretos en el
+  código (todo por env vars).
+- Dominio: `geomachine.es` **y** `www.geomachine.es` ya conectados a este
+  proyecto (redirige a `www`). Ya NO sirve el ZIP del 19-ago.
+- Framework: **Astro 5**, adaptador **`@astrojs/vercel` v8** (import de
+  `'@astrojs/vercel'`, no `/serverless`). Se subió desde Astro 4 + v7 porque
+  Node 20.x deja de compilar en Vercel el 2026-10-01 y v7 no soportaba Node 22.
+- Node.js Version del proyecto: **20.x** — cambiar a **22.x** antes del
+  2026-10-01 (Vercel → Settings → Build & Deployment).
+- Formulario de contacto: función Vercel `src/pages/api/contact.ts`
+  (`prerender: false`), envía a Telegram (bot `@GMDevPBot`, chat `6266899873`).
+  `TELEGRAM_BOT_TOKEN` y `TELEGRAM_CHAT_ID` **ya puestas** en las env vars del
+  proyecto Vercel (3 entornos). No están en ningún `.env` del repo.
+- Si el auto-deploy dejara de disparar tras mover/transferir el repo: Vercel →
+  Settings → Git → Disconnect + Connect re-arma el webhook (ya pasó una vez).
 - El `deploy.sh` + `deploy/nginx/` para VPS propio siguen ahí, sin usarse,
   a la espera de que se resuelva un ticket de OVH.
 
 ## 6. Convenciones
 
-- Astro estático (`output: 'hybrid'`), solo `/api/contact` es on-demand.
+- Astro estático (`output: 'static'` en Astro 5; equivale al antiguo
+  `'hybrid'`), solo `/api/contact` es on-demand (`prerender = false` en esa
+  ruta).
 - Rutas de servicios por idioma en `astro.config.mjs` (`SERVICES`) — deben
   mantenerse sincronizadas con `servicesPath` en `src/i18n/ui.ts`.
 - Sitemap con hreflang inyectado a mano en `serialize()` porque los slugs de
@@ -72,11 +77,11 @@ Estado real a 2026-08-29:
 
 ## 7. No tocar
 
-- **`geomachine-web` no se toca desde la interfaz web de GitHub** — se
-  transfirió a la org y se puso en privado por API el 2026-08-29
-  precisamente porque tocarlo a mano en la web lo devolvió antes a la
-  cuenta personal y público. Cualquier cambio de settings del repo, por
-  API/CLI.
+- **Cambios de settings de `geomachine-web` (visibilidad, dueño), por
+  API/CLI, no desde la web de GitHub.** El 2026-08-29 el repo rebotó varias
+  veces entre org/personal y privado/público por ediciones manuales cruzadas
+  entre dos sesiones. Estado final correcto: **org `GeoMachine-Dev-Group`,
+  público**. No cambiar sin motivo — Vercel Hobby depende de que sea público.
 - No versionar binarios grandes en `public/downloads/` — ya pasó una vez
   (`GeoMachineAccounts.exe`/`.tar.gz`, 90 MB juntos) y se purgó del
   historial con `filter-branch`. Van como assets de GitHub Release
