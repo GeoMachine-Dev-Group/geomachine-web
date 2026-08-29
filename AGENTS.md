@@ -37,6 +37,8 @@ errores + repasar visualmente las rutas tocadas en `npm run preview`. Para
 la ruta de API (`/api/contact`, ver §5), probar en dev que responde
 `200`/`400`/`405` según el caso, no solo que compila.
 
+## 5. Publicar
+
 **`DEPLOY.md` está obsoleto — no seguirlo sin verificar primero.** Dice
 "el flujo activo es Netlify" (nota fechada 2026-08-12); ya no es así.
 
