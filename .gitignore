@@ -30,3 +30,6 @@ deploy_info.json
 
 # Salida de build del adaptador de Vercel
 .vercel/
+
+# Binarios de la app de escritorio: se sirven desde GitHub Releases, no desde el repo
+public/downloads/
