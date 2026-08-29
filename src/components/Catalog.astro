@@ -554,27 +554,14 @@ const featuredMap: Record<string, Record<Lang, string>> = {
 
       try {
         const payload = Object.fromEntries(new FormData(form).entries());
-        let sent = false;
 
-        try {
-          const res = await fetch('/.netlify/functions/contact', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(payload),
-          });
-          if (res.ok) sent = true;
-        } catch {}
+        const res = await fetch('/api/contact', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload),
+        });
 
-        if (!sent) {
-          try {
-            const res = await fetch('/api/contact', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify(payload),
-            });
-            if (res.ok) sent = true;
-          } catch {}
-        }
+        if (!res.ok) throw new Error('send_failed');
 
         // No ocultar ningún campo para mantener la estructura perfecta del formulario
         form.reset();

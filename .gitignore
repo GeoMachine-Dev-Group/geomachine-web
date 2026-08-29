@@ -27,3 +27,6 @@ yarn-error.log*
 # Artefactos de deploy (identificadores de Netlify, no fuente)
 deploy_id.txt
 deploy_info.json
+
+# Salida de build del adaptador de Vercel
+.vercel/
