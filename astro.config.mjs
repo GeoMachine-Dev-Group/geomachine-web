@@ -1,6 +1,6 @@
 import { defineConfig } from 'astro/config';
 import sitemap from '@astrojs/sitemap';
-import vercel from '@astrojs/vercel/serverless';
+import vercel from '@astrojs/vercel';
 
 const SITE = 'https://geomachine.es';
 
@@ -34,8 +34,9 @@ export default defineConfig({
   site: SITE,
   // El sitio se prerenderiza entero salvo la ruta on-demand /api/contact
   // (prerender = false en ese endpoint), que el adaptador de Vercel despliega
-  // como función.
-  output: 'hybrid',
+  // como función. En Astro 5 'static' + prerender=false por ruta sustituye al
+  // antiguo 'hybrid'.
+  output: 'static',
   adapter: vercel(),
   redirects: {
     '/': '/es/servicios/',
