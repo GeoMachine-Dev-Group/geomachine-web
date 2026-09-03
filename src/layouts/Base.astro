@@ -61,8 +61,6 @@ const preloadFont: Record<Lang, string> = {
   ka: '/fonts/noto-sans-georgian-700-georgian.woff2',
 };
 
-/** Google Analytics 4 ID — Modifica esta constante con tu ID real de GA4 */
-const googleAnalyticsId = 'G-XXXXXXXXXX';
 ---
 
 <!doctype html>
@@ -83,15 +81,6 @@ const googleAnalyticsId = 'G-XXXXXXXXXX';
             window.plausible = window.plausible || function () { (plausible.q = plausible.q || []).push(arguments) };
             plausible.init = plausible.init || function (i) { plausible.o = i || {} };
             plausible.init();
-          </script>
-
-          <!-- Google Analytics (gtag.js) -->
-          <script async is:inline src={`https://www.googletagmanager.com/gtag/js?id=${googleAnalyticsId}`}></script>
-          <script is:inline define:vars={{ googleAnalyticsId }}>
-            window.dataLayer = window.dataLayer || [];
-            function gtag(){dataLayer.push(arguments);}
-            gtag('js', new Date());
-            gtag('config', googleAnalyticsId);
           </script>
         </Fragment>
       )

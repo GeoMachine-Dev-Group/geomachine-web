@@ -18,6 +18,10 @@ const { lang, title, description, pubDate, updatedDate, pageUrl } = Astro.props;
 const t = ui[lang];
 const site = new URL(pageUrl).origin;
 const orgId = `${site}/#organization`;
+/** Mismo OG por idioma que usa Base.astro — no hay imagen por artículo en el
+    esquema de contenido, así que reutilizamos el genérico de cada idioma
+    para que BlogPosting sea elegible a Rich Results (image es obligatorio). */
+const image = `${site}/og/og-${lang}.png`;
 
 const graph = {
   '@context': 'https://schema.org',
@@ -29,6 +33,7 @@ const graph = {
       mainEntityOfPage: { '@type': 'WebPage', '@id': pageUrl },
       headline: title,
       description,
+      image,
       datePublished: pubDate.toISOString(),
       ...(updatedDate ? { dateModified: updatedDate.toISOString() } : {}),
       inLanguage: t.htmlLang,
