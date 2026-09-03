@@ -86,3 +86,39 @@ export function readingTime(body: string, wordsPerMinute = 200): number {
   const wordCount = body.trim().split(/\s+/).filter(Boolean).length;
   return Math.max(1, Math.ceil(wordCount / wordsPerMinute));
 }
+
+/**
+ * Pilares afines por cercanía temática real (no alfabética), para
+ * completar `relatedArticles` cuando el pilar del artículo no tiene
+ * suficientes hermanos propios — nunca se mete un artículo de un pilar
+ * sin relación solo por rellenar el mínimo.
+ */
+const PILLAR_FALLBACK: Record<string, string[]> = {
+  WEB: ['SEO', 'SYS'],
+  APP: ['WEB', 'IA'],
+  IA: ['SYS', 'WEB'],
+  SEO: ['WEB', 'MNT'],
+  MNT: ['SYS', 'WEB'],
+  SYS: ['IA', 'MNT'],
+};
+
+/**
+ * Hasta `max` artículos para el cross-linking interno del blog: primero
+ * los del mismo pilar (más relevantes), y si no hay suficientes, completa
+ * con los pilares afines de PILLAR_FALLBACK, en orden. `entries` debe venir
+ * ya filtrado al idioma del artículo actual — el cross-linking no cruza
+ * idiomas, cruza pilares.
+ */
+export function relatedArticles<T extends CollectionEntry<'blog'>>(
+  entries: T[],
+  current: T,
+  max = 3,
+): T[] {
+  const pool = entries.filter((e) => e.id !== current.id);
+  const result = pool.filter((e) => e.data.pillar === current.data.pillar);
+  for (const pillar of PILLAR_FALLBACK[current.data.pillar] ?? []) {
+    if (result.length >= max) break;
+    result.push(...pool.filter((e) => e.data.pillar === pillar && !result.includes(e)));
+  }
+  return result.slice(0, max);
+}
