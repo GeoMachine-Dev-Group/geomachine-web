@@ -36,8 +36,8 @@ Antes de comprar nada, la pregunta clave es: **¿qué tamaño de modelo necesita
 
 ## Cómo lo hago yo
 
-Antes de recomendarte ningún componente, hablamos de qué vas a hacer realmente con la IA — no vendo la configuración más cara, sino la que encaja con tu caso de uso. La [auditoría de hardware](https://geomachine.es/es/servicios/#sys) te dice exactamente qué piezas valen la pena para tu situación concreta, en 2-4 días, sin pagar de más por especificaciones que nunca vas a usar.
+Antes de recomendarte ningún componente, hablamos de qué vas a hacer realmente con la IA — no vendo la configuración más cara, sino la que encaja con tu caso de uso. La [auditoría de hardware](/es/servicios/#sys) te dice exactamente qué piezas valen la pena para tu situación concreta, en 2-4 días, sin pagar de más por especificaciones que nunca vas a usar.
 
 ---
 
-**¿Estás valorando montar tu propia infraestructura de IA?** Cuéntame qué quieres correr y te digo qué hardware necesitas de verdad. [Mira el servicio aquí](https://geomachine.es/es/servicios/#sys).
+**¿Estás valorando montar tu propia infraestructura de IA?** Cuéntame qué quieres correr y te digo qué hardware necesitas de verdad. [Mira el servicio aquí](/es/servicios/#sys).

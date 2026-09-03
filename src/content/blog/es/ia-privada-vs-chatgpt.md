@@ -53,4 +53,4 @@ Configuro el modelo directamente en tu servidor, sin que nada pase por servidore
 
 ---
 
-**¿Manejas datos que no deberían salir de tu empresa?** Cuéntame tu caso y vemos si necesitas esto de verdad, o si te sobra. [Mira el servicio aquí](https://geomachine.es/es/servicios/#ia).
+**¿Manejas datos que no deberían salir de tu empresa?** Cuéntame tu caso y vemos si necesitas esto de verdad, o si te sobra. [Mira el servicio aquí](/es/servicios/#ia).

@@ -40,8 +40,8 @@ Un MVP con usuarios, base de datos y un panel de gestión básico se mueve entre
 
 ## Cómo lo abordo yo
 
-Antes de escribir una línea de código, hablamos de qué es lo mínimo real que necesitas para probar tu idea con usuarios de verdad — no para impresionar a un inversor con una lista de funciones, sino para saber si la gente lo va a usar. A partir de ahí, [construyo el MVP](https://geomachine.es/es/servicios/#app) con la base técnica bien hecha desde el principio, para que si funciona, se pueda hacer crecer sin tener que rehacerlo desde cero.
+Antes de escribir una línea de código, hablamos de qué es lo mínimo real que necesitas para probar tu idea con usuarios de verdad — no para impresionar a un inversor con una lista de funciones, sino para saber si la gente lo va a usar. A partir de ahí, [construyo el MVP](/es/servicios/#app) con la base técnica bien hecha desde el principio, para que si funciona, se pueda hacer crecer sin tener que rehacerlo desde cero.
 
 ---
 
-**¿Tienes una idea que quieres probar sin arriesgar 20.000€?** Cuéntame de qué se trata y te digo qué sería el MVP real de tu caso. [Mira el servicio aquí](https://geomachine.es/es/servicios/#app).
+**¿Tienes una idea que quieres probar sin arriesgar 20.000€?** Cuéntame de qué se trata y te digo qué sería el MVP real de tu caso. [Mira el servicio aquí](/es/servicios/#app).

@@ -46,8 +46,8 @@ Si alguno de estos tres falla, ahí tienes trabajo pendiente real.
 
 ## Cómo lo hago yo
 
-Configuro el hreflang correctamente desde el primer momento de construir la web multiidioma — no como un parche añadido después — y me aseguro de que cada versión de idioma tenga el mismo nivel de contenido, no una traducción a medias. Esto lo verifico como parte de [cualquier proyecto multiidioma](https://geomachine.es/es/servicios/#seo), con una lista de comprobación técnica antes de dar el trabajo por terminado.
+Configuro el hreflang correctamente desde el primer momento de construir la web multiidioma — no como un parche añadido después — y me aseguro de que cada versión de idioma tenga el mismo nivel de contenido, no una traducción a medias. Esto lo verifico como parte de [cualquier proyecto multiidioma](/es/servicios/#seo), con una lista de comprobación técnica antes de dar el trabajo por terminado.
 
 ---
 
-**¿Tu web ya está en dos idiomas pero sospechas que algo no está bien configurado?** Cuéntame cuáles y reviso los puntos técnicos reales. [Mira el servicio aquí](https://geomachine.es/es/servicios/#seo).
+**¿Tu web ya está en dos idiomas pero sospechas que algo no está bien configurado?** Cuéntame cuáles y reviso los puntos técnicos reales. [Mira el servicio aquí](/es/servicios/#seo).

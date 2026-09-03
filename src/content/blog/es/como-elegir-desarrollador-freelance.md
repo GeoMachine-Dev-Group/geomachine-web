@@ -48,10 +48,10 @@ Una web no es un objeto que se entrega y se olvida — necesita hosting, copias 
 
 ## Cómo aplico esto yo mismo
 
-No te lo cuento desde fuera — esto es exactamente cómo trabajo: te doy el precio después de entender qué necesitas, no antes; el rango depende del alcance real, como puedes ver en [mi catálogo de servicios](https://geomachine.es/es/servicios/); se factura 50% al empezar y 50% al entregar; y puedes comprobar trabajo real mío ahora mismo, no una maqueta — [gagraservis.ru](https://gagraservis.ru/) está en producción, funcionando, ábrelo tú mismo.
+No te lo cuento desde fuera — esto es exactamente cómo trabajo: te doy el precio después de entender qué necesitas, no antes; el rango depende del alcance real, como puedes ver en [mi catálogo de servicios](/es/servicios/); se factura 50% al empezar y 50% al entregar; y puedes comprobar trabajo real mío ahora mismo, no una maqueta — [gagraservis.ru](https://gagraservis.ru/) está en producción, funcionando, ábrelo tú mismo.
 
 Si alguna vez un desarrollador te da todas estas señales al revés — precio antes de preguntar, pago completo por adelantado, sin nada por escrito — no es mala suerte si algo sale mal después. Ya lo sabías desde el primer mensaje.
 
 ---
 
-**¿Tienes claro lo que necesitas y quieres un presupuesto de verdad?** Escríbeme, te lo devuelvo cerrado y con fecha el mismo día. [Mira mis servicios y precios aquí](https://geomachine.es/es/servicios/).
+**¿Tienes claro lo que necesitas y quieres un presupuesto de verdad?** Escríbeme, te lo devuelvo cerrado y con fecha el mismo día. [Mira mis servicios y precios aquí](/es/servicios/).

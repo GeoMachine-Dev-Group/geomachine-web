@@ -32,7 +32,7 @@ Negocios con fotos reales del local, del equipo, de los vehículos (si aplica) r
 
 ## 4. Consistencia con tu web
 
-Google cruza los datos de tu perfil con los de tu propia web. Si tu web tiene [datos estructurados (schema.org)](https://geomachine.es/es/servicios/#seo) con tu dirección, teléfono y horario, y coinciden exactamente con el perfil de Google Business, eso refuerza la confianza del algoritmo en que la información es real y está actualizada.
+Google cruza los datos de tu perfil con los de tu propia web. Si tu web tiene [datos estructurados (schema.org)](/es/servicios/#seo) con tu dirección, teléfono y horario, y coinciden exactamente con el perfil de Google Business, eso refuerza la confianza del algoritmo en que la información es real y está actualizada.
 
 ## 5. La ubicación de quien busca importa más que tu ranking general
 
@@ -46,8 +46,8 @@ Un dato que sorprende a mucha gente: puedes aparecer #1 para alguien que busca a
 
 ## Cuándo tiene sentido pedir ayuda
 
-Si ya tienes el perfil creado pero no aparece bien posicionado, normalmente el problema está en la combinación de varias cosas pequeñas (categoría mal elegida, datos inconsistentes con la web, pocas reseñas recientes) — más que en una sola causa grande. Por eso reviso todo el conjunto de una vez, en vez de darte consejos sueltos: [optimización de ficha local completa](https://geomachine.es/es/servicios/#seo), en 2-4 días.
+Si ya tienes el perfil creado pero no aparece bien posicionado, normalmente el problema está en la combinación de varias cosas pequeñas (categoría mal elegida, datos inconsistentes con la web, pocas reseñas recientes) — más que en una sola causa grande. Por eso reviso todo el conjunto de una vez, en vez de darte consejos sueltos: [optimización de ficha local completa](/es/servicios/#seo), en 2-4 días.
 
 ---
 
-**¿Ya tienes el perfil pero no aparece cuando deberías?** Cuéntame tu caso y reviso qué falla. [Mira el servicio aquí](https://geomachine.es/es/servicios/#seo).
+**¿Ya tienes el perfil pero no aparece cuando deberías?** Cuéntame tu caso y reviso qué falla. [Mira el servicio aquí](/es/servicios/#seo).

@@ -44,4 +44,4 @@ No es un bot genérico que responde cualquier cosa — se configura con **tus da
 
 ---
 
-**¿Contestar WhatsApp te está quitando tiempo de verdad?** Cuéntame cuántos mensajes repetitivos recibes al día y te digo si en tu caso compensa. [Mira el servicio completo aquí](https://geomachine.es/es/servicios/#ia).
+**¿Contestar WhatsApp te está quitando tiempo de verdad?** Cuéntame cuántos mensajes repetitivos recibes al día y te digo si en tu caso compensa. [Mira el servicio completo aquí](/es/servicios/#ia).

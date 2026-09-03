@@ -50,4 +50,4 @@ Configuro el VPS optimizado específicamente para tu caso — no una plantilla g
 
 ---
 
-**¿Notas que tu hosting actual se te está quedando pequeño?** Cuéntame qué señales ves y te digo si ya es momento de dar el salto. [Mira el servicio aquí](https://geomachine.es/es/servicios/#sys).
+**¿Notas que tu hosting actual se te está quedando pequeño?** Cuéntame qué señales ves y te digo si ya es momento de dar el salto. [Mira el servicio aquí](/es/servicios/#sys).

@@ -42,8 +42,8 @@ Esto no es "instalar una app" — es una arquitectura pensada específicamente p
 
 ## Cómo lo abordo yo
 
-Combino [infraestructura y modelo](https://geomachine.es/es/servicios/#sys) en un solo proceso: optimizo el servidor para la carga real que va a tener, y configuro la IA para que corra ahí sin depender de la nube para nada sensible. El resultado: la misma utilidad de una IA moderna, con tus datos donde deben estar — dentro de tu empresa.
+Combino [infraestructura y modelo](/es/servicios/#sys) en un solo proceso: optimizo el servidor para la carga real que va a tener, y configuro la IA para que corra ahí sin depender de la nube para nada sensible. El resultado: la misma utilidad de una IA moderna, con tus datos donde deben estar — dentro de tu empresa.
 
 ---
 
-**¿Tu negocio maneja datos que no deberían salir de la empresa?** Cuéntame qué tipo de información manejas y te digo si esto es lo que necesitas. [Mira los servicios de sistemas e IA privada aquí](https://geomachine.es/es/servicios/#sys).
+**¿Tu negocio maneja datos que no deberían salir de la empresa?** Cuéntame qué tipo de información manejas y te digo si esto es lo que necesitas. [Mira los servicios de sistemas e IA privada aquí](/es/servicios/#sys).

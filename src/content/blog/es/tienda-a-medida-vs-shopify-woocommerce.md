@@ -65,4 +65,4 @@ Le pregunto primero: ¿cuánto tiempo llevas planeando vender esto? ¿tu catálo
 
 ---
 
-**¿No tienes claro cuál te conviene?** Cuéntame qué vendes y cómo, y te digo honestamente cuál de las tres opciones es la tuya. [Mira el servicio de tienda a medida aquí](https://geomachine.es/es/servicios/#web).
+**¿No tienes claro cuál te conviene?** Cuéntame qué vendes y cómo, y te digo honestamente cuál de las tres opciones es la tuya. [Mira el servicio de tienda a medida aquí](/es/servicios/#web).

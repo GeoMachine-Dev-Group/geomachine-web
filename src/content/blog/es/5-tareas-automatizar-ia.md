@@ -48,8 +48,8 @@ Una regla simple: si una tarea te lleva más de 30 minutos a la semana y siempre
 
 ## Cómo empiezo yo con un cliente
 
-No automatizo nada a ciegas — primero hago una [auditoría de procesos](https://geomachine.es/es/servicios/#ia): reviso cómo trabajas ahora y te digo por escrito, en orden de prioridad, qué merece la pena automatizar primero y cuánto tiempo real te ahorraría. A partir de ahí, montamos solo lo que de verdad tiene sentido para tu negocio — no un paquete genérico que sirve igual para todo el mundo.
+No automatizo nada a ciegas — primero hago una [auditoría de procesos](/es/servicios/#ia): reviso cómo trabajas ahora y te digo por escrito, en orden de prioridad, qué merece la pena automatizar primero y cuánto tiempo real te ahorraría. A partir de ahí, montamos solo lo que de verdad tiene sentido para tu negocio — no un paquete genérico que sirve igual para todo el mundo.
 
 ---
 
-**¿Tienes alguna de estas cinco en tu día a día?** Escríbeme cuál te quita más tiempo y te digo si merece la pena automatizarla. [Mira los servicios de IA aquí](https://geomachine.es/es/servicios/#ia).
+**¿Tienes alguna de estas cinco en tu día a día?** Escríbeme cuál te quita más tiempo y te digo si merece la pena automatizarla. [Mira los servicios de IA aquí](/es/servicios/#ia).

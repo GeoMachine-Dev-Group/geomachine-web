@@ -48,4 +48,4 @@ No empiezo por "cuántas pantallas quieres" — empiezo por la arquitectura: có
 
 ---
 
-**¿Tienes una idea de app de transporte o reservas en tiempo real?** Cuéntame el caso concreto y te doy un desglose real, no una cifra genérica. [Mira el paquete completo aquí](https://geomachine.es/es/servicios/#paquetes).
+**¿Tienes una idea de app de transporte o reservas en tiempo real?** Cuéntame el caso concreto y te doy un desglose real, no una cifra genérica. [Mira el paquete completo aquí](/es/servicios/#paquetes).

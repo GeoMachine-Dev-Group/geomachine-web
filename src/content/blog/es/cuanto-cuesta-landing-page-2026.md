@@ -48,7 +48,7 @@ Un formulario simple que manda un email es rápido. Un formulario que se conecta
 
 ## Un ejemplo real, para que lo veas aplicado
 
-Este mismo criterio es el que uso yo en [mi propio catálogo de servicios](https://geomachine.es/es/servicios/#web) — no tengo un precio único de landing page, tengo un rango de **250€ a 400€** en tarifa de lanzamiento (y hasta 900€ en tarifa estándar), y te digo por adelantado qué mueve el número: si ya tienes fotos y textos listos, vas a la parte baja; si hay que redactarlo desde cero, a la alta.
+Este mismo criterio es el que uso yo en [mi propio catálogo de servicios](/es/servicios/#web) — no tengo un precio único de landing page, tengo un rango de **250€ a 400€** en tarifa de lanzamiento (y hasta 900€ en tarifa estándar), y te digo por adelantado qué mueve el número: si ya tienes fotos y textos listos, vas a la parte baja; si hay que redactarlo desde cero, a la alta.
 
 Y el presupuesto que te doy, una vez hablamos, es cerrado — no un "depende" eterno. El rango es solo para que sepas de qué estamos hablando antes de escribirme.
 
@@ -64,4 +64,4 @@ Con esas tres respuestas, ya tienes una idea realista de qué vas a pagar antes 
 
 ---
 
-**¿Ya sabes qué necesitas?** Escríbeme qué quieres montar y te devuelvo un precio cerrado, con fecha de entrega, el mismo día — sin llamada previa si no te apetece. [Mira el resto de mis servicios de desarrollo web aquí](https://geomachine.es/es/servicios/#web).
+**¿Ya sabes qué necesitas?** Escríbeme qué quieres montar y te devuelvo un precio cerrado, con fecha de entrega, el mismo día — sin llamada previa si no te apetece. [Mira el resto de mis servicios de desarrollo web aquí](/es/servicios/#web).

@@ -49,8 +49,8 @@ Si alguno de estos cuatro puntos falla, ya tienes una pista real, no una suposic
 
 ## Cuándo ya necesitas ayuda técnica
 
-Si has comprobado todo lo de arriba y sigue sin aparecer, ahí es donde una auditoría técnica de verdad tiene sentido — no para "hacer más SEO" en general, sino para encontrar el motivo concreto y específico de tu caso. Yo entrego esto como [informe priorizado](https://geomachine.es/es/servicios/#seo), no como una lista genérica de consejos que podrías haber leído en cualquier blog — te digo exactamente qué está pasando en tu web, en 2-3 días.
+Si has comprobado todo lo de arriba y sigue sin aparecer, ahí es donde una auditoría técnica de verdad tiene sentido — no para "hacer más SEO" en general, sino para encontrar el motivo concreto y específico de tu caso. Yo entrego esto como [informe priorizado](/es/servicios/#seo), no como una lista genérica de consejos que podrías haber leído en cualquier blog — te digo exactamente qué está pasando en tu web, en 2-3 días.
 
 ---
 
-**¿Ya comprobaste los 4 puntos de arriba y sigues sin salir en Google?** Escríbeme y reviso tu caso concreto. [Mira el servicio de auditoría aquí](https://geomachine.es/es/servicios/#seo).
+**¿Ya comprobaste los 4 puntos de arriba y sigues sin salir en Google?** Escríbeme y reviso tu caso concreto. [Mira el servicio de auditoría aquí](/es/servicios/#seo).

@@ -46,8 +46,8 @@ Si puedes evitarlo, hazlo en pasos separados: primero el rediseño manteniendo l
 
 ## Cómo lo hago yo
 
-Antes de tocar una sola línea del rediseño, hago el inventario completo de URLs actuales y decido, junto contigo, cuáles se mantienen igual y cuáles necesitan redirección. La migración en sí [se entrega en 2-4 días](https://geomachine.es/es/servicios/#web), con las redirecciones ya probadas antes de darla por terminada — no "debería funcionar", sino verificado.
+Antes de tocar una sola línea del rediseño, hago el inventario completo de URLs actuales y decido, junto contigo, cuáles se mantienen igual y cuáles necesitan redirección. La migración en sí [se entrega en 2-4 días](/es/servicios/#web), con las redirecciones ya probadas antes de darla por terminada — no "debería funcionar", sino verificado.
 
 ---
 
-**¿Tienes una web anticuada que necesita cambio pero te da miedo perder lo que ya tienes?** Cuéntame cómo está montada ahora y te digo el plan concreto. [Mira el servicio de migración aquí](https://geomachine.es/es/servicios/#web).
+**¿Tienes una web anticuada que necesita cambio pero te da miedo perder lo que ya tienes?** Cuéntame cómo está montada ahora y te digo el plan concreto. [Mira el servicio de migración aquí](/es/servicios/#web).
