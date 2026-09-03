@@ -1,6 +1,6 @@
 ---
-title: "Por qué las empresas con datos sensibles no deberían usar ChatGPT tal cual"
-description: "Riesgos reales de usar IA en la nube con datos de clientes sensibles, y cómo montar un servidor privado propio que combina infraestructura y IA sin depender de terceros."
+title: "Por qué tu empresa no debe usar ChatGPT con datos sensibles"
+description: "Riesgos reales de usar IA en la nube con datos de clientes sensibles, y cómo montar un servidor privado propio sin depender de terceros."
 pubDate: 2026-08-12
 keyword: "ia empresas datos sensibles"
 pillar: "SYS"

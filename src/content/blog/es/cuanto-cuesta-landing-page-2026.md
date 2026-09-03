@@ -1,5 +1,5 @@
 ---
-title: "Cuánto cuesta una landing page en 2026 (precios reales, sin letra pequeña)"
+title: "Cuánto cuesta una landing page en 2026: precios reales"
 description: "Precios reales de una landing page en 2026, explicados: qué cambia entre 250€ y 900€, qué te están cobrando de más las agencias, y cómo saber qué necesitas tú."
 pubDate: 2026-08-12
 keyword: "precio landing page"

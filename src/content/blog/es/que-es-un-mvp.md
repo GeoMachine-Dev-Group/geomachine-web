@@ -1,5 +1,5 @@
 ---
-title: "Qué es un MVP y por qué no necesitas gastar 20.000€ para probarlo"
+title: "Qué es un MVP y por qué no necesitas gastar 20.000€"
 description: "Qué es realmente un MVP, por qué no hace falta un presupuesto enorme para validar una idea de app, y cuánto cuesta de verdad la primera versión funcional."
 pubDate: 2026-08-12
 keyword: "qué es un mvp"

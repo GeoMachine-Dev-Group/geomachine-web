@@ -1,6 +1,6 @@
 ---
-title: "Chatbot de IA vs contestar tú mismo: cuándo compensa automatizar"
-description: "Cuándo merece la pena un asistente de IA en WhatsApp para tu negocio y cuándo es mejor seguir contestando tú mismo, con números reales de precio y ahorro de tiempo."
+title: "Chatbot de IA vs contestar tú mismo: cuándo compensa"
+description: "Cuándo merece la pena un asistente de IA en WhatsApp y cuándo es mejor seguir contestando tú mismo, con precios reales y ahorro de tiempo."
 pubDate: 2026-08-12
 keyword: "asistente whatsapp negocio"
 pillar: "IA"

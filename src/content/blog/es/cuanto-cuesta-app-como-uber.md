@@ -1,6 +1,6 @@
 ---
 title: "Cuánto cuesta y cuánto tarda montar una app como Uber"
-description: "Desglose real del coste y el tiempo de construir una app de transporte tipo Uber: qué incluye de verdad, qué es opcional, y por qué la mayoría de presupuestos que ves están incompletos."
+description: "Desglose real del coste y tiempo de una app de transporte tipo Uber: qué incluye de verdad y por qué la mayoría de presupuestos vienen incompletos."
 pubDate: 2026-08-12
 keyword: "cuánto cuesta hacer una app como uber"
 pillar: "APP"

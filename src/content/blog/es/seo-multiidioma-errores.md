@@ -1,6 +1,6 @@
 ---
 title: "SEO en dos idiomas: errores que hacen que Google te penalice"
-description: "Los errores más comunes al montar una web en dos idiomas que confunden a Google y te penalizan en ambas versiones, y cómo configurar hreflang correctamente desde el principio."
+description: "Los errores más comunes al montar una web en dos idiomas, que confunden a Google y te penalizan en ambas versiones, y cómo configurar bien el hreflang."
 pubDate: 2026-08-12
 keyword: "seo multiidioma errores"
 pillar: "SEO"

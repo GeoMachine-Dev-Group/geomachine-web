@@ -1,5 +1,5 @@
 ---
-title: "Caso real: gagraservis.ru — taxi y excursiones en Gagra, bilingüe"
+title: "Caso real: gagraservis.ru, taxi y excursiones en Gagra"
 description: "Cómo diseñé y desplegué gagraservis.ru: sitio bilingüe de taxi, excursiones, hoteles y restaurantes en Gagra, con SEO técnico completo desde el primer día."
 pubDate: 2026-08-12
 keyword: "taxi y excursiones gagra sitio web"

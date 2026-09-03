@@ -1,5 +1,5 @@
 ---
-title: "Qué hardware necesitas de verdad para correr IA en tu propio servidor"
+title: "Qué hardware necesitas de verdad para IA en tu servidor"
 description: "Guía honesta de qué componentes importan realmente para correr un modelo de IA en tu propio servidor, sin pagar de más por especificaciones que no vas a usar."
 pubDate: 2026-08-12
 keyword: "hardware para ia local"

@@ -1,6 +1,6 @@
 ---
 title: "Por qué tu web no aparece en Google aunque exista"
-description: "Las razones técnicas reales por las que una web no aparece en Google incluso llevando meses online, explicadas sin jerga, y qué comprobar tú mismo antes de pagar una auditoría."
+description: "Las razones técnicas por las que una web no aparece en Google aunque lleve meses online, sin jerga, y qué comprobar tú mismo antes de pagar una auditoría."
 pubDate: 2026-08-12
 keyword: "mi web no aparece en google"
 pillar: "SEO"

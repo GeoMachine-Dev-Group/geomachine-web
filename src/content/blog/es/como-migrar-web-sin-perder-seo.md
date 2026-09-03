@@ -1,6 +1,6 @@
 ---
 title: "Cómo migrar tu web sin perder posiciones en Google"
-description: "Guía práctica para migrar o rediseñar tu web sin perder el posicionamiento SEO que ya tienes: qué hacer antes, durante y después del cambio, y los errores que hunden el tráfico."
+description: "Guía práctica para migrar o rediseñar tu web sin perder el SEO que ya tienes: qué hacer antes, durante y después del cambio, y qué errores hunden el tráfico."
 pubDate: 2026-08-12
 keyword: "migrar web sin perder seo"
 pillar: "WEB"

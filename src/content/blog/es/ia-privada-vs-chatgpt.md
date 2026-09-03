@@ -1,6 +1,6 @@
 ---
-title: "IA privada vs ChatGPT: cuándo necesitas tus propios datos protegidos"
-description: "Diferencia real entre usar ChatGPT y montar tu propia IA privada: cuándo el riesgo de enviar datos a terceros importa de verdad, y cuánto cuesta tener tu propio modelo."
+title: "IA privada vs ChatGPT: cuándo proteger tus propios datos"
+description: "Diferencia real entre ChatGPT y montar tu propia IA privada: cuándo importa de verdad el riesgo de enviar datos a terceros, y cuánto cuesta tu propio modelo."
 pubDate: 2026-08-12
 keyword: "ia privada empresa"
 pillar: "IA"
