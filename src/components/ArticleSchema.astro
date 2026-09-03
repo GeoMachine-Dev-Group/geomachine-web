@@ -1,10 +1,12 @@
 ---
 /**
- * JSON-LD para un artículo del blog. Autocontenido: no depende de que
- * Schema.astro (el del catálogo) se renderice en la misma página — cada
- * página se evalúa por separado para rich results.
+ * JSON-LD para un artículo del blog. No redeclara la organización: Base.astro
+ * la emite una vez por página (ver src/data/organization.ts) y este bloque
+ * solo referencia su @id — así author/publisher siempre resuelven al mismo
+ * ProfessionalService rico, sin una segunda versión "Organization" mínima.
  */
 import { ui, type Lang } from '../i18n/ui';
+import { orgId as buildOrgId } from '../data/organization';
 
 interface Props {
   lang: Lang;
@@ -17,7 +19,7 @@ interface Props {
 const { lang, title, description, pubDate, updatedDate, pageUrl } = Astro.props;
 const t = ui[lang];
 const site = new URL(pageUrl).origin;
-const orgId = `${site}/#organization`;
+const orgId = buildOrgId(site);
 /** Mismo OG por idioma que usa Base.astro — no hay imagen por artículo en el
     esquema de contenido, así que reutilizamos el genérico de cada idioma
     para que BlogPosting sea elegible a Rich Results (image es obligatorio). */
@@ -26,7 +28,6 @@ const image = `${site}/og/og-${lang}.png`;
 const graph = {
   '@context': 'https://schema.org',
   '@graph': [
-    { '@type': 'Organization', '@id': orgId, name: t.company, url: site },
     {
       '@type': 'BlogPosting',
       '@id': `${pageUrl}#article`,

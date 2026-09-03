@@ -13,7 +13,8 @@ import {
   type Bundle,
   type Unit,
 } from '../data/catalog';
-import { ui, servicesPath, languages, type Lang } from '../i18n/ui';
+import { ui, servicesPath, type Lang } from '../i18n/ui';
+import { orgId as buildOrgId } from '../data/organization';
 
 interface Props {
   lang: Lang;
@@ -23,7 +24,7 @@ const t = ui[lang];
 
 const site = Astro.site?.origin ?? 'https://geomachine.es';
 const pageUrl = site + servicesPath[lang];
-const orgId = `${site}/#organization`;
+const orgId = buildOrgId(site);
 
 const currencyCode: Record<string, string> = { eur: 'EUR', rub: 'RUB', gel: 'GEL' };
 const cur = currencyCode[DEFAULT_CURRENCY] ?? 'EUR';
@@ -103,33 +104,29 @@ const catalogSections = [
   },
 ];
 
-const allEur = lines.flatMap((l) => l.items.flatMap((i) => i[DEFAULT_TIER].eur));
-const priceRange = `${Math.min(...allEur)}–${Math.max(...allEur)} €`;
+/** Mismas 3 preguntas que renderiza la sección .faq de Catalog.astro — si
+    se añade o quita una ahí, hay que reflejarlo aquí también. */
+const faqEntity = {
+  '@type': 'FAQPage',
+  '@id': `${pageUrl}#faq`,
+  mainEntity: [
+    { '@type': 'Question', name: t.faqQ1, acceptedAnswer: { '@type': 'Answer', text: t.faqA1 } },
+    { '@type': 'Question', name: t.faqQ2, acceptedAnswer: { '@type': 'Answer', text: t.faqA2 } },
+    {
+      '@type': 'Question',
+      name: t.faqQ3,
+      acceptedAnswer: { '@type': 'Answer', text: `${t.faqA3Before}${t.faqMntLink}${t.faqA3After}` },
+    },
+  ],
+};
 
+// La organización (ProfessionalService, priceRange, makesOffer...) ya la
+// emite Base.astro una vez por página vía buildOrganization() — este @graph
+// solo añade lo específico de la página de servicios (WebPage + catálogo +
+// FAQ) y referencia el @id central, nunca lo redeclara.
 const graph = {
   '@context': 'https://schema.org',
   '@graph': [
-    {
-      '@type': 'ProfessionalService',
-      '@id': orgId,
-      name: t.company,
-      url: site,
-      description: t.metaDescription,
-      priceRange,
-      areaServed: [
-        { '@type': 'Country', name: 'Georgia' },
-        { '@type': 'Country', name: 'Spain' },
-        { '@type': 'Country', name: 'Russia' },
-      ],
-      availableLanguage: Object.entries(languages).map(([code, name]) => ({
-        '@type': 'Language',
-        alternateName: code,
-        name,
-      })),
-      email: 'hola@geomachine.es',
-      sameAs: ['https://t.me/geomachine'],
-      makesOffer: catalogSections.flatMap((s) => s.itemListElement.map((o) => ({ '@id': o['@id'] }))),
-    },
     {
       '@type': 'WebPage',
       '@id': `${pageUrl}#webpage`,
@@ -139,6 +136,7 @@ const graph = {
       inLanguage: t.htmlLang,
       isPartOf: { '@id': orgId },
       about: { '@id': orgId },
+      mainEntity: { '@id': faqEntity['@id'] },
     },
     {
       '@type': 'OfferCatalog',
@@ -148,6 +146,7 @@ const graph = {
       provider: { '@id': orgId },
       itemListElement: catalogSections,
     },
+    faqEntity,
   ],
 };
 ---

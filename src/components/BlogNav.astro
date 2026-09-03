@@ -8,7 +8,25 @@ interface Props {
 }
 const { lang, currentTitle } = Astro.props;
 const t = ui[lang];
+const site = Astro.site?.origin ?? 'https://geomachine.es';
+
+/** Mismas migas que pinta el <nav class="breadcrumbs"> de abajo — el último
+    tramo (la página actual) no lleva "item" a propósito, como recomienda
+    Google para BreadcrumbList. */
+const breadcrumbList = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: t.navHome, item: site + servicesPath[lang] },
+    currentTitle
+      ? { '@type': 'ListItem', position: 2, name: t.blogTitle, item: site + blogPath[lang] }
+      : { '@type': 'ListItem', position: 2, name: t.blogTitle },
+    ...(currentTitle ? [{ '@type': 'ListItem', position: 3, name: currentTitle }] : []),
+  ],
+};
 ---
+
+<script type="application/ld+json" set:html={JSON.stringify(breadcrumbList)} is:inline />
 
 <div class="blog-chrome shell">
   <nav class="blog-nav" aria-label="Navegación principal">

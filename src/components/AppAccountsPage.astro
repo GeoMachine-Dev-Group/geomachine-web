@@ -1,6 +1,7 @@
 ---
 import Base from '../layouts/Base.astro';
 import { type Lang } from '../i18n/ui';
+import { orgId as buildOrgId } from '../data/organization';
 
 interface Props {
   lang: Lang;
@@ -120,29 +121,48 @@ const hreflangAlternates = [
   { hreflang: 'ru', href: `${site}/ru/uslugi/app-accounts/` },
   { hreflang: 'ka', href: `${site}/ka/momsakhurebebi/app-accounts/` },
 ];
+const pageUrl = hreflangAlternates.find((a) => a.hreflang === lang)!.href;
+const orgId = buildOrgId(site);
 ---
 
-<Base 
+<Base
   lang={lang}
   title={t.title}
   description={t.description}
-  pageUrl={hreflangAlternates.find(a => a.hreflang === lang)?.href}
+  pageUrl={pageUrl}
   hreflangAlternates={hreflangAlternates}
   schema="none"
 >
   <Fragment slot="head">
     <script type="application/ld+json" is:inline set:html={JSON.stringify({
-      "@context": "https://schema.org",
-      "@type": "SoftwareApplication",
-      "name": "GeoMachine Accounts",
-      "operatingSystem": "Windows, Linux",
-      "applicationCategory": "BusinessApplication",
-      "downloadUrl": "https://github.com/GeoMachine-Dev-Group/geomachine-web/releases/download/accounts-app-v1/GeoMachineAccounts.exe",
-      "offers": {
-        "@type": "Offer",
-        "price": "0.00",
-        "priceCurrency": "EUR"
-      }
+      '@context': 'https://schema.org',
+      '@graph': [
+        {
+          '@type': 'WebPage',
+          '@id': `${pageUrl}#webpage`,
+          url: pageUrl,
+          name: t.title,
+          description: t.description,
+          inLanguage: lang,
+          isPartOf: { '@id': orgId },
+          about: { '@id': orgId },
+        },
+        {
+          '@type': 'SoftwareApplication',
+          '@id': `${pageUrl}#app`,
+          name: 'GeoMachine Accounts',
+          operatingSystem: 'Windows, Linux',
+          applicationCategory: 'BusinessApplication',
+          downloadUrl:
+            'https://github.com/GeoMachine-Dev-Group/geomachine-web/releases/download/accounts-app-v1/GeoMachineAccounts.exe',
+          provider: { '@id': orgId },
+          offers: {
+            '@type': 'Offer',
+            price: '0.00',
+            priceCurrency: 'EUR',
+          },
+        },
+      ],
     })} />
   </Fragment>
 
