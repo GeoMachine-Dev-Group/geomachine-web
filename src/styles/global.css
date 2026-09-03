@@ -456,6 +456,18 @@ html[data-stampstyle='cli'] .stamp {
 }
 @media (prefers-reduced-motion: reduce) { .card:before, .card__inner, .card__details { transition: none; } }
 
+/* .card__details solo se revela con :hover/:focus-within — en pantallas
+   táctiles eso nunca ocurre, así que el texto humano queda inaccesible y
+   la tarjeta (altura fija 310px) deja un hueco vacío. En dispositivos sin
+   hover lo mostramos siempre, en flujo normal, con altura automática. */
+@media (hover: none) {
+  .card { height: auto; }
+  .card__inner { position: relative; inset: auto; }
+  .card__details { position: static; transform: none; margin-top: 1rem; border-radius: 8px; }
+  .card:focus-within .card__price,
+  .card.is-active .card__price { opacity: 1; }
+}
+
 /* Estilo alternativo: inclinación 3D siguiendo al cursor (data-cardstyle="tilt"). */
 html[data-cardstyle='tilt'] .card:before { display: none; }
 html[data-cardstyle='tilt'] .card { perspective: 900px; }
@@ -735,7 +747,9 @@ html[data-priceanim='blur'] .price-value {
 }
 .fab.is-visible { opacity: 1; transform: none; pointer-events: auto; }
 @media (max-width: 480px) {
-  .fab { left: 1.25rem; right: 1.25rem; text-align: center; }
+  /* bottom más alto que el default: deja hueco para .floating-chat, que
+     vive en la misma esquina (bottom: 1.25rem), para que no se solapen. */
+  .fab { left: 1.25rem; right: 1.25rem; bottom: 5rem; text-align: center; }
 }
 @media (prefers-reduced-motion: reduce) { .fab { transition: none; } }
 
