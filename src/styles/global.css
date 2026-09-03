@@ -770,6 +770,18 @@ html[data-priceanim='blur'] .price-value {
 .breadcrumbs a:hover { color: var(--accent); }
 .breadcrumbs span[aria-current] { color: var(--ink); }
 
+.blog-related { margin-top: 3rem; padding-top: 1.75rem; border-top: 1px solid var(--rule-soft); }
+.blog-related__title {
+  font-family: var(--data); font-size: .72rem; letter-spacing: .1em; text-transform: uppercase;
+  color: var(--accent); margin: 0 0 .85rem;
+}
+.blog-related ul { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: .55rem; }
+.blog-related a {
+  color: var(--ink); text-decoration: none; border-bottom: 1px solid var(--rule);
+  padding-bottom: .1rem;
+}
+.blog-related a:hover { color: var(--accent); border-color: var(--accent); }
+
 .blog-cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1.25rem; margin-top: 2rem; }
 .blog-card {
   background: var(--panel); border: 1px solid var(--rule); border-radius: 12px;
