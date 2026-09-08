@@ -299,8 +299,18 @@ html[data-cardstyle='tilt'] .card:hover .card__inner:after { opacity: 1; }
   html[data-cardstyle='tilt'] .card__inner { transform: none !important; transition: none; }
 }
 
-/* --- Tarjeta destacada (paquete estrella y servicios recomendados) ----------- */
+/* --- Tarjeta destacada (paquete estrella y servicios recomendados) -----------
+   El borde en acento por sí solo no se distinguía de .card:hover (que pone
+   el mismo color a CUALQUIER tarjeta) — se necesitaba peso propio que
+   sobreviva al hover: grosor de borde distinto + escala ligera con z-index
+   en el <article>, no en .card__inner, para no chocar con su transición de
+   hover (translate) ni con el tilt 3D (html[data-cardstyle='tilt']). */
+.card--featured {
+  transform: scale(1.03);
+  z-index: 1;
+}
 .card--featured .card__inner {
+  border-width: 2px;
   border-color: var(--accent);
   box-shadow: 0 0 22px -4px var(--accent-soft), inset 0 0 0 1px var(--accent-soft);
 }
