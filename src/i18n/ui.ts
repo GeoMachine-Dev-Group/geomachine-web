@@ -47,14 +47,6 @@ export const ui = {
     tierLaunch: 'Lanzamiento',
     tierStandard: 'Estándar',
     currencyLabel: 'Moneda',
-    themeToggleLabel: 'Cambiar tema',
-    palettes: {
-      botella: 'Verde botella y bronce',
-      agencia: 'Modo agencia',
-      esmeralda: 'Neón esmeralda',
-      premium: 'Premium obsidiana',
-      cobalto: 'Cobalto y plata',
-    },
     cardStyles: { stack: 'Capas apiladas', tilt: 'Inclinación 3D' },
     stampStyles: {
       gold_crystal: 'Glass Gold · Crystal Octagon',
@@ -154,14 +146,6 @@ export const ui = {
     tierLaunch: 'Стартовый',
     tierStandard: 'Обычный',
     currencyLabel: 'Валюта',
-    themeToggleLabel: 'Сменить тему',
-    palettes: {
-      botella: 'Зелёная бутылка и бронза',
-      agencia: 'Режим агентства',
-      esmeralda: 'Неоновый изумруд',
-      premium: 'Премиум обсидиан',
-      cobalto: 'Кобальт и серебро',
-    },
     cardStyles: { stack: 'Слоями', tilt: 'Наклон 3D' },
     stampStyles: {
       gold_crystal: 'Glass Gold · Crystal Octagon',
@@ -261,14 +245,6 @@ export const ui = {
     tierLaunch: 'Launch',
     tierStandard: 'Standard',
     currencyLabel: 'Currency',
-    themeToggleLabel: 'Change theme',
-    palettes: {
-      botella: 'Bottle green and bronze',
-      agencia: 'Agency mode',
-      esmeralda: 'Emerald neon',
-      premium: 'Premium obsidian',
-      cobalto: 'Cobalt and silver',
-    },
     cardStyles: { stack: 'Stacked layers', tilt: '3D tilt' },
     stampStyles: {
       gold_crystal: 'Glass Gold · Crystal Octagon',
@@ -360,15 +336,6 @@ export const ui = {
     paletteLabel: 'პალიტრა',
     cardStyleLabel: 'ბარათები',
     priceAnimLabel: 'ფასის ანიმაცია',
-    palettes: {
-      default: 'ორიგინალი',
-      terminal: 'მუქი ტერმინალი',
-      agencia: 'სააგენტოს რეჟიმი',
-      esmeralda: 'ზურმუხტისფერი ნეონი',
-      premium: 'პრემიუმ · ობსიდიანი',
-      cobalto: 'პრემიუმ · კობალტი და ვერცხლი',
-      botella: 'პრემიუმ · ბოთლისფერი მწვანე და ბრინჯაო',
-    },
     cardStyles: { stack: 'დაწყობილი შრეები', tilt: '3D დახრა' },
     stampStyles: {
       gold_crystal: 'Glass Gold · Crystal Octagon',

@@ -138,11 +138,8 @@ const preloadFont: Record<Lang, string> = {
     />
 
     <script is:inline>
-      // Paleta por defecto: verde botella y bronce ('botella')
       // Modo tarjeta: Inclinación 3D ('tilt')
       try {
-        var p = localStorage.getItem('gm-palette') || 'botella';
-        document.documentElement.dataset.palette = p;
         document.documentElement.dataset.cardstyle = 'tilt';
       } catch (e) {}
     </script>
@@ -258,21 +255,6 @@ const preloadFont: Record<Lang, string> = {
       } catch (e) {}
 
       paint();
-
-      /* Botón de cambio directo de paleta de colores */
-      const paletteBtn = document.getElementById('palette-toggle-btn');
-      const activePalettes = ['botella', 'agencia', 'esmeralda', 'premium', 'cobalto'];
-      if (paletteBtn) {
-        paletteBtn.addEventListener('click', () => {
-          const current = root.dataset.palette || 'botella';
-          const nextIdx = (activePalettes.indexOf(current) + 1) % activePalettes.length;
-          const nextPalette = activePalettes[nextIdx];
-          root.dataset.palette = nextPalette;
-          try {
-            localStorage.setItem('gm-palette', nextPalette);
-          } catch (e) {}
-        });
-      }
 
       /* Modal de contacto profesional */
       const modal = document.getElementById('contact-modal') as HTMLElement | null;

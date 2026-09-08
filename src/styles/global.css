@@ -1,26 +1,24 @@
 /* ==========================================================================
    GeoMachine — sistema visual v2
-   La paleta "Original" vive en :root; las otras 6 se activan con el atributo
-   data-palette en <html> y solo redefinen los tokens de color. El estilo de
-   tarjeta alternativo va por data-cardstyle. Ambos los fija el selector del
-   panel y los recuerda localStorage (ver Base.astro).
+   Paleta única (antes llamada "botella" en el selector de temas, ya
+   retirado). El estilo de tarjeta alternativo va por data-cardstyle,
+   fijado siempre a 'tilt' en Base.astro.
    ========================================================================== */
 
 @import './fonts.css';
 
 :root {
-  --paper: #161310;
-  --panel: #1d1913;
-  --panel-2: #241f17;
-  --ink: #ece2ce;
-  --ink-soft: #a3937a;
-  --rule: #3a3223;
-  --rule-soft: #2a2418;
-  --accent: #3d8a72;
-  --accent-soft: #3d8a7233;
-  --stamp: #d68a3e;
-  --stamp-glow: #d68a3e2e;
-  --bg-glow: #201a12;
+  --paper: #10160f;
+  --panel: #182016;
+  --panel-2: #212b1d;
+  --ink: #eee6d3;
+  --ink-soft: #9c9a80;
+  --rule: #3a4030;
+  --rule-soft: #2a3021;
+  --accent: #a97445;
+  --accent-soft: rgba(169,116,69,.2);
+  --stamp: #6b1f1f;
+  --bg-glow: #212b1d;
 
   --display: 'Outfit', 'Noto Sans Georgian', sans-serif;
   --body: 'Plus Jakarta Sans', 'Noto Sans Georgian', sans-serif;
@@ -28,57 +26,6 @@
 
   --pad: clamp(1.25rem, 4vw, 3.5rem);
   --shell: 1180px;
-}
-
-/* --- Paletas alternativas (data-palette en <html>) ------------------------- */
-
-html[data-palette="terminal"] {
-  --paper: #0d1117; --panel: #161b22; --panel-2: #21262d;
-  --ink: #c9d1d9; --ink-soft: #8b949e;
-  --rule: #30363d; --rule-soft: #21262d;
-  --accent: #58a6ff; --accent-soft: rgba(88,166,255,.2);
-  --stamp: #bf87fc; --stamp-glow: rgba(191,135,252,.18);
-  --bg-glow: #161b22;
-}
-html[data-palette="agencia"] {
-  --paper: #0a0a0a; --panel: #141414; --panel-2: #1f1f1f;
-  --ink: #f0f0f0; --ink-soft: #999999;
-  --rule: #2e2e2e; --rule-soft: #1a1a1a;
-  --accent: #e11d48; --accent-soft: rgba(225,29,72,.2);
-  --stamp: #fbbf24; --stamp-glow: rgba(251,191,36,.15);
-  --bg-glow: #1f1f1f;
-}
-html[data-palette="esmeralda"] {
-  --paper: #0f172a; --panel: #1e293b; --panel-2: #334155;
-  --ink: #f8fafc; --ink-soft: #94a3b8;
-  --rule: #475569; --rule-soft: #334155;
-  --accent: #10b981; --accent-soft: rgba(16,185,129,.2);
-  --stamp: #f43f5e; --stamp-glow: rgba(244,63,94,.18);
-  --bg-glow: #1e293b;
-}
-html[data-palette="premium"] {
-  --paper: #121110; --panel: #1c1a17; --panel-2: #26221d;
-  --ink: #f2ede2; --ink-soft: #a89a83;
-  --rule: #3a352c; --rule-soft: #2a251e;
-  --accent: #c9a227; --accent-soft: rgba(201,162,39,.18);
-  --stamp: #7a2c3b; --stamp-glow: rgba(122,44,59,.2);
-  --bg-glow: #26221d;
-}
-html[data-palette="cobalto"] {
-  --paper: #0b1220; --panel: #131c2e; --panel-2: #1c2740;
-  --ink: #e8ecf2; --ink-soft: #8b96ab;
-  --rule: #2c3852; --rule-soft: #1c2740;
-  --accent: #6f8fc7; --accent-soft: rgba(111,143,199,.18);
-  --stamp: #9c2b3e; --stamp-glow: rgba(156,43,62,.18);
-  --bg-glow: #1c2740;
-}
-html[data-palette="botella"] {
-  --paper: #10160f; --panel: #182016; --panel-2: #212b1d;
-  --ink: #eee6d3; --ink-soft: #9c9a80;
-  --rule: #3a4030; --rule-soft: #2a3021;
-  --accent: #a97445; --accent-soft: rgba(169,116,69,.2);
-  --stamp: #6b1f1f; --stamp-glow: rgba(107,31,31,.18);
-  --bg-glow: #212b1d;
 }
 
 *, *::before, *::after { box-sizing: border-box; }
@@ -239,20 +186,6 @@ a.showcase__link:hover { color: var(--accent); }
 }
 .palette-select:hover { border-color: var(--accent); }
 .palette-select:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
-
-.palette-toggle-btn {
-  display: inline-flex; align-items: center; gap: .6rem;
-  border: 1px solid var(--rule); background: var(--paper); color: var(--ink);
-  font-family: var(--data); font-size: .74rem; font-weight: 700; letter-spacing: .08em;
-  text-transform: uppercase; padding: .45rem 1rem; border-radius: 6px; cursor: pointer;
-  transition: all .25s ease; box-shadow: 0 2px 10px rgba(0,0,0,0.2);
-}
-.palette-toggle-btn:hover {
-  border-color: var(--accent); color: var(--accent);
-  transform: translateY(-1px); box-shadow: 0 4px 15px var(--accent-soft);
-}
-.palette-toggle-btn:active { transform: translateY(0); }
-.theme-icon { font-size: .95rem; }
 
 .panel__notes { display: contents; }
 .panel__note { flex: 1 1 22ch; min-width: 0; font-size: .82rem; line-height: 1.4; color: var(--ink-soft); border-left: 2px solid var(--accent); padding-left: .9rem; }
