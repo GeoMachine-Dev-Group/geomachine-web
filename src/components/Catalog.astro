@@ -4,6 +4,7 @@ import {
   bundles,
   DEFAULT_TIER,
   DEFAULT_CURRENCY,
+  LAUNCH_SLOTS,
   type Item,
   type Bundle,
   type Unit,
@@ -45,6 +46,11 @@ function money(range: readonly number[], currency: Currency, unit: Unit) {
 }
 
 const TIERS = ['launch', 'standard'] as const;
+
+const doneSlot = LAUNCH_SLOTS.completed;
+const busySlot = LAUNCH_SLOTS.completed + LAUNCH_SLOTS.inProgress;
+const freeStart = busySlot + 1;
+const freeEnd = LAUNCH_SLOTS.total;
 
 /**
  * Las 6 combinaciones tarifa×moneda viajan ya formateadas en el HTML estático;
@@ -134,70 +140,11 @@ const featuredMap: Record<string, Record<Lang, string>> = {
   <p class="hero__plain">{t.heroPlain}</p>
 
   <aside class="stamp" aria-hidden="true">
-    <!-- 1. Glass Gold · Crystal Octagon -->
-    <div class="stamp__view stamp__view--gold-crystal">
-      <div class="glass-shimmer"></div>
-      <b>{t.stampLine1}</b>
-      <em>1 / 5</em>
-      <div class="stamp-dots"><i class="is-active"></i><i class="is-next"></i><i></i><i></i><i></i></div>
-      <span>{t.stampLine2}</span>
-    </div>
-
-    <!-- 2. Glass Gold · Monogram Shield -->
-    <div class="stamp__view stamp__view--gold-shield">
-      <div class="shield-badge">GM</div>
-      <div class="shield-title">{t.stampLine1.toUpperCase()}</div>
-      <div class="shield-dots"><span>1 / 5 PLAZAS</span></div>
-    </div>
-
-    <!-- 3. Glass Gold · Liquid Amber -->
-    <div class="stamp__view stamp__view--gold-liquid">
-      <span class="liquid-pill">1 DE 5 PLAZAS</span>
-      <div class="liquid-drops"><i class="active"></i><i class="busy"></i><i></i><i></i><i></i></div>
-      <span class="liquid-sub">{t.stampLine1}</span>
-    </div>
-
-    <!-- 4. Pase VIP Animado -->
-    <div class="stamp__view stamp__view--vip">
-      <div class="vip-shimmer"></div>
-      <div class="vip-header"><span class="vip-badge">★ PASE VIP</span> <span class="vip-code">02 / 05</span></div>
-      <div class="vip-body">TARIFA LANZAMIENTO</div>
-      <div class="vip-footer">
-        <span>PLAZA 2 EN DESARROLLO</span>
-        <div class="vip-dots"><i class="is-done"></i><i class="is-busy"></i><i></i><i></i><i></i></div>
-      </div>
-    </div>
-
-    <!-- 5. Radar de Proyectos 360° (con 5 plazas marcadas) -->
-    <div class="stamp__view stamp__view--radar">
-      <div class="radar-box">
-        <div class="radar-circle">
-          <div class="radar-sweep"></div>
-          <div class="radar-dot dot-1"></div>
-          <div class="radar-dot dot-2"></div>
-        </div>
-        <div class="radar-info">
-          <span class="radar-title">RADAR PROYECTOS</span>
-          <div class="radar-slots">
-            <span class="r-slot done">1✓</span>
-            <span class="r-slot busy">2⏳</span>
-            <span class="r-slot">3</span>
-            <span class="r-slot">4</span>
-            <span class="r-slot">5</span>
-          </div>
-          <span class="radar-sub">1 HECHO · 1 EN CURSO (5 TOTAL)</span>
-        </div>
-      </div>
-    </div>
-
-    <!-- 6. Terminal CLI (Geek · Status) -->
-    <div class="stamp__view stamp__view--cli">
-      <span class="cli-prompt">~$ sys.slots --status</span>
-      <div class="cli-list">
-        <div class="cli-line"><span class="cli-done">[✓] Slot 1: COMPLETADO</span></div>
-        <div class="cli-line"><span class="cli-busy">[⏳] Slot 2: EN DESARROLLO</span><span class="cli-cursor">█</span></div>
-        <div class="cli-line"><span class="cli-idle">[ ] Slots 3–5: DISPONIBLES</span></div>
-      </div>
+    <span class="cli-prompt">~$ sys.slots --status</span>
+    <div class="cli-list">
+      <div class="cli-line"><span class="cli-done">[✓] Slot {doneSlot}: COMPLETADO</span></div>
+      <div class="cli-line"><span class="cli-busy">[⏳] Slot {busySlot}: EN DESARROLLO</span><span class="cli-cursor">█</span></div>
+      <div class="cli-line"><span class="cli-idle">[ ] Slots {freeStart}–{freeEnd}: DISPONIBLES</span></div>
     </div>
   </aside>
 

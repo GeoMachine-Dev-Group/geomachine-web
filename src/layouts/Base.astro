@@ -140,15 +140,10 @@ const preloadFont: Record<Lang, string> = {
     <script is:inline>
       // Paleta por defecto: verde botella y bronce ('botella')
       // Modo tarjeta: Inclinación 3D ('tilt')
-      // Sello de lanzamiento: Rotación automática cada 30 min ('gold_liquid', 'radar', 'cli')
       try {
         var p = localStorage.getItem('gm-palette') || 'botella';
         document.documentElement.dataset.palette = p;
         document.documentElement.dataset.cardstyle = 'tilt';
-
-        var stampList = ['gold_liquid', 'radar', 'cli'];
-        var idx = Math.floor(Date.now() / (30 * 60 * 1000)) % stampList.length;
-        document.documentElement.dataset.stampstyle = stampList[idx];
       } catch (e) {}
     </script>
 
@@ -278,13 +273,6 @@ const preloadFont: Record<Lang, string> = {
           } catch (e) {}
         });
       }
-
-      /* Rotación continua del sello cada 30 minutos */
-      setInterval(() => {
-        var stampList = ['gold_liquid', 'radar', 'cli'];
-        var idx = Math.floor(Date.now() / (30 * 60 * 1000)) % stampList.length;
-        root.dataset.stampstyle = stampList[idx];
-      }, 60000);
 
       /* Modal de contacto profesional */
       const modal = document.getElementById('contact-modal') as HTMLElement | null;

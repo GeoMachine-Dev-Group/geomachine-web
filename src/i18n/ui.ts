@@ -67,8 +67,6 @@ export const ui = {
     priceAnims: { blur: 'Desenfoque suave', odometer: 'Deslizamiento vertical', glow: 'Pulso de brillo', flip: 'Giro 3D' },
     modalTitle: 'Solicitar Presupuesto',
     modalSubtitle: 'Cuéntanos qué necesitas y te responderemos con un precio cerrado en menos de 24 horas.',
-    stampLine1: 'Tarifa de lanzamiento',
-    stampLine2: 'plazas ocupadas',
     launchNote:
       'La tarifa de lanzamiento se aplica a los primeros clientes, a cambio de poder publicar el resultado como caso de estudio. Después pasa a estándar.',
     standardNote: 'Tarifa estándar. Los clientes de mantenimiento conservan su precio de alta.',
@@ -176,8 +174,6 @@ export const ui = {
     priceAnims: { blur: 'Мягкое размытие', odometer: 'Вертикальный сдвиг', glow: 'Свечение', flip: '3D-переворот' },
     modalTitle: 'Запросить расчет',
     modalSubtitle: 'Расскажите о вашем проекте, и мы ответим менее чем за 24 часа с точной ценой.',
-    stampLine1: 'Стартовый тариф',
-    stampLine2: 'мест занято',
     launchNote:
       'Стартовый тариф действует для первых клиентов — взамен я публикую результат как кейс. Дальше цена становится обычной.',
     standardNote: 'Обычный тариф. У клиентов на обслуживании цена подключения не меняется.',
@@ -285,8 +281,6 @@ export const ui = {
     priceAnims: { blur: 'Smooth blur', odometer: 'Vertical slide', glow: 'Glow pulse', flip: '3D flip' },
     modalTitle: 'Request a Quote',
     modalSubtitle: 'Tell us about your project and we will respond in less than 24 hours with a fixed price.',
-    stampLine1: 'Launch pricing',
-    stampLine2: 'slots taken',
     launchNote:
       'Launch pricing applies to the first clients, in exchange for being able to publish the result as a case study. It moves to standard pricing after that.',
     standardNote: 'Standard pricing. Maintenance clients keep the price they signed up at.',
@@ -387,8 +381,6 @@ export const ui = {
     priceAnims: { blur: 'რბილი გაბუნდოვნება', odometer: 'ვერტიკალური სრიალი', glow: 'განათება', flip: '3D ტრიალი' },
     modalTitle: 'ფასის მოთხოვნა',
     modalSubtitle: 'მოგვწერეთ პროექტის შესახებ და 24 საათში მიიღებთ ზუსტ ფასს.',
-    stampLine1: 'გაშვების ტარიფი',
-    stampLine2: 'დაკავებული ადგილი',
     launchNote:
       'გაშვების ტარიფი ვრცელდება პირველ კლიენტებზე, სანაცვლოდ ვაქვეყნებ შედეგს, როგორც კეისს. შემდეგ ფასი სტანდარტულზე გადადის.',
     standardNote: 'სტანდარტული ტარიფი. მოვლის კლიენტებს რჩებათ ის ფასი, რომლითაც დარეგისტრირდნენ.',

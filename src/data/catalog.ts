@@ -29,6 +29,14 @@ export type Lang = 'es' | 'ru' | 'en' | 'ka';
 export const DEFAULT_TIER: Tier = 'launch';
 export const DEFAULT_CURRENCY: Currency = 'eur';
 
+/** Plazas de la tarifa de lanzamiento — única fuente para el contador que
+    muestra el sello del catálogo (Catalog.astro). */
+export const LAUNCH_SLOTS = {
+  total: 5,
+  completed: 1,
+  inProgress: 1,
+} as const;
+
 /** Precio: [mínimo, máximo] o [exacto] si solo hay un número. */
 type Range = [number] | [number, number];
 

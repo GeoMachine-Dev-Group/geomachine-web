@@ -187,143 +187,19 @@ a.showcase__link:hover { color: var(--accent); }
 .hero__body { margin: 1.75rem 0 0; max-width: 46ch; font-size: clamp(1rem, 1.6vw, 1.15rem); color: var(--ink-soft); }
 .hero__plain { margin-top: 1.25rem; max-width: 46ch; font-size: .92rem; line-height: 1.55; color: var(--ink-soft); padding-left: 1rem; border-left: 2px solid var(--accent-soft); }
 
-/* --- Sello de tarifa de lanzamiento (6 Variantes Filtradas) ------------------- */
-
-.stamp__view { display: none; }
-html:not([data-stampstyle]) .stamp__view--gold-crystal,
-html[data-stampstyle='gold_crystal'] .stamp__view--gold-crystal { display: block; }
-html[data-stampstyle='gold_shield'] .stamp__view--gold-shield { display: block; }
-html[data-stampstyle='gold_liquid'] .stamp__view--gold-liquid { display: block; }
-html[data-stampstyle='vip'] .stamp__view--vip { display: block; }
-html[data-stampstyle='radar'] .stamp__view--radar { display: block; }
-html[data-stampstyle='cli'] .stamp__view--cli { display: block; }
+/* --- Sello de tarifa de lanzamiento (Terminal CLI) -------------------------- */
 
 .stamp {
   position: absolute; top: clamp(1rem, 4vw, 2.5rem); right: var(--pad);
   opacity: .95; pointer-events: none; transition: opacity .25s, transform .25s;
   z-index: 10;
-}
-.stamp[hidden] { display: block; opacity: 0; transform: scale(1.08); }
-
-/* 1. Glass Gold · Crystal Octagon */
-html:not([data-stampstyle]) .stamp,
-html[data-stampstyle='gold_crystal'] .stamp {
-  transform: rotate(-7deg); border: 2px solid var(--stamp);
-  clip-path: polygon(8% 0,92% 0,100% 15%,100% 85%,92% 100%,8% 100%,0 85%,0 15%);
-  color: var(--stamp); padding: .75rem 1.4rem; text-align: center;
-  font-family: var(--data); text-transform: uppercase; line-height: 1.25;
-  background: linear-gradient(155deg, var(--stamp-glow) 0%, transparent 60%), var(--panel-2);
-  box-shadow: 0 0 25px -4px var(--stamp-glow), inset 0 0 20px var(--stamp-glow);
-  animation: stamp-pulse 2.8s infinite ease-in-out;
-  position: relative; overflow: hidden;
-}
-@keyframes stamp-pulse {
-  0% { box-shadow: 0 0 0 1px #0000, inset 0 0 18px var(--stamp-glow); }
-  50% { box-shadow: 0 0 0 1px var(--stamp), inset 0 0 30px var(--stamp-glow); }
-  100% { box-shadow: 0 0 0 1px #0000, inset 0 0 18px var(--stamp-glow); }
-}
-.glass-shimmer {
-  position: absolute; inset: 0;
-  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
-  transform: translateX(-100%);
-  animation: shimmer-sweep 3.5s infinite ease-in-out;
-}
-@keyframes shimmer-sweep {
-  0% { transform: translateX(-100%); }
-  35%, 100% { transform: translateX(100%); }
-}
-
-/* 2. Glass Gold · Monogram Shield */
-html[data-stampstyle='gold_shield'] .stamp {
-  transform: rotate(0deg); border: 2px solid var(--stamp);
-  border-radius: 12px; padding: .7rem 1.2rem;
-  background: radial-gradient(circle at top left, var(--stamp-glow), var(--panel-2));
-  color: var(--stamp); box-shadow: 0 10px 30px rgba(0,0,0,0.5), inset 0 0 15px var(--stamp-glow);
-  font-family: var(--data); text-align: center; clip-path: none;
-  animation: float-soft 4s infinite ease-in-out;
-}
-@keyframes float-soft { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-4px); } }
-.shield-badge { font-family: var(--display); font-size: 1.3rem; font-weight: 800; letter-spacing: .05em; color: var(--stamp); text-shadow: 0 0 10px var(--stamp-glow); }
-.shield-title { font-size: .62rem; font-weight: 700; letter-spacing: .14em; margin-top: .1rem; }
-.shield-dots { font-size: .65rem; color: var(--ink-soft); margin-top: .2rem; font-weight: 600; }
-
-/* 3. Glass Gold · Liquid Amber */
-html[data-stampstyle='gold_liquid'] .stamp {
-  transform: rotate(0deg); border: 1px solid var(--stamp);
-  border-radius: 999px; padding: .6rem 1.2rem;
-  background: rgba(15, 23, 42, 0.9); color: var(--stamp);
-  box-shadow: 0 0 20px var(--stamp-glow);
-  font-family: var(--data); text-align: center; clip-path: none;
-}
-.liquid-pill { font-size: .68rem; font-weight: 800; letter-spacing: .1em; display: block; color: var(--stamp); }
-.liquid-drops { display: flex; gap: 5px; justify-content: center; margin: .3rem 0; }
-.liquid-drops i { width: 7px; height: 7px; border-radius: 50%; background: var(--rule); display: block; }
-.liquid-drops i.active { background: #22c55e; box-shadow: 0 0 6px #22c55e; }
-.liquid-drops i.busy { background: #f59e0b; box-shadow: 0 0 6px #f59e0b; animation: blink 1.2s infinite; }
-.liquid-sub { font-size: .58rem; color: var(--ink-soft); display: block; letter-spacing: .08em; }
-
-/* 4. Pase VIP Animado (Luxury Metallic Floating Pass) */
-html[data-stampstyle='vip'] .stamp {
-  transform: rotate(-3deg); border: 1.5px dashed var(--stamp);
-  border-radius: 10px; padding: .75rem 1.3rem;
-  background: linear-gradient(135deg, var(--stamp-glow) 0%, rgba(15, 23, 42, 0.95) 70%);
-  color: var(--ink); box-shadow: 0 12px 30px rgba(0,0,0,0.5), 0 0 20px var(--stamp-glow);
-  font-family: var(--data); text-align: left; clip-path: none;
-  animation: vip-float 3.5s infinite ease-in-out;
-  position: relative; overflow: hidden;
-}
-@keyframes vip-float {
-  0%, 100% { transform: rotate(-3deg) translateY(0); box-shadow: 0 12px 30px rgba(0,0,0,0.5), 0 0 20px var(--stamp-glow); }
-  50% { transform: rotate(-1deg) translateY(-5px); box-shadow: 0 18px 35px rgba(0,0,0,0.6), 0 0 30px var(--stamp-glow); }
-}
-.vip-shimmer {
-  position: absolute; inset: 0;
-  background: linear-gradient(110deg, transparent 40%, rgba(251,191,36,0.25) 50%, transparent 60%);
-  transform: translateX(-100%);
-  animation: shimmer-sweep 4s infinite ease-in-out;
-}
-.vip-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: .3rem; }
-.vip-badge { font-size: .62rem; font-weight: 800; color: var(--stamp); letter-spacing: .14em; text-shadow: 0 0 6px var(--stamp-glow); }
-.vip-code { font-size: .7rem; font-weight: 800; color: var(--ink); }
-.vip-body { font-size: .84rem; font-weight: 800; letter-spacing: .08em; color: var(--ink); }
-.vip-footer { display: flex; justify-content: space-between; align-items: center; margin-top: .4rem; gap: 1rem; }
-.vip-footer span { font-size: .6rem; color: #f59e0b; font-weight: 700; letter-spacing: .06em; }
-.vip-dots { display: flex; gap: 4px; }
-.vip-dots i { width: 5px; height: 5px; border-radius: 50%; background: var(--rule); display: block; }
-.vip-dots i.is-done { background: #22c55e; box-shadow: 0 0 4px #22c55e; }
-.vip-dots i.is-busy { background: #f59e0b; box-shadow: 0 0 4px #f59e0b; animation: blink 1.2s infinite; }
-
-/* 5. Radar de Proyectos 360° (Con 5 plazas integradas) */
-html[data-stampstyle='radar'] .stamp {
-  transform: rotate(0deg); border: 1px solid #10b981;
-  border-radius: 12px; padding: .65rem 1.15rem;
-  background: rgba(6, 78, 59, 0.35); color: #34d399;
-  box-shadow: 0 0 25px rgba(16, 185, 129, 0.3);
-  font-family: var(--data); clip-path: none;
-}
-.radar-box { display: flex; align-items: center; gap: .85rem; }
-.radar-circle { width: 38px; height: 38px; border: 1px solid #10b981; border-radius: 50%; position: relative; overflow: hidden; flex-shrink: 0; background: rgba(0,0,0,0.3); }
-.radar-sweep { position: absolute; inset: 0; background: conic-gradient(from 0deg, rgba(16,185,129,0.65), transparent 70deg); animation: radar-spin 2.8s infinite linear; border-radius: 50%; }
-@keyframes radar-spin { to { transform: rotate(360deg); } }
-.radar-dot { width: 5px; height: 5px; border-radius: 50%; position: absolute; }
-.radar-dot.dot-1 { top: 28%; left: 38%; background: #34d399; box-shadow: 0 0 6px #34d399; }
-.radar-dot.dot-2 { top: 58%; right: 25%; background: #f59e0b; box-shadow: 0 0 6px #f59e0b; animation: blink 1.2s infinite; }
-.radar-title { display: block; font-size: .68rem; font-weight: 800; letter-spacing: .1em; color: #34d399; }
-.radar-slots { display: flex; gap: 4px; margin: .25rem 0; }
-.r-slot { font-size: .6rem; padding: 1px 4px; border-radius: 3px; background: rgba(0,0,0,0.4); border: 1px solid rgba(16,185,129,0.3); color: #94a3b8; font-weight: 600; }
-.r-slot.done { border-color: #34d399; color: #34d399; background: rgba(52,211,153,0.15); }
-.r-slot.busy { border-color: #f59e0b; color: #f59e0b; background: rgba(245,158,11,0.15); animation: blink 1.5s infinite; }
-.radar-sub { display: block; font-size: .58rem; color: #a7f3d0; opacity: .9; }
-
-/* 6. Terminal CLI (Geek Linux Consola) */
-html[data-stampstyle='cli'] .stamp {
   transform: rotate(0deg); border: 1px solid #22c55e;
   border-radius: 8px; padding: .75rem 1.1rem;
   background: #090d0b; color: #4ade80;
   box-shadow: 0 0 22px rgba(34, 197, 94, 0.28);
   font-family: monospace, var(--data); font-size: .74rem; text-align: left;
-  clip-path: none;
 }
+.stamp[hidden] { display: block; opacity: 0; transform: scale(1.08); }
 .cli-prompt { color: #86efac; font-size: .62rem; display: block; margin-bottom: .4rem; opacity: .85; }
 .cli-list { display: flex; flex-direction: column; gap: .2rem; }
 .cli-done { color: #22c55e; font-weight: 600; }
@@ -333,12 +209,12 @@ html[data-stampstyle='cli'] .stamp {
 @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
 
 @media (max-width: 720px) {
-  .stamp { position: static; display: inline-block; margin-top: 2rem; transform: rotate(-3deg); }
+  .stamp { position: static; display: inline-block; margin-top: 2rem; }
   .stamp[hidden] { display: none; }
   .showcase { margin-top: 1.5rem; }
 }
 @media (prefers-reduced-motion: reduce) {
-  .stamp, .stamp-dots i.is-next, .cli-cursor, .cyber-scanline { animation: none; }
+  .stamp, .cli-cursor { animation: none; }
 }
 
 /* --- Panel de control (tarifa/moneda/paleta/tarjetas) --------------------- */
