@@ -38,6 +38,7 @@ export default defineConfig({
   // antiguo 'hybrid'.
   output: 'static',
   adapter: vercel(),
+  trailingSlash: 'always',
   redirects: {
     '/': '/es/servicios/',
   },
