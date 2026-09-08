@@ -52,19 +52,39 @@ const busySlot = LAUNCH_SLOTS.completed + LAUNCH_SLOTS.inProgress;
 const freeStart = busySlot + 1;
 const freeEnd = LAUNCH_SLOTS.total;
 
+/** "desde 250 €" (con rango) · "25 €/mes" (rango de un solo valor, nunca
+    lleva "desde") · "250 €" en georgiano (t.priceFrom vacío a propósito,
+    ver nota junto a la clave en ui.ts — no se traduce por declinación). */
+function moneyFrom(range: readonly number[], currency: Currency, unit: Unit) {
+  const sep = currency === 'eur' ? '.' : nbsp;
+  const symbol = CURRENCY_SYMBOL[currency];
+  const value = `${group(range[0], sep)}${nbsp}${symbol}${suffix(unit)}`;
+  if (range.length === 1 || !t.priceFrom) return value;
+  return `${t.priceFrom} ${value}`;
+}
+
+/** Línea pequeña bajo el precio grande: el rango completo (si lo hay) más
+    la cuota recurrente (si la hay), unidos por "·". Vacía si el precio
+    grande ya lo dice todo (rango de un solo valor, sin recurrente). */
+function priceDetail(range: readonly number[], currency: Currency, unit: Unit, recurring?: Item['launchRecurring']) {
+  const parts: string[] = [];
+  if (range.length > 1) parts.push(money(range, currency, unit));
+  if (recurring) parts.push(`${t.thenMonthly} ${money(recurring[currency], currency, 'month')}`);
+  return parts.join(' · ');
+}
+
 /**
  * Las 6 combinaciones tarifa×moneda viajan ya formateadas en el HTML estático;
  * el script de Base.astro solo elige entre ellas con dataset[tier + currency].
- * De ahí los nombres pegados: data-launcheur, data-standardgel… y los mismos
- * con prefijo r para la cuota recurrente (data-rlauncheur).
+ * De ahí los nombres pegados: data-fromlauncheur, data-detailstandardgel…
  */
 function priceData(item: Item) {
   const d: Record<string, string> = { 'data-price': '' };
   for (const tier of TIERS) {
     const rec = item[tier === 'launch' ? 'launchRecurring' : 'standardRecurring'];
     for (const c of CURRENCIES) {
-      d[`data-${tier}${c}`] = money(item[tier][c], c, item.unit);
-      if (rec) d[`data-r${tier}${c}`] = money(rec[c], c, 'month');
+      d[`data-from${tier}${c}`] = moneyFrom(item[tier][c], c, item.unit);
+      d[`data-detail${tier}${c}`] = priceDetail(item[tier][c], c, item.unit, rec);
     }
   }
   return d;
@@ -73,18 +93,22 @@ function priceData(item: Item) {
 function bundlePriceData(b: Bundle) {
   const d: Record<string, string> = { 'data-price': '' };
   for (const tier of TIERS) {
-    for (const c of CURRENCIES) d[`data-${tier}${c}`] = money(b[tier][c], c, 'once');
+    for (const c of CURRENCIES) {
+      d[`data-from${tier}${c}`] = moneyFrom(b[tier][c], c, 'once');
+      d[`data-detail${tier}${c}`] = priceDetail(b[tier][c], c, 'once');
+    }
   }
   return d;
 }
+
 /** Lo que se ve antes de que corra nada de JS: tarifa y moneda por defecto. */
-function initial(item: Item) {
-  return money(item[DEFAULT_TIER][DEFAULT_CURRENCY], DEFAULT_CURRENCY, item.unit);
+function initialFrom(item: Item) {
+  return moneyFrom(item[DEFAULT_TIER][DEFAULT_CURRENCY], DEFAULT_CURRENCY, item.unit);
 }
 
-function initialRecurring(item: Item) {
+function initialDetail(item: Item) {
   const rec = item[DEFAULT_TIER === 'launch' ? 'launchRecurring' : 'standardRecurring'];
-  return rec ? money(rec[DEFAULT_CURRENCY], DEFAULT_CURRENCY, 'month') : '';
+  return priceDetail(item[DEFAULT_TIER][DEFAULT_CURRENCY], DEFAULT_CURRENCY, item.unit, rec);
 }
 
 const featuredMap: Record<string, Record<Lang, string>> = {
@@ -272,9 +296,8 @@ const featuredMap: Record<string, Record<Lang, string>> = {
               humanLabel={t.colService}
               human={item.human[lang]}
               priceAttrs={priceData(item)}
-              initialPrice={initial(item)}
-              initialRecurring={item.launchRecurring ? initialRecurring(item) : undefined}
-              recurringLabel={t.thenMonthly}
+              initialFrom={initialFrom(item)}
+              initialDetail={initialDetail(item)}
               featured={Boolean(featuredText)}
               featuredLabel={featuredText}
             />
@@ -312,7 +335,8 @@ const featuredMap: Record<string, Record<Lang, string>> = {
             humanLabel={t.bundleIncludes}
             human={b.human[lang]}
             priceAttrs={bundlePriceData(b)}
-            initialPrice={money(b[DEFAULT_TIER][DEFAULT_CURRENCY], DEFAULT_CURRENCY, 'once')}
+            initialFrom={moneyFrom(b[DEFAULT_TIER][DEFAULT_CURRENCY], DEFAULT_CURRENCY, 'once')}
+            initialDetail={priceDetail(b[DEFAULT_TIER][DEFAULT_CURRENCY], DEFAULT_CURRENCY, 'once')}
             featured={Boolean(featuredText)}
             featuredLabel={featuredText}
           />

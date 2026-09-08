@@ -67,6 +67,7 @@ export const ui = {
     perHour: '/h',
     plus: 'más',
     thenMonthly: 'después',
+    priceFrom: 'desde',
     bundlesTitle: 'Paquetes',
     bundlesNote: 'Combinaciones cerradas, ya con descuento aplicado.',
     bundleIncludes: 'Incluye',
@@ -158,6 +159,7 @@ export const ui = {
     perHour: '/ч',
     plus: 'плюс',
     thenMonthly: 'далее',
+    priceFrom: 'от',
     bundlesTitle: 'Пакеты',
     bundlesNote: 'Готовые связки, скидка уже внутри.',
     bundleIncludes: 'Входит',
@@ -249,6 +251,7 @@ export const ui = {
     perHour: '/h',
     plus: 'plus',
     thenMonthly: 'then',
+    priceFrom: 'from',
     bundlesTitle: 'Packages',
     bundlesNote: 'Closed combinations, discount already applied.',
     bundleIncludes: 'Includes',
@@ -332,6 +335,13 @@ export const ui = {
     perHour: '/სთ',
     plus: 'პლუს',
     thenMonthly: 'შემდეგ',
+    // priceFrom: intencionadamente vacío — "desde" en georgiano se resuelve
+    // por declinación del sustantivo, no por prefijo fijo, y una traducción
+    // aquí sin revisión nativa podría ser gramaticalmente incorrecta. Con
+    // priceFrom vacío, Catalog.astro muestra solo el número ("250 €"), sin
+    // prefijo. Ver misma advertencia sobre el georgiano al inicio de este
+    // archivo y en catalog.ts.
+    priceFrom: '',
     bundlesTitle: 'პაკეტები',
     bundlesNote: 'დახურული კომბინაციები, ფასდაკლებით.',
     bundleIncludes: 'შედის',

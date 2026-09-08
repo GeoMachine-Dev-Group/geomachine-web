@@ -259,6 +259,9 @@ a.showcase__link:hover { color: var(--accent); }
 .card__human { font-size: .9rem; line-height: 1.5; color: var(--ink); margin: .4rem 0 0; }
 .price-value { transition: opacity .18s ease, filter .18s ease, transform .18s cubic-bezier(.4,0,.2,1); display: inline-block; }
 .is-swapping .price-value { opacity: 0; filter: blur(4px); transform: scale(.92) translateY(2px); }
+.card__price-from { display: block; font-family: var(--data); font-size: 1.4rem; font-weight: 600; color: var(--accent); }
+.card__price-detail { display: block; margin-top: .3rem; font-size: .78rem; color: var(--ink-soft); }
+.card__price-detail[hidden] { display: none; }
 .card:before {
   content: ''; position: absolute; inset: 0; background: var(--panel-2); border: 1px solid var(--rule);
   border-radius: 12px; transition: transform .4s cubic-bezier(.2,.8,.2,1), border-color .4s;

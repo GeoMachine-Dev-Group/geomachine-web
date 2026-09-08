@@ -201,15 +201,15 @@ const preloadFont: Record<Lang, string> = {
       function paint() {
         const combo = (root.dataset.tier ?? '') + (root.dataset.currency ?? '');
         document.querySelectorAll<HTMLElement>('[data-price]').forEach((cell) => {
-          const main = cell.querySelector<HTMLElement>('.price-value');
-          if (main) main.textContent = cell.dataset[combo] ?? '';
+          const from = cell.querySelector<HTMLElement>('.card__price-from');
+          if (from) from.textContent = cell.dataset['from' + combo] ?? '';
 
-          const recWrap = cell.querySelector<HTMLElement>('.card__recurring');
-          if (!recWrap) return;
-          const recText = cell.dataset['r' + combo];
-          recWrap.hidden = !recText;
-          const rec = recWrap.querySelector<HTMLElement>('.price-value');
-          if (rec && recText) rec.textContent = recText;
+          const detail = cell.querySelector<HTMLElement>('.card__price-detail');
+          if (detail) {
+            const detailText = cell.dataset['detail' + combo] ?? '';
+            detail.textContent = detailText;
+            detail.hidden = !detailText;
+          }
         });
       }
 
