@@ -23,6 +23,10 @@
   --display: 'Outfit', 'Noto Sans Georgian', sans-serif;
   --body: 'Plus Jakarta Sans', 'Noto Sans Georgian', sans-serif;
   --data: 'IBM Plex Mono', 'Noto Sans Georgian', ui-monospace, 'Cascadia Mono', monospace;
+  /* Alias de --display: usada por .calculator__title y .calc-summary-val,
+     que antes referenciaban una variable inexistente y caían silenciosamente
+     en --body (font-family hereda cuando un var() es inválido). */
+  --heading: var(--display);
 
   --pad: clamp(1.25rem, 4vw, 3.5rem);
   --shell: 1180px;
@@ -337,7 +341,7 @@ html[data-cardstyle='tilt'] .card:hover .card__inner:after { opacity: 1; }
 /* --- FAQ --------------------------------------------------------------------- */
 
 .faq { border-top: 1px solid var(--rule); padding-block: clamp(2.5rem, 6vw, 4.5rem); }
-.faq__title { font-family: var(--display); font-weight: 700; font-size: clamp(1.6rem, 3.6vw, 2.3rem); letter-spacing: -.02em; line-height: 1.08; margin: 0 0 2rem; }
+.faq__title { font-family: var(--display); font-weight: 600; font-size: clamp(1.5rem, 3.2vw, 2.1rem); letter-spacing: -.02em; line-height: 1.08; margin: 0 0 2rem; }
 .faq__list { display: grid; gap: 1.75rem; max-width: 62ch; }
 .faq__q { font-family: var(--display); font-weight: 600; font-size: 1.05rem; margin: 0 0 .5rem; }
 .faq__a { margin: 0; color: var(--ink-soft); line-height: 1.55; }
@@ -347,7 +351,7 @@ html[data-cardstyle='tilt'] .card:hover .card__inner:after { opacity: 1; }
 
 .close { border-top: 1px solid var(--rule); padding-block: clamp(2.5rem, 6vw, 4.5rem); display: grid; grid-template-columns: minmax(0,1.1fr) minmax(0,1fr); gap: clamp(2rem, 5vw, 4rem); }
 @media (max-width: 860px) { .close { grid-template-columns: 1fr; } }
-.close__title { font-family: var(--display); font-weight: 700; font-size: clamp(1.6rem, 3.6vw, 2.3rem); letter-spacing: -.02em; line-height: 1.08; margin: 0; }
+.close__title { font-family: var(--display); font-weight: 600; font-size: clamp(1.5rem, 3.2vw, 2.1rem); letter-spacing: -.02em; line-height: 1.08; margin: 0; }
 .close__body { margin: 1rem 0 2rem; color: var(--ink-soft); max-width: 44ch; }
 .actions { display: flex; flex-wrap: wrap; gap: .75rem; align-items: center; }
 .actions__note { flex-basis: 100%; margin: .35rem 0 0; font-size: .78rem; color: var(--ink-soft); }
