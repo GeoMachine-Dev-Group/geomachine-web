@@ -2,20 +2,25 @@
 
 ## 0. Estado actual (2026-09-10)
 
-**Rama `fix/limpieza-catalogo`, 9 commits, preview aprobado por el usuario,
-PENDIENTE de merge a `main`.** Producción sigue en `3447ddb` (fix/blog: enlaces
-internos a URL relativa).
+**Desplegado en producción el 2026-09-10 en `0709338`.** La rama
+`fix/limpieza-catalogo` se integró en `main` por fast-forward (`3447ddb` →
+`0709338`) y se borró en local y en los dos remotos; ya no existe.
 
-Los 9 commits, en orden:
-1. `e54da47` fix(tokens): define `--heading` y unifica la escala de h2.
-2. `34fd571` style(catalogo): más peso visual real a la tarjeta destacada (PACK-02).
-3. `c35077d` style(catalogo): saca el showcase del hero a su propia sección.
-4. `35504ea` feat(catalogo): jerarquía de precios — "desde X" grande + rango pequeño.
+Verificado en producción tras el deploy: `/es/servicios` sin barra responde
+308, no queda botón de cambiar tema, hay un solo contador de plazas (variante
+terminal `sys.slots --status`) y el WhatsApp apunta a `wa.me/34620811739`.
+
+Los 10 commits que entraron, en orden:
+1. `6200988` fix(catalogo): deja una sola variante del contador de plazas.
+2. `da27df8` fix(tema): elimina el selector de 5 paletas de color.
+3. `766f00b` fix(contacto): número de WhatsApp real en vez del placeholder.
+4. `7296410` fix(seo): 301/308 entre `/ruta` y `/ruta/` para evitar contenido duplicado.
 5. `2d74aaf` chore(i18n): elimina `stampStyles` huérfano (deuda previa).
-6. `7296410` fix(seo): 301/308 entre `/ruta` y `/ruta/` para evitar contenido duplicado.
-7. `766f00b` fix(contacto): número de WhatsApp real en vez del placeholder.
-8. `da27df8` fix(tema): elimina el selector de 5 paletas de color.
-9. `6200988` fix(catalogo): deja una sola variante del contador de plazas.
+6. `35504ea` feat(catalogo): jerarquía de precios — "desde X" grande + rango pequeño.
+7. `c35077d` style(catalogo): saca el showcase del hero a su propia sección.
+8. `34fd571` style(catalogo): más peso visual real a la tarjeta destacada (PACK-02).
+9. `e54da47` fix(tokens): define `--heading` y unifica la escala de h2.
+10. `0709338` docs(agents): añade la sección Estado actual.
 
 **Pendientes:**
 - Decidir espejo `www`: el servidor manda a `www.geomachine.es` pero el
