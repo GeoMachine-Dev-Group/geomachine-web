@@ -2,15 +2,27 @@
 
 ## 0. Estado actual (2026-09-10)
 
-**Desplegado en producción el 2026-09-10 en `0709338`.** La rama
-`fix/limpieza-catalogo` se integró en `main` por fast-forward (`3447ddb` →
-`0709338`) y se borró en local y en los dos remotos; ya no existe.
+**Producción está en `dad1208`** (feat(hero): copy nuevo en 4 idiomas),
+desplegado el 2026-09-10. `main` y producción coinciden; no hay ramas de
+trabajo vivas.
 
-Verificado en producción tras el deploy: `/es/servicios` sin barra responde
-308, no queda botón de cambiar tema, hay un solo contador de plazas (variante
-terminal `sys.slots --status`) y el WhatsApp apunta a `wa.me/34620811739`.
+Dos tandas llegaron a producción ese día, las dos por fast-forward y con la
+rama borrada después en local y en los dos remotos:
 
-Los 10 commits que entraron, en orden:
+1. **`0709338`** — rama `fix/limpieza-catalogo` (10 commits, lista abajo).
+   Verificado en producción: `/es/servicios` sin barra responde 308, no queda
+   botón de cambiar tema, hay un solo contador de plazas (variante terminal
+   `sys.slots --status`) y el WhatsApp apunta a `wa.me/34620811739`.
+2. **`dad1208`** — rama `feat/hero-copy`. El hero pasa de eyebrow + título +
+   dos párrafos a título + un solo párrafo, con copy nuevo en es/ru/en/ka.
+   Fuera las claves `heroPlain` (4 idiomas) y `heroEyebrow` (ru/en/ka; `es`
+   nunca la tuvo y venía pintando un `<p>` vacío). La clase CSS
+   `.hero__eyebrow` SÍ se conserva: la usa `AppAccountsPage.astro` para el
+   tagline, y lleva un comentario que lo advierte. **El georgiano del hero
+   está traducido por IA y pendiente de revisión nativa**, marcado en
+   `ui.ts` igual que el aviso de `priceFrom`.
+
+Los 10 commits de `fix/limpieza-catalogo`, en orden:
 1. `6200988` fix(catalogo): deja una sola variante del contador de plazas.
 2. `da27df8` fix(tema): elimina el selector de 5 paletas de color.
 3. `766f00b` fix(contacto): número de WhatsApp real en vez del placeholder.
@@ -23,6 +35,9 @@ Los 10 commits que entraron, en orden:
 10. `0709338` docs(agents): añade la sección Estado actual.
 
 **Pendientes:**
+- Revisión nativa del georgiano del hero (`heroTitle`/`heroBody` en
+  `src/i18n/ui.ts`): están traducidos por IA y son el primer texto que ve
+  quien entra en `/ka/momsakhurebebi/`.
 - Decidir espejo `www`: el servidor manda a `www.geomachine.es` pero el
   canonical dice sin `www` — hay que unificar en un sentido u otro.
 - Falta foto del fundador en la sección `.close`.
