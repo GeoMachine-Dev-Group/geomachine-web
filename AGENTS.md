@@ -1,5 +1,43 @@
 # geomachine.es — ficha del proyecto
 
+## 0. Estado actual (2026-09-10)
+
+**Rama `fix/limpieza-catalogo`, 9 commits, preview aprobado por el usuario,
+PENDIENTE de merge a `main`.** Producción sigue en `3447ddb` (fix/blog: enlaces
+internos a URL relativa).
+
+Los 9 commits, en orden:
+1. `e54da47` fix(tokens): define `--heading` y unifica la escala de h2.
+2. `34fd571` style(catalogo): más peso visual real a la tarjeta destacada (PACK-02).
+3. `c35077d` style(catalogo): saca el showcase del hero a su propia sección.
+4. `35504ea` feat(catalogo): jerarquía de precios — "desde X" grande + rango pequeño.
+5. `2d74aaf` chore(i18n): elimina `stampStyles` huérfano (deuda previa).
+6. `7296410` fix(seo): 301/308 entre `/ruta` y `/ruta/` para evitar contenido duplicado.
+7. `766f00b` fix(contacto): número de WhatsApp real en vez del placeholder.
+8. `da27df8` fix(tema): elimina el selector de 5 paletas de color.
+9. `6200988` fix(catalogo): deja una sola variante del contador de plazas.
+
+**Pendientes:**
+- Decidir espejo `www`: el servidor manda a `www.geomachine.es` pero el
+  canonical dice sin `www` — hay que unificar en un sentido u otro.
+- Falta foto del fundador en la sección `.close`.
+- `AppAccountsPage.astro` tiene estilos inline sin `clamp()` (deuda de
+  responsive, no bloqueante).
+- Plausible caduca pronto y falta instalar `@vercel/analytics`.
+
+**Estado SEO:** Yandex verificado como `https://geomachine.es`, `sitemap-index`
+y `sitemap-0` enviados, 15 URLs rusas en cola de rastreo. Google indexa bien.
+
+**Deuda de diseño detectada** (no bloqueante, para una pasada futura): no hay
+escala de espaciado ni de radios en variables CSS, 5 breakpoints literales
+sin convención compartida, tipografía ajustada "a ojo" sin type scale formal.
+
+**Hook `post-commit` en esta máquina:** cada `git commit` limpio dispara push
+automático a todos los remotos del repo (ver `.git/hooks/post-commit`,
+symlink compartido en `~/.local/share/git-hooks/`). Si detecta un posible
+secreto en el diff del commit, aborta el push automático y avisa — no hace
+push silencioso de un commit con secretos.
+
 ## 1. Qué es
 
 Sitio web + blog de GeoMachine Developer Group (desarrollo web, apps, IA,
