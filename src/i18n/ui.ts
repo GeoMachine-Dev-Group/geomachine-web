@@ -5,9 +5,14 @@
  * un hablante nativo antes de publicar. El inglés y el ruso tienen menos
  * riesgo pero también merecen una relectura.
  *
- * Textos actualizados respecto al ui.ts original: nuevo eslogan del hero
- * ("De la idea a producción, sin rodeos"), nueva sección "En desarrollo /
- * Entregado" con gagraservis.ru, y el contador de plazas de lanzamiento.
+ * Copy del hero (2026-09-10): título + un solo párrafo, sin eyebrow ni
+ * segundo párrafo. El tono es concreto — quién te atiende y qué se entrega —
+ * en lugar de las tres formulaciones abstractas que se repetían antes ("sin
+ * fricción", "transparencia total", "rendimiento superior"). Si cambias el
+ * hero, actualiza también esta nota.
+ *
+ * Otros textos propios de este ui.ts: la sección "En desarrollo / Entregado"
+ * con gagraservis.ru y el contador de plazas de lanzamiento.
  */
 
 export const languages = { es: 'Español', ru: 'Русский', en: 'English', ka: 'ქართული' } as const;
@@ -38,11 +43,9 @@ export const ui = {
     plate: 'Catálogo de servicios',
     rev: 'Rev. 2026.08',
     company: 'GeoMachine Developer Group',
-    heroTitle: 'Ingeniería de software y web lista para producir',
+    heroTitle: 'El que te atiende es el que escribe el código.',
     heroBody:
-      'Construimos páginas web, aplicaciones móviles y servidores de IA privada sin fricción. Trato directo con el ingeniero responsable, entregas rápidas y transparencia total en los costes.',
-    heroPlain:
-      'Rendimiento web superior, alta privacidad de datos y soporte continuo cuando tu negocio lo necesite.',
+      'Webs, aplicaciones e IA que corre en tu propio servidor. Precio cerrado desde el primer mensaje y entrega en días, no en trimestres.',
     tierLabel: 'Tarifa',
     tierLaunch: 'Lanzamiento',
     tierStandard: 'Estándar',
@@ -129,12 +132,9 @@ export const ui = {
     plate: 'Каталог услуг',
     rev: 'Ред. 2026.08',
     company: 'GeoMachine Developer Group',
-    heroEyebrow: 'Веб-разработка, приложения и искусственный интеллект',
-    heroTitle: 'Разработка ПО и веб-систем, готовых к продакшену',
+    heroTitle: 'Вы общаетесь напрямую с разработчиком.',
     heroBody:
-      'Создаем веб-сайты, мобильные приложения и приватные серверы ИИ без сбоев. Прямой контакт с ведущим инженером, быстрая сдача проектов и полная прозрачность бюджетов.',
-    heroPlain:
-      'Высокая производительность, максимальная приватность данных и непрерывная поддержка вашего бизнеса.',
+      'Сайты, приложения и ИИ на вашем собственном сервере. Точная цена с первого сообщения, сроки — дни, а не кварталы.',
     tierLabel: 'Тариф',
     tierLaunch: 'Стартовый',
     tierStandard: 'Обычный',
@@ -221,12 +221,9 @@ export const ui = {
     plate: 'Service catalog',
     rev: 'Rev. 2026.08',
     company: 'GeoMachine Developer Group',
-    heroEyebrow: 'Web development, applications and artificial intelligence',
-    heroTitle: 'Software engineering & websites ready for production',
+    heroTitle: 'You talk to the person who writes the code.',
     heroBody:
-      'We build friction-free websites, mobile applications, and private AI servers. Direct communication with the lead engineer, fast delivery, and full pricing transparency.',
-    heroPlain:
-      'Superior web performance, high data privacy, and ongoing technical support whenever your business needs it.',
+      'Websites, apps, and AI that runs on your own server. Fixed price from the first message, delivered in days, not quarters.',
     tierLabel: 'Tier',
     tierLaunch: 'Launch',
     tierStandard: 'Standard',
@@ -302,12 +299,15 @@ export const ui = {
     plate: 'სერვისების კატალოგი',
     rev: 'რედ. 2026.08',
     company: 'GeoMachine Developer Group',
-    heroEyebrow: 'ვებ დეველოპმენტი, აპლიკაციები და ხელოვნური ინტელექტი',
-    heroTitle: 'პროდაქშენისთვის მზადმყოფი ვებ და პროგრამული ინჟინერია',
+    // heroTitle/heroBody: traducidos por IA, PENDIENTES de revisión por un
+    // hablante nativo antes de darlos por buenos. Es el primer texto que ve
+    // quien entra en /ka/momsakhurebebi/, así que un fallo de registro o de
+    // declinación aquí pesa más que en cualquier otra clave. Ver la misma
+    // advertencia sobre el georgiano al inicio de este archivo, en catalog.ts
+    // y en priceFrom más abajo.
+    heroTitle: 'თქვენ პირდაპირ ესაუბრებით დეველოპერს.',
     heroBody:
-      'ვქმნით ვებგვერდებს, მობილურ აპლიკაციებს და კერძო AI სერვერებს. პირდაპირი კონტაქტი წამყვან ინჟინერთან, სწრაფი მიწოდება და ბიუჯეტის სრული გამჭვირვალობა.',
-    heroPlain:
-      'უმაღლესი წარმადობა, მონაცემთა მაღალი კონფიდენციალურობა და მუდმივი მხარდაჭერა თქვენი ბიზნესისთვის.',
+      'ვებგვერდები, აპლიკაციები და ხელოვნური ინტელექტი თქვენს საკუთარ სერვერზე. ფიქსირებული ფასი პირველივე შეტყობინებიდან, ჩაბარება დღეებში და არა კვარტლებში.',
     tierLabel: 'ტარიფი',
     tierLaunch: 'გაშვების',
     tierStandard: 'სტანდარტული',
