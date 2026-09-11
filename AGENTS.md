@@ -35,6 +35,11 @@ Los 10 commits de `fix/limpieza-catalogo`, en orden:
 10. `0709338` docs(agents): añade la sección Estado actual.
 
 **Pendientes:**
+- Rama `feat/vercel-analytics` viva, con `f39aabd` (Vercel Web Analytics en
+  lugar de Plausible), empujada a los dos remotos pero SIN mergear a `main`
+  ni desplegar. Falta además activar Web Analytics en el panel de Vercel: sin
+  eso el componente se carga pero no recoge datos.
+- Decidir si se reinstala el hook `post-commit` de auto-push (ver más abajo).
 - Revisión nativa del georgiano del hero (`heroTitle`/`heroBody` en
   `src/i18n/ui.ts`): están traducidos por IA y son el primer texto que ve
   quien entra en `/ka/momsakhurebebi/`.
@@ -43,7 +48,8 @@ Los 10 commits de `fix/limpieza-catalogo`, en orden:
 - Falta foto del fundador en la sección `.close`.
 - `AppAccountsPage.astro` tiene estilos inline sin `clamp()` (deuda de
   responsive, no bloqueante).
-- Plausible caduca pronto y falta instalar `@vercel/analytics`.
+- Exportar el histórico de Plausible antes de que caduque la cuenta: el
+  script sale del sitio en `f39aabd`, así que la serie se corta ahí.
 
 **Estado SEO:** Yandex verificado como `https://geomachine.es`, `sitemap-index`
 y `sitemap-0` enviados, 15 URLs rusas en cola de rastreo. Google indexa bien.
@@ -52,11 +58,23 @@ y `sitemap-0` enviados, 15 URLs rusas en cola de rastreo. Google indexa bien.
 escala de espaciado ni de radios en variables CSS, 5 breakpoints literales
 sin convención compartida, tipografía ajustada "a ojo" sin type scale formal.
 
-**Hook `post-commit` en esta máquina:** cada `git commit` limpio dispara push
-automático a todos los remotos del repo (ver `.git/hooks/post-commit`,
-symlink compartido en `~/.local/share/git-hooks/`). Si detecta un posible
-secreto en el diff del commit, aborta el push automático y avisa — no hace
-push silencioso de un commit con secretos.
+**El auto-push ya NO está activo (comprobado el 2026-09-11).** `git commit`
+deja el commit solo en local: hay que hacer `git push` a mano, a `github` y a
+`backup`. `.git/hooks/` está vacío —ni siquiera quedan los `.sample`—, el repo
+no define `core.hooksPath`, y no hay cron ni timer de systemd que lo supla.
+
+El script sigue instalable: `~/.local/share/git-hooks/post-commit-autopush.sh`
+junto a su `install.sh`. Cuando estaba enlazado, cada commit limpio empujaba a
+todos los remotos y abortaba el push si detectaba un posible secreto en el
+diff. Se desenlazó a mitad de la sesión del 2026-09-10 (las fechas de
+`.git/hooks/` son posteriores a los commits de esa noche, que sí se empujaron
+solos, y anteriores a los del día siguiente, que no). No se sabe quién ni por
+qué, así que no se ha reinstalado por iniciativa propia.
+
+**Por qué importa:** una sesión que dé por hecho el auto-push dará por
+publicado un commit que sigue en local, y por desplegado un cambio que Vercel
+nunca ha visto. Verificar siempre con `git ls-remote github refs/heads/<rama>`
+después de commitear.
 
 ## 1. Qué es
 
