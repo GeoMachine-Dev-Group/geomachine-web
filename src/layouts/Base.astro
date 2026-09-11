@@ -6,6 +6,7 @@ import { buildOrganization } from '../data/organization';
 import Schema from '../components/Schema.astro';
 import FloatingChat from '../components/FloatingChat.astro';
 import Logo from '../components/Logo.astro';
+import Analytics from '@vercel/analytics/astro';
 
 interface HreflangAlt {
   hreflang: string;
@@ -29,7 +30,7 @@ interface Props {
       omite para que la página inyecte el suyo propio vía el slot "head"
       (el blog usa BlogPosting, no OfferCatalog). */
   schema?: 'catalog' | 'none';
-  /** Analítica Plausible. Activada por defecto en todas las páginas. */
+  /** Analítica de Vercel. Activada por defecto en todas las páginas. */
   analytics?: boolean;
 }
 const {
@@ -72,20 +73,6 @@ const preloadFont: Record<Lang, string> = {
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon.png" />
     <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
-
-    {
-      analytics && (
-        <Fragment>
-          <!-- Privacy-friendly analytics by Plausible -->
-          <script async is:inline src="https://plausible.io/js/pa-NIwQqrNqgLgRBGMA-ukZ8.js" />
-          <script is:inline>
-            window.plausible = window.plausible || function () { (plausible.q = plausible.q || []).push(arguments) };
-            plausible.init = plausible.init || function (i) { plausible.o = i || {} };
-            plausible.init();
-          </script>
-        </Fragment>
-      )
-    }
 
     <title>{title}</title>
     <meta name="description" content={description} />
@@ -376,5 +363,11 @@ const preloadFont: Record<Lang, string> = {
         }
       }
     </script>
+
+    {/* Analítica de Vercel. Va al final del body y no en el head: el
+        componente emite un elemento <vercel-analytics>, que dentro de
+        <head> sería markup inválido. Sin cookies, como el Plausible al
+        que sustituye. */}
+    {analytics && <Analytics />}
   </body>
 </html>
