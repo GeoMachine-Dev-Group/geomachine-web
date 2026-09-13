@@ -3,8 +3,9 @@ import {
   lines,
   bundles,
   DEFAULT_TIER,
-  DEFAULT_CURRENCY,
   LAUNCH_SLOTS,
+  LAUNCH_OPEN,
+  LANG_CURRENCY,
   type Item,
   type Bundle,
   type Unit,
@@ -18,6 +19,8 @@ interface Props {
 }
 const { lang } = Astro.props;
 const t = ui[lang];
+/** Moneda con la que se pinta el HTML antes de que corra el JS (por idioma). */
+const CUR = LANG_CURRENCY[lang];
 
 /** Opciones del selector "qué necesitas" del formulario — mismas categorías
     del catálogo, para no mantener una lista de servicios por separado. */
@@ -45,12 +48,12 @@ function money(range: readonly number[], currency: Currency, unit: Unit) {
   return `${nums}${nbsp}${symbol}${suffix(unit)}`;
 }
 
-const TIERS = ['launch', 'standard'] as const;
-
-const doneSlot = LAUNCH_SLOTS.completed;
-const busySlot = LAUNCH_SLOTS.completed + LAUNCH_SLOTS.inProgress;
-const freeStart = busySlot + 1;
-const freeEnd = LAUNCH_SLOTS.total;
+/** Plazas del hero: ocupadas (entregadas + en curso) y libres. */
+const takenSlots = LAUNCH_SLOTS.completed + LAUNCH_SLOTS.inProgress;
+const freeSlots = LAUNCH_SLOTS.total - takenSlots;
+const slotsLeftText = t.slotsLeft
+  .replace('{free}', String(freeSlots))
+  .replace('{total}', String(LAUNCH_SLOTS.total));
 
 /** "desde 250 €" (con rango) · "25 €/mes" (rango de un solo valor, nunca
     lleva "desde") · "250 €" en georgiano (t.priceFrom vacío a propósito,
@@ -73,43 +76,61 @@ function priceDetail(range: readonly number[], currency: Currency, unit: Unit, r
   return parts.join(' · ');
 }
 
+/** Precio estándar tachado junto al de lanzamiento: solo el mínimo, sin "desde". */
+function moneyWas(range: readonly number[], currency: Currency, unit: Unit) {
+  const sep = currency === 'eur' ? '.' : nbsp;
+  return `${group(range[0], sep)}${nbsp}${CURRENCY_SYMBOL[currency]}${suffix(unit)}`;
+}
+
 /**
- * Las 6 combinaciones tarifa×moneda viajan ya formateadas en el HTML estático;
- * el script de Base.astro solo elige entre ellas con dataset[tier + currency].
- * De ahí los nombres pegados: data-fromlauncheur, data-detailstandardgel…
+ * Las 3 monedas viajan ya formateadas en el HTML estático, solo para la tarifa
+ * activa (DEFAULT_TIER, que deciden las plazas libres). El script de Base.astro
+ * elige con dataset[currency]: data-fromeur, data-detailgel, data-wasrub…
+ * "was" es el precio estándar tachado y solo existe mientras haya plazas.
  */
 function priceData(item: Item) {
+  const rec = item[DEFAULT_TIER === 'launch' ? 'launchRecurring' : 'standardRecurring'];
   const d: Record<string, string> = { 'data-price': '' };
-  for (const tier of TIERS) {
-    const rec = item[tier === 'launch' ? 'launchRecurring' : 'standardRecurring'];
-    for (const c of CURRENCIES) {
-      d[`data-from${tier}${c}`] = moneyFrom(item[tier][c], c, item.unit);
-      d[`data-detail${tier}${c}`] = priceDetail(item[tier][c], c, item.unit, rec);
-    }
+  for (const c of CURRENCIES) {
+    d[`data-from${c}`] = moneyFrom(item[DEFAULT_TIER][c], c, item.unit);
+    d[`data-detail${c}`] = priceDetail(item[DEFAULT_TIER][c], c, item.unit, rec);
+    if (LAUNCH_OPEN) d[`data-was${c}`] = moneyWas(item.standard[c], c, item.unit);
   }
   return d;
 }
 
 function bundlePriceData(b: Bundle) {
   const d: Record<string, string> = { 'data-price': '' };
-  for (const tier of TIERS) {
-    for (const c of CURRENCIES) {
-      d[`data-from${tier}${c}`] = moneyFrom(b[tier][c], c, 'once');
-      d[`data-detail${tier}${c}`] = priceDetail(b[tier][c], c, 'once');
-    }
+  for (const c of CURRENCIES) {
+    d[`data-from${c}`] = moneyFrom(b[DEFAULT_TIER][c], c, 'once');
+    d[`data-detail${c}`] = priceDetail(b[DEFAULT_TIER][c], c, 'once');
+    if (LAUNCH_OPEN) d[`data-was${c}`] = moneyWas(b.standard[c], c, 'once');
   }
   return d;
 }
 
-/** Lo que se ve antes de que corra nada de JS: tarifa y moneda por defecto. */
+/** Lo que se ve antes de que corra el JS: tarifa activa en la moneda del idioma. */
 function initialFrom(item: Item) {
-  return moneyFrom(item[DEFAULT_TIER][DEFAULT_CURRENCY], DEFAULT_CURRENCY, item.unit);
+  return moneyFrom(item[DEFAULT_TIER][CUR], CUR, item.unit);
 }
 
 function initialDetail(item: Item) {
   const rec = item[DEFAULT_TIER === 'launch' ? 'launchRecurring' : 'standardRecurring'];
-  return priceDetail(item[DEFAULT_TIER][DEFAULT_CURRENCY], DEFAULT_CURRENCY, item.unit, rec);
+  return priceDetail(item[DEFAULT_TIER][CUR], CUR, item.unit, rec);
 }
+
+function initialWas(standard: Item['standard'], unit: Unit) {
+  return LAUNCH_OPEN ? moneyWas(standard[CUR], CUR, unit) : '';
+}
+
+/** Precios de entrada del hero: el PRIMER servicio de cada línea (Landing page,
+    MVP web, Auditoría de procesos), no el más barato — el mínimo de Webs sería
+    "Segundo idioma", un añadido, y el de Aplicaciones "Integraciones": un
+    "desde" con ellos engañaría. */
+const heroAnchors = ['WEB', 'APP', 'IA']
+  .map((prefix) => lines.find((l) => l.prefix === prefix))
+  .filter((l): l is (typeof lines)[number] => Boolean(l))
+  .map((line) => ({ line, item: line.items[0] }));
 
 const featuredMap: Record<string, Record<Lang, string>> = {
   'WEB-02': {
@@ -161,14 +182,40 @@ const featuredMap: Record<string, Record<Lang, string>> = {
   <h1 class="hero__title">{t.heroTitle}</h1>
   <p class="hero__body">{t.heroBody}</p>
 
-  <aside class="stamp" aria-hidden="true">
-    <span class="cli-prompt">~$ sys.slots --status</span>
-    <div class="cli-list">
-      <div class="cli-line"><span class="cli-done">[✓] Slot {doneSlot}: COMPLETADO</span></div>
-      <div class="cli-line"><span class="cli-busy">[⏳] Slot {busySlot}: EN DESARROLLO</span><span class="cli-cursor">█</span></div>
-      <div class="cli-line"><span class="cli-idle">[ ] Slots {freeStart}–{freeEnd}: DISPONIBLES</span></div>
-    </div>
-  </aside>
+  <ul class="hero__anchors" aria-label={t.heroAnchorsLabel}>
+    {
+      heroAnchors.map(({ line, item }) => (
+        <li>
+          <a class="hero__anchor" href={`#${line.prefix.toLowerCase()}`} {...priceData(item)}>
+            <span class="hero__anchor-name">{item.name[lang]}</span>
+            <span class="price-value card__price-from hero__anchor-price">{initialFrom(item)}</span>
+          </a>
+        </li>
+      ))
+    }
+  </ul>
+
+  <div class="hero__actions">
+    <a class="btn btn--solid" href="#contacto">{t.ctaButton}</a>
+    <a class="btn btn--ghost" href="https://t.me/geomachine" target="_blank" rel="noopener">{t.ctaSecondary}</a>
+  </div>
+
+  {
+    LAUNCH_OPEN && (
+      <aside class="slots" aria-label={t.slotsTitle}>
+        <p class="slots__title">{t.slotsTitle}</p>
+        <p class="slots__count">
+          <span class="slots__dots" aria-hidden="true">
+            {Array.from({ length: LAUNCH_SLOTS.total }, (_, i) => (
+              <span class:list={['slots__dot', { 'is-taken': i < takenSlots }]} />
+            ))}
+          </span>
+          {slotsLeftText}
+        </p>
+        <p class="slots__note">{t.launchNote}</p>
+      </aside>
+    )
+  }
 </section>
 
 <section class="showcase-section shell">
@@ -221,52 +268,34 @@ const featuredMap: Record<string, Record<Lang, string>> = {
   </div>
 </section>
 
-<div class="panel">
-  <div class="shell panel__inner">
-    <div class="control">
-      <span class="control__label" id="tier-label">{t.tierLabel}</span>
-      <div class="switch" role="group" aria-labelledby="tier-label">
-        <button type="button" data-set="tier" data-value="launch" aria-pressed={String(DEFAULT_TIER === 'launch')}>
-          {t.tierLaunch}
-        </button>
-        <button type="button" data-set="tier" data-value="standard" aria-pressed={String(DEFAULT_TIER === 'standard')}>
-          {t.tierStandard}
-        </button>
-      </div>
-    </div>
-    <div class="control">
-      <span class="control__label" id="cur-label">{t.currencyLabel}</span>
-      <div class="switch" role="group" aria-labelledby="cur-label">
-        {
-          CURRENCIES.map((c) => (
-            <button type="button" data-set="currency" data-value={c} aria-pressed={String(c === DEFAULT_CURRENCY)}>
-              {c.toUpperCase()} {CURRENCY_SYMBOL[c]}
-            </button>
-          ))
-        }
-      </div>
-    </div>
-    <div class="panel__notes" aria-live="polite">
-      <p class="panel__note" data-note="launch">{t.launchNote}</p>
-      <p class="panel__note" data-note="standard" hidden>{t.standardNote}</p>
+<div class="catalog-bar shell">
+  <nav class="jump" aria-label={t.bundlesTitle}>
+    {
+      lines.map((line) => (
+        <a class="jump__link" href={`#${line.prefix.toLowerCase()}`}>
+          <span class="jump__code">{line.prefix}</span>
+          <span>{line.title[lang]}</span>
+        </a>
+      ))
+    }
+    <a class="jump__link" href="#paquetes">
+      <span class="jump__code">PACK</span>
+      <span>{t.bundlesTitle}</span>
+    </a>
+  </nav>
+  <div class="control">
+    <span class="control__label" id="cur-label">{t.currencyLabel}</span>
+    <div class="switch" role="group" aria-labelledby="cur-label">
+      {
+        CURRENCIES.map((c) => (
+          <button type="button" data-set="currency" data-value={c} aria-pressed={String(c === CUR)}>
+            {c.toUpperCase()} {CURRENCY_SYMBOL[c]}
+          </button>
+        ))
+      }
     </div>
   </div>
 </div>
-
-<nav class="jump shell" aria-label={t.bundlesTitle}>
-  {
-    lines.map((line) => (
-      <a class="jump__link" href={`#${line.prefix.toLowerCase()}`}>
-        <span class="jump__code">{line.prefix}</span>
-        <span>{line.title[lang]}</span>
-      </a>
-    ))
-  }
-  <a class="jump__link" href="#paquetes">
-    <span class="jump__code">PACK</span>
-    <span>{t.bundlesTitle}</span>
-  </a>
-</nav>
 
 {
   lines.map((line) => (
@@ -298,6 +327,7 @@ const featuredMap: Record<string, Record<Lang, string>> = {
               priceAttrs={priceData(item)}
               initialFrom={initialFrom(item)}
               initialDetail={initialDetail(item)}
+              initialWas={initialWas(item.standard, item.unit)}
               featured={Boolean(featuredText)}
               featuredLabel={featuredText}
             />
@@ -335,8 +365,9 @@ const featuredMap: Record<string, Record<Lang, string>> = {
             humanLabel={t.bundleIncludes}
             human={b.human[lang]}
             priceAttrs={bundlePriceData(b)}
-            initialFrom={moneyFrom(b[DEFAULT_TIER][DEFAULT_CURRENCY], DEFAULT_CURRENCY, 'once')}
-            initialDetail={priceDetail(b[DEFAULT_TIER][DEFAULT_CURRENCY], DEFAULT_CURRENCY, 'once')}
+            initialFrom={moneyFrom(b[DEFAULT_TIER][CUR], CUR, 'once')}
+            initialDetail={priceDetail(b[DEFAULT_TIER][CUR], CUR, 'once')}
+            initialWas={initialWas(b.standard, 'once')}
             featured={Boolean(featuredText)}
             featuredLabel={featuredText}
           />

@@ -26,16 +26,28 @@ export type Currency = 'eur' | 'rub' | 'gel';
 export type Unit = 'once' | 'month' | 'hour';
 export type Lang = 'es' | 'ru' | 'en' | 'ka';
 
-export const DEFAULT_TIER: Tier = 'launch';
-export const DEFAULT_CURRENCY: Currency = 'eur';
-
-/** Plazas de la tarifa de lanzamiento — única fuente para el contador que
-    muestra el sello del catálogo (Catalog.astro). */
+/** Plazas de la tarifa de lanzamiento — única fuente para el contador del
+    hero (Catalog.astro) y para decidir qué tarifa ve el visitante. */
 export const LAUNCH_SLOTS = {
   total: 5,
   completed: 1,
   inProgress: 1,
 } as const;
+
+/** Quedan plazas de lanzamiento libres. Cuando se llenen, el sitio pasa solo
+    a precio estándar: sin precio tachado ni contador de plazas. */
+export const LAUNCH_OPEN = LAUNCH_SLOTS.completed + LAUNCH_SLOTS.inProgress < LAUNCH_SLOTS.total;
+
+/** Tarifa que ve el visitante. Ya no la elige él (se retiró el selector
+    Lanzamiento/Estándar): la deciden las plazas libres. */
+export const DEFAULT_TIER: Tier = LAUNCH_OPEN ? 'launch' : 'standard';
+
+/** Moneda de referencia para los datos estructurados. */
+export const DEFAULT_CURRENCY: Currency = 'eur';
+
+/** Moneda inicial por idioma: quien entra en ruso ve rublos y en georgiano
+    lari, sin tocar nada. El selector del catálogo la cambia y se recuerda. */
+export const LANG_CURRENCY: Record<Lang, Currency> = { es: 'eur', en: 'eur', ru: 'rub', ka: 'gel' };
 
 /** Precio: [mínimo, máximo] o [exacto] si solo hay un número. */
 type Range = [number] | [number, number];

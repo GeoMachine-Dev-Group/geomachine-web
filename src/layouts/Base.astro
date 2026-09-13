@@ -1,7 +1,7 @@
 ---
 import '../styles/global.css';
 import { ui, servicesPath, blogPath, languages, type Lang } from '../i18n/ui';
-import { DEFAULT_TIER, DEFAULT_CURRENCY } from '../data/catalog';
+import { DEFAULT_TIER, LANG_CURRENCY } from '../data/catalog';
 import { buildOrganization } from '../data/organization';
 import Schema from '../components/Schema.astro';
 import FloatingChat from '../components/FloatingChat.astro';
@@ -66,7 +66,7 @@ const preloadFont: Record<Lang, string> = {
 ---
 
 <!doctype html>
-<html lang={t.htmlLang} data-tier={DEFAULT_TIER} data-currency={DEFAULT_CURRENCY}>
+<html lang={t.htmlLang} data-tier={DEFAULT_TIER} data-currency={LANG_CURRENCY[lang]}>
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -186,22 +186,30 @@ const preloadFont: Record<Lang, string> = {
 
       /** Repinta cada precio con la combinación tarifa+moneda activa. */
       function paint() {
-        const combo = (root.dataset.tier ?? '') + (root.dataset.currency ?? '');
+        const cur = root.dataset.currency ?? '';
         document.querySelectorAll<HTMLElement>('[data-price]').forEach((cell) => {
           const from = cell.querySelector<HTMLElement>('.card__price-from');
-          if (from) from.textContent = cell.dataset['from' + combo] ?? '';
+          if (from) from.textContent = cell.dataset['from' + cur] ?? '';
+
+          const was = cell.querySelector<HTMLElement>('.card__price-was');
+          if (was) {
+            const wasText = cell.dataset['was' + cur] ?? '';
+            was.textContent = wasText;
+            was.hidden = !wasText;
+          }
 
           const detail = cell.querySelector<HTMLElement>('.card__price-detail');
           if (detail) {
-            const detailText = cell.dataset['detail' + combo] ?? '';
+            const detailText = cell.dataset['detail' + cur] ?? '';
             detail.textContent = detailText;
             detail.hidden = !detailText;
           }
         });
       }
 
-      /** Cambia tarifa o moneda con el desenfoque de 160 ms que ya define el CSS. */
-      function setVal(key: 'tier' | 'currency', val: string) {
+      /** Cambia la moneda con el desenfoque de 160 ms que ya define el CSS. La
+          tarifa ya no se elige: la deciden las plazas libres (catalog.ts). */
+      function setVal(key: 'currency', val: string) {
         if (root.dataset[key] === val) return;
         root.dataset[key] = val;
         document.body.classList.add('is-swapping');
@@ -214,15 +222,6 @@ const preloadFont: Record<Lang, string> = {
           btn.setAttribute('aria-pressed', String(btn.dataset.value === val));
         });
 
-        // El sello y la nota del panel solo dependen de la tarifa.
-        if (key === 'tier') {
-          const stamp = document.querySelector<HTMLElement>('.stamp');
-          if (stamp) stamp.hidden = val !== 'launch';
-          document.querySelectorAll<HTMLElement>('[data-note]').forEach((n) => {
-            n.hidden = n.dataset.note !== val;
-          });
-        }
-
         try {
           localStorage.setItem('gm-' + key, val);
         } catch (e) {}
@@ -230,14 +229,15 @@ const preloadFont: Record<Lang, string> = {
 
       document.querySelectorAll<HTMLElement>('[data-set]').forEach((btn) => {
         btn.addEventListener('click', () =>
-          setVal(btn.dataset.set as 'tier' | 'currency', btn.dataset.value ?? '')
+          setVal(btn.dataset.set as 'currency', btn.dataset.value ?? '')
         );
       });
 
       try {
-        const savedTier = localStorage.getItem('gm-tier');
+        // Limpia la tarifa que guardaba el selector retirado: un "standard"
+        // guardado ya no significa nada y no debe quedarse en el navegador.
+        localStorage.removeItem('gm-tier');
         const savedCurrency = localStorage.getItem('gm-currency');
-        if (savedTier) setVal('tier', savedTier);
         if (savedCurrency) setVal('currency', savedCurrency);
       } catch (e) {}
 

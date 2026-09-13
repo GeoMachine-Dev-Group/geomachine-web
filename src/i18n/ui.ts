@@ -46,17 +46,16 @@ export const ui = {
     heroTitle: 'El que te atiende es el que escribe el código.',
     heroBody:
       'Webs, aplicaciones e IA que corre en tu propio servidor. Precio cerrado desde el primer mensaje y entrega en días, no en trimestres.',
-    tierLabel: 'Tarifa',
-    tierLaunch: 'Lanzamiento',
-    tierStandard: 'Estándar',
     currencyLabel: 'Moneda',
+    heroAnchorsLabel: 'Precios de entrada',
+    slotsTitle: 'Precio de lanzamiento',
+    slotsLeft: '{free} de {total} plazas libres',
     cardStyles: { stack: 'Capas apiladas', tilt: 'Inclinación 3D' },
     priceAnims: { blur: 'Desenfoque suave', odometer: 'Deslizamiento vertical', glow: 'Pulso de brillo', flip: 'Giro 3D' },
     modalTitle: 'Solicitar Presupuesto',
     modalSubtitle: 'Cuéntanos qué necesitas y te responderemos con un precio cerrado en menos de 24 horas.',
     launchNote:
       'La tarifa de lanzamiento se aplica a los primeros clientes, a cambio de poder publicar el resultado como caso de estudio. Después pasa a estándar.',
-    standardNote: 'Tarifa estándar. Los clientes de mantenimiento conservan su precio de alta.',
     statusDelivered: 'Entregado',
     statusDev: 'Fase de Desarrollo',
     deliveredProjectDesc:
@@ -139,17 +138,16 @@ export const ui = {
     heroTitle: 'Вы общаетесь напрямую с разработчиком.',
     heroBody:
       'Сайты, приложения и ИИ на вашем собственном сервере. Точная цена с первого сообщения, сроки — дни, а не кварталы.',
-    tierLabel: 'Тариф',
-    tierLaunch: 'Стартовый',
-    tierStandard: 'Обычный',
     currencyLabel: 'Валюта',
+    heroAnchorsLabel: 'Цены для старта',
+    slotsTitle: 'Стартовая цена',
+    slotsLeft: 'Свободно мест: {free} из {total}',
     cardStyles: { stack: 'Слоями', tilt: 'Наклон 3D' },
     priceAnims: { blur: 'Мягкое размытие', odometer: 'Вертикальный сдвиг', glow: 'Свечение', flip: '3D-переворот' },
     modalTitle: 'Запросить расчет',
     modalSubtitle: 'Расскажите о вашем проекте, и мы ответим менее чем за 24 часа с точной ценой.',
     launchNote:
       'Стартовый тариф действует для первых клиентов — взамен я публикую результат как кейс. Дальше цена становится обычной.',
-    standardNote: 'Обычный тариф. У клиентов на обслуживании цена подключения не меняется.',
     statusDelivered: 'Сдано',
     statusDev: 'В разработке',
     deliveredProjectDesc:
@@ -182,7 +180,7 @@ export const ui = {
     formService: 'Что вам нужно',
     formServiceOther: 'Пока не знаю',
     formBudget: 'Ориентировочный бюджет (не обязательно)',
-    formBudgetPh: 'Напр.: 500–1.000 €',
+    formBudgetPh: 'Напр.: 30 000–60 000 ₽',
     formMessage: 'Расскажите о проекте',
     formMessagePh: 'Коротко опишите, что вам нужно...',
     formSending: 'Отправка…',
@@ -232,17 +230,16 @@ export const ui = {
     heroTitle: 'You talk to the person who writes the code.',
     heroBody:
       'Websites, apps, and AI that runs on your own server. Fixed price from the first message, delivered in days, not quarters.',
-    tierLabel: 'Tier',
-    tierLaunch: 'Launch',
-    tierStandard: 'Standard',
     currencyLabel: 'Currency',
+    heroAnchorsLabel: 'Starting prices',
+    slotsTitle: 'Launch pricing',
+    slotsLeft: '{free} of {total} spots left',
     cardStyles: { stack: 'Stacked layers', tilt: '3D tilt' },
     priceAnims: { blur: 'Smooth blur', odometer: 'Vertical slide', glow: 'Glow pulse', flip: '3D flip' },
     modalTitle: 'Request a Quote',
     modalSubtitle: 'Tell us about your project and we will respond in less than 24 hours with a fixed price.',
     launchNote:
       'Launch pricing applies to the first clients, in exchange for being able to publish the result as a case study. It moves to standard pricing after that.',
-    standardNote: 'Standard pricing. Maintenance clients keep the price they signed up at.',
     statusDelivered: 'Delivered',
     statusDev: 'In development',
     deliveredProjectDesc:
@@ -320,10 +317,13 @@ export const ui = {
     heroTitle: 'თქვენ პირდაპირ ესაუბრებით დეველოპერს.',
     heroBody:
       'ვებგვერდები, აპლიკაციები და ხელოვნური ინტელექტი თქვენს საკუთარ სერვერზე. ფიქსირებული ფასი პირველივე შეტყობინებიდან, ჩაბარება დღეებში და არა კვარტლებში.',
-    tierLabel: 'ტარიფი',
-    tierLaunch: 'გაშვების',
-    tierStandard: 'სტანდარტული',
     currencyLabel: 'ვალუტა',
+    // heroAnchorsLabel/slotsTitle/slotsLeft: traducidos por IA, PENDIENTES de
+    // revisión nativa. slotsLeft va como "etiqueta: n / total" a propósito,
+    // para no depender de la declinación de "plaza" con el número.
+    heroAnchorsLabel: 'საწყისი ფასები',
+    slotsTitle: 'გაშვების ფასი',
+    slotsLeft: 'თავისუფალი ადგილები: {free} / {total}',
     paletteLabel: 'პალიტრა',
     cardStyleLabel: 'ბარათები',
     priceAnimLabel: 'ფასის ანიმაცია',
@@ -333,7 +333,6 @@ export const ui = {
     modalSubtitle: 'მოგვწერეთ პროექტის შესახებ და 24 საათში მიიღებთ ზუსტ ფასს.',
     launchNote:
       'გაშვების ტარიფი ვრცელდება პირველ კლიენტებზე, სანაცვლოდ ვაქვეყნებ შედეგს, როგორც კეისს. შემდეგ ფასი სტანდარტულზე გადადის.',
-    standardNote: 'სტანდარტული ტარიფი. მოვლის კლიენტებს რჩებათ ის ფასი, რომლითაც დარეგისტრირდნენ.',
     statusDelivered: 'მიწოდებული',
     statusDev: 'დამუშავების ფაზაში',
     deliveredProjectDesc:
@@ -372,7 +371,7 @@ export const ui = {
     formService: 'რა გჭირდებათ',
     formServiceOther: 'ჯერ არ ვიცი',
     formBudget: 'სავარაუდო ბიუჯეტი (არასავალდებულო)',
-    formBudgetPh: 'მაგ.: 500–1.000 €',
+    formBudgetPh: 'მაგ.: 1 500–3 000 ₾',
     formMessage: 'მომიყევით პროექტის შესახებ',
     formMessagePh: 'მოკლედ აღწერეთ, რა გჭირდებათ...',
     formSending: 'იგზავნება…',
