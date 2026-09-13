@@ -59,19 +59,21 @@ Historial reciente, todo por fast-forward y con la rama borrada después:
 - El separador de miles va por idioma de quien lee (`THOUSANDS` en
   `Catalog.astro`), no por moneda: "1.800 €" en es, "1,800 €" en en y
   espacio duro en ru y ka.
+- **Dominio canónico: `geomachine.es`, sin `www`.** Desde el 2026-09-13
+  `www.geomachine.es` redirige con 308 a `geomachine.es` (antes era al revés y
+  contradecía canonical, hreflang, sitemap, robots, JSON-LD y Yandex). Es un
+  ajuste de dominios del proyecto en Vercel (Settings → Domains), cambiado por
+  API; no está en el código, y un `vercel.json` para esto haría bucle.
+- **Cloudflare no controla este dominio.** El DNS real está en Strato
+  (`docks20`/`shades08.rzone.de`) y apunta directo a Vercel. La zona
+  `geomachine.es` de la cuenta de Cloudflare está en *pending*, nunca se
+  activó: lo que se configure ahí no tiene efecto.
 
 **Pendientes:**
 - Revisión nativa del georgiano: hero, placeholders del formulario, plazas,
   "Solicitar plaza" y franja de trabajos. Todo va traducido por IA y marcado
   en `src/i18n/ui.ts`.
 - Decidir si se reinstala el hook `post-commit` de auto-push (ver más abajo).
-- **Dominio: el canónico es `geomachine.es`, sin `www`** (canonical, hreflang,
-  sitemap, `robots.txt`, JSON-LD y la verificación de Yandex ya lo usan), pero
-  Vercel redirige el apex a `www` con un 308. Se arregla en el panel de
-  Vercel, no en el código: Settings → Domains → `geomachine.es` sin
-  redirección y `www.geomachine.es` con redirección 308 a `geomachine.es`. No
-  meter un `vercel.json` para esto: la redirección de dominio de Vercel se
-  aplica antes y haría bucle.
 - Falta foto del fundador en la sección `.close`.
 - `AppAccountsPage.astro` tiene estilos inline sin `clamp()` (deuda de
   responsive, no bloqueante).
