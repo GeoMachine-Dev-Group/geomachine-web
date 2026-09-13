@@ -23,10 +23,6 @@
   --display: 'Outfit', 'Noto Sans Georgian', sans-serif;
   --body: 'Plus Jakarta Sans', 'Noto Sans Georgian', sans-serif;
   --data: 'IBM Plex Mono', 'Noto Sans Georgian', ui-monospace, 'Cascadia Mono', monospace;
-  /* Alias de --display: usada por .calculator__title y .calc-summary-val,
-     que antes referenciaban una variable inexistente y caían silenciosamente
-     en --body (font-family hereda cuando un var() es inválido). */
-  --heading: var(--display);
 
   --pad: clamp(1.25rem, 4vw, 3.5rem);
   --shell: 1180px;
@@ -94,19 +90,6 @@ a { color: inherit; }
 @keyframes plate-pulse { 0%,100% { box-shadow: 0 0 0 0 var(--accent-soft); opacity: 1; } 50% { box-shadow: 0 0 0 5px transparent; opacity: .6; } }
 .plate__links a { text-decoration: none; border-bottom: 1px solid var(--rule); padding-bottom: 2px; color: var(--ink-soft); }
 .plate__links a:hover { color: var(--accent); border-color: var(--accent); }
-
-/* --- Indicador "en desarrollo" (lo usa Calculator.astro) --------------------- */
-
-.credentials__bar {
-  position: relative; width: 9px; height: 9px; flex-shrink: 0; overflow: hidden; border: 1px solid var(--stamp);
-}
-.credentials__bar:after {
-  content: ""; position: absolute; inset: 0;
-  background: repeating-linear-gradient(115deg, transparent 0 3px, var(--stamp) 3px 4px, transparent 4px 7px);
-  background-size: 300% 300%; animation: progress-sweep 3s linear infinite;
-}
-@keyframes progress-sweep { 0% { background-position: 0% 0%; } 100% { background-position: -200% 100%; } }
-@media (prefers-reduced-motion: reduce) { .credentials__bar:after { animation: none; } }
 
 /* --- Hero (base: la comparte AppAccountsPage.astro) ------------------------ */
 
@@ -411,88 +394,45 @@ html[data-cardstyle='tilt'] .card:hover .card__inner:after { opacity: 1; }
   margin-top: .75rem; width: fit-content;
 }
 
-/* --- Floating Chat Widget (WhatsApp & Telegram) --------------------------- */
-.floating-chat {
-  position: fixed; bottom: 1.25rem; left: 1.25rem; z-index: 99;
-  display: flex; flex-direction: column; align-items: flex-start; gap: .75rem;
+/* --- Botón flotante único de contacto ------------------------------------------
+   Sustituye a los dos que había (chat abajo a la izquierda y "Pedir presupuesto"
+   abajo a la derecha). Aparece al perder de vista la cabecera y se oculta cerca
+   de la sección de contacto (data-fab-hide-near). Mientras está oculto también
+   sale del orden de tabulación (visibility). */
+.contact-fab {
+  position: fixed; right: 1.25rem; bottom: 1.25rem; z-index: 90;
+  display: flex; flex-direction: column; align-items: flex-end; gap: .6rem;
+  opacity: 0; transform: translateY(12px); pointer-events: none; visibility: hidden;
+  transition: opacity .3s ease, transform .3s ease, visibility 0s linear .3s;
 }
-.floating-chat__trigger {
-  appearance: none; border: 1px solid var(--rule); background: var(--panel);
-  color: var(--ink); font-family: var(--data); font-size: .8rem; font-weight: 700;
-  letter-spacing: .08em; text-transform: uppercase; padding: .7rem 1.2rem;
-  border-radius: 999px; cursor: pointer; display: inline-flex; align-items: center; gap: .6rem;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.5), 0 0 15px var(--accent-soft);
-  transition: all .25s ease; position: relative;
+.contact-fab[hidden] { display: none; }
+.contact-fab.is-visible { opacity: 1; transform: none; pointer-events: auto; visibility: visible; transition: opacity .3s ease, transform .3s ease, visibility 0s; }
+.contact-fab__trigger {
+  appearance: none; cursor: pointer; display: inline-flex; align-items: center; gap: .55rem;
+  padding: .8rem 1.25rem; border: 1px solid var(--accent); border-radius: 999px;
+  background: var(--accent); color: var(--paper);
+  font-family: var(--data); font-size: .76rem; font-weight: 600; letter-spacing: .1em; text-transform: uppercase;
+  box-shadow: 0 10px 28px -6px #00000070; transition: background .2s ease, border-color .2s ease;
 }
-.floating-chat__trigger:hover {
-  border-color: var(--accent); color: var(--accent); transform: translateY(-2px);
-  box-shadow: 0 12px 35px var(--accent-soft);
+.contact-fab__trigger:hover, .contact-fab__trigger[aria-expanded='true'] { background: var(--ink); border-color: var(--ink); }
+.contact-fab__menu {
+  display: flex; flex-direction: column; gap: .35rem; min-width: 14rem; padding: .55rem;
+  background: var(--panel); border: 1px solid var(--rule); border-radius: 12px;
+  box-shadow: 0 18px 40px rgba(0, 0, 0, .6);
 }
-.floating-chat__badge {
-  position: absolute; top: 0; right: 0; width: 10px; height: 10px;
-  border-radius: 50%; background: #22c55e; box-shadow: 0 0 8px #22c55e;
+.contact-fab__menu[hidden] { display: none; }
+.contact-fab__item {
+  display: flex; align-items: center; gap: .7rem; padding: .65rem .85rem; border-radius: 8px;
+  border: 1px solid transparent; color: var(--ink); text-decoration: none;
+  font-family: var(--data); font-size: .76rem; letter-spacing: .06em;
+  transition: border-color .15s ease, background .15s ease;
 }
-.floating-chat__menu {
-  display: none; flex-direction: column; gap: .5rem; background: var(--panel);
-  border: 1px solid var(--rule); padding: .75rem; border-radius: 12px;
-  box-shadow: 0 15px 40px rgba(0,0,0,0.6); backdrop-filter: blur(16px);
-  min-width: 220px; animation: modal-in .2s ease-out;
-}
-.floating-chat__menu.is-open {
-  display: flex !important;
-}
-.floating-chat__item {
-  display: flex; align-items: center; gap: .75rem; padding: .6rem 1rem;
-  border-radius: 8px; font-family: var(--data); font-size: .78rem; font-weight: 700;
-  text-decoration: none; color: var(--ink); border: 1px solid var(--rule-soft);
-  transition: all .2s ease;
-}
-.floating-chat__item--tg:hover { background: rgba(0, 136, 204, 0.15); border-color: #0088cc; color: #0088cc; }
-.floating-chat__item--wa:hover { background: rgba(37, 211, 102, 0.15); border-color: #25d366; color: #25d366; }
+.contact-fab__item:hover, .contact-fab__item:focus-visible { border-color: var(--rule); background: var(--panel-2); }
+.contact-fab__item--quote { color: var(--accent); }
+.contact-fab__item svg { flex-shrink: 0; }
+@media (max-width: 480px) { .contact-fab { right: 1rem; bottom: 1rem; } }
+@media (prefers-reduced-motion: reduce) { .contact-fab { transition: none; } }
 
-/* --- Calculadora Interactiva de Presupuesto ------------------------------ */
-.calculator { margin-top: 3rem; padding-top: 3rem; border-top: 1px solid var(--rule-soft); }
-.calculator__header { margin-bottom: 2rem; }
-.calculator__title { font-family: var(--heading); font-size: clamp(1.4rem, 3vw, 2.2rem); font-weight: 700; color: var(--ink); }
-.calculator__subtitle { color: var(--ink-soft); font-size: .95rem; margin-top: .4rem; }
-.calculator__step { font-family: var(--data); font-size: .8rem; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--accent); }
-
-.calculator__grid { display: grid; grid-template-columns: 1fr; gap: 2rem; }
-@media (min-width: 860px) {
-  .calculator__grid { grid-template-columns: 1.4fr 1fr; align-items: start; }
-}
-.calc-type-selector { display: flex; flex-direction: column; gap: .75rem; margin-top: .75rem; }
-.calc-type-card {
-  display: flex; align-items: center; justify-content: space-between; gap: 1rem;
-  border: 1px solid var(--rule); background: var(--panel-2); padding: .85rem 1.1rem;
-  border-radius: 8px; cursor: pointer; transition: all .2s ease;
-}
-.calc-type-card.is-selected,
-.calc-type-card:hover { border-color: var(--accent); background: var(--paper); box-shadow: 0 4px 15px var(--accent-soft); }
-.calc-type-card input { appearance: none; display: none; }
-.calc-type-name { font-weight: 700; font-size: .92rem; color: var(--ink); display: block; }
-.calc-type-desc { font-size: .78rem; color: var(--ink-soft); display: block; }
-.calc-type-price { font-family: var(--data); font-weight: 700; font-size: .9rem; color: var(--accent); white-space: nowrap; }
-
-.calc-addons-list { display: flex; flex-direction: column; gap: .6rem; margin-top: .75rem; }
-.calc-addon-item {
-  display: flex; align-items: center; justify-content: space-between;
-  border: 1px solid var(--rule); background: var(--panel-2); padding: .65rem .95rem;
-  border-radius: 6px; cursor: pointer; font-size: .84rem; color: var(--ink-soft); transition: all .15s ease;
-}
-.calc-addon-item:hover { border-color: var(--accent); color: var(--ink); }
-.calc-addon-item input { accent-color: var(--accent); }
-.calc-addon-price { font-family: var(--data); font-size: .78rem; font-weight: 600; color: var(--accent); }
-
-.calc-summary-card {
-  border: 1px solid var(--rule); background: var(--panel); padding: 1.5rem;
-  border-radius: 12px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); display: flex; flex-direction: column; gap: 1.2rem;
-}
-.calc-badge { font-family: var(--data); font-size: .66rem; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: #22c55e; background: rgba(34,197,94,0.12); padding: .3rem .6rem; border-radius: 4px; border: 1px solid rgba(34,197,94,0.3); width: fit-content; }
-.calc-summary-row { display: flex; flex-direction: column; gap: .2rem; }
-.calc-summary-label { font-family: var(--data); font-size: .72rem; letter-spacing: .1em; text-transform: uppercase; color: var(--ink-soft); }
-.calc-summary-val { font-family: var(--heading); font-size: 2.2rem; font-weight: 800; color: var(--ink); }
-.calc-summary-time { font-family: var(--data); font-size: 1.1rem; font-weight: 700; color: var(--accent); }
 .btn--full { width: 100%; justify-content: center; margin-top: .5rem; }
 /* --- Variantes de animación de precios ------------------------------------- */
 
@@ -591,25 +531,6 @@ html[data-priceanim='blur'] .price-value {
 .terms__list li { counter-increment: term; display: grid; grid-template-columns: 2.2rem 1fr; gap: .5rem; padding-block: .7rem; border-top: 1px solid var(--rule-soft); }
 .terms__list li:before { content: "§" counter(term); font-family: var(--data); font-size: .74rem; color: var(--accent); }
 
-/* --- Botón flotante (sticky CTA) --------------------------------------------- */
-
-.fab {
-  position: fixed; bottom: 1.25rem; right: 1.25rem; z-index: 30;
-  background: var(--accent); color: var(--paper); text-decoration: none;
-  font-family: var(--data); font-size: .76rem; font-weight: 600;
-  letter-spacing: .1em; text-transform: uppercase;
-  padding: .85rem 1.4rem; border-radius: 999px;
-  box-shadow: 0 10px 28px -6px #00000070;
-  opacity: 0; transform: translateY(12px); pointer-events: none;
-  transition: opacity .3s ease, transform .3s ease;
-}
-.fab.is-visible { opacity: 1; transform: none; pointer-events: auto; }
-@media (max-width: 480px) {
-  /* bottom más alto que el default: deja hueco para .floating-chat, que
-     vive en la misma esquina (bottom: 1.25rem), para que no se solapen. */
-  .fab { left: 1.25rem; right: 1.25rem; bottom: 5rem; text-align: center; }
-}
-@media (prefers-reduced-motion: reduce) { .fab { transition: none; } }
 
 /* --- Navegación y migas de pan del blog -------------------------------------- */
 
@@ -648,7 +569,9 @@ html[data-priceanim='blur'] .price-value {
 @media (hover: hover) and (pointer: fine) {
   .blog-card:hover { transform: translateY(-4px); border-color: var(--accent); box-shadow: 0 12px 28px -8px rgba(0,0,0,.5); }
 }
-.blog-card__link { display: flex; flex-direction: column; height: 100%; padding: 1.5rem; text-decoration: none; color: inherit; }
+.blog-card__link { display: flex; flex-direction: column; height: 100%; text-decoration: none; color: inherit; border-radius: inherit; overflow: hidden; }
+.blog-card__cover { display: block; width: 100%; height: auto; aspect-ratio: 1200 / 630; object-fit: cover; border-bottom: 1px solid var(--rule); background: var(--paper); }
+.blog-card__body { display: flex; flex-direction: column; flex-grow: 1; padding: 1.5rem; }
 .blog-card__meta { font-family: var(--data); font-size: .68rem; letter-spacing: .1em; text-transform: uppercase; color: var(--accent); }
 .blog-card__title { font-family: var(--display); font-weight: 600; font-size: 1.15rem; line-height: 1.25; margin: .6rem 0 0; }
 .blog-card__excerpt { margin: .65rem 0 0; color: var(--ink-soft); font-size: .88rem; line-height: 1.5; }
@@ -660,7 +583,11 @@ html[data-priceanim='blur'] .price-value {
   border: 1px solid var(--accent); border-radius: 3px;
 }
 .blog-card--featured { grid-column: 1 / -1; border-color: var(--accent); }
-.blog-card--featured .blog-card__link { padding: clamp(1.5rem, 3vw, 2.25rem); }
+.blog-card--featured .blog-card__body { padding: clamp(1.5rem, 3vw, 2.25rem); justify-content: center; }
+@media (min-width: 860px) {
+  .blog-card--featured .blog-card__link { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr); }
+  .blog-card--featured .blog-card__cover { height: 100%; border-bottom: 0; border-right: 1px solid var(--rule); }
+}
 .blog-card--featured .blog-card__title { font-size: clamp(1.4rem, 3vw, 2rem); max-width: 30ch; }
 .blog-card--featured .blog-card__excerpt { font-size: 1rem; max-width: 65ch; }
 

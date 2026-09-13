@@ -15,15 +15,16 @@ interface Props {
   pubDate: Date;
   updatedDate?: Date;
   pageUrl: string;
+  /** Portada del artículo; si falta, el OG genérico del idioma. */
+  image?: string;
 }
 const { lang, title, description, pubDate, updatedDate, pageUrl } = Astro.props;
 const t = ui[lang];
 const site = new URL(pageUrl).origin;
 const orgId = buildOrgId(site);
-/** Mismo OG por idioma que usa Base.astro — no hay imagen por artículo en el
-    esquema de contenido, así que reutilizamos el genérico de cada idioma
-    para que BlogPosting sea elegible a Rich Results (image es obligatorio). */
-const image = `${site}/og/og-${lang}.png`;
+/** image es obligatorio para que BlogPosting sea elegible a Rich Results: la
+    portada del artículo (src/pages/og/blog/) o, si no llega, el OG del idioma. */
+const image = Astro.props.image ?? `${site}/og/og-${lang}.png`;
 
 const graph = {
   '@context': 'https://schema.org',

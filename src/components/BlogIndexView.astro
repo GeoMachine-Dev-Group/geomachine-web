@@ -9,7 +9,7 @@
 import type { CollectionEntry } from 'astro:content';
 import BlogNav from './BlogNav.astro';
 import { ui, blogPath, type BlogLang } from '../i18n/ui';
-import { excerpt, readingTime, formatPostDate, pillarTitle, presentPillars } from '../lib/blog';
+import { excerpt, readingTime, formatPostDate, pillarTitle, presentPillars, blogCoverPath } from '../lib/blog';
 
 interface Props {
   lang: BlogLang;
@@ -50,7 +50,7 @@ const ordered = [...posts.filter((p) => p.data.featured), ...posts.filter((p) =>
 
   <div class="blog-cards">
     {
-      ordered.map((post) => {
+      ordered.map((post, i) => {
         const slug = post.slug.replace(new RegExp(`^${lang}/`), '');
         return (
           <article
@@ -58,15 +58,26 @@ const ordered = [...posts.filter((p) => p.data.featured), ...posts.filter((p) =>
             data-pillar={post.data.pillar.toLowerCase()}
           >
             <a class="blog-card__link" href={`${blogPath[lang]}${slug}/`}>
-              <span class="blog-card__meta">
-                {post.data.featured && <span class="blog-card__flag">{t.blogFeatured}</span>}
-                {pillarTitle(post.data.pillar, lang)} · {readingTime(post.body)} {t.readingTimeSuffix}
-              </span>
-              <h2 class="blog-card__title">{post.data.title}</h2>
-              <p class="blog-card__excerpt">{post.data.featured ? post.data.description : excerpt(post.body)}</p>
-              <time class="blog-card__date" datetime={post.data.pubDate.toISOString()}>
-                {formatPostDate(post.data.pubDate, lang)}
-              </time>
+              <img
+                class="blog-card__cover"
+                src={blogCoverPath(lang, slug)}
+                width="1200"
+                height="630"
+                alt=""
+                loading={i === 0 ? 'eager' : 'lazy'}
+                decoding="async"
+              />
+              <div class="blog-card__body">
+                <span class="blog-card__meta">
+                  {post.data.featured && <span class="blog-card__flag">{t.blogFeatured}</span>}
+                  {pillarTitle(post.data.pillar, lang)} · {readingTime(post.body)} {t.readingTimeSuffix}
+                </span>
+                <h2 class="blog-card__title">{post.data.title}</h2>
+                <p class="blog-card__excerpt">{post.data.featured ? post.data.description : excerpt(post.body)}</p>
+                <time class="blog-card__date" datetime={post.data.pubDate.toISOString()}>
+                  {formatPostDate(post.data.pubDate, lang)}
+                </time>
+              </div>
             </a>
           </article>
         );

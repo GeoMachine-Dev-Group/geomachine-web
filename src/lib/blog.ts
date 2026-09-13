@@ -205,3 +205,8 @@ export function relatedServiceInfo(code: string, lang: BlogLang): RelatedService
   }
   return undefined;
 }
+
+/** Ruta de la portada PNG de un artículo (la genera src/pages/og/blog/[lang]/[slug].png.ts). */
+export function blogCoverPath(lang: BlogLang, slug: string): string {
+  return `/og/blog/${lang}/${slug}.png`;
+}

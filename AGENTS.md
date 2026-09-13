@@ -47,13 +47,31 @@ Historial reciente, todo por fast-forward y con la rama borrada después:
      compartidos por es y ru. Filtros por tema que responden al hash (`#web`,
      `#ia`…), artículo destacado con `featured: true` en el frontmatter, firma
      "GeoMachine Developer Group" y tarjeta del servicio relacionado.
+5. Rama `feat/portadas-y-limpieza` (2026-09-13):
+   - **Portadas del blog**: un PNG de 1200×630 por artículo, generado en el
+     build, que sale en las tarjetas del índice, como `og:image` y como
+     `image` del BlogPosting.
+   - **Artículo de Mantenimiento en español**
+     (`que-pasa-si-tu-web-se-cae-sin-mantenimiento`), emparejado por
+     `translationSlug` con el ruso en los dos sentidos. Hasta ahora ese pilar
+     no tenía artículos en español.
+   - **Un solo botón flotante de contacto** (`FloatingChat.astro`, clase
+     `.contact-fab`) con presupuesto, Telegram y WhatsApp, en lugar de dos. El
+     de presupuesto apunta a `servicesPath#contacto` con ruta completa: el
+     anterior `#contacto` no hacía nada en el blog.
+   - Fuera `Calculator.astro` (no se usaba en ninguna página), su CSS y la
+     variable `--heading`, que solo usaba ella.
 
 **Trampas conocidas:**
 - Las clases base `.hero`, `.hero__title`, `.hero__body` y `.hero__eyebrow`
   las comparte `AppAccountsPage.astro`. El estilo del catálogo va solo bajo
   `.hero--atelier`; no tocar las base sin revisar esa página.
-- `Calculator.astro` no se renderiza en ninguna página: es código muerto, y su
-  badge dice "-25%", que no es real.
+- **Portadas del blog**: `src/pages/og/blog/[lang]/[slug].png.ts` +
+  `src/lib/og-cover.ts`, con satori (texto como trazados) y sharp. Las fuentes
+  de `src/assets/og-fonts/` son TTF **estáticas** instanciadas con fontTools
+  (`varLib.instancer`) desde los woff2 variables de `public/fonts`: satori
+  falla con fuentes variables (`parseFvarAxis`). Si se cambia de fuente,
+  repetir esa conversión.
 - La página de GeoMachine Accounts en español es `/es/servicios/app-cuentas/`
   (slug traducido), no `app-accounts`.
 - El separador de miles va por idioma de quien lee (`THOUSANDS` en
@@ -66,20 +84,21 @@ Historial reciente, todo por fast-forward y con la rama borrada después:
   API; no está en el código, y un `vercel.json` para esto haría bucle.
 - **Cloudflare no controla este dominio.** El DNS real está en Strato
   (`docks20`/`shades08.rzone.de`) y apunta directo a Vercel. La zona
-  `geomachine.es` de la cuenta de Cloudflare está en *pending*, nunca se
-  activó: lo que se configure ahí no tiene efecto.
+  `geomachine.es` que había en la cuenta de Cloudflare nunca llegó a activarse
+  y se borró el 2026-09-13. En la cuenta sigue el túnel `geomachine` (activo
+  en la máquina local), ya sin zona asociada.
 
 **Pendientes:**
 - Revisión nativa del georgiano: hero, placeholders del formulario, plazas,
-  "Solicitar plaza" y franja de trabajos. Todo va traducido por IA y marcado
+  "Solicitar plaza", franja de trabajos, botón de contacto y texto de
+  WhatsApp. Todo va traducido por IA y marcado
   en `src/i18n/ui.ts`.
 - Decidir si se reinstala el hook `post-commit` de auto-push (ver más abajo).
 - Falta foto del fundador en la sección `.close`.
 - `AppAccountsPage.astro` tiene estilos inline sin `clamp()` (deuda de
   responsive, no bloqueante).
-- Blog: el artículo destacado (caso gagraservis) solo tiene 194 palabras, y en
-  español no hay artículos de Mantenimiento. Las portadas por artículo se
-  propusieron y no se hicieron.
+- Blog: el artículo destacado (caso gagraservis) solo tiene 194 palabras. Para
+  ampliarlo hacen falta datos reales del proyecto.
 
 **Estado SEO:** Yandex verificado como `https://geomachine.es`, `sitemap-index`
 y `sitemap-0` enviados, 15 URLs rusas en cola de rastreo. Google indexa bien.

@@ -5,6 +5,7 @@ pubDate: 2026-08-12
 keyword: "техническая поддержка сайта"
 pillar: "MNT"
 relatedService: "MNT-01"
+translationSlug: "que-pasa-si-tu-web-se-cae-sin-mantenimiento"
 draft: false
 ---
 
