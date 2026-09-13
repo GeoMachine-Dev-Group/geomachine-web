@@ -29,12 +29,12 @@ const breadcrumbList = {
 <script type="application/ld+json" set:html={JSON.stringify(breadcrumbList)} is:inline />
 
 <div class="blog-chrome shell">
-  <nav class="blog-nav" aria-label="Navegación principal">
+  <nav class="blog-nav" aria-label={t.blogNavLabel}>
     <a href={servicesPath[lang]}>{t.navHome}</a>
     <a href={`${servicesPath[lang]}#web`}>{t.navServices}</a>
     <a href={`${servicesPath[lang]}#contacto`}>{t.navContact}</a>
   </nav>
-  <nav class="breadcrumbs" aria-label="Breadcrumb">
+  <nav class="breadcrumbs" aria-label={t.blogBreadcrumbLabel}>
     <a href={servicesPath[lang]}>{t.navHome}</a>
     <span aria-hidden="true">›</span>
     {currentTitle ? (

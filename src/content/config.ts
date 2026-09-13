@@ -30,6 +30,8 @@ const blog = defineCollection({
     /** Oculta el artículo del índice y del build de producción (y por
         tanto del sitemap); sigue siendo visible en `astro dev`. */
     draft: z.boolean().default(false),
+    /** Artículo destacado: va primero y a lo ancho en el índice del blog. */
+    featured: z.boolean().default(false),
   }),
 });
 

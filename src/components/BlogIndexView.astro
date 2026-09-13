@@ -1,0 +1,104 @@
+---
+/**
+ * Índice del blog. es y ru comparten diseño: las páginas solo consultan la
+ * colección y pasan los artículos. El filtro por tema es mejora progresiva:
+ * sin JS se ven todos los artículos y la barra de filtros no aparece. Responde
+ * también al hash (#web, #ia…), que es a donde enlazan las secciones del
+ * catálogo ("Ver artículos de…").
+ */
+import type { CollectionEntry } from 'astro:content';
+import BlogNav from './BlogNav.astro';
+import { ui, blogPath, type BlogLang } from '../i18n/ui';
+import { excerpt, readingTime, formatPostDate, pillarTitle, presentPillars } from '../lib/blog';
+
+interface Props {
+  lang: BlogLang;
+  /** Publicados, de un solo idioma, del más reciente al más antiguo. */
+  posts: CollectionEntry<'blog'>[];
+}
+const { lang, posts } = Astro.props;
+const t = ui[lang];
+const pillars = presentPillars(posts);
+/** El destacado va primero; el resto conserva el orden por fecha. */
+const ordered = [...posts.filter((p) => p.data.featured), ...posts.filter((p) => !p.data.featured)];
+---
+
+<BlogNav lang={lang} />
+<section class="blog-index shell">
+  <header class="blog-index__head">
+    <h1 class="blog-index__title">{t.blogTitle}</h1>
+    <p class="blog-index__intro">{t.blogIntro}</p>
+  </header>
+
+  {posts.length === 0 && <p>{t.blogEmpty}</p>}
+
+  {
+    pillars.length > 1 && (
+      <div class="blog-filter" role="group" aria-label={t.blogFilterLabel} data-blog-filter hidden>
+        <button type="button" data-filter="" aria-pressed="true">
+          {t.blogFilterAll}
+        </button>
+        {pillars.map((p) => (
+          <button type="button" data-filter={p.toLowerCase()} aria-pressed="false">
+            {pillarTitle(p, lang)}
+            <span class="blog-filter__count">{posts.filter((post) => post.data.pillar === p).length}</span>
+          </button>
+        ))}
+      </div>
+    )
+  }
+
+  <div class="blog-cards">
+    {
+      ordered.map((post) => {
+        const slug = post.slug.replace(new RegExp(`^${lang}/`), '');
+        return (
+          <article
+            class:list={['blog-card', { 'blog-card--featured': post.data.featured }]}
+            data-pillar={post.data.pillar.toLowerCase()}
+          >
+            <a class="blog-card__link" href={`${blogPath[lang]}${slug}/`}>
+              <span class="blog-card__meta">
+                {post.data.featured && <span class="blog-card__flag">{t.blogFeatured}</span>}
+                {pillarTitle(post.data.pillar, lang)} · {readingTime(post.body)} {t.readingTimeSuffix}
+              </span>
+              <h2 class="blog-card__title">{post.data.title}</h2>
+              <p class="blog-card__excerpt">{post.data.featured ? post.data.description : excerpt(post.body)}</p>
+              <time class="blog-card__date" datetime={post.data.pubDate.toISOString()}>
+                {formatPostDate(post.data.pubDate, lang)}
+              </time>
+            </a>
+          </article>
+        );
+      })
+    }
+  </div>
+</section>
+
+<script>
+  const bar = document.querySelector<HTMLElement>('[data-blog-filter]');
+  if (bar) {
+    const buttons = Array.from(bar.querySelectorAll<HTMLButtonElement>('button[data-filter]'));
+    const cards = Array.from(document.querySelectorAll<HTMLElement>('.blog-card[data-pillar]'));
+    const valid = new Set(buttons.map((b) => b.dataset.filter ?? ''));
+
+    const apply = (filter: string) => {
+      buttons.forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.filter === filter)));
+      cards.forEach((c) => {
+        c.hidden = filter !== '' && c.dataset.pillar !== filter;
+      });
+    };
+
+    buttons.forEach((b) =>
+      b.addEventListener('click', () => {
+        const filter = b.dataset.filter ?? '';
+        apply(filter);
+        history.replaceState(null, '', filter ? `#${filter}` : location.pathname + location.search);
+      })
+    );
+
+    bar.hidden = false;
+    const fromHash = location.hash.slice(1).toLowerCase();
+    if (fromHash && valid.has(fromHash)) apply(fromHash);
+  }
+</script>

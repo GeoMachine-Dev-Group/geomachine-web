@@ -1,5 +1,6 @@
 import type { CollectionEntry } from 'astro:content';
-import { blogPath, type BlogLang } from '../i18n/ui';
+import { ui, blogPath, type BlogLang } from '../i18n/ui';
+import { lines, bundles, DEFAULT_TIER, LANG_CURRENCY, type Currency, type Unit } from '../data/catalog';
 
 /** Un draft es visible en `astro dev` (para revisarlo) pero nunca en build de
     producción — así nunca genera ruta ni aparece en el sitemap. */
@@ -121,4 +122,86 @@ export function relatedArticles<T extends CollectionEntry<'blog'>>(
     result.push(...pool.filter((e) => e.data.pillar === pillar && !result.includes(e)));
   }
   return result.slice(0, max);
+}
+
+const DATE_LOCALE: Record<BlogLang, string> = { es: 'es-ES', ru: 'ru-RU' };
+
+/** "12 de agosto de 2026" / "12 августа 2026 г.". En UTC a propósito: pubDate
+    llega como medianoche UTC y en otra zona horaria se pintaría el día antes. */
+export function formatPostDate(date: Date, lang: BlogLang): string {
+  return date.toLocaleDateString(DATE_LOCALE[lang], {
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric',
+    timeZone: 'UTC',
+  });
+}
+
+/** Nombre legible de un pilar ("WEB" -> "Sitios web"): el mismo título que su
+    línea en el catálogo, para no mantener una segunda lista de nombres. */
+export function pillarTitle(pillar: string, lang: BlogLang): string {
+  return lines.find((l) => l.prefix === pillar)?.title[lang] ?? pillar;
+}
+
+/** Pilares con al menos un artículo, en el orden de las líneas del catálogo. */
+export function presentPillars(entries: CollectionEntry<'blog'>[]): string[] {
+  const used = new Set<string>(entries.map((e) => e.data.pillar));
+  return lines.map((l) => l.prefix).filter((p) => used.has(p));
+}
+
+const CURRENCY_SYMBOL: Record<Currency, string> = { eur: '€', rub: '₽', gel: '₾' };
+
+/** Mismo formato que el catálogo (Catalog.astro): punto de miles en euros y
+    espacio duro en rublos y lari. */
+function amount(n: number, currency: Currency, unit: Unit, lang: BlogLang): string {
+  const t = ui[lang];
+  const sep = currency === 'eur' ? '.' : '\u00a0';
+  const num = String(n).replace(/\B(?=(\d{3})+(?!\d))/g, sep);
+  const suffix = unit === 'month' ? t.perMonth : unit === 'hour' ? t.perHour : '';
+  return `${num}\u00a0${CURRENCY_SYMBOL[currency]}${suffix}`;
+}
+
+export interface RelatedServiceInfo {
+  name: string;
+  section: string;
+  anchor: string;
+  price: string;
+}
+
+/**
+ * Servicio del catálogo al que enlaza un artículo, listo para pintar: nombre
+ * real (no el código "IA-03"), sección y precio de entrada en la moneda del
+ * idioma y la tarifa activa. undefined si el código no existe en el catálogo.
+ */
+export function relatedServiceInfo(code: string, lang: BlogLang): RelatedServiceInfo | undefined {
+  const t = ui[lang];
+  const currency = LANG_CURRENCY[lang];
+  const from = (range: readonly number[], unit: Unit) => {
+    const value = amount(range[0], currency, unit, lang);
+    return range.length > 1 && t.priceFrom ? `${t.priceFrom} ${value}` : value;
+  };
+
+  if (code.startsWith('PACK-')) {
+    const bundle = bundles.find((b) => b.code === code);
+    if (!bundle) return undefined;
+    return {
+      name: bundle.name[lang],
+      section: t.bundlesTitle,
+      anchor: catalogAnchor(code),
+      price: from(bundle[DEFAULT_TIER][currency], 'once'),
+    };
+  }
+
+  for (const line of lines) {
+    const item = line.items.find((i) => i.code === code);
+    if (item) {
+      return {
+        name: item.name[lang],
+        section: line.title[lang],
+        anchor: catalogAnchor(code),
+        price: from(item[DEFAULT_TIER][currency], item.unit),
+      };
+    }
+  }
+  return undefined;
 }

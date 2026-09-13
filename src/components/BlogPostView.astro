@@ -1,0 +1,71 @@
+---
+/**
+ * Plantilla de artículo. es y ru comparten diseño: la página resuelve la
+ * entrada, sus relacionados y pasa el contenido renderizado como <slot />.
+ * La firma es la empresa, igual que `author` en ArticleSchema.astro.
+ */
+import type { CollectionEntry } from 'astro:content';
+import BlogNav from './BlogNav.astro';
+import { ui, servicesPath, blogPath, type BlogLang } from '../i18n/ui';
+import { readingTime, formatPostDate, pillarTitle, relatedServiceInfo } from '../lib/blog';
+
+interface Props {
+  lang: BlogLang;
+  entry: CollectionEntry<'blog'>;
+  related: CollectionEntry<'blog'>[];
+}
+const { lang, entry, related } = Astro.props;
+const t = ui[lang];
+const { title, pillar, pubDate, relatedService } = entry.data;
+const service = relatedService ? relatedServiceInfo(relatedService, lang) : undefined;
+---
+
+<BlogNav lang={lang} currentTitle={title} />
+<article class="post shell">
+  <header class="post__header">
+    <a class="post__pillar" href={`${blogPath[lang]}#${pillar.toLowerCase()}`}>{pillarTitle(pillar, lang)}</a>
+    <h1 class="post__title">{title}</h1>
+    <p class="post__meta">
+      <span>{t.blogBy} {t.company}</span>
+      <span aria-hidden="true">·</span>
+      <time datetime={pubDate.toISOString()}>{formatPostDate(pubDate, lang)}</time>
+      <span aria-hidden="true">·</span>
+      <span>{readingTime(entry.body)} {t.readingTimeSuffix}</span>
+    </p>
+  </header>
+
+  <div class="post__body">
+    <slot />
+  </div>
+
+  {
+    service && (
+      <aside class="post-service" aria-label={t.blogRelated}>
+        <p class="post-service__label">{t.blogRelated}</p>
+        <p class="post-service__name">{service.name}</p>
+        <p class="post-service__info">
+          {service.section} · <span class="post-service__price">{service.price}</span>
+        </p>
+        <div class="post-service__actions">
+          <a class="btn btn--solid" href={`${servicesPath[lang]}#contacto`}>{t.ctaButton}</a>
+          <a class="btn btn--ghost" href={`${servicesPath[lang]}#${service.anchor}`}>{t.blogSeeService}</a>
+        </div>
+      </aside>
+    )
+  }
+
+  {
+    related.length > 0 && (
+      <nav class="blog-related" aria-label={t.blogRelatedArticles}>
+        <p class="blog-related__title">{t.blogRelatedArticles}</p>
+        <ul>
+          {related.map((r) => (
+            <li>
+              <a href={`${blogPath[lang]}${r.slug.replace(new RegExp(`^${lang}/`), '')}/`}>{r.data.title}</a>
+            </li>
+          ))}
+        </ul>
+      </nav>
+    )
+  }
+</article>

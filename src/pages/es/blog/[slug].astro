@@ -2,9 +2,9 @@
 import { getCollection } from 'astro:content';
 import Base from '../../../layouts/Base.astro';
 import ArticleSchema from '../../../components/ArticleSchema.astro';
-import BlogNav from '../../../components/BlogNav.astro';
-import { ui, servicesPath, blogPath } from '../../../i18n/ui';
-import { buildHreflang, catalogAnchor, isPublished, relatedArticles } from '../../../lib/blog';
+import BlogPostView from '../../../components/BlogPostView.astro';
+import { blogPath } from '../../../i18n/ui';
+import { buildHreflang, isPublished, relatedArticles } from '../../../lib/blog';
 
 export async function getStaticPaths() {
   const [esEntries, ruEntries] = await Promise.all([
@@ -26,7 +26,6 @@ export async function getStaticPaths() {
 
 const { entry, counterpart, related } = Astro.props;
 const { Content } = await entry.render();
-const t = ui.es;
 const site = Astro.site?.origin ?? 'https://geomachine.es';
 const slug = entry.slug.replace(/^es\//, '');
 const pageUrl = `${site}${blogPath.es}${slug}/`;
@@ -52,32 +51,7 @@ const alternates = buildHreflang({ site, lang: 'es', slug, counterpart });
     updatedDate={entry.data.updatedDate}
     pageUrl={pageUrl}
   />
-  <BlogNav lang="es" currentTitle={entry.data.title} />
-  <article class="shell">
-    <p data-pillar>{entry.data.pillar}</p>
-    <h1>{entry.data.title}</h1>
-    <time datetime={entry.data.pubDate.toISOString()}>
-      {entry.data.pubDate.toLocaleDateString('es-ES')}
-    </time>
+  <BlogPostView lang="es" entry={entry} related={related}>
     <Content />
-    {entry.data.relatedService && (
-      <p>
-        <a href={`${servicesPath.es}#${catalogAnchor(entry.data.relatedService)}`}>
-          {t.blogRelated}: {entry.data.relatedService}
-        </a>
-      </p>
-    )}
-    {related.length > 0 && (
-      <nav class="blog-related" aria-label={t.blogRelatedArticles}>
-        <p class="blog-related__title">{t.blogRelatedArticles}</p>
-        <ul>
-          {related.map((r) => (
-            <li>
-              <a href={`${blogPath.es}${r.slug.replace(/^es\//, '')}/`}>{r.data.title}</a>
-            </li>
-          ))}
-        </ul>
-      </nav>
-    )}
-  </article>
+  </BlogPostView>
 </Base>

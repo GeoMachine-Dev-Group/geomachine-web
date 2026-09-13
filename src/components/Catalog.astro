@@ -308,7 +308,7 @@ const featuredMap: Record<string, Record<Lang, string>> = {
         </div>
         {(lang === 'es' || lang === 'ru') && (
           <a href={`${blogPath[lang as 'es' | 'ru']}#${line.prefix.toLowerCase()}`} class="line__blog-badge">
-            <span>📖 {lang === 'ru' ? 'Статьи por categoría' : `Ver artículos de ${line.title[lang]}`}</span>
+            <span>📖 {lang === 'ru' ? `Статьи: ${line.title[lang]}` : `Ver artículos de ${line.title[lang]}`}</span>
           </a>
         )}
       </header>

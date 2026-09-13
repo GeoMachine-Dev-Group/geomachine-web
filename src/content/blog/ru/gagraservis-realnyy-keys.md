@@ -6,6 +6,7 @@ keyword: "сайт такси и экскурсий гагра"
 pillar: "WEB"
 relatedService: "WEB-02"
 translationSlug: "gagraservis-caso-real"
+featured: true
 draft: false
 ---
 

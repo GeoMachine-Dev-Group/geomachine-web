@@ -126,6 +126,15 @@ export const ui = {
     navServices: 'Servicios',
     navContact: 'Contacto',
     readingTimeSuffix: 'min de lectura',
+    blogIntro:
+      'Artículos prácticos sobre webs, IA, SEO y sistemas para negocios pequeños: qué cuesta, qué funciona y qué no merece la pena.',
+    blogFilterLabel: 'Filtrar por tema',
+    blogFilterAll: 'Todos',
+    blogFeatured: 'Destacado',
+    blogBy: 'Por',
+    blogSeeService: 'Ver en el catálogo',
+    blogNavLabel: 'Navegación principal',
+    blogBreadcrumbLabel: 'Migas de pan',
   },
   ru: {
     htmlLang: 'ru',
@@ -218,6 +227,15 @@ export const ui = {
     navServices: 'Услуги',
     navContact: 'Контакты',
     readingTimeSuffix: 'мин чтения',
+    blogIntro:
+      'Практичные статьи о сайтах, ИИ, SEO и системах для малого бизнеса: сколько это стоит, что работает и на что не стоит тратиться.',
+    blogFilterLabel: 'Фильтр по теме',
+    blogFilterAll: 'Все',
+    blogFeatured: 'Главное',
+    blogBy: 'Автор:',
+    blogSeeService: 'Смотреть в каталоге',
+    blogNavLabel: 'Основная навигация',
+    blogBreadcrumbLabel: 'Навигационная цепочка',
   },
   en: {
     htmlLang: 'en',

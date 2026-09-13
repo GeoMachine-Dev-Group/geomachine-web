@@ -6,6 +6,7 @@ keyword: "taxi y excursiones gagra sitio web"
 pillar: "WEB"
 relatedService: "WEB-02"
 translationSlug: "gagraservis-realnyy-keys"
+featured: true
 draft: false
 ---
 
