@@ -95,28 +95,8 @@ a { color: inherit; }
 .plate__links a { text-decoration: none; border-bottom: 1px solid var(--rule); padding-bottom: 2px; color: var(--ink-soft); }
 .plate__links a:hover { color: var(--accent); border-color: var(--accent); }
 
-/* --- Showcase (proyectos entregados / en desarrollo) ----------------------- */
+/* --- Indicador "en desarrollo" (lo usa Calculator.astro) --------------------- */
 
-.showcase-section { padding-block: clamp(2.5rem, 6vw, 4.5rem); border-top: 1px solid var(--rule-soft); }
-.showcase { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1.5rem; max-width: 850px; }
-.showcase__card {
-  background: var(--panel-2); border: 1px solid var(--rule); padding: 1.4rem 1.6rem;
-  border-left: 3px solid var(--accent);
-  transition: transform .25s ease, border-color .25s ease, box-shadow .25s ease;
-  position: relative; overflow: hidden;
-}
-.showcase__card:hover { transform: translateY(-4px); border-color: var(--accent); box-shadow: 0 12px 28px -8px rgba(0,0,0,.5); }
-.showcase__card--dev { border-left: 3px solid var(--stamp); }
-.showcase__card--dev:hover { border-color: var(--stamp); }
-.showcase__header { display: flex; align-items: center; gap: .6rem; margin-bottom: .85rem; }
-.showcase__tag { font-family: var(--data); text-transform: uppercase; letter-spacing: .16em; font-size: .75rem; color: var(--ink-soft); }
-.showcase__link { font-family: var(--display); font-size: 1.35rem; font-weight: 600; color: var(--ink); text-decoration: none; display: inline-block; line-height: 1.1; transition: color .2s; }
-a.showcase__link:hover { color: var(--accent); }
-.showcase__link--text { color: var(--ink); cursor: default; }
-.showcase__desc { margin: .6rem 0 0; font-size: .9rem; color: var(--ink-soft); line-height: 1.45; }
-.showcase__seal { display: inline-flex; position: relative; flex-shrink: 0; }
-.showcase__seal:after { content: ''; position: absolute; inset: -4px; border-radius: 50%; border: 1px solid var(--accent-soft); animation: check-ring 2s infinite ease-out; }
-@keyframes check-ring { 0% { transform: scale(.75); opacity: .9; } 100% { transform: scale(1.7); opacity: 0; } }
 .credentials__bar {
   position: relative; width: 9px; height: 9px; flex-shrink: 0; overflow: hidden; border: 1px solid var(--stamp);
 }
@@ -126,45 +106,97 @@ a.showcase__link:hover { color: var(--accent); }
   background-size: 300% 300%; animation: progress-sweep 3s linear infinite;
 }
 @keyframes progress-sweep { 0% { background-position: 0% 0%; } 100% { background-position: -200% 100%; } }
-@media (prefers-reduced-motion: reduce) {
-  .showcase__card { transition: none; }
-  .showcase__seal:after, .credentials__bar:after { animation: none; }
-}
+@media (prefers-reduced-motion: reduce) { .credentials__bar:after { animation: none; } }
 
-/* --- Hero ------------------------------------------------------------------ */
+/* --- Hero (base: la comparte AppAccountsPage.astro) ------------------------ */
 
 .hero { padding-block: clamp(2rem, 6vw, 4rem) clamp(2rem, 5vw, 3.5rem); position: relative; }
-/* .hero__eyebrow ya no lo usa el hero del catálogo (título + un párrafo),
-   pero sigue vivo en AppAccountsPage.astro para el tagline. No retirar sin
-   comprobar antes esa página. */
+/* .hero__eyebrow ya no lo usa el hero del catálogo, pero sigue vivo en
+   AppAccountsPage.astro para el tagline. No retirar sin comprobar esa página. */
 .hero__eyebrow { font-family: var(--data); font-size: .75rem; letter-spacing: .22em; text-transform: uppercase; color: var(--accent); margin: 0 0 1.5rem; }
 .hero__title { font-family: var(--display); font-weight: 700; font-size: clamp(2.2rem, 7vw, 4.6rem); line-height: 1.02; letter-spacing: -.02em; margin: 0; max-width: 16ch; white-space: pre-line; }
 .hero__body { margin: 1.75rem 0 0; max-width: 46ch; font-size: clamp(1rem, 1.6vw, 1.15rem); color: var(--ink-soft); }
 
-/* --- Hero: precios de entrada, llamadas a la acción y plazas --------------- */
+/* --- Hero del catálogo: "atelier privado" --------------------------------------
+   Todo centrado, esquinas finas en cobre, la marca [GeoMachine] que se escribe
+   sola y "Developer Group" debajo a la derecha, como una firma. Va con su propio
+   modificador para no tocar el hero de AppAccountsPage. */
 
-.hero__anchors { list-style: none; margin: 2rem 0 0; padding: 0; display: flex; flex-wrap: wrap; gap: .75rem; }
-.hero__anchor {
-  display: flex; flex-direction: column; gap: .2rem; min-width: 12rem;
-  padding: .8rem 1rem; border: 1px solid var(--rule); border-radius: 8px;
-  background: var(--panel); color: var(--ink); text-decoration: none;
-  transition: border-color .2s ease, background .2s ease;
+.hero--atelier {
+  display: flex; flex-direction: column; align-items: center; gap: 1.6rem; text-align: center;
+  padding-block: clamp(3.5rem, 9vw, 6rem) clamp(3rem, 7vw, 4.5rem);
+  background: radial-gradient(ellipse 55% 45% at 50% 30%, rgba(169, 116, 69, .13), transparent 70%);
 }
-.hero__anchor:hover, .hero__anchor:focus-visible { border-color: var(--accent); background: var(--panel-2); }
-.hero__anchor-name { font-family: var(--data); font-size: .7rem; letter-spacing: .12em; text-transform: uppercase; color: var(--ink-soft); }
-.hero__anchor .hero__anchor-price { font-size: 1.15rem; }
-.hero__actions { display: flex; flex-wrap: wrap; gap: .75rem; margin-top: 1.75rem; }
+.hero__corner { position: absolute; width: 36px; height: 36px; border: 0 solid var(--accent); pointer-events: none; }
+.hero__corner--tl { top: clamp(1rem, 3vw, 2.25rem); left: var(--pad); border-top-width: 1px; border-left-width: 1px; }
+.hero__corner--tr { top: clamp(1rem, 3vw, 2.25rem); right: var(--pad); border-top-width: 1px; border-right-width: 1px; }
+.hero__corner--bl { bottom: clamp(1rem, 3vw, 2.25rem); left: var(--pad); border-bottom-width: 1px; border-left-width: 1px; }
+.hero__corner--br { bottom: clamp(1rem, 3vw, 2.25rem); right: var(--pad); border-bottom-width: 1px; border-right-width: 1px; }
+.hero--atelier .hero__title { font-weight: 600; font-size: clamp(2.6rem, 6.4vw, 5.75rem); line-height: 1; letter-spacing: -.035em; max-width: 15ch; white-space: normal; text-wrap: balance; }
+.hero--atelier .hero__body { margin: 0; max-width: 52ch; font-size: clamp(1rem, 1.5vw, 1.2rem); line-height: 1.6; text-wrap: pretty; }
 
-.slots { margin-top: 2rem; max-width: 46ch; padding-left: 1rem; border-left: 2px solid var(--accent); }
-.slots__title { margin: 0; font-family: var(--data); font-size: .7rem; letter-spacing: .16em; text-transform: uppercase; color: var(--accent); }
-.slots__count { display: flex; align-items: center; gap: .6rem; margin: .45rem 0 0; font-weight: 600; color: var(--ink); }
-.slots__dots { display: inline-flex; gap: 4px; }
-.slots__dot { width: 10px; height: 10px; border-radius: 2px; border: 1px solid var(--accent); }
-.slots__dot.is-taken { background: var(--accent); }
-.slots__note { margin: .45rem 0 0; font-size: .85rem; line-height: 1.5; color: var(--ink-soft); }
+/* Marca animada. --mark es el tamaño de "GeoMachine": corchetes, hueco y la firma
+   de debajo se derivan de él para que el conjunto escale sin descuadrarse.
+   Letras: 0,6 s de espera + 0,085 s por letra; al terminar parpadea el cursor
+   (1,52 s) y entra "Developer Group" (1,62 s). */
+.hero-mark { --mark: clamp(1.5rem, 2.6vw, 2.25rem); display: inline-flex; flex-direction: column; align-items: flex-end; gap: .2rem; margin-bottom: .4rem; }
+.hero-mark__word { display: flex; align-items: center; gap: calc(var(--mark) * .33); font-family: var(--display); font-weight: 600; font-size: var(--mark); letter-spacing: -.01em; color: var(--ink); }
+.hero-mark__bracket { width: calc(var(--mark) * .5); height: calc(var(--mark) * 1.6); flex-shrink: 0; }
+.hero-mark__bracket path { fill: none; stroke: var(--ink); stroke-width: 5; stroke-linecap: square; }
+.hero-mark__text { display: flex; align-items: flex-end; }
+.hero-mark__l { display: inline-block; overflow: hidden; max-width: 0; white-space: pre; line-height: 1.15; vertical-align: bottom; animation: hero-mark-type .12s ease-out forwards; }
+@keyframes hero-mark-type { to { max-width: 1.2em; } }
+.hero-mark__cursor { display: inline-block; width: .38em; height: .38em; margin-left: .12em; margin-bottom: .2em; background: var(--accent); animation: hero-mark-blink 1.05s steps(2, start) 1.52s infinite; }
+@keyframes hero-mark-blink { 50% { opacity: 0; } }
+.hero-mark__sub {
+  margin-right: calc(var(--mark) * .83); font-family: var(--body); font-size: calc(var(--mark) * .44);
+  font-weight: 500; letter-spacing: .02em; color: var(--ink-soft);
+  opacity: 0; animation: hero-mark-sub .6s ease-out 1.62s forwards;
+}
+@keyframes hero-mark-sub { from { opacity: 0; transform: translateX(-10px); } to { opacity: 1; transform: none; } }
 
-@media (max-width: 480px) {
-  .hero__anchor { min-width: 0; flex: 1 1 100%; }
+.hero__slots { display: flex; align-items: center; gap: .9rem; margin: 0; font-family: var(--data); font-size: .75rem; letter-spacing: .22em; text-transform: uppercase; color: var(--accent); }
+.hero__rule { width: 3rem; height: 1px; background: var(--accent); }
+.hero--atelier .hero__actions { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: .9rem; margin-top: .3rem; }
+.hero__secondary {
+  font-family: var(--data); font-size: .76rem; letter-spacing: .12em; text-transform: uppercase;
+  color: var(--ink); text-decoration: none; padding: .85rem 1.2rem; border-bottom: 1px solid var(--rule);
+}
+.hero__secondary:hover { color: var(--accent); border-color: var(--accent); }
+.hero__prices { list-style: none; margin: 1.2rem 0 0; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); width: min(100%, 56rem); border-block: 1px solid var(--rule-soft); }
+.hero__prices li + li { border-left: 1px solid var(--rule-soft); }
+.hero__price { display: flex; flex-direction: column; gap: .35rem; padding: 1.2rem .75rem; color: var(--ink); text-decoration: none; transition: background .2s ease; }
+.hero__price:hover, .hero__price:focus-visible { background: var(--panel); }
+.hero__price-name { font-family: var(--data); font-size: .68rem; letter-spacing: .18em; text-transform: uppercase; color: var(--ink-soft); }
+.hero__prices .hero__price-value { font-family: var(--display); font-size: 1.5rem; font-weight: 500; color: var(--ink); }
+.hero__note { margin: 0; max-width: 60ch; font-size: .82rem; line-height: 1.5; color: var(--ink-soft); }
+
+/* Franja de trabajos: sustituye a los cuatro bloques grandes de proyectos. */
+.proof { padding-block: 1.1rem 1.6rem; }
+.proof__list {
+  list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; justify-content: center; gap: .6rem 2rem;
+  font-family: var(--data); font-size: .74rem; letter-spacing: .08em; text-transform: uppercase; color: var(--ink-soft);
+}
+.proof__list li { display: flex; align-items: baseline; gap: .5rem; }
+.proof__tag { color: var(--accent); }
+.proof__list a { color: var(--ink); text-decoration: none; border-bottom: 1px solid var(--rule); }
+.proof__list a:hover { color: var(--accent); border-color: var(--accent); }
+
+@media (max-width: 720px) {
+  .hero__corner { width: 20px; height: 20px; }
+  .hero__slots { flex-direction: column; gap: .4rem; letter-spacing: .18em; }
+  .hero__rule { display: none; }
+  .hero--atelier .hero__actions { flex-direction: column; align-self: stretch; }
+  .hero--atelier .hero__actions > * { text-align: center; }
+  .hero__prices { grid-template-columns: minmax(0, 1fr); }
+  .hero__prices li + li { border-left: 0; border-top: 1px solid var(--rule-soft); }
+  .hero__price { flex-direction: row; justify-content: space-between; align-items: baseline; padding: .9rem .25rem; }
+  .proof__list { flex-direction: column; align-items: center; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .hero-mark__l { animation: none; max-width: none; }
+  .hero-mark__cursor { animation: none; }
+  .hero-mark__sub { animation: none; opacity: 1; }
 }
 
 /* --- Panel de control (tarifa/moneda/paleta/tarjetas) --------------------- */

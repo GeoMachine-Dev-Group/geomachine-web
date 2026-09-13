@@ -127,6 +127,20 @@ function initialWas(standard: Item['standard'], unit: Unit) {
     MVP web, Auditoría de procesos), no el más barato — el mínimo de Webs sería
     "Segundo idioma", un añadido, y el de Aplicaciones "Integraciones": un
     "desde" con ellos engañaría. */
+/** Marca animada del hero: "[GeoMachine▪]" se escribe letra a letra entre los
+    corchetes (el nombre de marca no se traduce). Cada letra lleva su retardo;
+    el CSS (.hero-mark) hace el resto y respeta prefers-reduced-motion. */
+const MARK_WORD = 'GeoMachine';
+const markLetters = [...MARK_WORD].map((ch, i) => ({ ch, delay: `${(0.6 + i * 0.085).toFixed(3)}s` }));
+
+/** Página de GeoMachine Accounts en cada idioma (el slug español es distinto). */
+const accountsHref: Record<Lang, string> = {
+  es: '/es/servicios/app-cuentas/',
+  en: '/en/services/app-accounts/',
+  ru: '/ru/uslugi/app-accounts/',
+  ka: '/ka/momsakhurebebi/app-accounts/',
+};
+
 const heroAnchors = ['WEB', 'APP', 'IA']
   .map((prefix) => lines.find((l) => l.prefix === prefix))
   .filter((l): l is (typeof lines)[number] => Boolean(l))
@@ -178,95 +192,77 @@ const featuredMap: Record<string, Record<Lang, string>> = {
 };
 ---
 
-<section class="hero shell">
+<section class="hero hero--atelier shell">
+  <span class="hero__corner hero__corner--tl" aria-hidden="true"></span>
+  <span class="hero__corner hero__corner--tr" aria-hidden="true"></span>
+  <span class="hero__corner hero__corner--bl" aria-hidden="true"></span>
+  <span class="hero__corner hero__corner--br" aria-hidden="true"></span>
+
+  <div class="hero-mark" role="img" aria-label={t.company}>
+    <div class="hero-mark__word" aria-hidden="true">
+      <svg class="hero-mark__bracket" viewBox="0 0 20 64"><path d="M17 4 H5 V60 H17"></path></svg>
+      <span class="hero-mark__text">
+        {markLetters.map(({ ch, delay }) => <span class="hero-mark__l" style={`animation-delay: ${delay}`}>{ch}</span>)}
+        <span class="hero-mark__cursor"></span>
+      </span>
+      <svg class="hero-mark__bracket" viewBox="0 0 20 64"><path d="M3 4 H15 V60 H3"></path></svg>
+    </div>
+    <span class="hero-mark__sub" aria-hidden="true">Developer Group</span>
+  </div>
+
+  {
+    LAUNCH_OPEN && (
+      <p class="hero__slots">
+        <span class="hero__rule" aria-hidden="true" />
+        <span>{t.slotsTitle} · {slotsLeftText}</span>
+        <span class="hero__rule" aria-hidden="true" />
+      </p>
+    )
+  }
+
   <h1 class="hero__title">{t.heroTitle}</h1>
   <p class="hero__body">{t.heroBody}</p>
 
-  <ul class="hero__anchors" aria-label={t.heroAnchorsLabel}>
+  <div class="hero__actions">
+    <a class="btn btn--solid" href="#contacto">{LAUNCH_OPEN ? t.heroCtaSlot : t.ctaButton}</a>
+    <a class="hero__secondary" href="https://t.me/geomachine" target="_blank" rel="noopener">{t.ctaSecondary}</a>
+  </div>
+
+  <ul class="hero__prices" aria-label={t.heroAnchorsLabel}>
     {
       heroAnchors.map(({ line, item }) => (
         <li>
-          <a class="hero__anchor" href={`#${line.prefix.toLowerCase()}`} {...priceData(item)}>
-            <span class="hero__anchor-name">{item.name[lang]}</span>
-            <span class="price-value card__price-from hero__anchor-price">{initialFrom(item)}</span>
+          <a class="hero__price" href={`#${line.prefix.toLowerCase()}`} {...priceData(item)}>
+            <span class="hero__price-name">{item.name[lang]}</span>
+            <span class="price-value card__price-from hero__price-value">{initialFrom(item)}</span>
           </a>
         </li>
       ))
     }
   </ul>
-
-  <div class="hero__actions">
-    <a class="btn btn--solid" href="#contacto">{t.ctaButton}</a>
-    <a class="btn btn--ghost" href="https://t.me/geomachine" target="_blank" rel="noopener">{t.ctaSecondary}</a>
-  </div>
-
-  {
-    LAUNCH_OPEN && (
-      <aside class="slots" aria-label={t.slotsTitle}>
-        <p class="slots__title">{t.slotsTitle}</p>
-        <p class="slots__count">
-          <span class="slots__dots" aria-hidden="true">
-            {Array.from({ length: LAUNCH_SLOTS.total }, (_, i) => (
-              <span class:list={['slots__dot', { 'is-taken': i < takenSlots }]} />
-            ))}
-          </span>
-          {slotsLeftText}
-        </p>
-        <p class="slots__note">{t.launchNote}</p>
-      </aside>
-    )
-  }
+  {LAUNCH_OPEN && <p class="hero__note">{t.launchNote}</p>}
 </section>
 
-<section class="showcase-section shell">
-  <div class="showcase">
-    <div class="showcase__card reveal">
-      <div class="showcase__header">
-        <span class="showcase__seal" aria-hidden="true">
-          <svg viewBox="0 0 16 16" width="14" height="14">
-            <polygon points="4,0 12,0 16,4 16,12 12,16 4,16 0,12 0,4" fill="var(--accent)"></polygon>
-            <path d="M4.5 8.2l2.2 2.2L11.5 5" stroke="var(--paper)" stroke-width="1.6" fill="none" stroke-linecap="round" stroke-linejoin="round"></path>
-          </svg>
-        </span>
-        <span class="showcase__tag">{t.statusDelivered} • 100/100 Speed</span>
-      </div>
-      <a href="https://gagraservis.ru/" target="_blank" rel="noopener" class="showcase__link">gagraservis.ru ↗</a>
-      <p class="showcase__desc">{t.deliveredProjectDesc}</p>
-    </div>
-
-    <div class="showcase__card reveal">
-      <div class="showcase__header">
-        <span class="showcase__tag" style="background: rgba(34,197,94,0.15); color: #22c55e;">IA Privada • RAG Local</span>
-      </div>
-      <span class="showcase__link showcase__link--text">GeoBot AI Assistant</span>
-      <p class="showcase__desc">Servidor de IA confidencial con DeepSeek/Llama 3 integrado en Telegram y WhatsApp. Cero costes por token.</p>
-    </div>
-
-    <div class="showcase__card reveal">
-      <div class="showcase__header">
-        <span class="showcase__tag" style="background: rgba(14,165,233,0.15); color: #0ea5e9;">
-          {lang === 'es' ? 'App de Escritorio • Descargas' : lang === 'ru' ? 'Десктопное приложение • Скачать' : lang === 'ka' ? 'დესკტოპ აპლიკაცია • ჩამოტვირთვა' : 'Desktop App • Downloads'}
-        </span>
-      </div>
-      <a href={lang === 'es' ? '/es/servicios/app-cuentas/' : lang === 'en' ? '/en/services/app-accounts/' : lang === 'ru' ? '/ru/uslugi/app-accounts/' : '/ka/momsakhurebebi/app-accounts/'} class="showcase__link">GeoMachine Accounts ↗</a>
-      <p class="showcase__desc">
-        {lang === 'es' ? 'Software local de inventario, analítica ABC y cálculo de beneficio neto real. Gratuito y privado.' :
-         lang === 'ru' ? 'Локальная программа учета запасов, ABC-анализа и чистой прибыли. Бесплатно и приватно.' :
-         lang === 'ka' ? 'ინვენტარისა და სუფთა მოგების ლოკალური მართვის სისტემა. უფასო და დაცული.' :
-         'Local inventory control, ABC analytics, and net profit tracking software. Free and private.'}
-      </p>
-    </div>
-
-    <div class="showcase__card showcase__card--dev reveal">
-      <div class="showcase__header">
-        <span class="credentials__bar" aria-hidden="true"></span>
-        <span class="showcase__tag">{t.statusDev} • Full-Stack</span>
-      </div>
-      <span class="showcase__link showcase__link--text">{t.devProjectName}</span>
-      <p class="showcase__desc">{t.devProjectDesc}</p>
-    </div>
-  </div>
-</section>
+<div class="proof shell">
+  <ul class="proof__list" aria-label={t.proofLabel}>
+    <li>
+      <span class="proof__tag">{t.statusDelivered}</span>
+      <a href="https://gagraservis.ru/" target="_blank" rel="noopener">gagraservis.ru</a>
+    </li>
+    <li>
+      <span class="proof__tag">{t.proofPrivateAi}</span>
+      <span>GeoBot AI Assistant</span>
+    </li>
+    <li>
+      <span class="proof__tag">{t.proofDesktopApp}</span>
+      <a href={accountsHref[lang]}>GeoMachine Accounts</a>
+    </li>
+    <li>
+      <span class="proof__tag">{t.statusDev}</span>
+      <span>{t.devProjectName}</span>
+    </li>
+  </ul>
+</div>
 
 <div class="catalog-bar shell">
   <nav class="jump" aria-label={t.bundlesTitle}>
