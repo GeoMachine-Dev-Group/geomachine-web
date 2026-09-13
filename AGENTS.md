@@ -2,8 +2,9 @@
 
 ## 0. Estado actual (2026-09-13)
 
-**Producción está en `92f2dd5`** (feat(catalogo): hero "atelier privado"),
-desplegado el 2026-09-13 y verificado en vivo en los 4 idiomas. `main` y
+**Producción está en `224723f`** (feat(blog): portadas por artículo, artículo
+de mantenimiento y un solo botón flotante), desplegado el 2026-09-14 y
+verificado en vivo. `main` y
 producción coinciden en el código del sitio; no hay ramas de trabajo vivas (en
 `backup` quedan `master` y `restaura-controles-interactivos`, antiguas, sin
 tocar).
@@ -47,7 +48,7 @@ Historial reciente, todo por fast-forward y con la rama borrada después:
      compartidos por es y ru. Filtros por tema que responden al hash (`#web`,
      `#ia`…), artículo destacado con `featured: true` en el frontmatter, firma
      "GeoMachine Developer Group" y tarjeta del servicio relacionado.
-5. Rama `feat/portadas-y-limpieza` (2026-09-13):
+5. `224723f` (2026-09-14) — rama `feat/portadas-y-limpieza`:
    - **Portadas del blog**: un PNG de 1200×630 por artículo, generado en el
      build, que sale en las tarjetas del índice, como `og:image` y como
      `image` del BlogPosting.
