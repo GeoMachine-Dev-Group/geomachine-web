@@ -1,15 +1,22 @@
 ---
+/**
+ * Símbolo de marca — dirección "Corchetes" (lienzo de variantes de logo,
+ * 2026-09-13): dos corchetes rectos y un bloque de cursor dentro. Los colores
+ * salen de los tokens de global.css (--ink para los corchetes, --accent para
+ * el cursor), así que el símbolo sigue a la paleta en vez de fijar hex propios.
+ * El favicon (public/favicon.svg) es este mismo trazado sobre fondo #10160f.
+ */
 interface Props {
   width?: number | string;
   height?: number | string;
   class?: string;
 }
 
-const { width = 48, height = 30, class: className = '' } = Astro.props;
+const { width = 28, height = 28, class: className = '' } = Astro.props;
 ---
 
 <svg
-  viewBox="18 48 164 104"
+  viewBox="0 0 64 64"
   fill="none"
   xmlns="http://www.w3.org/2000/svg"
   width={width}
@@ -17,24 +24,19 @@ const { width = 48, height = 30, class: className = '' } = Astro.props;
   class:list={['gm-logo', className]}
   aria-hidden="true"
 >
-  <defs>
-    <style>
-      @keyframes gmBlink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
-      .gm-term-bg { fill: #0d0f06; stroke: #22c55e; stroke-width: 2; }
-      .gm-term-accent { fill: #22c55e; }
-      .gm-term-cursor { fill: #22c55e; animation: gmBlink 1s step-end infinite; }
-    </style>
-  </defs>
-  <!-- Frame -->
-  <rect class="gm-term-bg" height="100" rx="12" width="160" x="20" y="50"></rect>
-  <!-- Header dots -->
-  <circle cx="45" cy="65" fill="#ef4444" r="4"></circle>
-  <circle cx="60" cy="65" fill="#f59e0b" r="4"></circle>
-  <circle cx="75" cy="65" fill="#22c55e" r="4"></circle>
-  <!-- Terminal Symbol -->
-  <path d="M50 95 L70 110 L50 125" fill="none" stroke="#22c55e" stroke-linecap="round" stroke-linejoin="round" stroke-width="6"></path>
-  <rect class="gm-term-cursor" height="8" width="40" x="80" y="115"></rect>
-  <!-- Decorative code lines -->
-  <rect class="gm-term-accent" height="3" opacity="0.3" width="100" x="50" y="140"></rect>
-  <rect class="gm-term-accent" height="3" opacity="0.2" width="60" x="50" y="148"></rect>
+  <path class="gm-logo__bracket" d="M25 11 H15 V53 H25"></path>
+  <path class="gm-logo__bracket" d="M39 11 H49 V53 H39"></path>
+  <rect class="gm-logo__cursor" x="27" y="35" width="10" height="10"></rect>
 </svg>
+
+<style>
+  .gm-logo__bracket {
+    stroke: var(--ink);
+    stroke-width: 6;
+    stroke-linecap: square;
+    stroke-linejoin: miter;
+  }
+  .gm-logo__cursor {
+    fill: var(--accent);
+  }
+</style>
