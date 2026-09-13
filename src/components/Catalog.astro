@@ -27,6 +27,9 @@ const CUR = LANG_CURRENCY[lang];
 const serviceOptions = [...lines.map((l) => l.title[lang]), t.bundlesTitle];
 
 const nbsp = ' ';
+/** Separador de miles según el idioma de quien lee, no según la moneda:
+    "1.800 €" en español, "1,800 €" en inglés, espacio duro en ruso y georgiano. */
+const THOUSANDS: Record<Lang, string> = { es: '.', en: ',', ru: nbsp, ka: nbsp };
 const CURRENCY_SYMBOL: Record<Currency, string> = { eur: '€', rub: '₽', gel: '₾' };
 const CURRENCIES = ['eur', 'rub', 'gel'] as const;
 
@@ -42,7 +45,7 @@ function suffix(unit: Unit) {
 
 /** "250–400 €" · "15 000–25 000 ₽" · "750–1 200 ₾" */
 function money(range: readonly number[], currency: Currency, unit: Unit) {
-  const sep = currency === 'eur' ? '.' : nbsp;
+  const sep = THOUSANDS[lang];
   const symbol = CURRENCY_SYMBOL[currency];
   const nums = range.map((n) => group(n, sep)).join('–');
   return `${nums}${nbsp}${symbol}${suffix(unit)}`;
@@ -59,7 +62,7 @@ const slotsLeftText = t.slotsLeft
     lleva "desde") · "250 €" en georgiano (t.priceFrom vacío a propósito,
     ver nota junto a la clave en ui.ts — no se traduce por declinación). */
 function moneyFrom(range: readonly number[], currency: Currency, unit: Unit) {
-  const sep = currency === 'eur' ? '.' : nbsp;
+  const sep = THOUSANDS[lang];
   const symbol = CURRENCY_SYMBOL[currency];
   const value = `${group(range[0], sep)}${nbsp}${symbol}${suffix(unit)}`;
   if (range.length === 1 || !t.priceFrom) return value;
@@ -78,7 +81,7 @@ function priceDetail(range: readonly number[], currency: Currency, unit: Unit, r
 
 /** Precio estándar tachado junto al de lanzamiento: solo el mínimo, sin "desde". */
 function moneyWas(range: readonly number[], currency: Currency, unit: Unit) {
-  const sep = currency === 'eur' ? '.' : nbsp;
+  const sep = THOUSANDS[lang];
   return `${group(range[0], sep)}${nbsp}${CURRENCY_SYMBOL[currency]}${suffix(unit)}`;
 }
 

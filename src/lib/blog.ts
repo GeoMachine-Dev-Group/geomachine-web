@@ -151,11 +151,11 @@ export function presentPillars(entries: CollectionEntry<'blog'>[]): string[] {
 
 const CURRENCY_SYMBOL: Record<Currency, string> = { eur: '€', rub: '₽', gel: '₾' };
 
-/** Mismo formato que el catálogo (Catalog.astro): punto de miles en euros y
-    espacio duro en rublos y lari. */
+/** Mismo formato que el catálogo (Catalog.astro): el separador de miles va
+    por idioma de quien lee — punto en español, espacio duro en ruso. */
 function amount(n: number, currency: Currency, unit: Unit, lang: BlogLang): string {
   const t = ui[lang];
-  const sep = currency === 'eur' ? '.' : '\u00a0';
+  const sep = lang === 'es' ? '.' : '\u00a0';
   const num = String(n).replace(/\B(?=(\d{3})+(?!\d))/g, sep);
   const suffix = unit === 'month' ? t.perMonth : unit === 'hour' ? t.perHour : '';
   return `${num}\u00a0${CURRENCY_SYMBOL[currency]}${suffix}`;

@@ -8,8 +8,9 @@ producción coinciden en el código del sitio; no hay ramas de trabajo vivas (en
 `backup` quedan `master` y `restaura-controles-interactivos`, antiguas, sin
 tocar).
 
-**Cómo se despliega ahora.** El modo automático de Claude Code bloquea el push
-a `main`, porque es un despliegue a producción. Flujo que funciona: rama →
+**Cómo se despliega ahora.** El modo automático de Claude Code puede bloquear
+el push a `main`, porque es un despliegue a producción: lo bloqueó con un merge
+de código y dejó pasar un push de solo documentación. Si lo bloquea, el flujo que funciona es: rama →
 `npm run build` → commit → push de la rama (vista previa en Vercel) → el
 usuario la revisa → el usuario ejecuta él mismo el merge `--ff-only` y el push
 de `main` a `github` y `backup` → verificar producción con `curl`. Las vistas
@@ -55,21 +56,25 @@ Historial reciente, todo por fast-forward y con la rama borrada después:
   badge dice "-25%", que no es real.
 - La página de GeoMachine Accounts en español es `/es/servicios/app-cuentas/`
   (slug traducido), no `app-accounts`.
+- El separador de miles va por idioma de quien lee (`THOUSANDS` en
+  `Catalog.astro`), no por moneda: "1.800 €" en es, "1,800 €" en en y
+  espacio duro en ru y ka.
 
 **Pendientes:**
 - Revisión nativa del georgiano: hero, placeholders del formulario, plazas,
   "Solicitar plaza" y franja de trabajos. Todo va traducido por IA y marcado
   en `src/i18n/ui.ts`.
 - Decidir si se reinstala el hook `post-commit` de auto-push (ver más abajo).
-- Exportar el histórico de Plausible antes de que caduque la cuenta: la serie
-  se corta en `f39aabd`.
-- Decidir espejo `www`: el servidor manda a `www.geomachine.es` pero el
-  canonical dice sin `www` — hay que unificar en un sentido u otro.
+- **Dominio: el canónico es `geomachine.es`, sin `www`** (canonical, hreflang,
+  sitemap, `robots.txt`, JSON-LD y la verificación de Yandex ya lo usan), pero
+  Vercel redirige el apex a `www` con un 308. Se arregla en el panel de
+  Vercel, no en el código: Settings → Domains → `geomachine.es` sin
+  redirección y `www.geomachine.es` con redirección 308 a `geomachine.es`. No
+  meter un `vercel.json` para esto: la redirección de dominio de Vercel se
+  aplica antes y haría bucle.
 - Falta foto del fundador en la sección `.close`.
 - `AppAccountsPage.astro` tiene estilos inline sin `clamp()` (deuda de
   responsive, no bloqueante).
-- En inglés los miles salen con punto ("from 1.800 €") en vez de coma. Ya
-  estaba así antes de estas tandas.
 - Blog: el artículo destacado (caso gagraservis) solo tiene 194 palabras, y en
   español no hay artículos de Mantenimiento. Las portadas por artículo se
   propusieron y no se hicieron.
