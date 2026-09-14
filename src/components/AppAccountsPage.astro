@@ -127,6 +127,18 @@ const hreflangAlternates = [
 ];
 const pageUrl = hreflangAlternates.find((a) => a.hreflang === lang)!.href;
 const orgId = buildOrgId(site);
+
+// Los binarios van como assets de una GitHub Release, no versionados en el repo
+// (ver AGENTS.md §7: 90 MB de .exe/.tar.gz ya hubo que purgar del historial).
+const RELEASE =
+  'https://github.com/GeoMachine-Dev-Group/geomachine-web/releases/download/accounts-app-v1';
+
+const features = [
+  { icon: '🔒', title: t.feature1Title, desc: t.feature1Desc },
+  { icon: '🏷️', title: t.feature2Title, desc: t.feature2Desc },
+  { icon: '📈', title: t.feature3Title, desc: t.feature3Desc },
+  { icon: '📝', title: t.feature4Title, desc: t.feature4Desc },
+];
 ---
 
 <Base
@@ -157,8 +169,7 @@ const orgId = buildOrgId(site);
           name: 'GeoMachine Accounts',
           operatingSystem: 'Windows, Linux',
           applicationCategory: 'BusinessApplication',
-          downloadUrl:
-            'https://github.com/GeoMachine-Dev-Group/geomachine-web/releases/download/accounts-app-v1/GeoMachineAccounts.exe',
+          downloadUrl: `${RELEASE}/GeoMachineAccounts.exe`,
           provider: { '@id': orgId },
           offers: {
             '@type': 'Offer',
@@ -170,70 +181,37 @@ const orgId = buildOrgId(site);
     })} />
   </Fragment>
 
-  <section class="hero shell">
+  <section class="hero app-hero shell">
     <p class="hero__eyebrow">{t.tagline}</p>
-    <h1 class="hero__title" style="max-width: 25ch; white-space: normal;">{t.headline}</h1>
-    <p class="hero__body" style="max-width: 60ch;">{t.lead}</p>
-    
-    <div style="margin-top: 2.5rem; display: flex; flex-wrap: wrap; gap: 1rem;">
-      <a href="https://github.com/GeoMachine-Dev-Group/geomachine-web/releases/download/accounts-app-v1/GeoMachineAccounts.exe" class="card__button card__button--featured" style="text-decoration: none; padding: 0.9rem 2rem; font-size: 1rem; font-weight: bold; border-radius: 6px; display: inline-flex; align-items: center; gap: 0.5rem; background: var(--accent); color: var(--paper); border: none;">
+    <h1 class="hero__title">{t.headline}</h1>
+    <p class="hero__body">{t.lead}</p>
+
+    <div class="app-hero__downloads">
+      <a href={`${RELEASE}/GeoMachineAccounts.exe`} class="app-download app-download--primary">
         <span>🪟</span> {t.downloadWin}
       </a>
-      <a href="https://github.com/GeoMachine-Dev-Group/geomachine-web/releases/download/accounts-app-v1/GeoMachineAccounts.tar.gz" class="card__button" style="text-decoration: none; padding: 0.9rem 2rem; font-size: 1rem; font-weight: bold; border-radius: 6px; display: inline-flex; align-items: center; gap: 0.5rem; background: var(--panel-2); color: var(--ink); border: 1px solid var(--rule);">
+      <a href={`${RELEASE}/GeoMachineAccounts.tar.gz`} class="app-download">
         <span>🐧</span> {t.downloadLin}
       </a>
     </div>
   </section>
 
-  <section class="shell" style="padding-bottom: 5rem;">
-    <h2 style="font-family: var(--display); font-size: 2rem; font-weight: bold; margin-bottom: 2rem; border-bottom: 1px solid var(--rule); padding-bottom: 0.5rem;">
-      {t.detailsTitle}
-    </h2>
-    
-    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 2rem; margin-bottom: 4rem;">
-      <div style="background: var(--panel); border: 1px solid var(--rule); padding: 1.5rem; border-radius: 8px;">
-        <h3 style="font-family: var(--display); font-size: 1.25rem; font-weight: bold; color: var(--accent); margin: 0 0 0.75rem 0;">
-          🔒 {t.feature1Title}
-        </h3>
-        <p style="margin: 0; font-size: 0.92rem; color: var(--ink-soft); line-height: 1.5;">
-          {t.feature1Desc}
-        </p>
-      </div>
+  <section class="shell app-section">
+    <h2 class="app-section__title">{t.detailsTitle}</h2>
 
-      <div style="background: var(--panel); border: 1px solid var(--rule); padding: 1.5rem; border-radius: 8px;">
-        <h3 style="font-family: var(--display); font-size: 1.25rem; font-weight: bold; color: var(--accent); margin: 0 0 0.75rem 0;">
-          🏷️ {t.feature2Title}
-        </h3>
-        <p style="margin: 0; font-size: 0.92rem; color: var(--ink-soft); line-height: 1.5;">
-          {t.feature2Desc}
-        </p>
-      </div>
-
-      <div style="background: var(--panel); border: 1px solid var(--rule); padding: 1.5rem; border-radius: 8px;">
-        <h3 style="font-family: var(--display); font-size: 1.25rem; font-weight: bold; color: var(--accent); margin: 0 0 0.75rem 0;">
-          📈 {t.feature3Title}
-        </h3>
-        <p style="margin: 0; font-size: 0.92rem; color: var(--ink-soft); line-height: 1.5;">
-          {t.feature3Desc}
-        </p>
-      </div>
-
-      <div style="background: var(--panel); border: 1px solid var(--rule); padding: 1.5rem; border-radius: 8px;">
-        <h3 style="font-family: var(--display); font-size: 1.25rem; font-weight: bold; color: var(--accent); margin: 0 0 0.75rem 0;">
-          📝 {t.feature4Title}
-        </h3>
-        <p style="margin: 0; font-size: 0.92rem; color: var(--ink-soft); line-height: 1.5;">
-          {t.feature4Desc}
-        </p>
-      </div>
+    <div class="app-features">
+      {features.map(({ icon, title, desc }) => (
+        <div class="app-feature">
+          <h3 class="app-feature__title">{icon} {title}</h3>
+          <p class="app-feature__text">{desc}</p>
+        </div>
+      ))}
     </div>
 
-    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 3rem; background: var(--panel-2); border: 1px solid var(--rule); padding: 2.5rem; border-radius: 12px; margin-bottom: 4rem;">
+    <div class="app-panel">
       <div>
-        <h2 style="font-family: var(--display); font-size: 1.75rem; font-weight: bold; margin: 0 0 1rem 0; color: var(--ink);">
-          ⚙️ {t.installationTitle}
-        </h2>
-        <ul style="list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 1rem; font-size: 0.95rem; color: var(--ink-soft); line-height: 1.6;">
+        <h2 class="app-panel__title">⚙️ {t.installationTitle}</h2>
+        <ul class="app-panel__steps">
           <li>{t.instStep1}</li>
           <li>{t.instStep2}</li>
           <li>{t.instStep3}</li>
@@ -241,19 +219,13 @@ const orgId = buildOrgId(site);
       </div>
 
       <div>
-        <h2 style="font-family: var(--display); font-size: 1.75rem; font-weight: bold; margin: 0 0 1rem 0; color: var(--stamp);">
-          🏢 {t.seoSectionTitle}
-        </h2>
-        <p style="margin: 0; font-size: 0.95rem; color: var(--ink-soft); line-height: 1.6;">
-          {t.seoDesc}
-        </p>
+        <h2 class="app-panel__title app-panel__title--stamp">🏢 {t.seoSectionTitle}</h2>
+        <p class="app-panel__text">{t.seoDesc}</p>
       </div>
     </div>
 
-    <div style="text-align: center;">
-      <a href="/" style="font-family: var(--data); text-transform: uppercase; font-size: 0.85rem; letter-spacing: 0.1em; color: var(--ink-soft); text-decoration: none; border-bottom: 1px solid var(--rule); padding-bottom: 4px; transition: color 0.2s, border-color 0.2s;">
-        ← {t.backToHome}
-      </a>
+    <div class="app-back">
+      <a href="/">← {t.backToHome}</a>
     </div>
   </section>
 </Base>

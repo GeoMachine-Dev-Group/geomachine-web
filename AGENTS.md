@@ -1,9 +1,9 @@
 # geomachine.es — ficha del proyecto
 
-## 0. Estado actual (2026-09-13)
+## 0. Estado actual (2026-09-14)
 
-**Producción está en `224723f`** (feat(blog): portadas por artículo, artículo
-de mantenimiento y un solo botón flotante), desplegado el 2026-09-14 y
+**Producción está en `919d3c4`** (feat(seo): declarar a Romeo Mikava como
+fundador en los datos de empresa), desplegado el 2026-09-14 y
 verificado en vivo. `main` y
 producción coinciden en el código del sitio; no hay ramas de trabajo vivas (en
 `backup` quedan `master` y `restaura-controles-interactivos`, antiguas, sin
@@ -62,6 +62,25 @@ Historial reciente, todo por fast-forward y con la rama borrada después:
      anterior `#contacto` no hacía nada en el blog.
    - Fuera `Calculator.astro` (no se usaba en ninguna página), su CSS y la
      variable `--heading`, que solo usaba ella.
+
+6. `d072612` (2026-09-14) — artículo "App nativa o PWA: qué necesita de
+   verdad tu negocio" (pilar APP, en español).
+7. `dac54ab` (2026-09-14) — arreglos de la auditoría SEO del 2026-09-14:
+   - `llms.txt` y `llms-full.txt` **generados desde el catálogo**
+     (`src/lib/llms.ts` + dos endpoints). Los de `public/` estaban escritos a
+     mano y contradecían a la web (servicios y precios inventados). Si se
+     tocan servicios o precios, esos ficheros se actualizan solos.
+   - `vercel.json` nuevo, con las cabeceras de seguridad que `public/_headers`
+     nunca aplicó (ese formato es de Netlify; Vercel solo lo copiaba) y caché
+     inmutable de un año para `/_astro` y `/fonts`.
+   - Títulos y descripciones dentro de longitud en las 4 páginas de Accounts y
+     los dos índices del blog; `x-default` que faltaba.
+8. `a0254e4` (2026-09-14) — **abhazservis.com** citado como trabajo entregado,
+   en la franja del hero (etiqueta "Entregado" en los 4 idiomas) y en
+   `llms.ts` como "Selected work", para que las IA puedan citarlo.
+9. `919d3c4` (2026-09-14) — **Romeo Mikava como fundador** en el JSON-LD
+   (`src/data/organization.ts`). Es lo que separa a esta empresa de las otras
+   dos que usan el nombre GeoMachine ante Google y ante las IA.
 
 **Trampas conocidas:**
 - Las clases base `.hero`, `.hero__title`, `.hero__body` y `.hero__eyebrow`
