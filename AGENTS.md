@@ -2,8 +2,8 @@
 
 ## 0. Estado actual (2026-09-14)
 
-**Producción está en `919d3c4`** (feat(seo): declarar a Romeo Mikava como
-fundador en los datos de empresa), desplegado el 2026-09-14 y
+**Producción está en `1000784`** (docs(agents): estado real, sistema visual y
+el dominio caído), desplegado el 2026-09-14 y
 verificado en vivo. `main` y
 producción coinciden en el código del sitio; no hay ramas de trabajo vivas (en
 `backup` quedan `master` y `restaura-controles-interactivos`, antiguas, sin
@@ -81,6 +81,22 @@ Historial reciente, todo por fast-forward y con la rama borrada después:
 9. `919d3c4` (2026-09-14) — **Romeo Mikava como fundador** en el JSON-LD
    (`src/data/organization.ts`). Es lo que separa a esta empresa de las otras
    dos que usan el nombre GeoMachine ante Google y ante las IA.
+
+10. `1000784` (2026-09-14) — rama `refactor/sistema-visual`:
+   - **Sistema visual**: las tres escalas de `:root` descritas más abajo. 70
+     valores de espaciado mapeados exactos y el resto redondeado al escalón más
+     cercano (ningún cambio pasa de 3 px); once tamaños de letra por debajo de
+     0,8 rem reducidos a tres.
+   - **AppAccountsPage.astro** deja de llevar estilos inline: clases `.app-*`,
+     las cuatro tarjetas salen de un array y la URL de la release se declara
+     una vez en lugar de tres.
+   - **Caso de abhazservis.com** en español y ruso, con las cifras del propio
+     proyecto (273 fichas, 19 categorías, 8 localidades, nueve días) y lo que
+     no hay: cero ingresos, cero fichas reclamadas, cero tráfico.
+   - **Caso de gagraservis ampliado** de 194 a 761 palabras, y fuera los
+     enlaces a `gagraservis.ru`, que salían en siete páginas —entre ellas la
+     franja de trabajos de la portada en los cuatro idiomas— apuntando a un
+     dominio que no resuelve.
 
 **Trampas conocidas:**
 - Las clases base `.hero`, `.hero__title`, `.hero__body` y `.hero__eyebrow`
