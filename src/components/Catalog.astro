@@ -173,48 +173,18 @@ const heroAnchors = ['WEB', 'APP', 'IA']
   .filter((l): l is (typeof lines)[number] => Boolean(l))
   .map((line) => ({ line, item: line.items[0] }));
 
+// Una sola tarjeta destacada: la oferta estrella. Antes había siete etiquetas
+// ("Más popular", "Más vendido", "Recomendado", "Mejor valor"…) y, con tantas, no
+// destacaba ninguna. Además "Más popular" y "Más vendido" afirmaban algo que no
+// se podía sostener con un solo cliente entregado. No volver a poner etiquetas de
+// popularidad o de ventas sin datos reales detrás.
 const featuredMap: Record<string, Record<Lang, string>> = {
-  'WEB-02': {
-    es: '★ Más popular',
-    ru: '★ Популярный',
-    en: '★ Most popular',
-    ka: '★ პოპულარული',
-  },
-  'APP-02': {
-    es: '🚀 Recomendado',
-    ru: '🚀 Рекомендуем',
-    en: '🚀 Recommended',
-    ka: '🚀 რეკომენდებული',
-  },
-  'IA-04': {
-    es: '🔒 Alta Privacidad',
-    ru: '🔒 Высокая приватность',
-    en: '🔒 High Privacy',
-    ka: '🔒 კონფიდენციალური',
-  },
-  'SEO-02': {
-    es: '📈 Crecimiento',
-    ru: '📈 Рост продаж',
-    en: '📈 Best Growth',
-    ka: '📈 ზრდისთვის',
-  },
-  'MNT-02': {
-    es: '⚡ Más vendido',
-    ru: '⚡ Хит продаж',
-    en: '⚡ Best seller',
-    ka: '⚡ ყველაზე გაყიდვადი',
-  },
-  'SYS-02': {
-    es: '🛡️ Esencial',
-    ru: '🛡️ Базовый выбор',
-    en: '🛡️ Essential',
-    ka: '🛡️ აუცილებელი',
-  },
-  'PACK-02': {
-    es: '🔥 Mejor valor',
-    ru: '🔥 Лучший выбор',
-    en: '🔥 Best value',
-    ka: '🔥 საუკეთესო ფასი',
+  'PACK-07': {
+    es: '★ Oferta estrella',
+    ru: '★ Главное предложение',
+    en: '★ Flagship offer',
+    // ka: traducción automática, pendiente de revisión nativa.
+    ka: '★ მთავარი შეთავაზება',
   },
 };
 ---

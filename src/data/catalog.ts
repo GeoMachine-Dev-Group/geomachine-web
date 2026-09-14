@@ -696,6 +696,54 @@ export interface Bundle {
 }
 
 export const bundles: Bundle[] = [
+  // Oferta estrella (2026-09-15). Va la primera porque el catálogo solo enseña
+  // tres paquetes antes de "Ver más". Código PACK-07 y no PACK-01: renumerar
+  // rompería el relatedService de los artículos que ya citan PACK-04. La
+  // promesa sale de lo demostrado en abhazservis (del primer commit al panel
+  // de administración en nueve días); tres semanas y no nueve días porque con
+  // un cliente hay idas y vueltas que en un proyecto propio no existen. Precio
+  // fijo, no rango: una oferta estrella con horquilla no es una oferta.
+  {
+    code: 'PACK-07',
+    name: { es: 'MVP en 3 semanas', ru: 'MVP за 3 недели', en: 'MVP in 3 weeks', ka: 'MVP 3 კვირაში' },
+    time: { es: '3 semanas', ru: '3 недели', en: '3 weeks', ka: '3 კვირა' },
+    includes: {
+      es: [
+        'Login de usuarios, base de datos y panel de administración',
+        'Hasta cinco flujos principales',
+        'En producción con tu dominio y backup nocturno con restauración probada',
+        'Código en tu repositorio y documentación',
+      ],
+      ru: [
+        'Вход пользователей, база данных и админ-панель',
+        'До пяти основных сценариев',
+        'Запуск на вашем домене и ночной бэкап с проверенным восстановлением',
+        'Код в вашем репозитории и документация',
+      ],
+      en: [
+        'User login, database and admin panel',
+        'Up to five core flows',
+        'Live on your domain with a nightly backup and a tested restore',
+        'Code in your own repository, fully documented',
+      ],
+      // ka: traducción automática, pendiente de revisión nativa.
+      ka: [
+        'მომხმარებლის ავტორიზაცია, მონაცემთა ბაზა და ადმინ-პანელი',
+        'ხუთ ძირითად ფუნქციამდე',
+        'გამოქვეყნება თქვენს დომენზე, ღამის სარეზერვო ასლით',
+        'კოდი თქვენს რეპოზიტორიაში, დოკუმენტაციით',
+      ],
+    },
+    human: {
+      es: 'Consigues tu producto funcionando en producción tres semanas después de cerrar el alcance, a precio cerrado — así pruebas tu idea con usuarios reales este mes, no el trimestre que viene. Si en ese plazo no está en producción, sigo trabajando sin coste hasta que lo esté, siempre que las respuestas lleguen en 48 horas. No incluye apps nativas de tienda, pagos online ni diseño a medida: se presupuestan aparte y antes de empezar.',
+      ru: 'Вы получаете работающий продукт в продакшене через три недели после согласования объёма, по фиксированной цене — и проверяете идею на реальных пользователях в этом месяце, а не в следующем квартале. Если к этому сроку продукт не запущен, я продолжаю работать бесплатно, пока он не заработает, при условии что ответы приходят в течение 48 часов. Не входят нативные приложения для App Store и Google Play, онлайн-оплата и индивидуальный дизайн: они оцениваются отдельно и заранее.',
+      en: 'You get your product running in production three weeks after we agree the scope, at a fixed price — so you test your idea with real users this month, not next quarter. If it is not live by then, I keep working at no cost until it is, as long as replies come within 48 hours. Native app-store apps, online payments and custom design are not included: they are quoted separately, before we start.',
+      // ka: traducción automática, pendiente de revisión nativa.
+      ka: 'იღებთ მომუშავე პროდუქტს ფიქსირებულ ფასად, მოცულობის შეთანხმებიდან სამი კვირაში. თუ ამ ვადაში არ გაიშვა, მუშაობა უფასოდ გრძელდება, სანამ არ გაიშვება, თუ პასუხები 48 საათში მოდის. ნატიური აპლიკაციები, ონლაინ გადახდა და ინდივიდუალური დიზაინი არ შედის და ცალკე ფასდება.',
+    },
+    launch: { eur: [2900], rub: [174000], gel: [8700] },
+    standard: { eur: [5900], rub: [354000], gel: [17700] },
+  },
   {
     code: 'PACK-01',
     name: { es: 'Arranque', ru: 'Старт', en: 'Kickoff', ka: 'დაწყება' },
