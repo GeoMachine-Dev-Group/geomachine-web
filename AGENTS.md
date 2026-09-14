@@ -2,8 +2,8 @@
 
 ## 0. Estado actual (2026-09-14)
 
-**Producción está en `1000784`** (docs(agents): estado real, sistema visual y
-el dominio caído), desplegado el 2026-09-14 y
+**Producción está en `86af113`** (feat(blog): blog en inglés — infraestructura
+y tres artículos), desplegado el 2026-09-14 y
 verificado en vivo. `main` y
 producción coinciden en el código del sitio; no hay ramas de trabajo vivas (en
 `backup` quedan `master` y `restaura-controles-interactivos`, antiguas, sin
@@ -97,6 +97,17 @@ Historial reciente, todo por fast-forward y con la rama borrada después:
      enlaces a `gagraservis.ru`, que salían en siete páginas —entre ellas la
      franja de trabajos de la portada en los cuatro idiomas— apuntando a un
      dominio que no resuelve.
+
+11. `86af113` (2026-09-14) — rama `feat/blog-en`: **blog en inglés**. Inglés y
+   georgiano tenían 2 páginas cada uno frente a 30 y 19. Se abre `/en/blog/`
+   con tres artículos propios (no traducciones); en georgiano **no**, y es
+   deliberado: todo el `ka` va traducido por IA sin revisar, y doce artículos
+   largos así agrandan el problema en vez de arreglarlo. La infraestructura
+   pasa de dos idiomas a N — `hasBlog()` estrecha el tipo, `buildHreflang`
+   deduce el idioma de la pareja de su slug (por descarte ya no vale con
+   tres), y `blogIndexHreflang` y `llms.txt` se generan desde `blogPath`.
+   Para añadir `ka` cuando haya revisor: `BlogLang`, `blogPath` y las dos
+   rutas de `src/pages/ka/blog/`. Nada más.
 
 **Trampas conocidas:**
 - Las clases base `.hero`, `.hero__title`, `.hero__body` y `.hero__eyebrow`
