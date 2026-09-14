@@ -115,17 +115,28 @@ Historial reciente, todo por fast-forward y con la rama borrada después:
   en `src/i18n/ui.ts`.
 - Decidir si se reinstala el hook `post-commit` de auto-push (ver más abajo).
 - Falta foto del fundador en la sección `.close`.
-- `AppAccountsPage.astro` tiene estilos inline sin `clamp()` (deuda de
-  responsive, no bloqueante).
-- Blog: el artículo destacado (caso gagraservis) solo tiene 194 palabras. Para
-  ampliarlo hacen falta datos reales del proyecto.
+- `gagraservis.ru` sigue sin publicar (decisión del 2026-09-10, no un fallo).
+  Mientras siga así, nada del sitio debe enlazar a ese dominio: la franja de
+  trabajos y los artículos que lo citaban apuntan ya al caso del blog. Los
+  pasos para volver a publicarlo están en el `AGENTS.md` de ese repo.
+- Del caso de gagraservis se quitó la afirmación de que el sitio era bilingüe
+  con hreflang: la única copia que se conserva (2026-08-21) es monolingüe rusa
+  y no hay forma de comprobarlo. Si aparece el original del VPS, se revisa.
 
 **Estado SEO:** Yandex verificado como `https://geomachine.es`, `sitemap-index`
 y `sitemap-0` enviados, 15 URLs rusas en cola de rastreo. Google indexa bien.
 
-**Deuda de diseño detectada** (no bloqueante, para una pasada futura): no hay
-escala de espaciado ni de radios en variables CSS, 5 breakpoints literales
-sin convención compartida, tipografía ajustada "a ojo" sin type scale formal.
+**Sistema visual (desde el 2026-09-14).** `src/styles/global.css` tiene ya sus
+escalas en `:root`, y lo nuevo debe salir de ahí en vez de inventar valores:
+- `--space-1` … `--space-16`: el número es el múltiplo de 0,25 rem
+  (`--space-4` = 1 rem), como en Tailwind. Por debajo de 0,4 rem se siguen
+  usando literales a propósito: son ajustes ópticos, no espaciado de layout.
+- `--radius-xs|sm|md|lg|xl|pill`.
+- `--fs-3xs` … `--fs-4xl`. Los títulos que escalan con el ancho siguen con su
+  `clamp()`: son tipografía fluida, no escalones de la escala.
+- Puntos de corte: solo existen 480, 720 y 860 px, y 860 es el único que se usa
+  también en `min-width`. CSS no admite `var()` en `@media`, así que van
+  literales y la convención está escrita en la cabecera de la hoja.
 
 **El auto-push ya NO está activo (comprobado el 2026-09-11).** `git commit`
 deja el commit solo en local: hay que hacer `git push` a mano, a `github` y a
