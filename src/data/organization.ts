@@ -72,6 +72,11 @@ export function buildOrganization(site: string, lang: Lang) {
     })),
     email: 'hola@geomachine.es',
     telephone: '+34620811739',
+    /** La persona detrás de la marca. Es lo que separa a esta empresa de las
+        otras dos que se llaman GeoMachine (la finlandesa de perforación y la
+        plataforma británica de mapas), y lo que respalda la promesa del hero:
+        quien atiende es quien escribe el código. */
+    founder: { '@type': 'Person', name: 'Romeo Mikava' },
     image: `${site}/og/og-${lang}.png`,
     sameAs: [
       'https://t.me/geomachine',
