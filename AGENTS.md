@@ -2,8 +2,8 @@
 
 ## 0. Estado actual (2026-09-14)
 
-**Producción está en `86af113`** (feat(blog): blog en inglés — infraestructura
-y tres artículos), desplegado el 2026-09-14 y
+**Producción está en `2c6f1ee`** (feat(catalogo): oferta estrella "MVP en 3
+semanas" y fuera las siete etiquetas), desplegado el 2026-09-15 y
 verificado en vivo. `main` y
 producción coinciden en el código del sitio; no hay ramas de trabajo vivas (en
 `backup` quedan `master` y `restaura-controles-interactivos`, antiguas, sin
@@ -109,7 +109,26 @@ Historial reciente, todo por fast-forward y con la rama borrada después:
    Para añadir `ka` cuando haya revisor: `BlogLang`, `blogPath` y las dos
    rutas de `src/pages/ka/blog/`. Nada más.
 
+12. `2c6f1ee` (2026-09-15) — rama `feat/oferta-estrella`: **oferta estrella
+   PACK-07, "MVP en 3 semanas"**, la primera de los paquetes. Precio fijo:
+   2.900 € (174.000 ₽ / 8.700 ₾) de lanzamiento y 5.900 € (354.000 ₽ /
+   17.700 ₾) estándar. Garantía: si no está en producción tres semanas después
+   de cerrar el alcance, se sigue trabajando sin coste mientras el cliente
+   responda en 48 horas. Se quitaron las siete etiquetas destacadas que había:
+   ahora solo destaca esta.
+
 **Trampas conocidas:**
+- **La oferta estrella cambia de precio sola.** Como el resto del catálogo,
+  PACK-07 pasa de 2.900 € a 5.900 € cuando `LAUNCH_SLOTS` se llena (al
+  2026-09-15: 5 plazas, 1 completada, 1 en curso). Si se quiere mantener la
+  oferta a 2.900 €, hay que cambiar su `standard`, no las plazas.
+- **Nada de etiquetas de popularidad o ventas sin datos.** Hasta el 2026-09-15
+  había "Más popular" (WEB-02) y "Más vendido" (MNT-02) con un solo cliente
+  entregado y ninguno de mantenimiento: afirmaciones comerciales falsas. El
+  `featuredMap` de `Catalog.astro` lleva un comentario para que no vuelvan.
+- **PACK-07 va la primera del array a propósito**: el catálogo solo enseña
+  tres paquetes antes de "Ver más". Y no se renumeran los paquetes:
+  `cuanto-cuesta-app-como-uber` cita PACK-04 como `relatedService`.
 - Las clases base `.hero`, `.hero__title`, `.hero__body` y `.hero__eyebrow`
   las comparte `AppAccountsPage.astro`. El estilo del catálogo va solo bajo
   `.hero--atelier`; no tocar las base sin revisar esa página.
