@@ -19,6 +19,15 @@ interface Props {
 }
 const { lang } = Astro.props;
 const t = ui[lang];
+
+// gagraservis.ru no está publicado ahora mismo, así que la franja no puede
+// enlazar al dominio: iría a un enlace muerto en la portada de los cuatro
+// idiomas. Se enlaza el caso del blog, que solo existe en es y ru; en en y ka
+// el nombre va sin enlace.
+const gagraCase =
+  lang === 'es' || lang === 'ru'
+    ? `${blogPath[lang]}${lang === 'es' ? 'gagraservis-caso-real' : 'gagraservis-realnyy-keys'}/`
+    : null;
 /** Moneda con la que se pinta el HTML antes de que corra el JS (por idioma). */
 const CUR = LANG_CURRENCY[lang];
 
@@ -250,7 +259,9 @@ const featuredMap: Record<string, Record<Lang, string>> = {
   <ul class="proof__list" aria-label={t.proofLabel}>
     <li>
       <span class="proof__tag">{t.statusDelivered}</span>
-      <a href="https://gagraservis.ru/" target="_blank" rel="noopener">gagraservis.ru</a>
+      {gagraCase
+        ? <a href={gagraCase}>gagraservis.ru</a>
+        : <span>gagraservis.ru</span>}
     </li>
     <li>
       <span class="proof__tag">{t.statusDelivered}</span>
