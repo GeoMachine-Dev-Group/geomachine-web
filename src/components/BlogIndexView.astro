@@ -9,7 +9,7 @@
 import type { CollectionEntry } from 'astro:content';
 import BlogNav from './BlogNav.astro';
 import { ui, blogPath, type BlogLang } from '../i18n/ui';
-import { excerpt, readingTime, formatPostDate, pillarTitle, presentPillars, blogCoverPath } from '../lib/blog';
+import { excerpt, readingTime, formatPostDate, pillarTitle, presentPillars, blogCardPath } from '../lib/blog';
 
 interface Props {
   lang: BlogLang;
@@ -60,9 +60,9 @@ const ordered = [...posts.filter((p) => p.data.featured), ...posts.filter((p) =>
             <a class="blog-card__link" href={`${blogPath[lang]}${slug}/`}>
               <img
                 class="blog-card__cover"
-                src={blogCoverPath(lang, slug)}
-                width="1200"
-                height="630"
+                src={blogCardPath(lang, slug)}
+                width="600"
+                height="315"
                 alt=""
                 loading={i === 0 ? 'eager' : 'lazy'}
                 decoding="async"

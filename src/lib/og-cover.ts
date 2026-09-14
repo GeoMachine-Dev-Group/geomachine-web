@@ -16,6 +16,9 @@ import path from 'node:path';
 type Lang = 'es' | 'ru';
 
 interface CoverInput {
+  /** Ancho final en píxeles: 1200 para compartir (PNG), 600 para las tarjetas
+      del índice (WebP, ~8 veces más ligero). El dibujo es el mismo. */
+  width?: number;
   title: string;
   /** Código del pilar ("WEB", "MNT"…): va de marca de agua. */
   pillar: string;
@@ -76,7 +79,7 @@ function titleSize(title: string) {
   return 52;
 }
 
-export async function renderBlogCover({ title, pillar, pillarLabel, lang }: CoverInput): Promise<Buffer> {
+export async function renderBlogCover({ title, pillar, pillarLabel, lang, width = 1200 }: CoverInput): Promise<Buffer> {
   const titleFont = lang === 'ru' ? 'GolosCyr, GolosCyrExt, OutfitLatin, OutfitLatinExt' : 'OutfitLatin, OutfitLatinExt, GolosCyr';
 
   const tree = h(
@@ -129,5 +132,9 @@ export async function renderBlogCover({ title, pillar, pillarLabel, lang }: Cove
   );
 
   const svg = await satori(tree as unknown as Parameters<typeof satori>[0], { width: 1200, height: 630, fonts: fonts() });
-  return sharp(Buffer.from(svg)).png({ compressionLevel: 9 }).toBuffer();
+  const image = sharp(Buffer.from(svg));
+  if (width !== 1200) {
+    return image.resize(width, Math.round((width * 630) / 1200)).webp({ quality: 78 }).toBuffer();
+  }
+  return image.png({ compressionLevel: 9 }).toBuffer();
 }

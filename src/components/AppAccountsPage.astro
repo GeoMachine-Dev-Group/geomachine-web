@@ -10,8 +10,8 @@ const { lang } = Astro.props;
 
 const content = {
   es: {
-    title: "GeoMachine Accounts — Control de Inventario y Gestión de Cuentas Pymes",
-    description: "Software de gestión local de inventario, analítica ABC y cálculo de beneficio neto real. 100% privado, con base de datos SQLite.",
+    title: "GeoMachine Accounts — control de stock y beneficio",
+    description: "Programa local para controlar el inventario, ver el beneficio neto real por producto y planificar compras con análisis ABC. Sin nube y sin suscripción.",
     tagline: "Software de Gestión de Inventario y Cuentas",
     headline: "El sistema definitivo para controlar tu stock y calcular tu beneficio neto",
     lead: "Gestiona tu inventario diario de forma rápida, visualiza tu margen real de ganancia por producto y automatiza tu logística de reordenación con análisis ABC. Sin internet, sin suscripciones, 100% local y privado.",
@@ -35,8 +35,8 @@ const content = {
     backToHome: "Volver a GeoMachine",
   },
   en: {
-    title: "GeoMachine Accounts — Inventory Control & Small Business Bookkeeping",
-    description: "Local inventory management software, ABC analytics, and net profit tracking. 100% private with a built-in SQLite database.",
+    title: "GeoMachine Accounts — stock and profit control",
+    description: "Local software to track inventory, see real net profit per product and plan restocking with ABC analysis. No cloud, no subscription, SQLite inside.",
     tagline: "Inventory & Profit Management Software",
     headline: "The ultimate system to control your stock and calculate true net profit",
     lead: "Manage your daily inventory fast, visualize real profit margins per product, and automate your reorder logistics with ABC analysis. Offline, no subscriptions, 100% local and private.",
@@ -60,8 +60,8 @@ const content = {
     backToHome: "Back to GeoMachine",
   },
   ru: {
-    title: "GeoMachine Accounts — Контроль инвентаря и управление счетами Pymes",
-    description: "Программа локального управления запасами, ABC-анализ и отслеживание чистой прибыли. 100% приватно на базе SQLite.",
+    title: "GeoMachine Accounts — учёт склада и прибыли",
+    description: "Локальная программа для учёта склада, расчёта чистой прибыли по каждому товару и планирования закупок по ABC-анализу. Без облака и без подписки.",
     tagline: "Программа управления инвентарем и счетами",
     headline: "Лучшая система для контроля склада и расчета чистой прибыли",
     lead: "Управляйте ежедневным инвентарем быстро, отслеживайте реальную маржинальность каждого товара и автоматизируйте закупки с помощью встроенного ABC-анализа. Без интернета, без подписок, полностью локально.",
@@ -85,8 +85,8 @@ const content = {
     backToHome: "Назад в GeoMachine",
   },
   ka: {
-    title: "GeoMachine Accounts — ინვენტარისა და მცირე ბიზნესის მოგების მართვა",
-    description: "ლოკალური ინვენტარის მართვის პროგრამა, ABC ანალიტიკა და სუფთა მოგების აღრიცხვა. 100% კონფიდენციალური SQLite ბაზით.",
+    title: "GeoMachine Accounts — მარაგი და მოგება",
+    description: "ლოკალური პროგრამა მარაგის აღრიცხვისთვის, თითოეული პროდუქტის წმინდა მოგების დათვლისა და ABC-ანალიზით შესყიდვების დაგეგმვისთვის. ღრუბლისა და გამოწერის გარეშე.",
     tagline: "ინვენტარისა და მოგების მართვის სისტემა",
     headline: "საუკეთესო სისტემა თქვენი მარაგებისა და სუფთა მოგების საკონტროლებლად",
     lead: "მართეთ ყოველდღიური ინვენტარი სწრაფად, დაინახეთ თითოეული პროდუქტის რეალური მოგება და ავტომატიზაცია გაუკეთეთ შესყიდვებს ABC ანალიზის მეშვეობით. ინტერნეტის გარეშე, 100% ლოკალური და დაცული.",
@@ -116,6 +116,10 @@ const site = 'https://geomachine.es';
 
 // Rutas locales de descarga para alternates hreflang
 const hreflangAlternates = [
+  // x-default al español, el idioma por defecto del sitio. Va primero pero no
+  // rompe pageUrl: esa búsqueda compara con el idioma de la página, nunca con
+  // "x-default".
+  { hreflang: 'x-default', href: `${site}/es/servicios/app-cuentas/` },
   { hreflang: 'es', href: `${site}/es/servicios/app-cuentas/` },
   { hreflang: 'en', href: `${site}/en/services/app-accounts/` },
   { hreflang: 'ru', href: `${site}/ru/uslugi/app-accounts/` },

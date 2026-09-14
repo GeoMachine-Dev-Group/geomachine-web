@@ -16,15 +16,22 @@ export function orgId(site: string): string {
   return `${site}/#organization`;
 }
 
+/** Solo lo que respalda el catálogo (src/data/catalog.ts). Antes incluía React
+    y Flutter, que no aparecen en ningún servicio: para Google y para las IA eso
+    es una afirmación sin respaldo en la propia web. */
 const KNOWS_ABOUT = [
   'Web Development',
-  'Mobile App Development',
+  'Progressive Web Apps',
+  'Backend Architecture',
   'Local Private AI',
+  'Retrieval-Augmented Generation',
   'Search Engine Optimization',
-  'Cloud Infrastructure',
+  'VPS Infrastructure',
+  'Website Maintenance',
   'Astro',
-  'React',
-  'Flutter',
+  'TypeScript',
+  'Node.js',
+  'PostgreSQL',
 ];
 
 /**
@@ -64,7 +71,13 @@ export function buildOrganization(site: string, lang: Lang) {
       name,
     })),
     email: 'hola@geomachine.es',
-    sameAs: ['https://t.me/geomachine'],
+    telephone: '+34620811739',
+    image: `${site}/og/og-${lang}.png`,
+    sameAs: [
+      'https://t.me/geomachine',
+      'https://wa.me/34620811739',
+      'https://github.com/GeoMachine-Dev-Group',
+    ],
     knowsAbout: KNOWS_ABOUT,
     makesOffer: makesOfferRefs(site, lang),
   };

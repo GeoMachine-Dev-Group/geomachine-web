@@ -206,7 +206,12 @@ export function relatedServiceInfo(code: string, lang: BlogLang): RelatedService
   return undefined;
 }
 
-/** Ruta de la portada PNG de un artículo (la genera src/pages/og/blog/[lang]/[slug].png.ts). */
+/** Portada de 1200×630 en PNG, para og:image y redes. */
 export function blogCoverPath(lang: BlogLang, slug: string): string {
   return `/og/blog/${lang}/${slug}.png`;
+}
+
+/** Portada ligera de 600 px en WebP, para las tarjetas del índice. */
+export function blogCardPath(lang: BlogLang, slug: string): string {
+  return `/og/blog/${lang}/${slug}.card.webp`;
 }

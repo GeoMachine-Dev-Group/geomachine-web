@@ -310,6 +310,11 @@ const featuredMap: Record<string, Record<Lang, string>> = {
             <span>📖 {lang === 'ru' ? `Статьи: ${line.title[lang]}` : `Ver artículos de ${line.title[lang]}`}</span>
           </a>
         )}
+        {line.prefix === 'APP' && (
+          <a href={accountsHref[lang]} class="line__blog-badge">
+            <span>{t.proofDesktopApp}: GeoMachine Accounts ↗</span>
+          </a>
+        )}
       </header>
 
       <div class="cards" data-cards>

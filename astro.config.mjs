@@ -1,6 +1,7 @@
 import { defineConfig } from 'astro/config';
 import sitemap from '@astrojs/sitemap';
 import vercel from '@astrojs/vercel';
+import { readdirSync, readFileSync } from 'node:fs';
 
 const SITE = 'https://geomachine.es';
 
@@ -21,6 +22,41 @@ const DEFAULT_LOCALE = 'es';
 const HREFLANG = { es: 'es', ru: 'ru', en: 'en', ka: 'ka' };
 
 const serviceUrls = Object.values(SERVICES).map((p) => SITE + p);
+
+/**
+ * Fecha de última modificación por URL del blog, leída del frontmatter de los
+ * artículos. Sin lastmod, Google y Yandex no saben qué ha cambiado desde el
+ * último rastreo y tratan las 39 URLs por igual. Se lee del disco porque
+ * astro.config no puede usar las colecciones de contenido.
+ */
+const BLOG_PATHS = { es: '/es/blog/', ru: '/ru/blog/' };
+
+function blogLastmod() {
+  const map = {};
+  for (const [lang, base] of Object.entries(BLOG_PATHS)) {
+    const dir = new URL(`./src/content/blog/${lang}/`, import.meta.url);
+    let files = [];
+    try {
+      files = readdirSync(dir).filter((f) => f.endsWith('.md'));
+    } catch {
+      continue;
+    }
+    let newest = null;
+    for (const file of files) {
+      const raw = readFileSync(new URL(file, dir), 'utf8');
+      if (/^draft:\s*true/m.test(raw)) continue;
+      const date = (raw.match(/^updatedDate:\s*(\S+)/m) ?? raw.match(/^pubDate:\s*(\S+)/m))?.[1];
+      if (!date) continue;
+      const iso = new Date(date).toISOString();
+      map[`${SITE}${base}${file.replace(/\.md$/, '')}/`] = iso;
+      if (!newest || iso > newest) newest = iso;
+    }
+    if (newest) map[`${SITE}${base}`] = newest;
+  }
+  return map;
+}
+
+const lastmod = blogLastmod();
 
 const alternates = [
   ...Object.entries(SERVICES).map(([lang, path]) => ({
@@ -54,6 +90,7 @@ export default defineConfig({
       // La raíz solo es un redirect a /es/servicios/: no debe indexarse.
       filter: (page) => page !== `${SITE}/`,
       serialize(item) {
+        if (lastmod[item.url]) item.lastmod = lastmod[item.url];
         if (serviceUrls.includes(item.url)) {
           item.links = alternates;
           item.changefreq = 'monthly';

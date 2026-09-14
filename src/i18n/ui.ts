@@ -118,7 +118,7 @@ export const ui = {
     footer: 'GeoMachine Developer Group',
     blogTitle: 'Blog',
     blogMetaDescription:
-      'Artículos sobre desarrollo web, IA aplicada a negocios, SEO y aplicaciones — sin relleno, con precios y casos reales.',
+      'Artículos sobre desarrollo web, IA aplicada a negocios pequeños, SEO y aplicaciones, con precios reales y casos propios. Los escribe quien hace los proyectos.',
     blogEmpty: 'Todavía no hay artículos publicados.',
     blogBack: '← Volver al blog',
     blogRelated: 'Servicio relacionado',
@@ -220,7 +220,7 @@ export const ui = {
     footer: 'GeoMachine Developer Group',
     blogTitle: 'Блог',
     blogMetaDescription:
-      'Статьи о веб-разработке, ИИ для бизнеса, SEO и приложениях — без воды, с ценами и реальными кейсами.',
+      'Статьи о веб-разработке, ИИ для малого бизнеса, SEO и приложениях: реальные цены и собственные кейсы. Пишет тот, кто сам делает проекты.',
     blogEmpty: 'Пока нет опубликованных статей.',
     blogBack: '← Назад в блог',
     blogRelated: 'Похожая услуга',
