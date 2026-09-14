@@ -26,13 +26,25 @@ export const servicesPath: Record<Lang, string> = {
   ka: '/ka/momsakhurebebi/',
 };
 
-/** El blog solo existe en es/ru por ahora (ver Decisiones/estrategia-contenido.md). */
-export type BlogLang = 'es' | 'ru';
+/**
+ * El blog existe en es, ru y en. En georgiano no: todo el `ka` del sitio va
+ * traducido por IA y sin revisar por un nativo, y doce artículos largos en esas
+ * condiciones hacen más daño a la marca que no tenerlos. Cuando haya revisor,
+ * se añade 'ka' aquí y las rutas de src/pages/ka/blog/.
+ */
+export type BlogLang = 'es' | 'ru' | 'en';
 
 export const blogPath: Record<BlogLang, string> = {
   es: '/es/blog/',
   ru: '/ru/blog/',
+  en: '/en/blog/',
 };
+
+/** Estrecha el tipo además de responder: dentro del `if` ya se puede indexar
+    blogPath con lang sin castearlo. */
+export function hasBlog(lang: Lang): lang is BlogLang {
+  return lang in blogPath;
+}
 
 export const ui = {
   es: {
@@ -115,6 +127,7 @@ export const ui = {
     showMore: "Ver más",
     showLess: "Ver menos",
     closeSteps: ["Envías tu idea","Recibes precio y fecha","Desarrollo y entrega"],
+    blogSeeArticles: 'Ver artículos de {tema}',
     footer: 'GeoMachine Developer Group',
     blogTitle: 'Blog',
     blogMetaDescription:
@@ -217,6 +230,7 @@ export const ui = {
     showMore: "Показать ещё",
     showLess: "Свернуть",
     closeSteps: ["Отправляете идею","Получаете цену и срок","Разработка и сдача"],
+    blogSeeArticles: 'Статьи: {tema}',
     footer: 'GeoMachine Developer Group',
     blogTitle: 'Блог',
     blogMetaDescription:
@@ -319,6 +333,23 @@ export const ui = {
     showMore: "Show more",
     showLess: "Show less",
     closeSteps: ["You send your idea","You get price and date","Development and delivery"],
+    blogSeeArticles: 'Articles on {tema}',
+    blogTitle: 'Blog',
+    blogIntro:
+      'Practical articles on websites, AI, SEO and systems for small businesses: what it costs, what works and what is not worth paying for.',
+    blogMetaDescription:
+      'Articles on web development, AI for small businesses, SEO and apps, with real prices and projects of my own. Written by the person who builds them.',
+    blogEmpty: 'No articles published yet.',
+    blogFeatured: 'Featured',
+    blogFilterAll: 'All',
+    blogFilterLabel: 'Filter by topic',
+    blogBy: 'By',
+    blogRelated: 'Related service',
+    blogRelatedArticles: 'Keep reading',
+    blogSeeService: 'See it in the catalogue',
+    blogNavLabel: 'Main navigation',
+    blogBreadcrumbLabel: 'Breadcrumb',
+    readingTimeSuffix: 'min read',
     footer: 'GeoMachine Developer Group',
   },
   ka: {
@@ -420,6 +451,7 @@ export const ui = {
     showMore: "მეტის ნახვა",
     showLess: "ჩაკეცვა",
     closeSteps: ["აგზავნით იდეას","იღებთ ფასს და ვადას","დამუშავება და მიწოდება"],
+    blogSeeArticles: '{tema}: სტატიები',
     footer: 'GeoMachine Developer Group',
   },
 } as const;

@@ -26,10 +26,10 @@ const serviceUrls = Object.values(SERVICES).map((p) => SITE + p);
 /**
  * Fecha de última modificación por URL del blog, leída del frontmatter de los
  * artículos. Sin lastmod, Google y Yandex no saben qué ha cambiado desde el
- * último rastreo y tratan las 39 URLs por igual. Se lee del disco porque
+ * último rastreo y tratan todas las URLs por igual. Se lee del disco porque
  * astro.config no puede usar las colecciones de contenido.
  */
-const BLOG_PATHS = { es: '/es/blog/', ru: '/ru/blog/' };
+const BLOG_PATHS = { es: '/es/blog/', ru: '/ru/blog/', en: '/en/blog/' };
 
 function blogLastmod() {
   const map = {};

@@ -9,7 +9,7 @@
  */
 import type { CollectionEntry } from 'astro:content';
 import { lines, bundles, type Currency, type Item, type Unit } from '../data/catalog';
-import { servicesPath, blogPath } from '../i18n/ui';
+import { servicesPath, blogPath, type BlogLang } from '../i18n/ui';
 
 const SITE = 'https://geomachine.es';
 const CATALOG = `${SITE}${servicesPath.en}`;
@@ -50,12 +50,18 @@ links always match https://geomachine.es — nothing here is hand-written market
 - You always talk to the engineer who writes the code; there are no sales intermediaries.
 `;
 
+const BLOG_LANG_NAME: Record<BlogLang, string> = {
+  es: 'Spanish',
+  ru: 'Russian',
+  en: 'English',
+};
+
 function blogSection(posts: CollectionEntry<'blog'>[], full: boolean) {
-  const byLang = (lang: 'es' | 'ru') =>
+  const byLang = (lang: BlogLang) =>
     posts
       .filter((p) => p.slug.startsWith(`${lang}/`))
       .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
-  const list = (lang: 'es' | 'ru') =>
+  const list = (lang: BlogLang) =>
     byLang(lang)
       .map((p) => {
         const slug = p.slug.replace(`${lang}/`, '');
@@ -69,11 +75,9 @@ function blogSection(posts: CollectionEntry<'blog'>[], full: boolean) {
   return `## Blog
 ${posts.length} articles on web development, applied AI, SEO, systems and maintenance, written by the same engineer who builds the projects. Prices quoted in the articles are the catalog prices.
 
-### Spanish — ${SITE}${blogPath.es}
-${list('es')}
-
-### Russian — ${SITE}${blogPath.ru}
-${list('ru')}
+${(Object.keys(blogPath) as BlogLang[])
+  .map((lang) => `### ${BLOG_LANG_NAME[lang]} — ${SITE}${blogPath[lang]}\n${list(lang)}`)
+  .join('\n\n')}
 `;
 }
 

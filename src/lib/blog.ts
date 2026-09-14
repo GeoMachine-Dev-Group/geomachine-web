@@ -26,6 +26,9 @@ interface HreflangArgs {
  * publicado, y x-default solo si hay versión en "es" (idioma por defecto
  * del sitio) — si un post en ru no tiene pareja en es, se omite x-default
  * en vez de apuntar a algo que no representa al artículo.
+ *
+ * El idioma de la pareja sale de su propio slug (`ru/loquesea`), no por
+ * descarte: con dos idiomas "el otro" era deducible, con tres ya no.
  */
 export function buildHreflang({ site, lang, slug, counterpart }: HreflangArgs): HreflangAlt[] {
   const self: HreflangAlt = { hreflang: lang, href: `${site}${blogPath[lang]}${slug}/` };
@@ -33,11 +36,13 @@ export function buildHreflang({ site, lang, slug, counterpart }: HreflangArgs): 
   let esHref = lang === 'es' ? self.href : undefined;
 
   if (counterpart) {
-    const counterpartLang: BlogLang = lang === 'es' ? 'ru' : 'es';
-    const counterpartSlug = counterpart.slug.replace(new RegExp(`^${counterpartLang}/`), '');
-    const href = `${site}${blogPath[counterpartLang]}${counterpartSlug}/`;
-    alternates.push({ hreflang: counterpartLang, href });
-    if (counterpartLang === 'es') esHref = href;
+    const counterpartLang = counterpart.slug.split('/')[0] as BlogLang;
+    if (blogPath[counterpartLang]) {
+      const counterpartSlug = counterpart.slug.replace(new RegExp(`^${counterpartLang}/`), '');
+      const href = `${site}${blogPath[counterpartLang]}${counterpartSlug}/`;
+      alternates.push({ hreflang: counterpartLang, href });
+      if (counterpartLang === 'es') esHref = href;
+    }
   }
   if (esHref) alternates.push({ hreflang: 'x-default', href: esHref });
   return alternates;
@@ -54,12 +59,15 @@ export function catalogAnchor(relatedService: string): string {
   return prefix === 'PACK' ? 'paquetes' : prefix.toLowerCase();
 }
 
+/** Se genera desde blogPath: añadir un idioma al blog no debe obligar a
+    acordarse de tocar también esta lista. */
 export function blogIndexHreflang(site: string): HreflangAlt[] {
-  return [
-    { hreflang: 'es', href: `${site}${blogPath.es}` },
-    { hreflang: 'ru', href: `${site}${blogPath.ru}` },
-    { hreflang: 'x-default', href: `${site}${blogPath.es}` },
-  ];
+  const alternates: HreflangAlt[] = Object.entries(blogPath).map(([hreflang, path]) => ({
+    hreflang,
+    href: `${site}${path}`,
+  }));
+  alternates.push({ hreflang: 'x-default', href: `${site}${blogPath.es}` });
+  return alternates;
 }
 
 /**
@@ -124,7 +132,7 @@ export function relatedArticles<T extends CollectionEntry<'blog'>>(
   return result.slice(0, max);
 }
 
-const DATE_LOCALE: Record<BlogLang, string> = { es: 'es-ES', ru: 'ru-RU' };
+const DATE_LOCALE: Record<BlogLang, string> = { es: 'es-ES', ru: 'ru-RU', en: 'en-GB' };
 
 /** "12 de agosto de 2026" / "12 августа 2026 г.". En UTC a propósito: pubDate
     llega como medianoche UTC y en otra zona horaria se pintaría el día antes. */
@@ -151,11 +159,15 @@ export function presentPillars(entries: CollectionEntry<'blog'>[]): string[] {
 
 const CURRENCY_SYMBOL: Record<Currency, string> = { eur: '€', rub: '₽', gel: '₾' };
 
-/** Mismo formato que el catálogo (Catalog.astro): el separador de miles va
-    por idioma de quien lee — punto en español, espacio duro en ruso. */
+/** Mismo criterio que THOUSANDS en Catalog.astro: el separador de miles va por
+    idioma de quien lee, no por moneda — "1.800 €" en español, "1,800 €" en
+    inglés, espacio duro en ruso. */
+const THOUSANDS: Record<BlogLang, string> = { es: '.', en: ',', ru: '\u00a0' };
+
+/** Mismo formato que el catálogo (Catalog.astro). */
 function amount(n: number, currency: Currency, unit: Unit, lang: BlogLang): string {
   const t = ui[lang];
-  const sep = lang === 'es' ? '.' : '\u00a0';
+  const sep = THOUSANDS[lang];
   const num = String(n).replace(/\B(?=(\d{3})+(?!\d))/g, sep);
   const suffix = unit === 'month' ? t.perMonth : unit === 'hour' ? t.perHour : '';
   return `${num}\u00a0${CURRENCY_SYMBOL[currency]}${suffix}`;

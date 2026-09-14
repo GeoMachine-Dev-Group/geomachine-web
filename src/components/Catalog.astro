@@ -11,7 +11,9 @@ import {
   type Unit,
   type Currency,
 } from '../data/catalog';
-import { ui, blogPath, type Lang } from '../i18n/ui';
+import { getCollection } from 'astro:content';
+import { ui, blogPath, hasBlog, type Lang } from '../i18n/ui';
+import { isPublished } from '../lib/blog';
 import ServiceCard from './ServiceCard.astro';
 
 interface Props {
@@ -24,10 +26,23 @@ const t = ui[lang];
 // enlazar al dominio: iría a un enlace muerto en la portada de los cuatro
 // idiomas. Se enlaza el caso del blog, que solo existe en es y ru; en en y ka
 // el nombre va sin enlace.
-const gagraCase =
-  lang === 'es' || lang === 'ru'
-    ? `${blogPath[lang]}${lang === 'es' ? 'gagraservis-caso-real' : 'gagraservis-realnyy-keys'}/`
-    : null;
+// Pilares que tienen al menos un artículo publicado en ESTE idioma. El badge
+// "Ver artículos de X" solo sale para esos: en inglés el blog arranca con tres
+// pilares, y un badge de APP llevaría a un filtro que no existe.
+const blogPillars = hasBlog(lang)
+  ? new Set(
+      (await getCollection('blog', (e) => e.id.startsWith(`${lang}/`) && isPublished(e))).map(
+        (e) => e.data.pillar,
+      ),
+    )
+  : new Set<string>();
+
+const GAGRA_CASE: Partial<Record<Lang, string>> = {
+  es: 'gagraservis-caso-real',
+  ru: 'gagraservis-realnyy-keys',
+};
+const gagraSlug = GAGRA_CASE[lang];
+const gagraCase = hasBlog(lang) && gagraSlug ? `${blogPath[lang]}${gagraSlug}/` : null;
 /** Moneda con la que se pinta el HTML antes de que corra el JS (por idioma). */
 const CUR = LANG_CURRENCY[lang];
 
@@ -320,9 +335,9 @@ const featuredMap: Record<string, Record<Lang, string>> = {
           <h2 class="line__title">{line.title[lang]}</h2>
           <p class="line__note">{line.note[lang]}</p>
         </div>
-        {(lang === 'es' || lang === 'ru') && (
-          <a href={`${blogPath[lang as 'es' | 'ru']}#${line.prefix.toLowerCase()}`} class="line__blog-badge">
-            <span>📖 {lang === 'ru' ? `Статьи: ${line.title[lang]}` : `Ver artículos de ${line.title[lang]}`}</span>
+        {hasBlog(lang) && blogPillars.has(line.prefix) && (
+          <a href={`${blogPath[lang]}#${line.prefix.toLowerCase()}`} class="line__blog-badge">
+            <span>📖 {t.blogSeeArticles.replace('{tema}', line.title[lang])}</span>
           </a>
         )}
         {line.prefix === 'APP' && (

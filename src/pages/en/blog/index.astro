@@ -1,0 +1,25 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../../../layouts/Base.astro';
+import BlogIndexView from '../../../components/BlogIndexView.astro';
+import { ui, blogPath } from '../../../i18n/ui';
+import { isPublished, blogIndexHreflang } from '../../../lib/blog';
+
+const posts = (await getCollection('blog', (e) => e.id.startsWith('en/') && isPublished(e))).sort(
+  (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()
+);
+
+const t = ui.en;
+const site = Astro.site?.origin ?? 'https://geomachine.es';
+---
+
+<Base
+  lang="en"
+  pageUrl={`${site}${blogPath.en}`}
+  title={`${t.blogTitle} — ${t.company}`}
+  description={t.blogMetaDescription}
+  hreflangAlternates={blogIndexHreflang(site)}
+  schema="none"
+>
+  <BlogIndexView lang="en" posts={posts} />
+</Base>

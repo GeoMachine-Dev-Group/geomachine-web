@@ -13,7 +13,7 @@ import sharp from 'sharp';
 import { readFileSync } from 'node:fs';
 import path from 'node:path';
 
-type Lang = 'es' | 'ru';
+type Lang = 'es' | 'ru' | 'en';
 
 interface CoverInput {
   /** Ancho final en píxeles: 1200 para compartir (PNG), 600 para las tarjetas
@@ -80,6 +80,7 @@ function titleSize(title: string) {
 }
 
 export async function renderBlogCover({ title, pillar, pillarLabel, lang, width = 1200 }: CoverInput): Promise<Buffer> {
+  // Solo el ruso necesita la cirílica delante; es y en son latinos.
   const titleFont = lang === 'ru' ? 'GolosCyr, GolosCyrExt, OutfitLatin, OutfitLatinExt' : 'OutfitLatin, OutfitLatinExt, GolosCyr';
 
   const tree = h(
