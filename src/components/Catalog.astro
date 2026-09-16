@@ -388,21 +388,24 @@ const featuredMap: Record<string, Record<Lang, string>> = {
 
 <section class="faq shell">
   <h2 class="faq__title">{t.faqTitle}</h2>
+  <!-- Acordeón: el texto sigue en el HTML, así que el FAQPage de Schema.astro
+       lo ve igual que cuando iban abiertas. La primera va abierta para que se
+       entienda que las demás se pliegan. -->
   <div class="faq__list">
-    <div class="faq__item">
-      <h3 class="faq__q">{t.faqQ1}</h3>
+    <details class="faq__item" open>
+      <summary class="faq__summary"><h3 class="faq__q">{t.faqQ1}</h3></summary>
       <p class="faq__a">{t.faqA1}</p>
-    </div>
-    <div class="faq__item">
-      <h3 class="faq__q">{t.faqQ2}</h3>
+    </details>
+    <details class="faq__item">
+      <summary class="faq__summary"><h3 class="faq__q">{t.faqQ2}</h3></summary>
       <p class="faq__a">{t.faqA2}</p>
-    </div>
-    <div class="faq__item">
-      <h3 class="faq__q">{t.faqQ3}</h3>
+    </details>
+    <details class="faq__item">
+      <summary class="faq__summary"><h3 class="faq__q">{t.faqQ3}</h3></summary>
       <p class="faq__a">
         {t.faqA3Before}<a href="#mnt">{t.faqMntLink}</a>{t.faqA3After}
       </p>
-    </div>
+    </details>
   </div>
 </section>
 
@@ -449,7 +452,7 @@ const featuredMap: Record<string, Record<Lang, string>> = {
         <span class="control__label">{t.formBudget}</span>
         <input type="text" name="budget" placeholder={t.formBudgetPh} />
       </label>
-      <label class="contact-form__field">
+      <label class="contact-form__field contact-form__field--wide">
         <span class="control__label">{t.formMessage}</span>
         <textarea name="message" rows="3" required placeholder={t.formMessagePh}></textarea>
       </label>
@@ -463,7 +466,7 @@ const featuredMap: Record<string, Record<Lang, string>> = {
     </form>
   </div>
 
-  <div>
+  <div class="terms">
     <p class="terms__label">{t.terms}</p>
     <ul class="terms__list">
       {t.termsList.map((item) => <li>{item}</li>)}
