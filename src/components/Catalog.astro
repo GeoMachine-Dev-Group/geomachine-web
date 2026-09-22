@@ -427,7 +427,7 @@ const featuredMap: Record<string, Record<Lang, string>> = {
       novalidate
     >
       <!-- honeypot: campo oculto que un humano nunca rellena -->
-      <input type="text" name="website" class="visually-hidden" tabindex="-1" autocomplete="off" />
+      <input type="text" name="website" class="visually-hidden" tabindex="-1" autocomplete="off" aria-hidden="true" />
       <input type="hidden" name="startedAt" />
 
       <label class="contact-form__field">
@@ -487,7 +487,7 @@ const featuredMap: Record<string, Record<Lang, string>> = {
       data-msg-error={t.formError}
       novalidate
     >
-      <input type="text" name="website" class="visually-hidden" tabindex="-1" autocomplete="off" />
+      <input type="text" name="website" class="visually-hidden" tabindex="-1" autocomplete="off" aria-hidden="true" />
       <input type="hidden" name="startedAt" />
 
       <label class="contact-form__field">

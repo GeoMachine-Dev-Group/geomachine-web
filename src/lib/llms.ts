@@ -40,10 +40,10 @@ This file is generated from the live service catalog, so prices, service codes a
 links always match https://geomachine.es — nothing here is hand-written marketing.
 
 ## Business
-- Website: ${SITE} — Spanish (${SITE}${servicesPath.es}), Russian (${SITE}${servicesPath.ru}), English (${CATALOG}), Georgian (${SITE}${servicesPath.ka})
-- Email: hola@geomachine.es
-- Telegram: https://t.me/geomachine
-- WhatsApp: https://wa.me/34620811739
+- Website: [${SITE}](${SITE}) — [Spanish](${SITE}${servicesPath.es}), [Russian](${SITE}${servicesPath.ru}), [English](${CATALOG}), [Georgian](${SITE}${servicesPath.ka})
+- Email: [hola@geomachine.es](mailto:hola@geomachine.es)
+- Telegram: [https://t.me/geomachine](https://t.me/geomachine)
+- WhatsApp: [https://wa.me/34620811739](https://wa.me/34620811739)
 - Pricing: closed fixed price agreed before starting, in euros, Russian roubles or Georgian lari.
 - Launch pricing: reduced rate for the first five clients, in exchange for publishing the result as a case study. After that, standard pricing.
 - Typical response time: under 24 hours.
@@ -68,15 +68,15 @@ function blogSection(posts: CollectionEntry<'blog'>[], full: boolean) {
         const url = `${SITE}${blogPath[lang]}${slug}/`;
         const date = p.data.pubDate.toISOString().slice(0, 10);
         return full
-          ? `- [${p.data.pillar}] ${p.data.title} (${date})\n  ${url}\n  ${p.data.description}`
-          : `- ${p.data.title} — ${url}`;
+          ? `- [${p.data.pillar}] [${p.data.title}](${url}) (${date})\n  ${p.data.description}`
+          : `- [${p.data.title}](${url})`;
       })
       .join('\n');
   return `## Blog
 ${posts.length} articles on web development, applied AI, SEO, systems and maintenance, written by the same engineer who builds the projects. Prices quoted in the articles are the catalog prices.
 
 ${(Object.keys(blogPath) as BlogLang[])
-  .map((lang) => `### ${BLOG_LANG_NAME[lang]} — ${SITE}${blogPath[lang]}\n${list(lang)}`)
+  .map((lang) => `### [${BLOG_LANG_NAME[lang]}](${SITE}${blogPath[lang]})\n${list(lang)}`)
   .join('\n\n')}
 `;
 }
@@ -87,7 +87,7 @@ export function llmsTxt(posts: CollectionEntry<'blog'>[]): string {
     .map((line) => {
       const from = Math.min(...line.items.map((i) => i.launch.eur[0]));
       const unit = line.items.every((i) => i.unit === 'month') ? '/month' : '';
-      return `### ${line.title.en} — ${anchor(line.prefix)}
+      return `### [${line.title.en}](${anchor(line.prefix)})
 ${line.note.en}
 - ${line.items.length} services (${line.prefix}-01 … ${line.items[line.items.length - 1].code.split('-')[1]}), from ${from} €${unit} with launch pricing.
 - ${line.items.map((i) => i.name.en).join(' · ')}`;
@@ -102,17 +102,17 @@ ${line.note.en}
 ## Services
 ${services}
 
-## Packages — ${CATALOG}#paquetes
+## [Packages](${CATALOG}#paquetes)
 ${packs}
 
 ${blogSection(posts, false)}
 ## Selected work
-- abhazservis.com — https://abhazservis.com — business directory for Abkhazia (hotels, restaurants, pharmacies, markets and services), in Russian. Built and delivered by GeoMachine Developer Group.
-- GeoMachine Accounts — free local inventory and net-profit desktop app: ${SITE}/en/services/app-accounts/
+- [abhazservis.com](https://abhazservis.com) — business directory for Abkhazia (hotels, restaurants, pharmacies, markets and services), in Russian. Built and delivered by GeoMachine Developer Group.
+- [GeoMachine Accounts](${SITE}/en/services/app-accounts/) — free local inventory and net-profit desktop app.
 
 ## Quotes
-- Request a quote: ${CATALOG}#contacto
-- Downloadable desktop app (free): ${SITE}/en/services/app-accounts/
+- [Request a quote](${CATALOG}#contacto)
+- [Downloadable desktop app (free)](${SITE}/en/services/app-accounts/)
 `;
 }
 
@@ -124,7 +124,7 @@ export function llmsFullTxt(posts: CollectionEntry<'blog'>[]): string {
       const currencies = line.items
         .map((i) => `  ${i.code}: ${(['eur', 'rub', 'gel'] as Currency[]).map((c) => money(i.launch[c], c, i.unit)).join(' · ')} (launch)`)
         .join('\n');
-      return `### ${line.title.en} — ${anchor(line.prefix)}
+      return `### [${line.title.en}](${anchor(line.prefix)})
 ${line.note.en}
 ${items}
 
@@ -153,20 +153,20 @@ before any work starts.
 ## Services in detail
 ${services}
 
-## Packages — ${CATALOG}#paquetes
+## [Packages](${CATALOG}#paquetes)
 ${packs}
 
 ${blogSection(posts, true)}
 ## Selected work
-- abhazservis.com — https://abhazservis.com — business directory for Abkhazia (hotels, restaurants, pharmacies, markets and services, by city and category), in Russian. Built and delivered by GeoMachine Developer Group: Astro SSR front end, Express and PostgreSQL back end, business self-registration and per-business panel.
-  Case study with the architecture decisions, the real numbers (273 published listings, 19 categories, 8 towns) and the mistakes: ${SITE}${blogPath.es}abhazservis-caso-real/ (Spanish) · ${SITE}${blogPath.ru}abhazservis-realnyy-keys/ (Russian)
-- gagraservis.ru — taxi, excursions, hotels and restaurants in Gagra, in Russian. Delivered 2026-07-28, currently not published online. Case study: ${SITE}${blogPath.es}gagraservis-caso-real/ (Spanish) · ${SITE}${blogPath.ru}gagraservis-realnyy-keys/ (Russian)
+- [abhazservis.com](https://abhazservis.com) — business directory for Abkhazia (hotels, restaurants, pharmacies, markets and services, by city and category), in Russian. Built and delivered by GeoMachine Developer Group: Astro SSR front end, Express and PostgreSQL back end, business self-registration and per-business panel.
+  Case study with the architecture decisions, the real numbers (273 published listings, 19 categories, 8 towns) and the mistakes: [Spanish](${SITE}${blogPath.es}abhazservis-caso-real/) · [Russian](${SITE}${blogPath.ru}abhazservis-realnyy-keys/)
+- gagraservis.ru — taxi, excursions, hotels and restaurants in Gagra, in Russian. Delivered 2026-07-28, currently not published online. Case study: [Spanish](${SITE}${blogPath.es}gagraservis-caso-real/) · [Russian](${SITE}${blogPath.ru}gagraservis-realnyy-keys/)
 
 ## Desktop software
-- GeoMachine Accounts — free local inventory and net-profit tracking app (Windows and Linux), SQLite database, no cloud and no subscription: ${SITE}/en/services/app-accounts/
+- [GeoMachine Accounts](${SITE}/en/services/app-accounts/) — free local inventory and net-profit tracking app (Windows and Linux), SQLite database, no cloud and no subscription.
 
 ## Contact
-- Quote form: ${CATALOG}#contacto
-- Telegram: https://t.me/geomachine · WhatsApp: https://wa.me/34620811739 · Email: hola@geomachine.es
+- [Quote form](${CATALOG}#contacto)
+- [Telegram](https://t.me/geomachine) · [WhatsApp](https://wa.me/34620811739) · [Email](mailto:hola@geomachine.es)
 `;
 }
