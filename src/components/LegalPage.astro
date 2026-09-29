@@ -1,0 +1,52 @@
+---
+/**
+ * Página legal (aviso legal, privacidad o cookies) en es, ru o en.
+ * Los textos salen de src/data/legal.ts; aquí solo va la maqueta. Enlaza entre
+ * sí las tres versiones de idioma (hreflang, con x-default en español, que es
+ * la que prevalece) y las otras dos páginas legales al pie del artículo.
+ */
+import Base from '../layouts/Base.astro';
+import { legal, legalPaths, type LegalDoc, type LegalLang } from '../data/legal';
+import { ui } from '../i18n/ui';
+
+interface Props {
+  doc: LegalDoc;
+  lang: LegalLang;
+}
+const { doc, lang } = Astro.props;
+const text = legal[doc][lang];
+const t = ui[lang];
+const site = Astro.site?.origin ?? 'https://geomachine.es';
+const pageUrl = site + legalPaths[doc][lang];
+const hreflangAlternates = [
+  ...(Object.keys(legalPaths[doc]) as LegalLang[]).map((l) => ({ hreflang: l, href: site + legalPaths[doc][l] })),
+  { hreflang: 'x-default', href: site + legalPaths[doc].es },
+];
+const others = (['notice', 'privacy', 'cookies'] as LegalDoc[]).filter((d) => d !== doc);
+---
+
+<Base
+  lang={lang}
+  pageUrl={pageUrl}
+  title={`${text.title} — ${t.company}`}
+  description={text.description}
+  hreflangAlternates={hreflangAlternates}
+  schema="none"
+>
+  <article class="legal shell">
+    <p class="legal__eyebrow">{t.company}</p>
+    <h1 class="legal__title">{text.title}</h1>
+    <p class="legal__updated">{text.updated}</p>
+    {
+      text.sections.map((s) => (
+        <section class="legal__section">
+          <h2>{s.h}</h2>
+          {s.p.map((p) => <p set:html={p} />)}
+        </section>
+      ))
+    }
+    <nav class="legal__more" aria-label={t.legalNav}>
+      {others.map((d) => <a href={legalPaths[d][lang]}>{legal[d][lang].title}</a>)}
+    </nav>
+  </article>
+</Base>

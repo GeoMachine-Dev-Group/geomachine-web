@@ -153,6 +153,29 @@ Historial reciente, todo por fast-forward y con la rama borrada después:
   `geomachine.es` que había en la cuenta de Cloudflare nunca llegó a activarse
   y se borró el 2026-09-13. En la cuenta sigue el túnel `geomachine` (activo
   en la máquina local), ya sin zona asociada.
+- **Textos legales (rama `feat/legal`, 2026-09-29).** Aviso legal, privacidad y
+  cookies en es/ru/en, todos desde `src/data/legal.ts` y
+  `src/components/LegalPage.astro`, con 9 rutas en `src/pages/{es,ru,en}/`. El
+  georgiano no tiene versión propia: el pie y la casilla de las páginas `ka`
+  enlazan a la inglesa (`legalPath`). En todas consta que prevalece la
+  española.
+  - **Datos del titular pendientes:** `HOLDER` lleva `TODO:` (NIF, domicilio,
+    proveedor del correo). El build avisa por consola con `[legal] Faltan datos…`
+    y **no debe publicarse** hasta rellenarlos, porque se verían tal cual.
+  - **Consentimiento:** los dos formularios de `Catalog.astro` llevan una
+    casilla obligatoria. `/api/contact` responde 400 `consent_required` sin
+    `consent: 'yes'` y añade al mensaje de Telegram la fecha, el idioma y
+    `LEGAL_VERSION`. Si se cambian los textos, hay que subir `LEGAL_VERSION`.
+  - **Sin banner de cookies**, a propósito: el sitio no pone cookies, solo
+    guarda `gm-currency` en localStorage, y Vercel Analytics y Speed Insights
+    no usan cookies. Las fuentes están citadas en la política. Si se añade
+    algo que ponga cookies no técnicas, hace falta banner y consentimiento
+    previo.
+- **FAQ**: patrón de acordeón de la APG, con `<h3>` → `<button aria-expanded>`
+  y la respuesta con `hidden="until-found"`. No está hecho con
+  `<details>/<summary>`: un `<h3>` dentro de `<summary>` pierde la semántica de
+  encabezado en algunos lectores de pantalla. Sin JS, las tres respuestas se
+  ven abiertas.
 
 **Pendientes:**
 - Revisión nativa del georgiano: hero, placeholders del formulario, plazas,

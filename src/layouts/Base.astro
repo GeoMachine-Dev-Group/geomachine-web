@@ -3,6 +3,7 @@ import '../styles/global.css';
 import { ui, servicesPath, blogPath, languages, hasBlog, type Lang } from '../i18n/ui';
 import { DEFAULT_TIER, LANG_CURRENCY } from '../data/catalog';
 import { buildOrganization } from '../data/organization';
+import { legalPath, legalLangFor } from '../data/legal';
 import Schema from '../components/Schema.astro';
 import FloatingChat from '../components/FloatingChat.astro';
 import Logo from '../components/Logo.astro';
@@ -171,6 +172,12 @@ const preloadFont: Record<Lang, string> = {
     <footer class="foot">
       <div class="shell foot__row">
         <span>{t.footer}</span>
+        {/* En ka los textos legales van en inglés (no hay versión georgiana). */}
+        <nav class="foot__legal" aria-label={t.legalNav}>
+          <a href={legalPath('notice', lang)} hreflang={legalLangFor(lang)}>{t.legalNotice}</a>
+          <a href={legalPath('privacy', lang)} hreflang={legalLangFor(lang)}>{t.legalPrivacy}</a>
+          <a href={legalPath('cookies', lang)} hreflang={legalLangFor(lang)}>{t.legalCookies}</a>
+        </nav>
         <span>{t.rev}</span>
       </div>
     </footer>

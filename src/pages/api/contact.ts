@@ -17,7 +17,7 @@ export const POST: APIRoute = async ({ request }) => {
     return json(400, { ok: false, error: 'invalid_json' });
   }
 
-  const { name, contact, service, budget, message, website, startedAt } = data;
+  const { name, contact, service, budget, message, website, startedAt, consent, lang, privacyVersion } = data;
 
   // Honeypot: campo oculto que un humano nunca rellena. Se responde 200 sin
   // delatar el filtro, para no darle a un bot la pista de qué lo detuvo.
@@ -36,6 +36,13 @@ export const POST: APIRoute = async ({ request }) => {
     return json(400, { ok: false, error: 'missing_fields' });
   }
 
+  // Consentimiento RGPD (casilla del formulario, ver src/data/legal.ts): sin él
+  // no se reenvía nada a Telegram. El cliente ya lo comprueba; esto cubre a
+  // quien llame a la API directamente.
+  if (consent !== 'yes') {
+    return json(400, { ok: false, error: 'consent_required' });
+  }
+
   const token = import.meta.env.TELEGRAM_BOT_TOKEN ?? process.env.TELEGRAM_BOT_TOKEN;
   const chatId = import.meta.env.TELEGRAM_CHAT_ID ?? process.env.TELEGRAM_CHAT_ID;
   if (!token || !chatId) {
@@ -52,6 +59,8 @@ export const POST: APIRoute = async ({ request }) => {
     service ? `Servicio: ${service}` : null,
     budget ? `Presupuesto: ${budget}` : null,
     `Mensaje: ${message}`,
+    // Prueba del consentimiento: cuándo, en qué idioma y qué versión de la política.
+    `Consentimiento privacidad: sí · ${new Date().toISOString()} · ${lang || '?'} · v${privacyVersion || '?'}`,
   ]
     .filter(Boolean)
     .join('\n');
