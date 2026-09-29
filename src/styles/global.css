@@ -412,16 +412,37 @@ html[data-cardstyle='tilt'] .card:hover .card__inner:after { opacity: 1; }
 
 /* --- FAQ --------------------------------------------------------------------- */
 
-.faq { border-top: 1px solid var(--rule); padding-block: clamp(2.5rem, 6vw, 4.5rem); }
-.faq__title { font-family: var(--display); font-weight: 600; font-size: clamp(1.5rem, 3.2vw, 2.1rem); letter-spacing: -.02em; line-height: 1.08; margin: 0 0 var(--space-8); }
-.faq__list { display: grid; gap: var(--space-7); max-width: 62ch; }
-.faq__q { font-family: var(--display); font-weight: 600; font-size: var(--fs-base); margin: 0 0 var(--space-2); }
-.faq__a { margin: 0; color: var(--ink-soft); line-height: 1.55; }
+/* FAQ: el título ancla la columna izquierda y el acordeón ocupa el resto del
+   ancho. Antes el listado iba a 62ch dentro del shell de 1180 px y dejaba media
+   sección vacía. El límite de 62ch se conserva, pero solo sobre la respuesta. */
+.faq {
+  border-top: 1px solid var(--rule); padding-block: clamp(2.5rem, 6vw, 4.5rem);
+  display: grid; grid-template-columns: minmax(0, 13rem) minmax(0, 1fr);
+  gap: clamp(2rem, 5vw, 4rem);
+}
+@media (max-width: 860px) { .faq { grid-template-columns: 1fr; gap: var(--space-6); } }
+.faq__title { font-family: var(--display); font-weight: 600; font-size: clamp(1.5rem, 3.2vw, 2.1rem); letter-spacing: -.02em; line-height: 1.08; margin: 0; }
+.faq__list { display: grid; border-top: 1px solid var(--rule-soft); }
+.faq__item { border-bottom: 1px solid var(--rule-soft); }
+.faq__summary {
+  display: flex; align-items: baseline; justify-content: space-between; gap: var(--space-4);
+  padding-block: var(--space-4); cursor: pointer; list-style: none;
+}
+.faq__summary::-webkit-details-marker { display: none; }
+.faq__summary::after {
+  content: "+"; font-family: var(--data); font-size: var(--fs-lg); line-height: 1;
+  color: var(--accent); flex: none;
+}
+.faq__item[open] .faq__summary::after { content: "\2212"; }  /* signo menos */
+.faq__summary:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.faq__q { font-family: var(--display); font-weight: 600; font-size: var(--fs-base); margin: 0; transition: color .15s ease; }
+.faq__summary:hover .faq__q, .faq__summary:focus-visible .faq__q { color: var(--accent); }
+.faq__a { margin: 0 0 var(--space-5); max-width: 62ch; color: var(--ink-soft); line-height: 1.55; }
 .faq__a a { color: var(--accent); text-decoration: underline; text-underline-offset: 2px; }
 
 /* --- Cierre / CTA ------------------------------------------------------------ */
 
-.close { border-top: 1px solid var(--rule); padding-block: clamp(2.5rem, 6vw, 4.5rem); display: grid; grid-template-columns: minmax(0,1.1fr) minmax(0,1fr); gap: clamp(2rem, 5vw, 4rem); }
+.close { border-top: 1px solid var(--rule); padding-block: clamp(2.5rem, 6vw, 4.5rem); display: grid; grid-template-columns: minmax(0,1.35fr) minmax(0,1fr); gap: clamp(2rem, 5vw, 4rem); }
 @media (max-width: 860px) { .close { grid-template-columns: 1fr; } }
 .close__title { font-family: var(--display); font-weight: 600; font-size: clamp(1.5rem, 3.2vw, 2.1rem); letter-spacing: -.02em; line-height: 1.08; margin: 0; }
 .close__body { margin: var(--space-4) 0 var(--space-8); color: var(--ink-soft); max-width: 44ch; }
@@ -430,18 +451,38 @@ html[data-cardstyle='tilt'] .card:hover .card__inner:after { opacity: 1; }
 
 .contact-form { display: flex; flex-direction: column; gap: var(--space-4); max-width: 40ch; }
 .contact-form__field { display: flex; flex-direction: column; gap: var(--space-2); }
+/* Dentro de .close el formulario va a dos columnas para quedar alineado con los
+   pasos 01/02/03 de encima; el modal comparte .contact-form y sigue a una. */
+.close .contact-form {
+  display: grid; grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-4) var(--space-5); max-width: none;
+}
+.close .contact-form > :not(.contact-form__field),
+.close .contact-form__field--wide { grid-column: 1 / -1; }
+@media (max-width: 720px) { .close .contact-form { grid-template-columns: 1fr; } }
 .contact-form input[type="text"],
 .contact-form select,
 .contact-form textarea {
-  background: var(--panel-2); border: 1px solid var(--rule); color: var(--ink);
-  font-family: var(--body); font-size: var(--fs-md); padding: var(--space-3) var(--space-3); border-radius: var(--radius-sm);
-  resize: vertical;
+  background: var(--panel-2); border: 1px solid var(--rule-soft); color: var(--ink);
+  font-family: var(--body); font-size: var(--fs-md); padding: var(--space-4) var(--space-4); border-radius: var(--radius-sm);
+  resize: vertical; transition: border-color .15s ease, background .15s ease;
 }
-.contact-form select { appearance: none; cursor: pointer; }
+.contact-form input::placeholder,
+.contact-form textarea::placeholder { color: var(--ink-soft); opacity: .65; }
+.contact-form input[type="text"]:hover,
+.contact-form select:hover,
+.contact-form textarea:hover { border-color: var(--rule); }
+/* appearance: none deja el select sin ninguna senal de que se despliega */
+.contact-form select {
+  appearance: none; cursor: pointer; padding-right: var(--space-10);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 8' fill='none' stroke='%239c9a80' stroke-width='1.5'%3E%3Cpath d='M1 1.5 6 6.5l5-5'/%3E%3C/svg%3E");
+  background-repeat: no-repeat; background-position: right var(--space-4) center; background-size: .7rem;
+}
+.contact-form textarea { min-height: 7rem; }
 .contact-form input:focus-visible,
 .contact-form select:focus-visible,
 .contact-form textarea:focus-visible {
-  outline: 2px solid var(--accent); outline-offset: 2px;
+  outline: 2px solid var(--accent); outline-offset: 2px; border-color: transparent;
 }
 .contact-form__status {
   display: inline-flex; align-items: center; gap: var(--space-2);
@@ -450,6 +491,9 @@ html[data-cardstyle='tilt'] .card:hover .card__inner:after { opacity: 1; }
   background: rgba(34, 197, 94, 0.12); border: 1px solid rgba(34, 197, 94, 0.3);
   margin-top: var(--space-3); width: fit-content;
 }
+/* display: inline-flex gana al atributo hidden, y la capsula vacia se veia
+   bajo los botones antes de enviar nada. */
+.contact-form__status[hidden] { display: none; }
 
 /* --- Botón flotante único de contacto ------------------------------------------
    Sustituye a los dos que había (chat abajo a la izquierda y "Pedir presupuesto"
@@ -583,6 +627,10 @@ html[data-priceanim='blur'] .price-value {
 .close__steps span { display: block; color: var(--accent); margin-bottom: .2rem; font-size: var(--fs-3xs); letter-spacing: .15em; text-transform: uppercase; }
 .close__steps div { flex: 1; border-top: 1px solid var(--rule-soft); padding-top: var(--space-3); }
 @media (max-width: 480px) { .close__steps { flex-direction: column; gap: var(--space-4); margin: var(--space-6) 0; } }
+/* Las condiciones acompanan al formulario en vez de quedarse arriba con un
+   hueco debajo. 5.5rem es el alto de la placa fija de cabecera. */
+.terms { align-self: start; position: sticky; top: calc(5.5rem + var(--space-4)); }
+@media (max-width: 860px) { .terms { position: static; } }
 .terms__label { font-family: var(--data); font-size: var(--fs-3xs); letter-spacing: .18em; text-transform: uppercase; color: var(--ink-soft); margin: 0 0 var(--space-4); }
 .terms__list { margin: 0; padding: 0; list-style: none; counter-reset: term; font-size: var(--fs-sm); color: var(--ink-soft); }
 .terms__list li { counter-increment: term; display: grid; grid-template-columns: 2.2rem 1fr; gap: var(--space-2); padding-block: var(--space-3); border-top: 1px solid var(--rule-soft); }
