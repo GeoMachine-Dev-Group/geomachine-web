@@ -41,7 +41,7 @@ links always match https://geomachine.es — nothing here is hand-written market
 
 ## Business
 - Website: [${SITE}](${SITE}) — [Spanish](${SITE}${servicesPath.es}), [Russian](${SITE}${servicesPath.ru}), [English](${CATALOG}), [Georgian](${SITE}${servicesPath.ka})
-- Email: [hola@geomachine.es](mailto:hola@geomachine.es)
+- Email: [romeo.mikava@proton.me](mailto:romeo.mikava@proton.me)
 - Telegram: [https://t.me/geomachine](https://t.me/geomachine)
 - WhatsApp: [https://wa.me/34620811739](https://wa.me/34620811739)
 - Pricing: closed fixed price agreed before starting, in euros, Russian roubles or Georgian lari.
@@ -167,6 +167,6 @@ ${blogSection(posts, true)}
 
 ## Contact
 - [Quote form](${CATALOG}#contacto)
-- [Telegram](https://t.me/geomachine) · [WhatsApp](https://wa.me/34620811739) · [Email](mailto:hola@geomachine.es)
+- [Telegram](https://t.me/geomachine) · [WhatsApp](https://wa.me/34620811739) · [Email](mailto:romeo.mikava@proton.me)
 `;
 }
