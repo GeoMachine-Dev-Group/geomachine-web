@@ -31,7 +31,7 @@ export const HOLDER = {
   trade: 'GeoMachine Developer Group',
   /** NIE, que para un autónomo extranjero hace de NIF (letra de control verificada). */
   nif: 'Z2497033C',
-  address: 'Calle Romero, 6, TODO: código postal, municipio y provincia',
+  address: 'Calle Romero, 6, 28292 El Escorial (Madrid), España',
   email: 'romeo.mikava@proton.me',
   site: 'geomachine.es',
   /** Proveedor del buzón (destinatario de los emails). Suiza tiene decisión de
