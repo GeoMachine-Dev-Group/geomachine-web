@@ -32,9 +32,9 @@ export const HOLDER = {
   /** NIE, que para un autónomo extranjero hace de NIF (letra de control verificada). */
   nif: 'Z2497033C',
   address: 'Calle Romero, 6, 28292 El Escorial (Madrid), España',
-  email: 'romeo.mikava@proton.me',
+  email: 'hola@geomachine.es',
   site: 'geomachine.es',
-  /** Proveedor del buzón (destinatario de los emails). Suiza tiene decisión de
+  /** Buzón al que se reenvía hola@geomachine.es. Suiza tiene decisión de
       adecuación de la UE: no es una transferencia que requiera consentimiento. */
   mailProvider: 'Proton AG (Suiza)',
 };
@@ -237,7 +237,7 @@ export const legal: Record<LegalDoc, Record<LegalLang, LegalText>> = {
         ] },
         { h: 'Otros destinatarios y proveedores', p: [
           '<strong>Vercel Inc.</strong> (Estados Unidos) aloja el sitio y ejecuta la función que envía el formulario, como encargado del tratamiento. Vercel aplica las cláusulas contractuales tipo de la Comisión Europea y otras garantías recogidas en su ' + a(VDPA, 'acuerdo de tratamiento de datos', true) + ' (' + a(VPRIV, 'política de privacidad de Vercel', true) + ').',
-          '<strong>Correo electrónico:</strong> los emails a ' + HOLDER.email + ' los recibe ' + HOLDER.mailProvider + ', en un país con decisión de adecuación de la Comisión Europea.',
+          '<strong>Correo electrónico:</strong> los emails a ' + HOLDER.email + ' se reciben por reenvío en un buzón de ' + HOLDER.mailProvider + ', país con decisión de adecuación de la Comisión Europea.',
           'Fuera de esto, tus datos no se ceden a terceros, salvo obligación legal.',
         ] },
         { h: 'Cuánto tiempo se conservan', p: [
@@ -289,7 +289,7 @@ export const legal: Record<LegalDoc, Record<LegalLang, LegalText>> = {
         ] },
         { h: 'Другие получатели и поставщики', p: [
           '<strong>Vercel Inc.</strong> (США) размещает сайт и выполняет функцию отправки формы в качестве обработчика данных. Vercel применяет стандартные договорные положения Еврокомиссии и другие гарантии из своего ' + a(VDPA, 'соглашения об обработке данных', true) + ' (' + a(VPRIV, 'политика конфиденциальности Vercel', true) + ').',
-          '<strong>Электронная почта:</strong> письма на ' + HOLDER.email + ' принимает ' + HOLDER.mailProvider + ' — страна, в отношении которой Еврокомиссия признала адекватный уровень защиты данных.',
+          '<strong>Электронная почта:</strong> письма на ' + HOLDER.email + ' пересылаются в почтовый ящик ' + HOLDER.mailProvider + ' — страна, в отношении которой Еврокомиссия признала адекватный уровень защиты данных.',
           'Кроме этого, ваши данные третьим лицам не передаются, если этого не требует закон.',
         ] },
         { h: 'Сроки хранения', p: [
@@ -341,7 +341,7 @@ export const legal: Record<LegalDoc, Record<LegalLang, LegalText>> = {
         ] },
         { h: 'Other recipients and providers', p: [
           '<strong>Vercel Inc.</strong> (United States) hosts the website and runs the function that sends the form, as a data processor. Vercel applies the European Commission’s standard contractual clauses and other safeguards set out in its ' + a(VDPA, 'data processing addendum', true) + ' (' + a(VPRIV, 'Vercel privacy policy', true) + ').',
-          '<strong>Email:</strong> messages to ' + HOLDER.email + ' are received by ' + HOLDER.mailProvider + ', a country covered by an EU adequacy decision.',
+          '<strong>Email:</strong> messages to ' + HOLDER.email + ' are forwarded to a mailbox at ' + HOLDER.mailProvider + ', a country covered by an EU adequacy decision.',
           'Apart from this, your data is not shared with third parties unless required by law.',
         ] },
         { h: 'How long data is kept', p: [

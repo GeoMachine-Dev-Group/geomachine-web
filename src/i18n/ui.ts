@@ -134,7 +134,7 @@ export const ui = {
     formConsentBefore: 'He leído la ',
     formConsentLink: 'política de privacidad',
     formConsentAfter: ' y acepto que mis datos se envíen por Telegram (fuera de la UE) para responder a mi solicitud.',
-    formConsentNote: 'Responsable: Romeo Mikava (GeoMachine Developer Group). Finalidad: responder a tu solicitud. Si prefieres no usar Telegram, escríbeme a romeo.mikava@proton.me. Tus derechos, en la política de privacidad.',
+    formConsentNote: 'Responsable: Romeo Mikava (GeoMachine Developer Group). Finalidad: responder a tu solicitud. Si prefieres no usar Telegram, escríbeme a hola@geomachine.es. Tus derechos, en la política de privacidad.',
     formConsentError: 'Marca la casilla de privacidad para poder enviar el mensaje.',
     blogTitle: 'Blog',
     blogMetaDescription:
@@ -244,7 +244,7 @@ export const ui = {
     formConsentBefore: 'Я прочитал(а) ',
     formConsentLink: 'политику конфиденциальности',
     formConsentAfter: ' и согласен(на), что мои данные будут переданы через Telegram (за пределами ЕС) для ответа на мой запрос.',
-    formConsentNote: 'Ответственный: Romeo Mikava (GeoMachine Developer Group). Цель: ответить на ваш запрос. Если не хотите использовать Telegram, напишите на romeo.mikava@proton.me. Ваши права — в политике конфиденциальности.',
+    formConsentNote: 'Ответственный: Romeo Mikava (GeoMachine Developer Group). Цель: ответить на ваш запрос. Если не хотите использовать Telegram, напишите на hola@geomachine.es. Ваши права — в политике конфиденциальности.',
     formConsentError: 'Отметьте согласие с политикой конфиденциальности, чтобы отправить сообщение.',
     blogTitle: 'Блог',
     blogMetaDescription:
@@ -370,7 +370,7 @@ export const ui = {
     formConsentBefore: 'I have read the ',
     formConsentLink: 'privacy policy',
     formConsentAfter: ' and agree that my data will be sent via Telegram (outside the EU) to reply to my request.',
-    formConsentNote: 'Controller: Romeo Mikava (GeoMachine Developer Group). Purpose: replying to your request. If you prefer not to use Telegram, email romeo.mikava@proton.me. Your rights are in the privacy policy.',
+    formConsentNote: 'Controller: Romeo Mikava (GeoMachine Developer Group). Purpose: replying to your request. If you prefer not to use Telegram, email hola@geomachine.es. Your rights are in the privacy policy.',
     formConsentError: 'Tick the privacy box to send your message.',
   },
   ka: {
@@ -481,7 +481,7 @@ export const ui = {
     formConsentBefore: 'წავიკითხე ',
     formConsentLink: 'კონფიდენციალურობის პოლიტიკა (ინგლისურად)',
     formConsentAfter: ' და ვეთანხმები, რომ ჩემი მონაცემები გაიგზავნოს Telegram-ით (ევროკავშირის გარეთ) ჩემს მოთხოვნაზე პასუხის გასაცემად.',
-    formConsentNote: 'პასუხისმგებელი: Romeo Mikava (GeoMachine Developer Group). მიზანი: თქვენს მოთხოვნაზე პასუხი. თუ არ გსურთ Telegram-ის გამოყენება, მოგვწერეთ romeo.mikava@proton.me. თქვენი უფლებები — კონფიდენციალურობის პოლიტიკაში.',
+    formConsentNote: 'პასუხისმგებელი: Romeo Mikava (GeoMachine Developer Group). მიზანი: თქვენს მოთხოვნაზე პასუხი. თუ არ გსურთ Telegram-ის გამოყენება, მოგვწერეთ hola@geomachine.es. თქვენი უფლებები — კონფიდენციალურობის პოლიტიკაში.',
     formConsentError: 'შეტყობინების გასაგზავნად მონიშნეთ კონფიდენციალურობის ველი.',
   },
 } as const;

@@ -70,7 +70,7 @@ export function buildOrganization(site: string, lang: Lang) {
       alternateName: code,
       name,
     })),
-    email: 'romeo.mikava@proton.me',
+    email: 'hola@geomachine.es',
     telephone: '+34620811739',
     /** La persona detrás de la marca. Es lo que separa a esta empresa de las
         otras dos que se llaman GeoMachine (la finlandesa de perforación y la
