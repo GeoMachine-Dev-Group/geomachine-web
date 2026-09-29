@@ -36,6 +36,7 @@ export const HOLDER = {
   site: 'geomachine.es',
   /** Buzón al que se reenvía hola@geomachine.es. Suiza tiene decisión de
       adecuación de la UE: no es una transferencia que requiera consentimiento. */
+  // Solo lo usa la versión es; ru y en llevan el país traducido en su propio texto.
   mailProvider: 'Proton AG (Suiza)',
 };
 
@@ -289,7 +290,7 @@ export const legal: Record<LegalDoc, Record<LegalLang, LegalText>> = {
         ] },
         { h: 'Другие получатели и поставщики', p: [
           '<strong>Vercel Inc.</strong> (США) размещает сайт и выполняет функцию отправки формы в качестве обработчика данных. Vercel применяет стандартные договорные положения Еврокомиссии и другие гарантии из своего ' + a(VDPA, 'соглашения об обработке данных', true) + ' (' + a(VPRIV, 'политика конфиденциальности Vercel', true) + ').',
-          '<strong>Электронная почта:</strong> письма на ' + HOLDER.email + ' пересылаются в почтовый ящик ' + HOLDER.mailProvider + ' — страна, в отношении которой Еврокомиссия признала адекватный уровень защиты данных.',
+          '<strong>Электронная почта:</strong> письма на ' + HOLDER.email + ' пересылаются в почтовый ящик Proton AG (Швейцария) — страна, в отношении которой Еврокомиссия признала адекватный уровень защиты данных.',
           'Кроме этого, ваши данные третьим лицам не передаются, если этого не требует закон.',
         ] },
         { h: 'Сроки хранения', p: [
@@ -341,7 +342,7 @@ export const legal: Record<LegalDoc, Record<LegalLang, LegalText>> = {
         ] },
         { h: 'Other recipients and providers', p: [
           '<strong>Vercel Inc.</strong> (United States) hosts the website and runs the function that sends the form, as a data processor. Vercel applies the European Commission’s standard contractual clauses and other safeguards set out in its ' + a(VDPA, 'data processing addendum', true) + ' (' + a(VPRIV, 'Vercel privacy policy', true) + ').',
-          '<strong>Email:</strong> messages to ' + HOLDER.email + ' are forwarded to a mailbox at ' + HOLDER.mailProvider + ', a country covered by an EU adequacy decision.',
+          '<strong>Email:</strong> messages to ' + HOLDER.email + ' are forwarded to a mailbox at Proton AG (Switzerland), a country covered by an EU adequacy decision.',
           'Apart from this, your data is not shared with third parties unless required by law.',
         ] },
         { h: 'How long data is kept', p: [
