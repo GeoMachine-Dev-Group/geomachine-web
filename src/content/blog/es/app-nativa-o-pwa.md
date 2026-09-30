@@ -5,6 +5,7 @@ pubDate: 2026-09-14
 keyword: "pwa o app nativa"
 pillar: "APP"
 relatedService: "APP-04"
+translationSlug: "prilozhenie-ili-pwa"
 draft: false
 ---
 
