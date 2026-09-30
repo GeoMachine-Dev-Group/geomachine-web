@@ -232,7 +232,7 @@ const featuredMap: Record<string, Record<Lang, string>> = {
     <a class="hero__secondary" href="https://t.me/geomachine" target="_blank" rel="noopener">{t.ctaSecondary}</a>
   </div>
 
-  <ul class="hero__prices" aria-label={t.heroAnchorsLabel}>
+  <ul class="hero__prices" aria-label={t.heroAnchorsLabel} data-fab-hide-near>
     {
       heroAnchors.map(({ line, item }) => (
         <li>
