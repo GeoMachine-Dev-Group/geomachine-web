@@ -761,7 +761,8 @@ export const bundles: Bundle[] = [
       en: 'You get a site, your Google listing and three months of maintenance in one package — so you start showing up online this very week.',
       ka: 'იღებთ საიტს, Google პროფილს და სამი თვის მოვლას ერთ პაკეტში.',
     },
-    launch: { eur: [450], rub: [27000], gel: [1350] },
+    // RU: 54 000 ₽, no 27 000 ₽. Incluye el landing, que en RU se publica «desde 30 000 ₽»: por debajo, el paquete costaría menos que una de sus piezas.
+    launch: { eur: [450], rub: [54000], gel: [1350] },
     standard: { eur: [990], rub: [59000], gel: [2970] },
   },
   {

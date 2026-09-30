@@ -54,4 +54,4 @@ Si alguna vez un desarrollador te da todas estas señales al revés — precio a
 
 ---
 
-**¿Tienes claro lo que necesitas y quieres un presupuesto de verdad?** Escríbeme, te lo devuelvo cerrado y con fecha el mismo día. [Mira mis servicios y precios aquí](/es/servicios/).
+**¿Tienes claro lo que necesitas y quieres un presupuesto de verdad?** Escríbeme, te lo devuelvo cerrado y con fecha en menos de 24 horas. [Mira mis servicios y precios aquí](/es/servicios/).
