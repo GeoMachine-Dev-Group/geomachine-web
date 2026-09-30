@@ -5,6 +5,7 @@ pubDate: 2026-08-12
 keyword: "automatizar tareas negocio ia"
 pillar: "IA"
 relatedService: "IA-03"
+translationSlug: "5-zadach-biznesa-avtomatizirovat-ii"
 draft: false
 ---
 
