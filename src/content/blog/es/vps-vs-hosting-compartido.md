@@ -5,6 +5,7 @@ pubDate: 2026-08-12
 keyword: "vps vs hosting compartido"
 pillar: "SYS"
 relatedService: "SYS-02"
+translationSlug: "vps-ili-obychnyy-hosting"
 draft: false
 ---
 
