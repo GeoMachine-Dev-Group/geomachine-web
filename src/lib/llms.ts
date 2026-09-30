@@ -159,7 +159,7 @@ ${packs}
 ${blogSection(posts, true)}
 ## Selected work
 - [abhazservis.com](https://abhazservis.com) — business directory for Abkhazia (hotels, restaurants, pharmacies, markets and services, by city and category), in Russian. Built and delivered by GeoMachine Developer Group: Astro SSR front end, Express and PostgreSQL back end, business self-registration and per-business panel.
-  Case study with the architecture decisions, the real numbers (273 published listings, 19 categories, 8 towns) and the mistakes: [Spanish](${SITE}${blogPath.es}abhazservis-caso-real/) · [Russian](${SITE}${blogPath.ru}abhazservis-realnyy-keys/)
+  Case study with the architecture decisions, the real numbers (274 published listings today, 19 categories, 8 towns) and the mistakes: [Spanish](${SITE}${blogPath.es}abhazservis-caso-real/) · [Russian](${SITE}${blogPath.ru}abhazservis-realnyy-keys/)
 - gagraservis.ru — taxi, excursions, hotels and restaurants in Gagra, in Russian. Delivered 2026-07-28, currently not published online. Case study: [Spanish](${SITE}${blogPath.es}gagraservis-caso-real/) · [Russian](${SITE}${blogPath.ru}gagraservis-realnyy-keys/)
 
 ## Desktop software
