@@ -109,6 +109,11 @@ function moneyWas(range: readonly number[], currency: Currency, unit: Unit) {
   return `${group(range[0], sep)}${nbsp}${CURRENCY_SYMBOL[currency]}${suffix(unit)}`;
 }
 
+/** Precio estándar tachado, salvo que en esa moneda coincida con el de lanzamiento (p. ej. landing en RU: «desde 30 000 ₽», sin tachado). */
+function wasFor(item: { launch: Item['launch']; standard: Item['standard'] }, currency: Currency, unit: Unit) {
+  return item.launch[currency][0] === item.standard[currency][0] ? '' : moneyWas(item.standard[currency], currency, unit);
+}
+
 /**
  * Las 3 monedas viajan ya formateadas en el HTML estático, solo para la tarifa
  * activa (DEFAULT_TIER, que deciden las plazas libres). El script de Base.astro
@@ -121,7 +126,7 @@ function priceData(item: Item) {
   for (const c of CURRENCIES) {
     d[`data-from${c}`] = moneyFrom(item[DEFAULT_TIER][c], c, item.unit);
     d[`data-detail${c}`] = priceDetail(item[DEFAULT_TIER][c], c, item.unit, rec);
-    if (LAUNCH_OPEN) d[`data-was${c}`] = moneyWas(item.standard[c], c, item.unit);
+    if (LAUNCH_OPEN) d[`data-was${c}`] = wasFor(item, c, item.unit);
   }
   return d;
 }
@@ -131,7 +136,7 @@ function bundlePriceData(b: Bundle) {
   for (const c of CURRENCIES) {
     d[`data-from${c}`] = moneyFrom(b[DEFAULT_TIER][c], c, 'once');
     d[`data-detail${c}`] = priceDetail(b[DEFAULT_TIER][c], c, 'once');
-    if (LAUNCH_OPEN) d[`data-was${c}`] = moneyWas(b.standard[c], c, 'once');
+    if (LAUNCH_OPEN) d[`data-was${c}`] = wasFor(b, c, 'once');
   }
   return d;
 }
@@ -146,8 +151,8 @@ function initialDetail(item: Item) {
   return priceDetail(item[DEFAULT_TIER][CUR], CUR, item.unit, rec);
 }
 
-function initialWas(standard: Item['standard'], unit: Unit) {
-  return LAUNCH_OPEN ? moneyWas(standard[CUR], CUR, unit) : '';
+function initialWas(item: { launch: Item['launch']; standard: Item['standard'] }, unit: Unit) {
+  return LAUNCH_OPEN ? wasFor(item, CUR, unit) : '';
 }
 
 /** Precios de entrada del hero: el PRIMER servicio de cada línea (Landing page,
@@ -331,7 +336,7 @@ const featuredMap: Record<string, Record<Lang, string>> = {
               priceAttrs={priceData(item)}
               initialFrom={initialFrom(item)}
               initialDetail={initialDetail(item)}
-              initialWas={initialWas(item.standard, item.unit)}
+              initialWas={initialWas(item, item.unit)}
               featured={Boolean(featuredText)}
               featuredLabel={featuredText}
             />
@@ -371,7 +376,7 @@ const featuredMap: Record<string, Record<Lang, string>> = {
             priceAttrs={bundlePriceData(b)}
             initialFrom={moneyFrom(b[DEFAULT_TIER][CUR], CUR, 'once')}
             initialDetail={priceDetail(b[DEFAULT_TIER][CUR], CUR, 'once')}
-            initialWas={initialWas(b.standard, 'once')}
+            initialWas={initialWas(b, 'once')}
             featured={Boolean(featuredText)}
             featuredLabel={featuredText}
           />

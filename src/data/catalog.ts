@@ -116,7 +116,8 @@ export const lines: Line[] = [
           en: "You get a page ready in 1–2 days to capture leads — so you show up on Google now, not in a month, and stop losing the customer looking for you today.",
           ka: 'იღებთ მზა გვერდს 1–2 დღეში კონტაქტების მისაღებად — Google-ში ჩნდებით ახლავე და აღარ კარგავთ დღეს თქვენს მაძებნელ კლიენტს.',
         },
-        launch: { eur: [250, 400], rub: [15000, 25000], gel: [750, 1200] },
+        // RU: el landing se publica «desde 30 000 ₽» (= precio estándar, sin tarifa de lanzamiento ni tachado). EUR y GEL conservan la tarifa de lanzamiento.
+        launch: { eur: [250, 400], rub: [30000, 55000], gel: [750, 1200] },
         standard: { eur: [500, 900], rub: [30000, 55000], gel: [1500, 2700] },
       },
       {
