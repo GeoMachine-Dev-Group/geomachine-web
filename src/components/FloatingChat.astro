@@ -88,14 +88,17 @@ const whatsappHref = `https://wa.me/34620811739?text=${encodeURIComponent(l.what
     });
     menu.querySelectorAll('a').forEach((a) => a.addEventListener('click', () => setOpen(false)));
 
-    /* Visible al perder de vista la cabecera; oculto cerca de un CTA de cierre
-       si la página declara data-fab-hide-near (el catálogo, en su sección de
-       contacto). El blog no lo declara, así que ahí se queda visible. */
+    /* Visible al perder de vista la cabecera; oculto cerca de cualquier
+       elemento que declare data-fab-hide-near (el catálogo lo pone en la
+       lista de precios de entrada del hero y en la sección de contacto,
+       para no tapar precios ni el CTA de cierre). El blog no lo declara,
+       así que ahí se queda visible. */
     const header = document.querySelector('.plate');
-    const hideNear = document.querySelector('[data-fab-hide-near]');
+    const hideNearEls = document.querySelectorAll('[data-fab-hide-near]');
     let pastHeader = !header;
-    let nearHide = false;
+    const nearHideState = new Map<Element, boolean>();
     const sync = () => {
+      const nearHide = Array.from(nearHideState.values()).some(Boolean);
       const visible = pastHeader && !nearHide;
       fab.classList.toggle('is-visible', visible);
       if (!visible) setOpen(false);
@@ -107,11 +110,15 @@ const whatsappHref = `https://wa.me/34620811739?text=${encodeURIComponent(l.what
         { rootMargin: '-10% 0px 0px 0px' }
       ).observe(header);
     }
-    if (hideNear) {
-      new IntersectionObserver(
-        ([entry]) => { nearHide = entry.isIntersecting; sync(); },
+    if (hideNearEls.length) {
+      const hideNearObserver = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => nearHideState.set(entry.target, entry.isIntersecting));
+          sync();
+        },
         { threshold: 0.15 }
-      ).observe(hideNear);
+      );
+      hideNearEls.forEach((el) => hideNearObserver.observe(el));
     }
     sync();
   }
