@@ -9,7 +9,7 @@
  */
 import type { CollectionEntry } from 'astro:content';
 import { lines, bundles, type Currency, type Item, type Unit } from '../data/catalog';
-import { servicesPath, blogPath, type BlogLang } from '../i18n/ui';
+import { servicesPath, blogPath, kadriLabCasePath, type BlogLang } from '../i18n/ui';
 
 const SITE = 'https://geomachine.es';
 const CATALOG = `${SITE}${servicesPath.en}`;
@@ -108,6 +108,7 @@ ${packs}
 ${blogSection(posts, false)}
 ## Selected work
 - [abhazservis.com](https://abhazservis.com) — business directory for Abkhazia (hotels, restaurants, pharmacies, markets and services), in Russian. Built and delivered by GeoMachine Developer Group.
+- [kadrilab.com](https://kadrilab.com) — bilingual (English/Georgian) website for a photo and video studio in Tbilisi, with an /admin panel where the client uploads photos and GeoMachine reviews each upload before it is published. Built and delivered by GeoMachine Developer Group. Case study: [${SITE}${kadriLabCasePath.en}](${SITE}${kadriLabCasePath.en})
 - [GeoMachine Accounts](${SITE}/en/services/app-accounts/) — free local inventory and net-profit desktop app.
 
 ## Quotes
@@ -160,6 +161,7 @@ ${blogSection(posts, true)}
 ## Selected work
 - [abhazservis.com](https://abhazservis.com) — business directory for Abkhazia (hotels, restaurants, pharmacies, markets and services, by city and category), in Russian. Built and delivered by GeoMachine Developer Group: Astro SSR front end, Express and PostgreSQL back end, business self-registration and per-business panel.
   Case study with the architecture decisions, the real numbers (274 published listings today, 19 categories, 8 towns) and the mistakes: [Spanish](${SITE}${blogPath.es}abhazservis-caso-real/) · [Russian](${SITE}${blogPath.ru}abhazservis-realnyy-keys/)
+- [kadrilab.com](https://kadrilab.com) — bilingual (English/Georgian) website for a photo and video studio in Tbilisi (team of three; weddings and all kinds of events). Astro 7, Tailwind v4 and TypeScript on Vercel, DNS on Cloudflare; "Noir" design with a "Linen" light mode. Its /admin panel (Sveltia CMS) lets the client upload photos: each upload opens a pull request that GeoMachine reviews before publishing. Built and delivered by GeoMachine Developer Group. Case study: [English](${SITE}${kadriLabCasePath.en}) · [Spanish](${SITE}${kadriLabCasePath.es}) · [Russian](${SITE}${kadriLabCasePath.ru}) · [Georgian](${SITE}${kadriLabCasePath.ka})
 - gagraservis.ru — taxi, excursions, hotels and restaurants in Gagra, in Russian. Delivered 2026-07-28, currently not published online. Case study: [Spanish](${SITE}${blogPath.es}gagraservis-caso-real/) · [Russian](${SITE}${blogPath.ru}gagraservis-realnyy-keys/)
 
 ## Desktop software

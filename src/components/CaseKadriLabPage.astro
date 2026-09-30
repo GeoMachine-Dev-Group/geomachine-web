@@ -1,0 +1,322 @@
+---
+/**
+ * Caso de cliente: kadrilab.com. Página propia en los cuatro idiomas, con el
+ * mismo formato que AppAccountsPage.astro (hero, tarjetas, panel) y sus clases
+ * `.app-*`. No va al blog: en georgiano no hay blog a propósito (ver ui.ts).
+ *
+ * Solo lleva lo que consta en el proyecto de KADRI LAB (AGENTS.md,
+ * public/admin/config.yml y .github/workflows/cms-validate.yml de su repo) y lo
+ * que dio el cliente. Nada de reseñas, cifras de audiencia, nombres del equipo
+ * ni teléfonos: solo el enlace a kadrilab.com.
+ *
+ * ka: traducción automática, PENDIENTE DE REVISIÓN NATIVA (igual que el resto
+ * del georgiano del sitio).
+ */
+import Base from '../layouts/Base.astro';
+import { servicesPath, kadriLabCasePath, type Lang } from '../i18n/ui';
+import { orgId as buildOrgId } from '../data/organization';
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+
+const SITE_URL = 'https://kadrilab.com/';
+
+const content = {
+  es: {
+    title: 'Caso: kadrilab.com, web y panel de fotos para un estudio de Tbilisi',
+    description:
+      'Web bilingüe (EN/KA) para un estudio de foto y vídeo de Tbilisi, con un panel donde el cliente sube fotos y GeoMachine las revisa antes de publicar.',
+    tagline: 'Caso de cliente',
+    headline: 'kadrilab.com: web y panel para un estudio de foto y vídeo de Tbilisi',
+    lead: 'KADRI LAB es un estudio de foto y vídeo de Tbilisi (Georgia), con un equipo de tres personas. Cubre bodas y todo tipo de eventos. Hicimos su web bilingüe, en inglés y georgiano, y un panel desde el que sube sus propias fotos sin poder publicar nada por accidente.',
+    visit: 'Ver kadrilab.com',
+    clientTitle: 'El cliente',
+    clientText:
+      'Estudio de foto y vídeo de Tbilisi, con un equipo de tres personas. Cubre bodas y todo tipo de eventos, no solo bodas.',
+    webTitle: 'La web',
+    webText:
+      'Sitio bilingüe en inglés y georgiano; el cambio de idioma mantiene la misma página. Astro 7, Tailwind v4 y TypeScript, desplegada en Vercel con el DNS en Cloudflare.',
+    designTitle: 'El diseño',
+    designText:
+      'Diseño «Noir», oscuro, con un modo claro llamado «Linen». La estructura sigue la de un portfolio fotográfico.',
+    adminTitle: 'Panel /admin',
+    adminText:
+      'El cliente sube sus fotos desde /admin (Sveltia CMS). Cada subida abre un pull request que GeoMachine revisa antes de publicar.',
+    adminPoints: [
+      'La foto se reduce en el navegador (WebP, máximo 2500 px) antes de subirse.',
+      'El panel no tiene botón de publicar ni de borrar.',
+      'Una comprobación automática rechaza cualquier cambio que no sea una foto y su ficha, y verifica que la web compila.',
+    ],
+    processTitle: 'El proceso',
+    processSteps: ['1. Estrategia y textos', '2. Mockups', '3. Código', '4. Deploy'],
+    processNote: 'Cada paso va en su propia rama y necesita aprobación antes de llegar a producción.',
+    shotsTitle: 'Cómo se ve',
+    shotsNote: 'Portada de kadrilab.com en inglés y en georgiano.',
+    shotDesktop: 'Escritorio, 1440 px',
+    shotMobile: 'Móvil, 390 px',
+    shotEn: 'inglés',
+    shotKa: 'georgiano',
+    shotAlt: 'Portada de kadrilab.com en {idioma}, {vista}',
+    ctaTitle: '¿Quieres algo así?',
+    ctaButton: 'Pedir presupuesto',
+    backToHome: 'Volver a GeoMachine',
+  },
+  en: {
+    title: 'Case study: kadrilab.com, a website and photo panel for a Tbilisi studio',
+    description:
+      'A bilingual (EN/KA) website for a Tbilisi photo and video studio, with a panel where the client uploads photos and GeoMachine reviews them before publishing.',
+    tagline: 'Client case',
+    headline: 'kadrilab.com: a website and panel for a photo and video studio in Tbilisi',
+    lead: 'KADRI LAB is a photo and video studio in Tbilisi, Georgia, with a team of three. It covers weddings and every kind of event. We built its bilingual website, in English and Georgian, and a panel where the studio uploads its own photos without being able to publish anything by accident.',
+    visit: 'Visit kadrilab.com',
+    clientTitle: 'The client',
+    clientText:
+      'A photo and video studio in Tbilisi with a team of three. It covers weddings and all kinds of events, not only weddings.',
+    webTitle: 'The website',
+    webText:
+      'A bilingual site in English and Georgian; switching language keeps you on the same page. Astro 7, Tailwind v4 and TypeScript, deployed on Vercel with DNS on Cloudflare.',
+    designTitle: 'The design',
+    designText:
+      'A dark design called “Noir”, with a light mode called “Linen”. The structure follows that of a photography portfolio.',
+    adminTitle: '/admin panel',
+    adminText:
+      'The client uploads photos from /admin (Sveltia CMS). Every upload opens a pull request that GeoMachine reviews before anything is published.',
+    adminPoints: [
+      'Each photo is resized in the browser (WebP, 2500 px maximum) before it is uploaded.',
+      'The panel has no publish button and no delete button.',
+      'An automatic check rejects any change that is not a photo and its entry, and confirms that the site builds.',
+    ],
+    processTitle: 'The process',
+    processSteps: ['1. Strategy and copy', '2. Mockups', '3. Code', '4. Deploy'],
+    processNote: 'Each step lives on its own branch and needs approval before it reaches production.',
+    shotsTitle: 'What it looks like',
+    shotsNote: 'The kadrilab.com home page in English and in Georgian.',
+    shotDesktop: 'Desktop, 1440 px',
+    shotMobile: 'Mobile, 390 px',
+    shotEn: 'English',
+    shotKa: 'Georgian',
+    shotAlt: 'kadrilab.com home page in {idioma}, {vista}',
+    ctaTitle: 'Want something like this?',
+    ctaButton: 'Request a quote',
+    backToHome: 'Back to GeoMachine',
+  },
+  ru: {
+    title: 'Кейс: kadrilab.com — сайт и панель для фото- и видеостудии из Тбилиси',
+    description:
+      'Двуязычный (EN/KA) сайт для фото- и видеостудии из Тбилиси и панель, где клиент загружает фото, а GeoMachine проверяет их перед публикацией.',
+    tagline: 'Кейс клиента',
+    headline: 'kadrilab.com: сайт и панель для фото- и видеостудии из Тбилиси',
+    lead: 'KADRI LAB — фото- и видеостудия из Тбилиси (Грузия), команда из трёх человек. Снимает свадьбы и мероприятия любого рода. Мы сделали её двуязычный сайт, на английском и грузинском, и панель, через которую студия сама загружает фото и не может случайно ничего опубликовать.',
+    visit: 'Открыть kadrilab.com',
+    clientTitle: 'Клиент',
+    clientText:
+      'Фото- и видеостудия из Тбилиси, команда из трёх человек. Снимает свадьбы и мероприятия любого рода, не только свадьбы.',
+    webTitle: 'Сайт',
+    webText:
+      'Двуязычный сайт на английском и грузинском; при смене языка остаётся та же страница. Astro 7, Tailwind v4 и TypeScript, размещён на Vercel, DNS — в Cloudflare.',
+    designTitle: 'Дизайн',
+    designText:
+      'Тёмный дизайн «Noir» со светлым режимом «Linen». Структура повторяет структуру фотопортфолио.',
+    adminTitle: 'Панель /admin',
+    adminText:
+      'Клиент загружает фото через /admin (Sveltia CMS). Каждая загрузка открывает pull request, который GeoMachine проверяет перед публикацией.',
+    adminPoints: [
+      'Перед загрузкой фото уменьшается прямо в браузере (WebP, не более 2500 px).',
+      'В панели нет кнопки публикации и кнопки удаления.',
+      'Автоматическая проверка отклоняет любое изменение, кроме фото и его карточки, и убеждается, что сайт собирается.',
+    ],
+    processTitle: 'Процесс',
+    processSteps: ['1. Стратегия и тексты', '2. Макеты', '3. Код', '4. Деплой'],
+    processNote: 'Каждый шаг идёт в своей ветке и требует одобрения, прежде чем попасть в продакшен.',
+    shotsTitle: 'Как это выглядит',
+    shotsNote: 'Главная страница kadrilab.com на английском и на грузинском.',
+    shotDesktop: 'Десктоп, 1440 px',
+    shotMobile: 'Мобильный, 390 px',
+    shotEn: 'английском',
+    shotKa: 'грузинском',
+    shotAlt: 'Главная страница kadrilab.com на {idioma} языке, {vista}',
+    ctaTitle: 'Нужно что-то подобное?',
+    ctaButton: 'Запросить смету',
+    backToHome: 'Назад в GeoMachine',
+  },
+  ka: {
+    title: 'შემთხვევა: kadrilab.com — ვებსაიტი და ფოტოების პანელი თბილისელი სტუდიისთვის',
+    description:
+      'ორენოვანი (EN/KA) ვებსაიტი თბილისელი ფოტო და ვიდეო სტუდიისთვის, პანელით, სადაც კლიენტი ფოტოებს ტვირთავს, GeoMachine კი გამოქვეყნებამდე ამოწმებს.',
+    tagline: 'კლიენტის პროექტი',
+    headline: 'kadrilab.com: ვებსაიტი და პანელი თბილისელი ფოტო და ვიდეო სტუდიისთვის',
+    lead: 'KADRI LAB არის ფოტო და ვიდეო სტუდია თბილისში (საქართველო), სამკაციანი გუნდით. ის ემსახურება ქორწილებს და ყველა სახის ღონისძიებას. ჩვენ შევქმენით მისი ორენოვანი (ინგლისური და ქართული) ვებსაიტი და პანელი, საიდანაც ის საკუთარ ფოტოებს ტვირთავს და შემთხვევით ვერაფერს აქვეყნებს.',
+    visit: 'kadrilab.com-ის ნახვა',
+    clientTitle: 'კლიენტი',
+    clientText:
+      'ფოტო და ვიდეო სტუდია თბილისში, სამი ადამიანის გუნდით. ემსახურება ქორწილებს და ყველა სახის ღონისძიებას, არა მხოლოდ ქორწილებს.',
+    webTitle: 'ვებსაიტი',
+    webText:
+      'ორენოვანი საიტი, ინგლისურად და ქართულად; ენის გადართვისას იგივე გვერდი რჩება. Astro 7, Tailwind v4 და TypeScript, განთავსებულია Vercel-ზე, DNS კი Cloudflare-ში.',
+    designTitle: 'დიზაინი',
+    designText:
+      'მუქი დიზაინი „Noir“ და ღია რეჟიმი „Linen“. სტრუქტურა ფოტოპორტფოლიოს სტრუქტურას მიჰყვება.',
+    adminTitle: 'პანელი /admin',
+    adminText:
+      'კლიენტი ფოტოებს /admin-დან ტვირთავს (Sveltia CMS). ყოველი ატვირთვა ხსნის pull request-ს, რომელსაც GeoMachine გამოქვეყნებამდე ამოწმებს.',
+    adminPoints: [
+      'ფოტო ატვირთვამდე ბრაუზერშივე მცირდება (WebP, მაქსიმუმ 2500 px).',
+      'პანელს არ აქვს გამოქვეყნების და წაშლის ღილაკი.',
+      'ავტომატური შემოწმება უარყოფს ყველა ცვლილებას, რომელიც ფოტოსა და მის ჩანაწერს არ ეხება, და ამოწმებს, რომ საიტი აიგება.',
+    ],
+    processTitle: 'პროცესი',
+    processSteps: ['1. სტრატეგია და ტექსტები', '2. მაკეტები', '3. კოდი', '4. დეპლოი'],
+    processNote: 'თითოეული ნაბიჯი ცალკე ბრენჩზეა და პროდაქშენში მოხვედრამდე დამტკიცება სჭირდება.',
+    shotsTitle: 'როგორ გამოიყურება',
+    shotsNote: 'kadrilab.com-ის მთავარი გვერდი ინგლისურად და ქართულად.',
+    shotDesktop: 'კომპიუტერი, 1440 px',
+    shotMobile: 'მობილური, 390 px',
+    shotEn: 'ინგლისურ',
+    shotKa: 'ქართულ',
+    shotAlt: 'kadrilab.com-ის მთავარი გვერდი {idioma} ენაზე, {vista}',
+    ctaTitle: 'გსურთ მსგავსი რამ?',
+    ctaButton: 'ბიუჯეტის მოთხოვნა',
+    backToHome: 'GeoMachine-ზე დაბრუნება',
+  },
+}[lang];
+
+const t = content;
+const site = 'https://geomachine.es';
+
+// El slug es distinto en cada idioma, como en la página de Accounts.
+const paths = kadriLabCasePath;
+const hreflangAlternates = [
+  { hreflang: 'x-default', href: `${site}${paths.es}` },
+  ...(Object.keys(paths) as Lang[]).map((l) => ({ hreflang: l, href: `${site}${paths[l]}` })),
+];
+const pageUrl = `${site}${paths[lang]}`;
+const orgId = buildOrgId(site);
+
+const cards = [
+  { title: t.clientTitle, text: t.clientText },
+  { title: t.webTitle, text: t.webText },
+  { title: t.designTitle, text: t.designText },
+];
+
+const shot = (l: 'en' | 'ka', view: 'desktop' | 'mobile') => {
+  const idioma = l === 'en' ? t.shotEn : t.shotKa;
+  const vista = view === 'desktop' ? t.shotDesktop : t.shotMobile;
+  return {
+    src: `/images/casos/kadrilab-${l}-${view}.webp`,
+    alt: t.shotAlt.replace('{idioma}', idioma).replace('{vista}', vista),
+    caption: `${l.toUpperCase()} · ${vista}`,
+    width: view === 'desktop' ? 1440 : 640,
+    height: view === 'desktop' ? 900 : 1385,
+  };
+};
+const desktopShots = [shot('en', 'desktop'), shot('ka', 'desktop')];
+const mobileShots = [shot('en', 'mobile'), shot('ka', 'mobile')];
+---
+
+<Base
+  lang={lang}
+  title={t.title}
+  description={t.description}
+  pageUrl={pageUrl}
+  hreflangAlternates={hreflangAlternates}
+  schema="none"
+>
+  <Fragment slot="head">
+    <script type="application/ld+json" is:inline set:html={JSON.stringify({
+      '@context': 'https://schema.org',
+      '@graph': [
+        {
+          '@type': 'WebPage',
+          '@id': `${pageUrl}#webpage`,
+          url: pageUrl,
+          name: t.title,
+          description: t.description,
+          inLanguage: lang,
+          isPartOf: { '@id': orgId },
+          about: { '@id': `${pageUrl}#site` },
+          mainEntity: { '@id': `${pageUrl}#site` },
+        },
+        {
+          '@type': 'WebSite',
+          '@id': `${pageUrl}#site`,
+          name: 'KADRI LAB',
+          url: SITE_URL,
+          inLanguage: ['en', 'ka'],
+          creator: { '@id': orgId },
+        },
+      ],
+    })} />
+  </Fragment>
+
+  <section class="hero app-hero shell">
+    <p class="hero__eyebrow">{t.tagline}</p>
+    <h1 class="hero__title">{t.headline}</h1>
+    <p class="hero__body">{t.lead}</p>
+
+    <div class="app-hero__downloads">
+      <a href={SITE_URL} class="app-download app-download--primary" target="_blank" rel="noopener">
+        {t.visit} ↗
+      </a>
+    </div>
+  </section>
+
+  <section class="shell app-section">
+    <div class="app-features">
+      {cards.map(({ title, text }) => (
+        <div class="app-feature">
+          <h2 class="app-feature__title">{title}</h2>
+          <p class="app-feature__text">{text}</p>
+        </div>
+      ))}
+    </div>
+
+    <div class="app-panel">
+      <div>
+        <h2 class="app-panel__title">{t.adminTitle}</h2>
+        <p class="app-panel__text">{t.adminText}</p>
+        <ul class="app-panel__steps case-points">
+          {t.adminPoints.map((point) => <li>{point}</li>)}
+        </ul>
+      </div>
+
+      <div>
+        <h2 class="app-panel__title">{t.processTitle}</h2>
+        <ul class="app-panel__steps">
+          {t.processSteps.map((step) => <li>{step}</li>)}
+        </ul>
+        <p class="app-panel__text case-note">{t.processNote}</p>
+      </div>
+    </div>
+
+    <h2 class="app-section__title">{t.shotsTitle}</h2>
+    <p class="app-panel__text case-note">{t.shotsNote}</p>
+
+    <div class="case-shots case-shots--desktop">
+      {desktopShots.map((s) => (
+        <figure class="case-shot">
+          <img src={s.src} alt={s.alt} width={s.width} height={s.height} loading="lazy" decoding="async" />
+          <figcaption>{s.caption}</figcaption>
+        </figure>
+      ))}
+    </div>
+    <div class="case-shots case-shots--mobile">
+      {mobileShots.map((s) => (
+        <figure class="case-shot">
+          <img src={s.src} alt={s.alt} width={s.width} height={s.height} loading="lazy" decoding="async" />
+          <figcaption>{s.caption}</figcaption>
+        </figure>
+      ))}
+    </div>
+
+    <div class="case-cta">
+      <h2 class="app-panel__title">{t.ctaTitle}</h2>
+      <a href={`${servicesPath[lang]}#contacto`} class="app-download app-download--primary">{t.ctaButton}</a>
+    </div>
+
+    <div class="app-back">
+      <a href={servicesPath[lang]}>← {t.backToHome}</a>
+    </div>
+  </section>
+</Base>
