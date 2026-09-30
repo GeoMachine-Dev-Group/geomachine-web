@@ -32,7 +32,7 @@ Aquí es donde cambia la conversación:
 - **WooCommerce a 3 años:** 450€-1.500€ en hosting/plugins, más tu tiempo de mantenimiento.
 - **Tienda a medida a 3 años:** el coste inicial (1.200€-2.200€) más mantenimiento opcional (25-55€/mes = 900€-1.980€ en 3 años) — pero sin cuota obligatoria de plataforma.
 
-A partir del segundo o tercer año, la tienda a medida suele salir más barata en total, precisamente porque no pagas una cuota mensual de por vida solo por seguir existiendo.
+A tres años los totales se acercan mucho: sin mantenimiento contratado, la tienda a medida (1.200€-2.200€) queda dentro del rango de una plataforma de cuota (900€-3.240€, sin contar apps); con el mantenimiento opcional (2.100€-4.180€ en total), queda en un rango parecido o algo por encima. Lo que cambia es el tipo de gasto: un pago inicial y un mantenimiento opcional, frente a una cuota que no puedes dejar de pagar solo por seguir existiendo.
 
 ## Cuándo Shopify es la respuesta correcta (de verdad)
 
@@ -49,7 +49,7 @@ A partir del segundo o tercer año, la tienda a medida suele salir más barata e
 ## Cuándo una tienda a medida es la respuesta correcta
 
 - Tu negocio tiene **lógica específica** que las plantillas no cubren bien (por ejemplo, precios que varían según cantidad, reservas con disponibilidad, productos configurables).
-- Planeas vender **durante años**, no como prueba temporal — ahí el ahorro de no pagar cuota mensual de por vida se nota de verdad.
+- Planeas vender **durante años**, no como prueba temporal — ahí pesa que no haya una cuota de plataforma que pagar mientras exista la tienda.
 - Quieres que la tienda **cargue lo más rápido posible**, sin el peso extra de un sistema genérico pensado para miles de casos de uso distintos al tuyo.
 
 ## Lo que no te va a decir quien solo vende una de las tres
