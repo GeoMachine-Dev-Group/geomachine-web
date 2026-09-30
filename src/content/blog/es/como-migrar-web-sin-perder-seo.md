@@ -5,6 +5,7 @@ pubDate: 2026-08-12
 keyword: "migrar web sin perder seo"
 pillar: "WEB"
 relatedService: "WEB-05"
+translationSlug: "kak-perenesti-sayt-bez-poteri-seo"
 draft: false
 ---
 

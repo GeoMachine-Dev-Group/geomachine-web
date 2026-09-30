@@ -5,6 +5,7 @@ pubDate: 2026-08-12
 keyword: "precio landing page"
 pillar: "WEB"
 relatedService: "WEB-01"
+translationSlug: "skolko-stoit-lending-2026"
 draft: false
 ---
 
