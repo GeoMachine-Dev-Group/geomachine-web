@@ -5,6 +5,7 @@ pubDate: 2026-08-12
 keyword: "aparecer en google maps negocio"
 pillar: "SEO"
 relatedService: "SEO-03"
+translationSlug: "kak-poyavitsya-na-google-kartah"
 draft: false
 ---
 
