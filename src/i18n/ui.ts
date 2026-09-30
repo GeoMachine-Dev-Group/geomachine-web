@@ -26,6 +26,14 @@ export const servicesPath: Record<Lang, string> = {
   ka: '/ka/momsakhurebebi/',
 };
 
+/** Caso de cliente kadrilab.com (CaseKadriLabPage.astro): slug propio por idioma. */
+export const kadriLabCasePath: Record<Lang, string> = {
+  es: `${servicesPath.es}caso-kadrilab/`,
+  ru: `${servicesPath.ru}keys-kadrilab/`,
+  en: `${servicesPath.en}case-kadrilab/`,
+  ka: `${servicesPath.ka}case-kadrilab/`,
+};
+
 /**
  * El blog existe en es, ru y en. En georgiano no: todo el `ka` del sitio va
  * traducido por IA y sin revisar por un nativo, y doce artículos largos en esas

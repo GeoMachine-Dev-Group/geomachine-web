@@ -12,7 +12,7 @@ import {
   type Currency,
 } from '../data/catalog';
 import { getCollection } from 'astro:content';
-import { ui, blogPath, hasBlog, type Lang } from '../i18n/ui';
+import { ui, blogPath, kadriLabCasePath, hasBlog, type Lang } from '../i18n/ui';
 import { isPublished } from '../lib/blog';
 import ServiceCard from './ServiceCard.astro';
 import { legalPath, legalLangFor, LEGAL_VERSION } from '../data/legal';
@@ -258,6 +258,10 @@ const featuredMap: Record<string, Record<Lang, string>> = {
     <li>
       <span class="proof__tag">{t.statusDelivered}</span>
       <a href="https://abhazservis.com/" target="_blank" rel="noopener">abhazservis.com</a>
+    </li>
+    <li>
+      <span class="proof__tag">{t.statusDelivered}</span>
+      <a href={kadriLabCasePath[lang]}>kadrilab.com</a>
     </li>
     <li>
       <span class="proof__tag">{t.proofPrivateAi}</span>
