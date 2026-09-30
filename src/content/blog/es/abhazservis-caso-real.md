@@ -15,7 +15,7 @@ draft: false
 
 No es un encargo de cliente. Es un proyecto propio de GeoMachine, y lo cuento por eso: es el sitio donde puedo enseñar las decisiones completas, incluidas las que salieron mal, sin pedirle permiso a nadie.
 
-Las cifras de hoy: **273 fichas publicadas**, 19 categorías, 8 localidades, 44 fichas verificadas contra la web oficial del negocio. Cero ingresos, cero fichas reclamadas por sus dueños y cero datos de tráfico acumulados: el catálogo está construido, la parte comercial no ha empezado.
+Las cifras de hoy: **273 fichas publicadas**, 19 categorías, 8 localidades, 44 fichas verificadas contra la web oficial del negocio. Cero ingresos, cero fichas reclamadas por sus dueños y cero datos de tráfico acumulados: el catálogo está construido, la parte comercial no ha empezado. Actualización: hoy el catálogo ya tiene 274 negocios publicados.
 
 ## De cero a panel de administración en nueve días
 
