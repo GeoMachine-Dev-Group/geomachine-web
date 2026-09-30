@@ -5,6 +5,7 @@ pubDate: 2026-08-12
 keyword: "hardware para ia local"
 pillar: "SYS"
 relatedService: "SYS-03"
+translationSlug: "kakoe-zhelezo-nuzhno-dlya-ii"
 draft: false
 ---
 
