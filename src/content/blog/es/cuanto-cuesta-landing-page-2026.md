@@ -64,4 +64,4 @@ Con esas tres respuestas, ya tienes una idea realista de qué vas a pagar antes 
 
 ---
 
-**¿Ya sabes qué necesitas?** Escríbeme qué quieres montar y te devuelvo un precio cerrado, con fecha de entrega, el mismo día — sin llamada previa si no te apetece. [Mira el resto de mis servicios de desarrollo web aquí](/es/servicios/#web).
+**¿Ya sabes qué necesitas?** Escríbeme qué quieres montar y te devuelvo un precio cerrado, con fecha de entrega, en menos de 24 horas — sin llamada previa si no te apetece. [Mira el resto de mis servicios de desarrollo web aquí](/es/servicios/#web).
