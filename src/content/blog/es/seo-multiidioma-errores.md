@@ -5,6 +5,7 @@ pubDate: 2026-08-12
 keyword: "seo multiidioma errores"
 pillar: "SEO"
 relatedService: "SEO-04"
+translationSlug: "seo-na-dvuh-yazykah-oshibki"
 draft: false
 ---
 
