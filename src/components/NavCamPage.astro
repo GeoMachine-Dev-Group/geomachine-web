@@ -17,7 +17,6 @@ const { lang } = Astro.props;
 
 const APK = 'https://conductor.kadrilab.com/descarga/navcam.apk';
 const SHA_URL = 'https://conductor.kadrilab.com/descarga/navcam.apk.sha256.txt';
-const SHA = '740a3acbaf7cabcbd39398c283289f9ad119836644c09f376dac1de42e4f694d';
 const TELEGRAM = 'https://t.me/geomachine';
 const APP_LANGS = 'ქართული, Русский, English, Español, Română, Polski, Українська, Български, Português';
 
@@ -31,7 +30,7 @@ const content = {
     download: 'Descargar APK · 50 MB',
     meta: 'Versión 0.1.0 (prueba) · Android 7.0 o superior · solo Android, no iPhone por ahora',
     shaIntro: 'Huella SHA-256 del fichero, por si quieres comprobarla (el valor oficial se lee en',
-    shaOutro: '):',
+    shaOutro: ').',
     warnTitle: 'Aviso: versión de prueba',
     warn: [
       'Esta es una versión de prueba. Es una ayuda para conducir: no sustituye al navegador de tu empresa ni a las señales.',
@@ -55,12 +54,12 @@ const content = {
     ],
     startTitle: 'Cómo empezar',
     startText: [
-      'La app pide un código de 6 dígitos para vincular tu móvil. Ese código te lo damos nosotros.',
-      'Escríbenos por WhatsApp o Telegram con tu nombre y las medidas del camión cargado.',
-      'El código caduca a los 10 minutos: pídelo cuando tengas el móvil a mano.',
+      'Abre la app y pulsa «Soy nuevo: darme de alta».',
+      'Escribe tu nombre y las medidas del camión CARGADO: alto, ancho, largo, peso, ejes, carga por eje y si llevas ADR. Acepta el aviso de privacidad y pulsa empezar. No hace falta pedirnos nada.',
+      'Si tu empresa ya te dio un código de 6 dígitos, tecléalo en «Vincular móvil».',
       'Después, en Ajustes → «Comprobaciones para la carretera» se revisa que todo funciona.',
     ],
-    whatsappText: 'Hola, quiero el código de NavCam Conductor. Mi nombre: ',
+    whatsappText: 'Hola, tengo una pregunta sobre NavCam Conductor. Mi nombre: ',
     privacyTitle: 'Privacidad',
     privacyText: 'La ubicación se usa para guiarte y para mejorar los avisos. Los datos se guardan en servidores de la UE, se borran a los 90 días y no se venden ni se ceden.',
     privacyLink: 'Política de privacidad',
@@ -81,7 +80,7 @@ const content = {
     download: 'Скачать APK · 50 МБ',
     meta: 'Версия 0.1.0 (тест) · Android 7.0 и выше · только Android, iPhone пока нет',
     shaIntro: 'Контрольная сумма SHA-256 файла, если хотите проверить (официальное значение читается по адресу',
-    shaOutro: '):',
+    shaOutro: ').',
     warnTitle: 'Внимание: тестовая версия',
     warn: [
       'Это тестовая версия. Она помогает в пути, но не заменяет навигатор вашей компании и дорожные знаки.',
@@ -105,12 +104,12 @@ const content = {
     ],
     startTitle: 'Как начать',
     startText: [
-      'Приложение просит 6-значный код, чтобы привязать телефон. Этот код выдаём мы.',
-      'Напишите нам в WhatsApp или Telegram: имя и размеры вашего гружёного грузовика.',
-      'Код действует 10 минут, поэтому просите его, когда телефон под рукой.',
+      'Откройте приложение и нажмите «Я новый: зарегистрируйте меня».',
+      'Укажите имя и размеры ГРУЖЁНОГО грузовика: высоту, ширину, длину, вес, оси, нагрузку на ось и есть ли ADR. Примите условия конфиденциальности и начните. Ничего запрашивать у нас не нужно.',
+      'Если компания уже дала вам 6-значный код, введите его в «Привязать телефон».',
       'Потом в Настройках → «Проверки для дороги» можно убедиться, что всё работает.',
     ],
-    whatsappText: 'Здравствуйте, хочу получить код NavCam Conductor. Моё имя: ',
+    whatsappText: 'Здравствуйте, у меня вопрос о NavCam Conductor. Моё имя: ',
     privacyTitle: 'Конфиденциальность',
     privacyText: 'Местоположение нужно, чтобы вести вас по маршруту и улучшать оповещения. Данные хранятся на серверах в ЕС, удаляются через 90 дней, не продаются и не передаются.',
     privacyLink: 'Политика конфиденциальности',
@@ -131,7 +130,7 @@ const content = {
     download: 'Download APK · 50 MB',
     meta: 'Version 0.1.0 (test) · Android 7.0 or newer · Android only, no iPhone for now',
     shaIntro: 'SHA-256 fingerprint of the file, if you want to check it (the official value is read at',
-    shaOutro: '):',
+    shaOutro: ').',
     warnTitle: 'Notice: test version',
     warn: [
       'This is a test version. It is a driving aid: it does not replace your company navigator or the road signs.',
@@ -155,12 +154,12 @@ const content = {
     ],
     startTitle: 'Getting started',
     startText: [
-      'The app asks for a 6-digit code to link your phone. We give you that code.',
-      'Write to us on WhatsApp or Telegram with your name and the dimensions of your loaded truck.',
-      'The code expires after 10 minutes, so ask for it when you have your phone at hand.',
+      "Open the app and tap “I'm new: sign me up”.",
+      'Enter your name and the dimensions of your LOADED truck: height, width, length, weight, axles, axle load and whether you carry ADR. Accept the privacy notice and start. No need to ask us for anything.',
+      'If your company already gave you a 6-digit code, type it in “Pair phone”.',
       'Then, in Settings → “Checks for the road”, you can confirm that everything works.',
     ],
-    whatsappText: 'Hi, I would like the NavCam Conductor code. My name: ',
+    whatsappText: 'Hi, I have a question about NavCam Conductor. My name: ',
     privacyTitle: 'Privacy',
     privacyText: 'Your location is used to guide you and to improve the alerts. Data is stored on servers in the EU, deleted after 90 days, and never sold or shared.',
     privacyLink: 'Privacy policy',
@@ -182,7 +181,7 @@ const content = {
     download: 'APK-ს ჩამოტვირთვა · 50 მბ',
     meta: 'ვერსია 0.1.0 (სატესტო) · Android 7.0 ან უფრო ახალი · მხოლოდ Android, iPhone-ზე ჯერ არა',
     shaIntro: 'ფაილის SHA-256 კონტროლური ჯამი, თუ გინდათ შეამოწმოთ (ოფიციალური მნიშვნელობა იკითხება მისამართზე',
-    shaOutro: '):',
+    shaOutro: ').',
     warnTitle: 'ყურადღება: სატესტო ვერსია',
     warn: [
       'ეს სატესტო ვერსიაა. ის გზაზე დამხმარეა და არ ცვლის თქვენი კომპანიის ნავიგატორს და საგზაო ნიშნებს.',
@@ -206,12 +205,12 @@ const content = {
     ],
     startTitle: 'როგორ დავიწყოთ',
     startText: [
-      'აპი ტელეფონის დასაკავშირებლად 6-ციფრიან კოდს ითხოვს. ამ კოდს ჩვენ გაძლევთ.',
-      'მოგვწერეთ WhatsApp-ში ან Telegram-ში: თქვენი სახელი და დატვირთული სატვირთოს ზომები.',
-      'კოდი 10 წუთში ძალას კარგავს, ამიტომ მოითხოვეთ მაშინ, როცა ტელეფონი ხელთ გაქვთ.',
+      'გახსენით აპი და დააჭირეთ „ახალი ვარ: რეგისტრაცია“.',
+      'ჩაწერეთ თქვენი სახელი და დატვირთული სატვირთოს ზომები: სიმაღლე, სიგანე, სიგრძე, წონა, ღერძები, დატვირთვა ღერძზე და გაქვთ თუ არა ADR. დაეთანხმეთ კონფიდენციალურობის პირობებს და დაიწყეთ. ჩვენთან არაფრის მოთხოვნა არ გჭირდებათ.',
+      'თუ კომპანიამ უკვე მოგცათ 6-ციფრიანი კოდი, ჩაწერეთ ის „ტელეფონის დაკავშირებაში“.',
       'ამის შემდეგ, პარამეტრებში → „შემოწმება გზაზე გასვლამდე“ ნახავთ, რომ ყველაფერი მუშაობს.',
     ],
-    whatsappText: 'გამარჯობა, მინდა NavCam Conductor-ის კოდი. ჩემი სახელია: ',
+    whatsappText: 'გამარჯობა, მაქვს კითხვა NavCam Conductor-ზე. ჩემი სახელია: ',
     privacyTitle: 'კონფიდენციალურობა',
     privacyText: 'მდებარეობა გვჭირდება, რომ გზაზე გიმძღვანოთ და შეტყობინებები გავაუმჯობესოთ. მონაცემები ინახება ევროკავშირის სერვერებზე, იშლება 90 დღეში და არ იყიდება და არავის გადაეცემა.',
     privacyLink: 'კონფიდენციალურობის პოლიტიკა',
@@ -287,7 +286,6 @@ const whatsappHref = `https://wa.me/34620811739?text=${encodeURIComponent(t.what
     <p class="hero__note navcam-meta">{t.meta}</p>
     <p class="hero__note navcam-meta">
       {t.shaIntro} <a href={SHA_URL} rel="noopener">{SHA_URL.replace('https://', '')}</a>{t.shaOutro}
-      <code class="navcam-hash">{SHA}</code>
     </p>
   </section>
 
