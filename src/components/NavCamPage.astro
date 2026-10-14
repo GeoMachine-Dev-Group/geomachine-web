@@ -1,0 +1,360 @@
+---
+/**
+ * Página de producto de NavCam Conductor (app Android para camioneros) con
+ * descarga directa del APK. Es un enlace que se comparte: no está en el menú
+ * ni en la portada. Reutiliza las clases .app-* de AppAccountsPage.
+ * ka y ru: público principal; texto por IA, pendiente de revisión nativa.
+ */
+import Base from '../layouts/Base.astro';
+import { type Lang } from '../i18n/ui';
+import { orgId as buildOrgId } from '../data/organization';
+import { legalPath } from '../data/legal';
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+
+const APK = 'https://conductor.kadrilab.com/descarga/navcam.apk';
+const SHA_URL = 'https://conductor.kadrilab.com/descarga/navcam.apk.sha256.txt';
+const SHA = '740a3acbaf7cabcbd39398c283289f9ad119836644c09f376dac1de42e4f694d';
+const TELEGRAM = 'https://t.me/geomachine';
+const APP_LANGS = 'ქართული, Русский, English, Español, Română, Polski, Українська, Български, Português';
+
+const content = {
+  es: {
+    title: 'NavCam Conductor — navegador para camioneros',
+    description: 'App Android gratuita para camioneros: rutas con las medidas y el peso de tu camión por toda la UE, avisos en vivo y aparcamientos. Descarga directa del APK.',
+    tagline: 'App Android para camioneros · versión de prueba',
+    headline: 'NavCam Conductor: el navegador que conoce tu camión',
+    lead: 'Calcula la ruta con el alto, ancho, largo, peso, ejes y ADR de TU camión, para evitar puentes bajos, límites de peso y calles prohibidas. Cubre la Unión Europea.',
+    download: 'Descargar APK · 50 MB',
+    meta: 'Versión 0.1.0 (prueba) · Android 7.0 o superior · solo Android, no iPhone por ahora',
+    shaIntro: 'Huella SHA-256 del fichero, por si quieres comprobarla (el valor oficial se lee en',
+    shaOutro: '):',
+    warnTitle: 'Aviso: versión de prueba',
+    warn: [
+      'Esta es una versión de prueba. Es una ayuda para conducir: no sustituye al navegador de tu empresa ni a las señales.',
+      'Las señales de la carretera mandan siempre.',
+      'No toques el móvil mientras el camión está en marcha.',
+    ],
+    featuresTitle: 'Qué hace',
+    features: [
+      { title: 'Ruta a la medida de tu camión', desc: 'Pones alto, ancho, largo, peso, ejes y ADR, y la ruta evita puentes bajos, límites de peso y calles prohibidas para ti.' },
+      { title: 'Avisos en vivo', desc: 'Obras, cortes, restricciones y zonas de bajas emisiones en tu camino.' },
+      { title: 'Aparcamientos y áreas para camiones', desc: 'Encuentra dónde parar y descansar, con buscador incluido.' },
+      { title: 'Toda la Unión Europea', desc: 'Una sola app para tus viajes por los países de la UE, en nueve idiomas.' },
+    ],
+    langsLabel: 'Idiomas de la app',
+    installTitle: 'Cómo instalarla',
+    installSteps: [
+      '1. Abre esta página en tu móvil Android y pulsa «Descargar APK».',
+      '2. Abre el fichero descargado. Android te pedirá permitir «instalar apps de origen desconocido» para el navegador: permítelo solo para esta instalación.',
+      '3. Pulsa «Instalar».',
+      '4. Abre NavCam Conductor y elige tu idioma.',
+    ],
+    startTitle: 'Cómo empezar',
+    startText: [
+      'La app pide un código de 6 dígitos para vincular tu móvil. Ese código te lo damos nosotros.',
+      'Escríbenos por WhatsApp o Telegram con tu nombre y las medidas del camión cargado.',
+      'El código caduca a los 10 minutos: pídelo cuando tengas el móvil a mano.',
+      'Después, en Ajustes → «Comprobaciones para la carretera» se revisa que todo funciona.',
+    ],
+    whatsappText: 'Hola, quiero el código de NavCam Conductor. Mi nombre: ',
+    privacyTitle: 'Privacidad',
+    privacyText: 'La ubicación se usa para guiarte y para mejorar los avisos. Los datos se guardan en servidores de la UE, se borran a los 90 días y no se venden ni se ceden.',
+    privacyLink: 'Política de privacidad',
+    faqTitle: 'Preguntas',
+    faq: [
+      { q: '¿Cuesta dinero?', a: 'No. Es gratis durante la prueba.' },
+      { q: '¿Funciona sin internet?', a: 'Necesita datos móviles para calcular la ruta y recibir avisos.' },
+      { q: '¿Y en iPhone?', a: 'Todavía no. Por ahora solo Android.' },
+    ],
+    backToHome: 'Volver a GeoMachine',
+  },
+  ru: {
+    title: 'NavCam Conductor — навигатор для дальнобойщиков',
+    description: 'Бесплатное Android-приложение для водителей грузовиков: маршрут с размерами и весом вашего грузовика по всему ЕС, оповещения и стоянки. Скачать APK.',
+    tagline: 'Android-приложение для водителей · тестовая версия',
+    headline: 'NavCam Conductor: навигатор, который знает ваш грузовик',
+    lead: 'Строит маршрут с учётом высоты, ширины, длины, веса, осей и ADR именно вашего грузовика. Обходит низкие мосты, ограничения по весу и закрытые для грузовиков улицы. Работает по всему Европейскому союзу.',
+    download: 'Скачать APK · 50 МБ',
+    meta: 'Версия 0.1.0 (тест) · Android 7.0 и выше · только Android, iPhone пока нет',
+    shaIntro: 'Контрольная сумма SHA-256 файла, если хотите проверить (официальное значение читается по адресу',
+    shaOutro: '):',
+    warnTitle: 'Внимание: тестовая версия',
+    warn: [
+      'Это тестовая версия. Она помогает в пути, но не заменяет навигатор вашей компании и дорожные знаки.',
+      'Дорожные знаки главнее всегда.',
+      'Не трогайте телефон, пока грузовик едет.',
+    ],
+    featuresTitle: 'Что умеет',
+    features: [
+      { title: 'Маршрут под ваш грузовик', desc: 'Вы вводите высоту, ширину, длину, вес, оси и ADR. Маршрут обходит низкие мосты, ограничения по весу и запрещённые улицы.' },
+      { title: 'Оповещения в реальном времени', desc: 'Ремонт дорог, перекрытия, ограничения и зоны низких выбросов на вашем пути.' },
+      { title: 'Стоянки и площадки для грузовиков', desc: 'Найдите, где остановиться и отдохнуть. Есть поиск.' },
+      { title: 'Весь Европейский союз', desc: 'Одно приложение для рейсов по странам ЕС, на девяти языках.' },
+    ],
+    langsLabel: 'Языки приложения',
+    installTitle: 'Как установить',
+    installSteps: [
+      '1. Откройте эту страницу на телефоне с Android и нажмите «Скачать APK».',
+      '2. Откройте скачанный файл. Android попросит разрешить браузеру «установку приложений из неизвестных источников». Разрешите только для этой установки.',
+      '3. Нажмите «Установить».',
+      '4. Откройте NavCam Conductor и выберите язык.',
+    ],
+    startTitle: 'Как начать',
+    startText: [
+      'Приложение просит 6-значный код, чтобы привязать телефон. Этот код выдаём мы.',
+      'Напишите нам в WhatsApp или Telegram: имя и размеры вашего гружёного грузовика.',
+      'Код действует 10 минут, поэтому просите его, когда телефон под рукой.',
+      'Потом в Настройках → «Проверки для дороги» можно убедиться, что всё работает.',
+    ],
+    whatsappText: 'Здравствуйте, хочу получить код NavCam Conductor. Моё имя: ',
+    privacyTitle: 'Конфиденциальность',
+    privacyText: 'Местоположение нужно, чтобы вести вас по маршруту и улучшать оповещения. Данные хранятся на серверах в ЕС, удаляются через 90 дней, не продаются и не передаются.',
+    privacyLink: 'Политика конфиденциальности',
+    faqTitle: 'Вопросы',
+    faq: [
+      { q: 'Это платно?', a: 'Нет. Во время теста бесплатно.' },
+      { q: 'Работает без интернета?', a: 'Нужен мобильный интернет: для расчёта маршрута и оповещений.' },
+      { q: 'А на iPhone?', a: 'Пока нет. Сейчас только Android.' },
+    ],
+    backToHome: 'Назад в GeoMachine',
+  },
+  en: {
+    title: 'NavCam Conductor — truck navigation app for Android',
+    description: 'Free Android app for truck drivers: routes built around your own truck height, width and weight across the EU, live alerts and truck parking. Direct APK download.',
+    tagline: 'Android app for truck drivers · test version',
+    headline: 'NavCam Conductor: the navigator that knows your truck',
+    lead: 'It plans the route with the height, width, length, weight, axles and ADR of YOUR truck, to avoid low bridges, weight limits and streets closed to trucks. It covers the European Union.',
+    download: 'Download APK · 50 MB',
+    meta: 'Version 0.1.0 (test) · Android 7.0 or newer · Android only, no iPhone for now',
+    shaIntro: 'SHA-256 fingerprint of the file, if you want to check it (the official value is read at',
+    shaOutro: '):',
+    warnTitle: 'Notice: test version',
+    warn: [
+      'This is a test version. It is a driving aid: it does not replace your company navigator or the road signs.',
+      'Road signs always come first.',
+      'Do not touch your phone while the truck is moving.',
+    ],
+    featuresTitle: 'What it does',
+    features: [
+      { title: 'Routes made for your truck', desc: 'Enter height, width, length, weight, axles and ADR, and the route avoids low bridges, weight limits and streets banned for you.' },
+      { title: 'Live alerts', desc: 'Roadworks, closures, restrictions and low-emission zones on your way.' },
+      { title: 'Truck parking and rest areas', desc: 'Find where to stop and rest, with a built-in search.' },
+      { title: 'The whole European Union', desc: 'One app for your trips across EU countries, in nine languages.' },
+    ],
+    langsLabel: 'App languages',
+    installTitle: 'How to install',
+    installSteps: [
+      '1. Open this page on your Android phone and tap “Download APK”.',
+      '2. Open the downloaded file. Android will ask you to allow “install unknown apps” for your browser: allow it only for this installation.',
+      '3. Tap “Install”.',
+      '4. Open NavCam Conductor and choose your language.',
+    ],
+    startTitle: 'Getting started',
+    startText: [
+      'The app asks for a 6-digit code to link your phone. We give you that code.',
+      'Write to us on WhatsApp or Telegram with your name and the dimensions of your loaded truck.',
+      'The code expires after 10 minutes, so ask for it when you have your phone at hand.',
+      'Then, in Settings → “Road checks”, you can confirm that everything works.',
+    ],
+    whatsappText: 'Hi, I would like the NavCam Conductor code. My name: ',
+    privacyTitle: 'Privacy',
+    privacyText: 'Your location is used to guide you and to improve the alerts. Data is stored on servers in the EU, deleted after 90 days, and never sold or shared.',
+    privacyLink: 'Privacy policy',
+    faqTitle: 'Questions',
+    faq: [
+      { q: 'Does it cost money?', a: 'No. It is free during the test.' },
+      { q: 'Does it work offline?', a: 'It needs mobile data to plan the route and receive alerts.' },
+      { q: 'What about iPhone?', a: 'Not yet. Android only for now.' },
+    ],
+    backToHome: 'Back to GeoMachine',
+  },
+  // ka: público principal; traducido por IA, pendiente de revisión nativa.
+  ka: {
+    title: 'NavCam Conductor — ნავიგატორი სატვირთო მძღოლებისთვის',
+    description: 'უფასო Android აპი სატვირთო მძღოლებისთვის: მარშრუტი თქვენი სატვირთოს ზომითა და წონით მთელ ევროკავშირში, ცოცხალი შეტყობინებები და პარკინგები. APK პირდაპირ.',
+    tagline: 'Android აპი სატვირთო მძღოლებისთვის · სატესტო ვერსია',
+    headline: 'NavCam Conductor: ნავიგატორი, რომელმაც იცის თქვენი სატვირთო',
+    lead: 'მარშრუტს ითვლის თქვენი სატვირთოს სიმაღლით, სიგანით, სიგრძით, წონით, ღერძებით და ADR-ით. თავს არიდებს დაბალ ხიდებს, წონის შეზღუდვებს და სატვირთოებისთვის აკრძალულ ქუჩებს. მოიცავს ევროკავშირს.',
+    download: 'APK-ს ჩამოტვირთვა · 50 მბ',
+    meta: 'ვერსია 0.1.0 (სატესტო) · Android 7.0 ან უფრო ახალი · მხოლოდ Android, iPhone-ზე ჯერ არა',
+    shaIntro: 'ფაილის SHA-256 კონტროლური ჯამი, თუ გინდათ შეამოწმოთ (ოფიციალური მნიშვნელობა იკითხება მისამართზე',
+    shaOutro: '):',
+    warnTitle: 'ყურადღება: სატესტო ვერსია',
+    warn: [
+      'ეს სატესტო ვერსიაა. ის გზაზე დამხმარეა და არ ცვლის თქვენი კომპანიის ნავიგატორს და საგზაო ნიშნებს.',
+      'საგზაო ნიშნები ყოველთვის წინაა.',
+      'არ შეეხოთ ტელეფონს, სანამ სატვირთო მოძრაობს.',
+    ],
+    featuresTitle: 'რას აკეთებს',
+    features: [
+      { title: 'მარშრუტი თქვენი სატვირთოსთვის', desc: 'შეიყვანეთ სიმაღლე, სიგანე, სიგრძე, წონა, ღერძები და ADR. მარშრუტი ავლის დაბალ ხიდებს, წონის შეზღუდვებს და თქვენთვის აკრძალულ ქუჩებს.' },
+      { title: 'ცოცხალი შეტყობინებები', desc: 'სამუშაოები გზაზე, გადაკეტვები, შეზღუდვები და დაბალი ემისიის ზონები თქვენს გზაზე.' },
+      { title: 'პარკინგები და სატვირთოების უბნები', desc: 'იპოვეთ, სად გაჩერდეთ და დაისვენოთ. ძიებაც არის.' },
+      { title: 'მთელი ევროკავშირი', desc: 'ერთი აპი ევროკავშირის ქვეყნებში მგზავრობისთვის, ცხრა ენაზე.' },
+    ],
+    langsLabel: 'აპის ენები',
+    installTitle: 'როგორ დავაყენოთ',
+    installSteps: [
+      '1. გახსენით ეს გვერდი Android ტელეფონზე და დააჭირეთ „APK-ს ჩამოტვირთვას“.',
+      '2. გახსენით ჩამოტვირთული ფაილი. Android მოგთხოვთ ბრაუზერისთვის „უცნობი წყაროდან აპების დაყენების“ ნებართვას. მიეცით ნებართვა მხოლოდ ამ დაყენებისთვის.',
+      '3. დააჭირეთ „დაყენებას“.',
+      '4. გახსენით NavCam Conductor და აირჩიეთ ენა.',
+    ],
+    startTitle: 'როგორ დავიწყოთ',
+    startText: [
+      'აპი ტელეფონის დასაკავშირებლად 6-ციფრიან კოდს ითხოვს. ამ კოდს ჩვენ გაძლევთ.',
+      'მოგვწერეთ WhatsApp-ში ან Telegram-ში: თქვენი სახელი და დატვირთული სატვირთოს ზომები.',
+      'კოდი 10 წუთში ძალას კარგავს, ამიტომ მოითხოვეთ მაშინ, როცა ტელეფონი ხელთ გაქვთ.',
+      'ამის შემდეგ, პარამეტრებში → „გზის შემოწმება“ ნახავთ, რომ ყველაფერი მუშაობს.',
+    ],
+    whatsappText: 'გამარჯობა, მინდა NavCam Conductor-ის კოდი. ჩემი სახელია: ',
+    privacyTitle: 'კონფიდენციალურობა',
+    privacyText: 'მდებარეობა გვჭირდება, რომ გზაზე გიმძღვანოთ და შეტყობინებები გავაუმჯობესოთ. მონაცემები ინახება ევროკავშირის სერვერებზე, იშლება 90 დღეში და არ იყიდება და არავის გადაეცემა.',
+    privacyLink: 'კონფიდენციალურობის პოლიტიკა',
+    faqTitle: 'კითხვები',
+    faq: [
+      { q: 'ფასიანია?', a: 'არა. ტესტის დროს უფასოა.' },
+      { q: 'მუშაობს ინტერნეტის გარეშე?', a: 'მობილური ინტერნეტი სჭირდება მარშრუტის გამოსათვლელად და შეტყობინებების მისაღებად.' },
+      { q: 'iPhone-ზე?', a: 'ჯერ არა. ამჟამად მხოლოდ Android.' },
+    ],
+    backToHome: 'GeoMachine-ზე დაბრუნება',
+  },
+};
+
+const t = content[lang];
+const site = 'https://geomachine.es';
+
+const hreflangAlternates = [
+  { hreflang: 'x-default', href: `${site}/es/servicios/navcam-conductor/` },
+  { hreflang: 'es', href: `${site}/es/servicios/navcam-conductor/` },
+  { hreflang: 'en', href: `${site}/en/services/navcam-conductor/` },
+  { hreflang: 'ru', href: `${site}/ru/uslugi/navcam-conductor/` },
+  { hreflang: 'ka', href: `${site}/ka/momsakhurebebi/navcam-conductor/` },
+];
+const pageUrl = hreflangAlternates.find((a) => a.hreflang === lang)!.href;
+const orgId = buildOrgId(site);
+const whatsappHref = `https://wa.me/34620811739?text=${encodeURIComponent(t.whatsappText)}`;
+---
+
+<Base
+  lang={lang}
+  title={t.title}
+  description={t.description}
+  pageUrl={pageUrl}
+  hreflangAlternates={hreflangAlternates}
+  schema="none"
+>
+  <Fragment slot="head">
+    <script type="application/ld+json" is:inline set:html={JSON.stringify({
+      '@context': 'https://schema.org',
+      '@graph': [
+        {
+          '@type': 'WebPage',
+          '@id': `${pageUrl}#webpage`,
+          url: pageUrl,
+          name: t.title,
+          description: t.description,
+          inLanguage: lang,
+          isPartOf: { '@id': orgId },
+          about: { '@id': orgId },
+        },
+        {
+          '@type': 'SoftwareApplication',
+          '@id': `${pageUrl}#app`,
+          name: 'NavCam Conductor',
+          operatingSystem: 'Android 7.0+',
+          applicationCategory: 'TravelApplication',
+          softwareVersion: '0.1.0',
+          downloadUrl: APK,
+          provider: { '@id': orgId },
+        },
+      ],
+    })} />
+  </Fragment>
+
+  <section class="hero app-hero shell">
+    <p class="hero__eyebrow">{t.tagline}</p>
+    <h1 class="hero__title">{t.headline}</h1>
+    <p class="hero__body">{t.lead}</p>
+
+    <div class="app-hero__downloads">
+      <a href={APK} download class="app-download app-download--primary">{t.download}</a>
+    </div>
+    <p class="hero__note navcam-meta">{t.meta}</p>
+    <p class="hero__note navcam-meta">
+      {t.shaIntro} <a href={SHA_URL} rel="noopener">{SHA_URL.replace('https://', '')}</a>{t.shaOutro}
+      <code class="navcam-hash">{SHA}</code>
+    </p>
+  </section>
+
+  <section class="shell app-section">
+    <div class="app-panel">
+      <div>
+        <h2 class="app-panel__title app-panel__title--stamp">⚠️ {t.warnTitle}</h2>
+        <ul class="app-panel__steps">
+          {t.warn.map((line) => <li>{line}</li>)}
+        </ul>
+      </div>
+    </div>
+
+    <h2 class="app-section__title">{t.featuresTitle}</h2>
+    <div class="app-features">
+      {t.features.map(({ title, desc }) => (
+        <div class="app-feature">
+          <h3 class="app-feature__title">{title}</h3>
+          <p class="app-feature__text">{desc}</p>
+        </div>
+      ))}
+    </div>
+    <p class="app-panel__text navcam-langs"><strong>{t.langsLabel}:</strong> {APP_LANGS}</p>
+
+    <div class="app-panel">
+      <div>
+        <h2 class="app-panel__title">{t.installTitle}</h2>
+        <ul class="app-panel__steps">
+          {t.installSteps.map((s) => <li>{s}</li>)}
+        </ul>
+      </div>
+
+      <div>
+        <h2 class="app-panel__title">{t.startTitle}</h2>
+        <ul class="app-panel__steps">
+          {t.startText.map((s) => <li>{s}</li>)}
+        </ul>
+        <div class="app-hero__downloads">
+          <a href={whatsappHref} class="app-download" target="_blank" rel="noopener noreferrer">WhatsApp</a>
+          <a href={TELEGRAM} class="app-download" target="_blank" rel="noopener noreferrer">Telegram</a>
+        </div>
+      </div>
+    </div>
+
+    <div class="app-panel">
+      <div>
+        <h2 class="app-panel__title">{t.privacyTitle}</h2>
+        <p class="app-panel__text">{t.privacyText}</p>
+        <p class="app-panel__text"><a href={legalPath('privacy', lang)}>{t.privacyLink}</a></p>
+      </div>
+
+      <div>
+        <h2 class="app-panel__title">{t.faqTitle}</h2>
+        <ul class="app-panel__steps">
+          {t.faq.map(({ q, a }) => <li><strong>{q}</strong> {a}</li>)}
+        </ul>
+      </div>
+    </div>
+
+    <div class="app-back">
+      <a href="/">← {t.backToHome}</a>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .navcam-meta { margin-top: var(--space-4); }
+  .navcam-hash { display: block; margin-top: var(--space-2); overflow-wrap: anywhere; font-family: var(--data); font-size: var(--fs-2xs); }
+  .navcam-langs { margin-bottom: var(--space-16); }
+</style>
