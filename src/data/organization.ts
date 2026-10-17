@@ -80,6 +80,9 @@ export function buildOrganization(site: string, lang: Lang) {
     founder: { '@type': 'Person', name: 'Romeo Mikava' },
     image: `${site}/og/og-${lang}.png`,
     sameAs: [
+      /** Ficha de Google (Perfil de Empresa). Une la web y la ficha como la
+          misma entidad ante Google y ante las IA. */
+      'https://maps.google.com/?cid=16680236263507742665',
       'https://t.me/geomachine',
       'https://wa.me/34620811739',
       'https://github.com/GeoMachine-Dev-Group',
