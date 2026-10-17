@@ -57,7 +57,8 @@ export function buildOrganization(site: string, lang: Lang) {
     '@id': orgId(site),
     name: t.company,
     url: site,
-    logo: `${site}/favicon.png`,
+    /** Google pide un logo de al menos 112×112; favicon.png es de 32×32. */
+    logo: `${site}/icon-512.png`,
     description: t.metaDescription,
     priceRange,
     areaServed: [
