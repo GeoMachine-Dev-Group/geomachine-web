@@ -1,16 +1,9 @@
 # Publicar en un VPS
 
-> **Estado (2026-08-12): el flujo activo es Netlify, no este documento.**
-> El VPS de OVH tiene un ticket de soporte abierto y bloqueado; mientras no se
-> resuelva, `geomachine.es` se despliega con `netlify deploy --prod --dir=dist`
-> (ver `.netlify/` para el `site_id` vinculado — no versionado). Las cabeceras
-> de seguridad y el caché inmutable que este documento describe para nginx
-> están replicados para Netlify en `public/_headers`, y el redirect de `/` en
-> `public/_redirects`.
->
-> Esta guía se deja intacta a propósito: si el ticket de OVH se resuelve y se
-> retoma el VPS, `deploy.sh` y `deploy/nginx/` ya están listos para usarse tal
-> cual.
+> **Estado (2026-10-17): geomachine.es lo sirve Vercel** (`server: Vercel`), que publica solo al hacer push de `main` a
+> `github`. El flujo completo está en `AGENTS.md`, sección 0. **No usar `netlify deploy`**: el sitio de Netlify
+> (`playful-custard-a949a1`) ya no es el dominio, y con el adaptador de Vercel lo compilado va a `dist/client`, así que
+> allí queda roto. Esta guía de VPS (OVH) se deja por si algún día se retoma.
 
 El sitio es **estático**: `npm run build` deja en `dist/` unos 1,5 MB sin nada que
 ejecutar en el servidor. No hace falta Node en el VPS, ni base de datos, ni proceso
