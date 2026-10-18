@@ -15,8 +15,8 @@ interface Props {
 }
 const { lang } = Astro.props;
 
-const APK = 'https://conductor.kadrilab.com/descarga/navcam.apk';
-const SHA_URL = 'https://conductor.kadrilab.com/descarga/navcam.apk.sha256.txt';
+const APK = 'https://conductor.kadrilab.com/descarga/optimus.apk';
+const SHA_URL = 'https://conductor.kadrilab.com/descarga/optimus.apk.sha256.txt';
 const TELEGRAM = 'https://t.me/geomachine';
 const APP_LANGS = 'ქართული, Русский, English, Español, Română, Polski, Українська, Български, Português';
 
@@ -228,11 +228,11 @@ const t = content[lang];
 const site = 'https://geomachine.es';
 
 const hreflangAlternates = [
-  { hreflang: 'x-default', href: `${site}/es/servicios/navcam-conductor/` },
-  { hreflang: 'es', href: `${site}/es/servicios/navcam-conductor/` },
-  { hreflang: 'en', href: `${site}/en/services/navcam-conductor/` },
-  { hreflang: 'ru', href: `${site}/ru/uslugi/navcam-conductor/` },
-  { hreflang: 'ka', href: `${site}/ka/momsakhurebebi/navcam-conductor/` },
+  { hreflang: 'x-default', href: `${site}/es/servicios/optimus/` },
+  { hreflang: 'es', href: `${site}/es/servicios/optimus/` },
+  { hreflang: 'en', href: `${site}/en/services/optimus/` },
+  { hreflang: 'ru', href: `${site}/ru/uslugi/optimus/` },
+  { hreflang: 'ka', href: `${site}/ka/momsakhurebebi/optimus/` },
 ];
 const pageUrl = hreflangAlternates.find((a) => a.hreflang === lang)!.href;
 const orgId = buildOrgId(site);

@@ -77,6 +77,10 @@ export default defineConfig({
   trailingSlash: 'always',
   redirects: {
     '/': '/es/servicios/',
+    '/es/servicios/navcam-conductor/': '/es/servicios/optimus/',
+    '/en/services/navcam-conductor/': '/en/services/optimus/',
+    '/ru/uslugi/navcam-conductor/': '/ru/uslugi/optimus/',
+    '/ka/momsakhurebebi/navcam-conductor/': '/ka/momsakhurebebi/optimus/',
   },
   i18n: {
     defaultLocale: 'es',
