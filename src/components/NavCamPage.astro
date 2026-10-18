@@ -246,6 +246,12 @@ const whatsappHref = `https://wa.me/34620811739?text=${encodeURIComponent(t.what
   pageUrl={pageUrl}
   hreflangAlternates={hreflangAlternates}
   schema="none"
+  ogImage={`${site}/optimus/og-optimus.png`}
+  icons={{
+    svg: '/optimus/simbolo.svg',
+    png32: '/optimus/favicon-32.png',
+    appleTouch: '/optimus/apple-touch-icon.png',
+  }}
 >
   <Fragment slot="head">
     <script type="application/ld+json" is:inline set:html={JSON.stringify({
@@ -276,6 +282,7 @@ const whatsappHref = `https://wa.me/34620811739?text=${encodeURIComponent(t.what
   </Fragment>
 
   <section class="hero app-hero shell">
+    <img class="optimus-logo" src="/optimus/logotipo-sobre-oscuro.svg" alt="Optimus" width="308" height="90" />
     <p class="hero__eyebrow">{t.tagline}</p>
     <h1 class="hero__title">{t.headline}</h1>
     <p class="hero__body">{t.lead}</p>
@@ -352,6 +359,8 @@ const whatsappHref = `https://wa.me/34620811739?text=${encodeURIComponent(t.what
 </Base>
 
 <style>
+  /* La O empieza a 22,3 de los 308,4 de ancho del SVG (7,2 %): se compensa para alinearla con el texto. */
+  .optimus-logo { display: block; width: min(100%, 19rem); height: auto; margin: 0 0 var(--space-6) calc(-0.072 * min(100%, 19rem)); }
   .navcam-meta { margin-top: var(--space-4); }
   .navcam-hash { display: block; margin-top: var(--space-2); overflow-wrap: anywhere; font-family: var(--data); font-size: var(--fs-2xs); }
   .navcam-langs { margin-bottom: var(--space-16); }

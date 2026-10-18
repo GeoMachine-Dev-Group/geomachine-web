@@ -25,6 +25,8 @@ interface Props {
   title?: string;
   description?: string;
   ogImage?: string;
+  /** Iconos propios de la página (una app con su marca). Sin ellos, los de GeoMachine. */
+  icons?: { svg: string; png32: string; appleTouch: string };
   ogType?: 'website' | 'article';
   hreflangAlternates?: HreflangAlt[];
   /** 'catalog' (por defecto) renderiza el JSON-LD del catálogo. 'none' lo
@@ -47,6 +49,11 @@ const pageUrl = Astro.props.pageUrl ?? site + servicesPath[lang];
 const title = Astro.props.title ?? t.metaTitle;
 const description = Astro.props.description ?? t.metaDescription;
 const ogLocale: Record<Lang, string> = { es: 'es_ES', ru: 'ru_RU', en: 'en_US', ka: 'ka_GE' };
+const icons = Astro.props.icons ?? {
+  svg: '/favicon.svg',
+  png32: '/favicon.png',
+  appleTouch: '/apple-touch-icon.png',
+};
 const ogImage = Astro.props.ogImage ?? `${site}/og/og-${lang}.png`;
 const hreflangAlternates: HreflangAlt[] =
   Astro.props.hreflangAlternates ??
@@ -71,9 +78,9 @@ const preloadFont: Record<Lang, string> = {
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <link rel="icon" type="image/png" sizes="32x32" href="/favicon.png" />
-    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <link rel="icon" type="image/svg+xml" href={icons.svg} />
+    <link rel="icon" type="image/png" sizes="32x32" href={icons.png32} />
+    <link rel="apple-touch-icon" href={icons.appleTouch} />
 
     <title>{title}</title>
     <meta name="description" content={description} />
