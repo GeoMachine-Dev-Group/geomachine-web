@@ -168,6 +168,13 @@ const MARK_WORD = 'GeoMachine';
 const markLetters = [...MARK_WORD].map((ch, i) => ({ ch, delay: `${(0.6 + i * 0.085).toFixed(3)}s` }));
 
 /** Página de GeoMachine Accounts en cada idioma (el slug español es distinto). */
+const optimusHref: Record<Lang, string> = {
+  es: '/es/servicios/optimus/',
+  en: '/en/services/optimus/',
+  ru: '/ru/uslugi/optimus/',
+  ka: '/ka/momsakhurebebi/optimus/',
+};
+
 const accountsHref: Record<Lang, string> = {
   es: '/es/servicios/app-cuentas/',
   en: '/en/services/app-accounts/',
@@ -270,6 +277,10 @@ const featuredMap: Record<string, Record<Lang, string>> = {
     <li>
       <span class="proof__tag">{t.proofDesktopApp}</span>
       <a href={accountsHref[lang]}>GeoMachine Accounts</a>
+    </li>
+    <li>
+      <span class="proof__tag">{t.proofTruckApp}</span>
+      <a href={optimusHref[lang]}>Optimus</a>
     </li>
     <li>
       <span class="proof__tag">{t.statusDev}</span>
