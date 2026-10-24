@@ -1,0 +1,65 @@
+---
+/**
+ * Hoja A4 imprimible con el QR de https://geomachine.es/optimus para pegar en
+ * la cabina o en la oficina. El QR se genera en el build como SVG.
+ */
+import QRCode from 'qrcode';
+
+const URL_CORTA = 'https://geomachine.es/optimus';
+const svg = await QRCode.toString(URL_CORTA, {
+  type: 'svg',
+  errorCorrectionLevel: 'Q',
+  margin: 2,
+  color: { dark: '#000000', light: '#ffffff' },
+});
+const lines = [
+  { lang: 'es', text: 'Escanea para descargar' },
+  { lang: 'ru', text: 'Сканируйте, чтобы скачать' },
+  { lang: 'en', text: 'Scan to download' },
+  { lang: 'ka', text: 'დაასკანირეთ ჩამოსატვირთად' },
+];
+---
+
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Optimus — QR para imprimir</title>
+    <meta name="robots" content="noindex, nofollow" />
+    <link rel="icon" type="image/svg+xml" href="/optimus/simbolo.svg" />
+    <style>
+      @page { size: A4 portrait; margin: 15mm; }
+      * { box-sizing: border-box; }
+      body { margin: 0; background: #e9e9e9; color: #111; font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif; }
+      .toolbar { text-align: center; padding: 12px; }
+      .toolbar button { font: inherit; padding: 8px 20px; cursor: pointer; }
+      .sheet { width: 210mm; min-height: 297mm; margin: 0 auto 24px; background: #fff; padding: 20mm 15mm; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; gap: 8mm; }
+      .logo { width: 90mm; height: auto; }
+      h1 { margin: 0; font-size: 22pt; font-weight: 600; letter-spacing: .01em; }
+      .qr { width: 130mm; height: 130mm; }
+      .qr svg { width: 100%; height: 100%; display: block; }
+      .url { font-size: 24pt; font-weight: 700; font-family: ui-monospace, 'SFMono-Regular', Consolas, monospace; margin: 0; }
+      .scan { list-style: none; margin: 0; padding: 0; font-size: 16pt; line-height: 1.5; }
+      @media (max-width: 800px) { .sheet { width: 100%; min-height: 0; padding: 24px 16px; } .qr { width: min(90vw, 130mm); height: auto; aspect-ratio: 1; } .url { font-size: 16pt; } }
+      @media print {
+        body { background: #fff; }
+        .toolbar { display: none; }
+        .sheet { width: auto; min-height: 0; height: 267mm; margin: 0; padding: 0; page-break-inside: avoid; }
+        * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+      }
+    </style>
+  </head>
+  <body>
+    <div class="toolbar"><button type="button" onclick="window.print()">Imprimir / Print</button></div>
+    <main class="sheet">
+      <img class="logo" src="/optimus/logotipo-sobre-claro.svg" alt="Optimus" />
+      <h1>Navegador para camiones</h1>
+      <div class="qr" role="img" aria-label={`QR: ${URL_CORTA}`} set:html={svg} />
+      <p class="url">{URL_CORTA.replace('https://', '')}</p>
+      <ul class="scan">
+        {lines.map(({ lang, text }) => <li lang={lang}>{text}</li>)}
+      </ul>
+    </main>
+  </body>
+</html>

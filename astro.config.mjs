@@ -92,7 +92,8 @@ export default defineConfig({
   integrations: [
     sitemap({
       // La raíz solo es un redirect a /es/servicios/: no debe indexarse.
-      filter: (page) => page !== `${SITE}/`,
+      // /optimus/ (enlace corto) y /optimus/qr/ son noindex.
+      filter: (page) => page !== `${SITE}/` && !page.startsWith(`${SITE}/optimus/`),
       serialize(item) {
         if (lastmod[item.url]) item.lastmod = lastmod[item.url];
         if (serviceUrls.includes(item.url)) {

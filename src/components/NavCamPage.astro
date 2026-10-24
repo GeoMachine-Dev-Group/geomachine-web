@@ -9,13 +9,15 @@ import Base from '../layouts/Base.astro';
 import { type Lang } from '../i18n/ui';
 import { orgId as buildOrgId } from '../data/organization';
 import { legalPath } from '../data/legal';
+import { APK_URL, MANIFEST_URL, loadManifest, novedadesFor, formatFecha, mb } from '../data/optimusManifest';
 
 interface Props {
   lang: Lang;
 }
 const { lang } = Astro.props;
 
-const APK = 'https://app.geomachine.es/descarga/optimus.apk';
+const APK = APK_URL;
+const { manifest } = await loadManifest();
 const SHA_URL = 'https://app.geomachine.es/descarga/optimus.apk.sha256.txt';
 const TELEGRAM = 'https://t.me/geomachine';
 const APP_LANGS = 'ქართული, Русский, English, Español, Română, Polski, Українська, Български, Português';
@@ -27,8 +29,10 @@ const content = {
     tagline: 'App Android para camioneros · versión de prueba',
     headline: 'Optimus: el navegador que conoce tu camión',
     lead: 'Calcula la ruta con el alto, ancho, largo, peso, ejes y ADR de TU camión, para evitar puentes bajos, límites de peso y calles prohibidas. Cubre la Unión Europea.',
-    download: 'Descargar APK · 72 MB',
-    meta: 'Versión 0.1.0 (prueba) · Android 7.0 o superior · solo Android, no iPhone por ahora',
+    download: 'Descargar APK · {mb} MB',
+    meta: 'Versión {version} · {fecha} · Android 7.0 o superior · solo Android, no iPhone por ahora',
+    newsTitle: 'Novedades de esta versión',
+    qrLink: 'QR para imprimir',
     shaIntro: 'Huella SHA-256 del fichero, por si quieres comprobarla (el valor oficial se lee en',
     shaOutro: ').',
     warnTitle: 'Aviso: versión de prueba',
@@ -77,8 +81,10 @@ const content = {
     tagline: 'Android-приложение для водителей · тестовая версия',
     headline: 'Optimus: навигатор, который знает ваш грузовик',
     lead: 'Строит маршрут с учётом высоты, ширины, длины, веса, осей и ADR именно вашего грузовика. Обходит низкие мосты, ограничения по весу и закрытые для грузовиков улицы. Работает по всему Европейскому союзу.',
-    download: 'Скачать APK · 72 МБ',
-    meta: 'Версия 0.1.0 (тест) · Android 7.0 и выше · только Android, iPhone пока нет',
+    download: 'Скачать APK · {mb} МБ',
+    meta: 'Версия {version} · {fecha} · Android 7.0 и выше · только Android, iPhone пока нет',
+    newsTitle: 'Что нового в этой версии',
+    qrLink: 'QR для печати',
     shaIntro: 'Контрольная сумма SHA-256 файла, если хотите проверить (официальное значение читается по адресу',
     shaOutro: ').',
     warnTitle: 'Внимание: тестовая версия',
@@ -127,8 +133,10 @@ const content = {
     tagline: 'Android app for truck drivers · test version',
     headline: 'Optimus: the navigator that knows your truck',
     lead: 'It plans the route with the height, width, length, weight, axles and ADR of YOUR truck, to avoid low bridges, weight limits and streets closed to trucks. It covers the European Union.',
-    download: 'Download APK · 72 MB',
-    meta: 'Version 0.1.0 (test) · Android 7.0 or newer · Android only, no iPhone for now',
+    download: 'Download APK · {mb} MB',
+    meta: 'Version {version} · {fecha} · Android 7.0 or newer · Android only, no iPhone for now',
+    newsTitle: "What's new in this version",
+    qrLink: 'Printable QR',
     shaIntro: 'SHA-256 fingerprint of the file, if you want to check it (the official value is read at',
     shaOutro: ').',
     warnTitle: 'Notice: test version',
@@ -178,8 +186,10 @@ const content = {
     tagline: 'Android აპი სატვირთო მძღოლებისთვის · სატესტო ვერსია',
     headline: 'Optimus: ნავიგატორი, რომელმაც იცის თქვენი სატვირთო',
     lead: 'მარშრუტს ითვლის თქვენი სატვირთოს სიმაღლით, სიგანით, სიგრძით, წონით, ღერძებით და ADR-ით. თავს არიდებს დაბალ ხიდებს, წონის შეზღუდვებს და სატვირთოებისთვის აკრძალულ ქუჩებს. მოიცავს ევროკავშირს.',
-    download: 'APK-ს ჩამოტვირთვა · 72 მბ',
-    meta: 'ვერსია 0.1.0 (სატესტო) · Android 7.0 ან უფრო ახალი · მხოლოდ Android, iPhone-ზე ჯერ არა',
+    download: 'APK-ს ჩამოტვირთვა · {mb} მბ',
+    meta: 'ვერსია {version} · {fecha} · Android 7.0 ან უფრო ახალი · მხოლოდ Android, iPhone-ზე ჯერ არა',
+    newsTitle: 'რა არის ახალი ამ ვერსიაში',
+    qrLink: 'QR დასაბეჭდად',
     shaIntro: 'ფაილის SHA-256 კონტროლური ჯამი, თუ გინდათ შეამოწმოთ (ოფიციალური მნიშვნელობა იკითხება მისამართზე',
     shaOutro: ').',
     warnTitle: 'ყურადღება: სატესტო ვერსია',
@@ -225,6 +235,12 @@ const content = {
 };
 
 const t = content[lang];
+const fill = (tpl: string, m: typeof manifest) =>
+  tpl.replace('{mb}', String(mb(m.bytes))).replace('{version}', m.version).replace('{fecha}', formatFecha(m.fecha, lang));
+const downloadText = fill(t.download, manifest);
+const metaText = fill(t.meta, manifest);
+const news = novedadesFor(manifest, lang);
+const qrHref = '/optimus/qr/';
 const site = 'https://geomachine.es';
 
 const hreflangAlternates = [
@@ -273,7 +289,8 @@ const whatsappHref = `https://wa.me/34620811739?text=${encodeURIComponent(t.what
           name: 'Optimus',
           operatingSystem: 'Android 7.0+',
           applicationCategory: 'TravelApplication',
-          softwareVersion: '0.1.0',
+          softwareVersion: manifest.version,
+          fileSize: `${mb(manifest.bytes)} MB`,
           downloadUrl: APK,
           provider: { '@id': orgId },
         },
@@ -288,9 +305,9 @@ const whatsappHref = `https://wa.me/34620811739?text=${encodeURIComponent(t.what
     <p class="hero__body">{t.lead}</p>
 
     <div class="app-hero__downloads">
-      <a href={APK} download class="app-download app-download--primary">{t.download}</a>
+      <a href={APK} download class="app-download app-download--primary" id="optimus-download">{downloadText}</a>
     </div>
-    <p class="hero__note navcam-meta">{t.meta}</p>
+    <p class="hero__note navcam-meta" id="optimus-meta">{metaText}</p>
     <p class="hero__note navcam-meta">
       {t.shaIntro} <a href={SHA_URL} rel="noopener">{SHA_URL.replace('https://', '')}</a>{t.shaOutro}
     </p>
@@ -302,6 +319,15 @@ const whatsappHref = `https://wa.me/34620811739?text=${encodeURIComponent(t.what
         <h2 class="app-panel__title app-panel__title--stamp">⚠️ {t.warnTitle}</h2>
         <ul class="app-panel__steps">
           {t.warn.map((line) => <li>{line}</li>)}
+        </ul>
+      </div>
+    </div>
+
+    <div class="app-panel" id="optimus-news" hidden={news.length === 0}>
+      <div>
+        <h2 class="app-panel__title">{t.newsTitle}</h2>
+        <ul class="app-panel__steps" id="optimus-news-list">
+          {news.map((line) => <li>{line}</li>)}
         </ul>
       </div>
     </div>
@@ -354,14 +380,68 @@ const whatsappHref = `https://wa.me/34620811739?text=${encodeURIComponent(t.what
 
     <div class="app-back">
       <a href="/">← {t.backToHome}</a>
+      <a href={qrHref} class="navcam-qr" rel="nofollow">{t.qrLink}</a>
     </div>
   </section>
 </Base>
 
+<script
+  define:vars={{
+    lang,
+    manifestUrl: MANIFEST_URL,
+    tpl: { download: t.download, meta: t.meta },
+  }}
+>
+  // El HTML del build ya trae los valores; esto solo los refresca si el
+  // manifiesto publicado ahora es distinto. Si falla, no se toca nada.
+  (async () => {
+    try {
+      const ctrl = new AbortController();
+      const timer = setTimeout(() => ctrl.abort(), 5000);
+      const res = await fetch(manifestUrl, { signal: ctrl.signal, cache: 'no-cache' });
+      clearTimeout(timer);
+      if (!res.ok) return;
+      const m = await res.json();
+      if (!m || typeof m.version !== 'string' || !/^\d{4}-\d{2}-\d{2}$/.test(m.fecha) || !(m.bytes > 0)) return;
+      const locales = { es: 'es-ES', ru: 'ru-RU', en: 'en-GB', ka: 'ka-GE' };
+      const fecha = new Intl.DateTimeFormat(locales[lang] || 'en-GB', {
+        day: 'numeric', month: 'short', year: 'numeric', timeZone: 'UTC',
+      }).format(new Date(m.fecha + 'T12:00:00Z')).replace(/\.(?=\s|$)/g, '');
+      const fill = (s) => s.replace('{mb}', String(Math.round(m.bytes / 1e6))).replace('{version}', m.version).replace('{fecha}', fecha);
+      const setText = (id, text) => {
+        const el = document.getElementById(id);
+        if (el && el.textContent !== text) el.textContent = text;
+      };
+      setText('optimus-download', fill(tpl.download));
+      setText('optimus-meta', fill(tpl.meta));
+      if (typeof m.apk === 'string' && m.apk.startsWith('https://')) {
+        const a = document.getElementById('optimus-download');
+        if (a && a.getAttribute('href') !== m.apk) a.setAttribute('href', m.apk);
+      }
+      const nov = m.novedades || {};
+      const lines = (Array.isArray(nov[lang]) && nov[lang].length ? nov[lang] : nov.en) || [];
+      const box = document.getElementById('optimus-news');
+      const list = document.getElementById('optimus-news-list');
+      if (box && list && Array.isArray(lines)) {
+        const current = Array.from(list.children).map((li) => li.textContent);
+        if (JSON.stringify(current) !== JSON.stringify(lines)) {
+          list.replaceChildren(...lines.map((l) => Object.assign(document.createElement('li'), { textContent: String(l) })));
+        }
+        box.hidden = lines.length === 0;
+      }
+    } catch (_) {
+      // sin red o JSON roto: se queda lo que trajo el build
+    }
+  })();
+</script>
+
 <style>
+  .app-panel[hidden] { display: none; }
   /* La O empieza a 22,3 de los 308,4 de ancho del SVG (7,2 %): se compensa para alinearla con el texto. */
   .optimus-logo { display: block; width: min(100%, 19rem); height: auto; margin: 0 0 var(--space-6) calc(-0.072 * min(100%, 19rem)); }
   .navcam-meta { margin-top: var(--space-4); }
   .navcam-hash { display: block; margin-top: var(--space-2); overflow-wrap: anywhere; font-family: var(--data); font-size: var(--fs-2xs); }
+  .app-back { display: flex; flex-wrap: wrap; justify-content: center; align-items: baseline; gap: var(--space-6); }
+  .app-back .navcam-qr { font-size: var(--fs-2xs); opacity: .75; }
   .navcam-langs { margin-bottom: var(--space-16); }
 </style>
