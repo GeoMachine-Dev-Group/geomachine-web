@@ -24,12 +24,12 @@ export type LegalDoc = 'notice' | 'privacy' | 'cookies';
 
 /** Fecha de la versión vigente. Viaja con cada envío del formulario como
     prueba de qué texto aceptó quien escribe. Cambiarla al tocar los textos. */
-export const LEGAL_VERSION = '2026-09-29';
+export const LEGAL_VERSION = '2026-10-24';
 
 export const HOLDER = {
   name: 'Romeo Mikava',
   trade: 'GeoMachine Developer Group',
-  /** NIE, que para un autónomo extranjero hace de NIF (letra de control verificada). */
+  /** NIE, que para un extranjero hace de NIF (letra de control verificada). */
   nif: 'Z2497033C',
   address: 'Calle Romero, 6, 28292 El Escorial (Madrid), España',
   email: 'hola@geomachine.es',
@@ -79,21 +79,21 @@ const AEPD = 'https://www.aepd.es';
 
 const idLines = {
   es: [
-    `<strong>Titular:</strong> ${HOLDER.name}, persona física que ejerce como trabajador autónomo.`,
+    `<strong>Titular:</strong> ${HOLDER.name}, persona física.`,
     `<strong>Nombre comercial:</strong> ${HOLDER.trade}.`,
     `<strong>NIF:</strong> ${HOLDER.nif}.`,
     `<strong>Domicilio:</strong> ${HOLDER.address}.`,
     `<strong>Email:</strong> ${mail}.`,
   ],
   ru: [
-    `<strong>Владелец:</strong> ${HOLDER.name}, физическое лицо, зарегистрированное в Испании как индивидуальный предприниматель (autónomo).`,
+    `<strong>Владелец:</strong> ${HOLDER.name}, физическое лицо.`,
     `<strong>Коммерческое название:</strong> ${HOLDER.trade}.`,
     `<strong>NIF (налоговый номер):</strong> ${HOLDER.nif}.`,
     `<strong>Адрес:</strong> ${HOLDER.address}.`,
     `<strong>Email:</strong> ${mail}.`,
   ],
   en: [
-    `<strong>Owner:</strong> ${HOLDER.name}, an individual registered in Spain as a self-employed professional (autónomo).`,
+    `<strong>Owner:</strong> ${HOLDER.name}, an individual.`,
     `<strong>Trade name:</strong> ${HOLDER.trade}.`,
     `<strong>Tax ID (NIF):</strong> ${HOLDER.nif}.`,
     `<strong>Address:</strong> ${HOLDER.address}.`,
@@ -113,7 +113,7 @@ export const legal: Record<LegalDoc, Record<LegalLang, LegalText>> = {
     es: {
       title: 'Aviso legal',
       description: 'Datos del titular de geomachine.es, condiciones de uso, propiedad intelectual y legislación aplicable.',
-      updated: 'Última actualización: 29 de septiembre de 2026.',
+      updated: 'Última actualización: 24 de octubre de 2026.',
       sections: [
         { h: 'Titular del sitio web', p: [
           'En cumplimiento del artículo 10 de la Ley 34/2002, de servicios de la sociedad de la información y de comercio electrónico (LSSI), se informa de los datos del titular de geomachine.es:',
@@ -145,7 +145,7 @@ export const legal: Record<LegalDoc, Record<LegalLang, LegalText>> = {
     ru: {
       title: 'Правовая информация',
       description: 'Сведения о владельце geomachine.es, условия использования, интеллектуальная собственность и применимое право.',
-      updated: 'Последнее обновление: 29 сентября 2026 г.',
+      updated: 'Последнее обновление: 24 октября 2026 г.',
       sections: [
         { h: 'Владелец сайта', p: [
           'В соответствии со статьёй 10 испанского Закона 34/2002 об услугах информационного общества и электронной коммерции (LSSI) сообщаем сведения о владельце сайта geomachine.es:',
@@ -177,7 +177,7 @@ export const legal: Record<LegalDoc, Record<LegalLang, LegalText>> = {
     en: {
       title: 'Legal notice',
       description: 'Owner details for geomachine.es, terms of use, intellectual property and governing law.',
-      updated: 'Last updated: 29 September 2026.',
+      updated: 'Last updated: 24 October 2026.',
       sections: [
         { h: 'Website owner', p: [
           'In accordance with Article 10 of Spanish Law 34/2002 on information society services and electronic commerce (LSSI), the owner of geomachine.es is:',
@@ -213,7 +213,7 @@ export const legal: Record<LegalDoc, Record<LegalLang, LegalText>> = {
     es: {
       title: 'Política de privacidad',
       description: 'Qué datos trata geomachine.es, para qué, cuánto tiempo, a quién llegan (Telegram, Vercel) y cómo ejercer tus derechos.',
-      updated: 'Última actualización: 29 de septiembre de 2026.',
+      updated: 'Última actualización: 24 de octubre de 2026.',
       sections: [
         { h: 'Responsable del tratamiento', p: [
           ...idLines.es,
@@ -265,7 +265,7 @@ export const legal: Record<LegalDoc, Record<LegalLang, LegalText>> = {
     ru: {
       title: 'Политика конфиденциальности',
       description: 'Какие данные обрабатывает geomachine.es, зачем, как долго, кому они передаются (Telegram, Vercel) и как реализовать ваши права.',
-      updated: 'Последнее обновление: 29 сентября 2026 г.',
+      updated: 'Последнее обновление: 24 октября 2026 г.',
       sections: [
         { h: 'Кто обрабатывает данные', p: [
           ...idLines.ru,
@@ -317,7 +317,7 @@ export const legal: Record<LegalDoc, Record<LegalLang, LegalText>> = {
     en: {
       title: 'Privacy policy',
       description: 'What data geomachine.es processes, why, for how long, who receives it (Telegram, Vercel) and how to exercise your rights.',
-      updated: 'Last updated: 29 September 2026.',
+      updated: 'Last updated: 24 October 2026.',
       sections: [
         { h: 'Data controller', p: [
           ...idLines.en,
