@@ -729,7 +729,7 @@ html[data-priceanim='blur'] .price-value {
 /* --- Artículo del blog -------------------------------------------------------- */
 
 .post { padding-bottom: clamp(3rem, 8vw, 5rem); }
-.post__header, .post__body, .post-service, .post .blog-related { max-width: 68ch; }
+.post__header, .post__body, .post-author, .post-service, .post .blog-related { max-width: 68ch; }
 .post__pillar {
   display: inline-block; font-family: var(--data); font-size: var(--fs-2xs); letter-spacing: .16em;
   text-transform: uppercase; color: var(--accent); text-decoration: none; border-bottom: 1px solid transparent;
@@ -752,7 +752,11 @@ html[data-priceanim='blur'] .price-value {
 .post__body hr { border: 0; border-top: 1px solid var(--rule); margin: 2.5em 0; }
 .post__body code { font-family: var(--data); font-size: .88em; background: var(--panel-2); border: 1px solid var(--rule-soft); border-radius: var(--radius-xs); padding: .08em .35em; }
 
-.post-service { margin-top: var(--space-12); padding: var(--space-6); background: var(--panel); border: 1px solid var(--rule); border-left: 3px solid var(--accent); border-radius: var(--radius-lg); }
+.post-author { margin-top: var(--space-12); padding-top: var(--space-6); border-top: 1px solid var(--rule); }
+.post-author__label { margin: 0; font-family: var(--data); font-size: var(--fs-3xs); letter-spacing: .16em; text-transform: uppercase; color: var(--accent); }
+.post-author__bio { margin: var(--space-2) 0 0; }
+.post-author__ai { margin: var(--space-2) 0 0; font-size: var(--fs-xs); color: var(--ink-soft); }
+.post-service { margin-top: var(--space-8); padding: var(--space-6); background: var(--panel); border: 1px solid var(--rule); border-left: 3px solid var(--accent); border-radius: var(--radius-lg); }
 .post-service__label { margin: 0; font-family: var(--data); font-size: var(--fs-3xs); letter-spacing: .16em; text-transform: uppercase; color: var(--accent); }
 .post-service__name { margin: var(--space-2) 0 0; font-family: var(--display); font-weight: 600; font-size: var(--fs-xl); color: var(--ink); }
 .post-service__info { margin: .3rem 0 0; font-size: var(--fs-md); color: var(--ink-soft); }

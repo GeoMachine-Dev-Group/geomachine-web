@@ -16,6 +16,23 @@ export function orgId(site: string): string {
   return `${site}/#organization`;
 }
 
+/** @id estable de Romeo Mikava: fundador de la organización y autor de los
+    artículos. Un solo nodo Person para los dos papeles, para que Google y las
+    IA entiendan que quien firma el blog es quien está detrás de la marca. */
+export function founderId(site: string): string {
+  return `${site}/#romeo-mikava`;
+}
+
+export function buildFounder(site: string) {
+  return {
+    '@type': 'Person',
+    '@id': founderId(site),
+    name: 'Romeo Mikava',
+    jobTitle: 'Founder & developer',
+    worksFor: { '@id': orgId(site) },
+  };
+}
+
 /** Solo lo que respalda el catálogo (src/data/catalog.ts). Antes incluía React
     y Flutter, que no aparecen en ningún servicio: para Google y para las IA eso
     es una afirmación sin respaldo en la propia web. */
@@ -77,7 +94,7 @@ export function buildOrganization(site: string, lang: Lang) {
         otras dos que se llaman GeoMachine (la finlandesa de perforación y la
         plataforma británica de mapas), y lo que respalda la promesa del hero:
         quien atiende es quien escribe el código. */
-    founder: { '@type': 'Person', name: 'Romeo Mikava' },
+    founder: buildFounder(site),
     image: `${site}/og/og-${lang}.png`,
     sameAs: [
       /** Ficha de Google (Perfil de Empresa). Une la web y la ficha como la

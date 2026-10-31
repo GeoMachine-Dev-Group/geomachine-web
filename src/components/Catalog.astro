@@ -627,7 +627,7 @@ const featuredMap: Record<string, Record<Lang, string>> = {
 
         // No ocultar ningún campo para mantener la estructura perfecta del formulario
         form.reset();
-        status.textContent = '✓ ' + (form.dataset.msgSuccess || '¡Solicitud recibida! Te responderemos en menos de 24h.');
+        status.textContent = '✓ ' + (form.dataset.msgSuccess || '¡Solicitud recibida! Te respondo en menos de 24 h.');
         setTimeout(() => {
           submitBtn.disabled = false;
         }, 3000);

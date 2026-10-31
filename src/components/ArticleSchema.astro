@@ -2,11 +2,12 @@
 /**
  * JSON-LD para un artículo del blog. No redeclara la organización: Base.astro
  * la emite una vez por página (ver src/data/organization.ts) y este bloque
- * solo referencia su @id — así author/publisher siempre resuelven al mismo
+ * solo referencia su @id — así publisher siempre resuelve al mismo
  * ProfessionalService rico, sin una segunda versión "Organization" mínima.
+ * author es la persona (Romeo Mikava), con el mismo @id que el founder.
  */
 import { ui, type Lang } from '../i18n/ui';
-import { orgId as buildOrgId } from '../data/organization';
+import { orgId as buildOrgId, buildFounder } from '../data/organization';
 
 interface Props {
   lang: Lang;
@@ -39,7 +40,7 @@ const graph = {
       datePublished: pubDate.toISOString(),
       ...(updatedDate ? { dateModified: updatedDate.toISOString() } : {}),
       inLanguage: t.htmlLang,
-      author: { '@id': orgId },
+      author: buildFounder(site),
       publisher: { '@id': orgId },
     },
   ],

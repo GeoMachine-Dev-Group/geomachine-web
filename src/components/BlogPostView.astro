@@ -2,7 +2,8 @@
 /**
  * Plantilla de artículo. es y ru comparten diseño: la página resuelve la
  * entrada, sus relacionados y pasa el contenido renderizado como <slot />.
- * La firma es la empresa, igual que `author` en ArticleSchema.astro.
+ * La firma es la persona (Romeo Mikava), igual que `author` en
+ * ArticleSchema.astro, con una nota de autor al final que dice cómo se usa la IA.
  */
 import type { CollectionEntry } from 'astro:content';
 import BlogNav from './BlogNav.astro';
@@ -26,7 +27,7 @@ const service = relatedService ? relatedServiceInfo(relatedService, lang) : unde
     <a class="post__pillar" href={`${blogPath[lang]}#${pillar.toLowerCase()}`}>{pillarTitle(pillar, lang)}</a>
     <h1 class="post__title">{title}</h1>
     <p class="post__meta">
-      <span>{t.blogBy} {t.company}</span>
+      <span>{t.blogBy} Romeo Mikava</span>
       <span aria-hidden="true">·</span>
       <time datetime={pubDate.toISOString()}>{formatPostDate(pubDate, lang)}</time>
       {updatedDate && <span aria-hidden="true">·</span>}
@@ -41,6 +42,12 @@ const service = relatedService ? relatedServiceInfo(relatedService, lang) : unde
   <div class="post__body">
     <slot />
   </div>
+
+  <aside class="post-author" aria-label={t.authorLabel}>
+    <p class="post-author__label">{t.authorLabel}</p>
+    <p class="post-author__bio">{t.authorBio}</p>
+    <p class="post-author__ai">{t.aiNote}</p>
+  </aside>
 
   {
     service && (
