@@ -40,7 +40,7 @@ const graph = {
       datePublished: pubDate.toISOString(),
       ...(updatedDate ? { dateModified: updatedDate.toISOString() } : {}),
       inLanguage: t.htmlLang,
-      author: buildFounder(site),
+      author: buildFounder(site, lang),
       publisher: { '@id': orgId },
     },
   ],

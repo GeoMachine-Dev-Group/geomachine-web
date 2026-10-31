@@ -10,7 +10,7 @@
  * referencian `{ '@id': orgId(site) }`.
  */
 import { lines, bundles, DEFAULT_TIER, DEFAULT_CURRENCY } from './catalog';
-import { ui, servicesPath, languages, type Lang } from '../i18n/ui';
+import { ui, servicesPath, languages, aboutPath, aboutLangFor, type Lang } from '../i18n/ui';
 
 export function orgId(site: string): string {
   return `${site}/#organization`;
@@ -23,11 +23,12 @@ export function founderId(site: string): string {
   return `${site}/#romeo-mikava`;
 }
 
-export function buildFounder(site: string) {
+export function buildFounder(site: string, lang: Lang = 'es') {
   return {
     '@type': 'Person',
     '@id': founderId(site),
     name: 'Romeo Mikava',
+    url: `${site}${aboutPath[aboutLangFor(lang)]}`,
     jobTitle: 'Founder & developer',
     worksFor: { '@id': orgId(site) },
   };
@@ -94,7 +95,7 @@ export function buildOrganization(site: string, lang: Lang) {
         otras dos que se llaman GeoMachine (la finlandesa de perforación y la
         plataforma británica de mapas), y lo que respalda la promesa del hero:
         quien atiende es quien escribe el código. */
-    founder: buildFounder(site),
+    founder: buildFounder(site, lang),
     image: `${site}/og/og-${lang}.png`,
     sameAs: [
       /** Ficha de Google (Perfil de Empresa). Une la web y la ficha como la

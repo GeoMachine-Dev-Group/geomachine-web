@@ -1,0 +1,295 @@
+---
+/**
+ * «Sobre mí»: quién está detrás de GeoMachine Developer Group. Existe en es,
+ * ru y en; las páginas ka enlazan la inglesa (aboutLangFor en ui.ts).
+ *
+ * Es la página de la que tira todo lo demás: la firma de los artículos, el
+ * enlace de la cabecera y el pie, y el `url` del Person del JSON-LD
+ * (buildFounder en organization.ts). Solo lleva lo que consta en el proyecto
+ * o ha dado Romeo. La foto y la trayectoria van en PROFILE: mientras estén
+ * vacías, su bloque no se pinta; nada de texto de relleno.
+ */
+import Base from '../layouts/Base.astro';
+import { servicesPath, blogPath, aboutPath, kadriLabCasePath, type AboutLang } from '../i18n/ui';
+import { orgId as buildOrgId, buildFounder } from '../data/organization';
+import { legalPath } from '../data/legal';
+
+interface Props {
+  lang: AboutLang;
+}
+const { lang } = Astro.props;
+
+/** Datos que solo puede dar Romeo. Vacíos = el bloque no sale. */
+const PROFILE: {
+  photo: { src: string; width: number; height: number } | null;
+  career: Record<AboutLang, string[]>;
+} = {
+  photo: null,
+  career: { es: [], ru: [], en: [] },
+};
+
+const content = {
+  es: {
+    title: 'Sobre mí: Romeo Mikava, de GeoMachine Developer Group',
+    description:
+      'Quién está detrás de GeoMachine Developer Group: Romeo Mikava. Qué hago, cómo trabajo, trabajos con enlace y cómo uso la IA.',
+    eyebrow: 'Sobre mí',
+    headline: 'Soy Romeo Mikava. GeoMachine Developer Group es mi estudio.',
+    lead: 'Diseño, programo y mantengo yo mismo las webs, apps e IA que salen de aquí. Quien te atiende es quien escribe el código: tu proyecto no pasa de mano en mano.',
+    photoAlt: 'Romeo Mikava',
+    whatTitle: 'Qué hago',
+    what: [
+      { title: 'Webs', text: 'Sitios estáticos y rápidos, en uno o varios idiomas, sin un CMS pesado que mantener.' },
+      { title: 'Apps', text: 'Aplicaciones web, de escritorio y Android, desde un MVP hasta un sistema con panel de gestión.' },
+      { title: 'IA en tu servidor', text: 'Modelos que corren en tu propia máquina, para que tus datos no salgan de casa.' },
+      { title: 'Mantenimiento y SEO', text: 'Que la web siga en pie, actualizada y encontrable después de entregarla.' },
+    ],
+    careerTitle: 'Trayectoria',
+    howTitle: 'Cómo trabajo',
+    how: [
+      'Precio cerrado desde el primer mensaje, antes de empezar.',
+      'Hablas conmigo directamente, por WhatsApp o Telegram, sin tickets ni intermediarios.',
+      'Se factura el 50 % al empezar y el 50 % al entregar.',
+      'Te aviso de avances reales, no de notificaciones automáticas.',
+    ],
+    workTitle: 'Trabajos',
+    work: {
+      gagra: 'Taxi y excursiones en Gagra (Abjasia). Cliente.',
+      kadrilab: 'Estudio de foto y vídeo de Tbilisi. Cliente.',
+      abhaz: 'Directorio de negocios de Abjasia. Proyecto propio.',
+      accounts: 'App de escritorio de contabilidad. Proyecto propio.',
+      optimus: 'App GPS para camioneros. Proyecto propio.',
+    },
+    whereTitle: 'Desde dónde',
+    where: 'Trabajo desde El Escorial (Madrid, España). La web y el catálogo están en español, ruso, inglés y georgiano, y los precios en euros, rublos y lari.',
+    aiTitle: 'Cómo uso la IA',
+    ai: 'Uso IA como herramienta: para redactar y traducir textos, y como ayuda al programar. Las decisiones, la experiencia que cuento y la revisión final son mías, y no publico nada que no haya leído y comprobado.',
+    contactTitle: 'Contacto',
+    legal: 'Datos legales',
+    cta: 'Pedir presupuesto',
+  },
+  ru: {
+    title: 'Обо мне: Ромео Микава, GeoMachine Developer Group',
+    description:
+      'Кто стоит за GeoMachine Developer Group: Ромео Микава. Чем занимаюсь, как работаю, проекты со ссылками и как я использую ИИ.',
+    eyebrow: 'Обо мне',
+    headline: 'Я Ромео Микава. GeoMachine Developer Group — моя студия.',
+    lead: 'Сам проектирую, программирую и поддерживаю сайты, приложения и ИИ-решения, которые здесь делаются. С вами общается тот, кто пишет код: проект не переходит из рук в руки.',
+    photoAlt: 'Ромео Микава',
+    whatTitle: 'Чем занимаюсь',
+    what: [
+      { title: 'Сайты', text: 'Быстрые статические сайты на одном или нескольких языках, без тяжёлой CMS, которую нужно обслуживать.' },
+      { title: 'Приложения', text: 'Веб-, десктопные и Android-приложения: от MVP до системы с панелью управления.' },
+      { title: 'ИИ на вашем сервере', text: 'Модели, которые работают на вашем собственном компьютере, чтобы данные не уходили наружу.' },
+      { title: 'Поддержка и SEO', text: 'Чтобы сайт после сдачи продолжал работать, обновлялся и находился в поиске.' },
+    ],
+    careerTitle: 'Опыт',
+    howTitle: 'Как я работаю',
+    how: [
+      'Фиксированная цена с первого сообщения, до начала работы.',
+      'Вы общаетесь напрямую со мной, в WhatsApp или Telegram, без тикетов и посредников.',
+      '50 % в начале работы, 50 % при сдаче.',
+      'Сообщаю о реальном прогрессе, а не присылаю автоматические уведомления.',
+    ],
+    workTitle: 'Проекты',
+    work: {
+      gagra: 'Такси и экскурсии в Гагре (Абхазия). Клиент.',
+      kadrilab: 'Фото- и видеостудия из Тбилиси. Клиент.',
+      abhaz: 'Каталог бизнесов Абхазии. Собственный проект.',
+      accounts: 'Десктопное приложение для учёта. Собственный проект.',
+      optimus: 'GPS-приложение для дальнобойщиков. Собственный проект.',
+    },
+    whereTitle: 'Откуда я работаю',
+    where: 'Работаю из Эль-Эскориала (Мадрид, Испания). Сайт и каталог — на испанском, русском, английском и грузинском, цены — в евро, рублях и лари.',
+    aiTitle: 'Как я использую ИИ',
+    ai: 'ИИ для меня — инструмент: он помогает писать и переводить тексты и программировать. Решения, опыт, о котором я рассказываю, и финальная проверка — мои, и я не публикую ничего, что не прочитал и не проверил.',
+    contactTitle: 'Контакты',
+    legal: 'Правовая информация',
+    cta: 'Запросить смету',
+  },
+  en: {
+    title: 'About me: Romeo Mikava, GeoMachine Developer Group',
+    description:
+      'Who is behind GeoMachine Developer Group: Romeo Mikava. What I do, how I work, linked projects and how I use AI.',
+    eyebrow: 'About me',
+    headline: "I'm Romeo Mikava. GeoMachine Developer Group is my studio.",
+    lead: 'I design, build and maintain the websites, apps and AI that come out of here myself. The person you talk to is the one who writes the code: your project never changes hands.',
+    photoAlt: 'Romeo Mikava',
+    whatTitle: 'What I do',
+    what: [
+      { title: 'Websites', text: 'Fast static sites, in one or several languages, with no heavy CMS to look after.' },
+      { title: 'Apps', text: 'Web, desktop and Android apps, from an MVP to a system with an admin panel.' },
+      { title: 'AI on your server', text: 'Models that run on your own machine, so your data stays in-house.' },
+      { title: 'Maintenance and SEO', text: 'Keeping the site up, updated and findable after delivery.' },
+    ],
+    careerTitle: 'Background',
+    howTitle: 'How I work',
+    how: [
+      'A fixed price from the first message, before any work starts.',
+      'You talk to me directly, on WhatsApp or Telegram, with no tickets or middlemen.',
+      '50% is invoiced at the start and 50% on delivery.',
+      'I let you know about real progress, not generic automated notifications.',
+    ],
+    workTitle: 'Work',
+    work: {
+      gagra: 'Taxi and tours in Gagra (Abkhazia). Client.',
+      kadrilab: 'Photo and video studio in Tbilisi. Client.',
+      abhaz: 'Business directory for Abkhazia. Own project.',
+      accounts: 'Desktop bookkeeping app. Own project.',
+      optimus: 'GPS app for truck drivers. Own project.',
+    },
+    whereTitle: 'Where I work from',
+    where: 'I work from El Escorial (Madrid, Spain). The site and catalogue are in Spanish, Russian, English and Georgian, with prices in euros, rubles and lari.',
+    aiTitle: 'How I use AI',
+    ai: 'I use AI as a tool: to help draft and translate text, and as an aid when programming. The decisions, the experience I describe and the final review are mine, and I publish nothing I have not read and checked.',
+    contactTitle: 'Contact',
+    legal: 'Legal information',
+    cta: 'Request a quote',
+  },
+}[lang];
+
+const t = content;
+const site = 'https://geomachine.es';
+const pageUrl = `${site}${aboutPath[lang]}`;
+const orgId = buildOrgId(site);
+const hreflangAlternates = [
+  { hreflang: 'x-default', href: `${site}${aboutPath.es}` },
+  ...(Object.keys(aboutPath) as AboutLang[]).map((l) => ({ hreflang: l, href: `${site}${aboutPath[l]}` })),
+];
+
+/** Casos con página propia. Los del blog solo existen en es y ru. */
+const BLOG_CASES: Partial<Record<AboutLang, { gagra: string; abhaz: string }>> = {
+  es: { gagra: 'gagraservis-caso-real', abhaz: 'abhazservis-caso-real' },
+  ru: { gagra: 'gagraservis-realnyy-keys', abhaz: 'abhazservis-realnyy-keys' },
+};
+const blogCase = BLOG_CASES[lang];
+const accountsHref: Record<AboutLang, string> = {
+  es: '/es/servicios/app-cuentas/',
+  ru: '/ru/uslugi/app-accounts/',
+  en: '/en/services/app-accounts/',
+};
+const optimusHref: Record<AboutLang, string> = {
+  es: '/es/servicios/optimus/',
+  ru: '/ru/uslugi/optimus/',
+  en: '/en/services/optimus/',
+};
+
+const work = [
+  { name: 'ГаграЛЁТ · gagraservis', href: blogCase ? `${blogPath[lang]}${blogCase.gagra}/` : null, text: t.work.gagra },
+  { name: 'KADRI LAB · kadrilab.com', href: kadriLabCasePath[lang], text: t.work.kadrilab },
+  { name: 'abhazservis.com', href: blogCase ? `${blogPath[lang]}${blogCase.abhaz}/` : 'https://abhazservis.com/', text: t.work.abhaz },
+  { name: 'GeoMachine Accounts', href: accountsHref[lang], text: t.work.accounts },
+  { name: 'Optimus', href: optimusHref[lang], text: t.work.optimus },
+];
+
+const contact = [
+  { label: 'hola@geomachine.es', href: 'mailto:hola@geomachine.es' },
+  { label: 'Telegram', href: 'https://t.me/geomachine' },
+  { label: 'WhatsApp', href: 'https://wa.me/34620811739' },
+  { label: 'GitHub', href: 'https://github.com/GeoMachine-Dev-Group' },
+  { label: 'Google Maps', href: 'https://maps.google.com/?cid=16680236263507742665' },
+];
+const career = PROFILE.career[lang];
+---
+
+<Base
+  lang={lang}
+  title={t.title}
+  description={t.description}
+  pageUrl={pageUrl}
+  hreflangAlternates={hreflangAlternates}
+  schema="none"
+>
+  <Fragment slot="head">
+    <script type="application/ld+json" is:inline set:html={JSON.stringify({
+      '@context': 'https://schema.org',
+      '@graph': [
+        {
+          '@type': 'ProfilePage',
+          '@id': `${pageUrl}#webpage`,
+          url: pageUrl,
+          name: t.title,
+          description: t.description,
+          inLanguage: lang,
+          isPartOf: { '@id': orgId },
+          mainEntity: buildFounder(site, lang),
+        },
+      ],
+    })} />
+  </Fragment>
+
+  <section class="hero app-hero shell about-hero">
+    {PROFILE.photo && (
+      <img
+        class="about-photo"
+        src={PROFILE.photo.src}
+        alt={t.photoAlt}
+        width={PROFILE.photo.width}
+        height={PROFILE.photo.height}
+        fetchpriority="high"
+      />
+    )}
+    <div>
+      <p class="hero__eyebrow">{t.eyebrow}</p>
+      <h1 class="hero__title">{t.headline}</h1>
+      <p class="hero__body">{t.lead}</p>
+    </div>
+  </section>
+
+  <section class="shell app-section">
+    <h2 class="app-section__title">{t.whatTitle}</h2>
+    <div class="app-features">
+      {t.what.map(({ title, text }) => (
+        <div class="app-feature">
+          <h3 class="app-feature__title">{title}</h3>
+          <p class="app-feature__text">{text}</p>
+        </div>
+      ))}
+    </div>
+
+    {career.length > 0 && (
+      <>
+        <h2 class="app-section__title">{t.careerTitle}</h2>
+        {career.map((p) => <p class="app-panel__text about-text">{p}</p>)}
+      </>
+    )}
+
+    <div class="app-panel">
+      <div>
+        <h2 class="app-panel__title">{t.howTitle}</h2>
+        <ul class="app-panel__steps case-points">
+          {t.how.map((item) => <li>{item}</li>)}
+        </ul>
+      </div>
+      <div>
+        <h2 class="app-panel__title">{t.workTitle}</h2>
+        <ul class="about-work">
+          {work.map((w) => (
+            <li>
+              {w.href ? <a href={w.href}>{w.name}</a> : <span>{w.name}</span>}
+              <span class="about-work__text">{w.text}</span>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </div>
+
+    <h2 class="app-section__title">{t.whereTitle}</h2>
+    <p class="app-panel__text about-text">{t.where}</p>
+
+    <h2 class="app-section__title">{t.aiTitle}</h2>
+    <p class="app-panel__text about-text">{t.ai}</p>
+
+    <h2 class="app-section__title">{t.contactTitle}</h2>
+    <ul class="about-contact">
+      {contact.map((c) => (
+        <li><a href={c.href} rel={c.href.startsWith('http') ? 'noopener' : undefined}>{c.label}</a></li>
+      ))}
+      <li><a href={legalPath('notice', lang)}>{t.legal}</a></li>
+    </ul>
+
+    <div class="case-cta">
+      <a href={`${servicesPath[lang]}#contacto`} class="app-download app-download--primary">{t.cta}</a>
+    </div>
+  </section>
+</Base>

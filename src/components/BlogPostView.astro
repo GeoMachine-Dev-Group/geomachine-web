@@ -7,7 +7,7 @@
  */
 import type { CollectionEntry } from 'astro:content';
 import BlogNav from './BlogNav.astro';
-import { ui, servicesPath, blogPath, type BlogLang } from '../i18n/ui';
+import { ui, servicesPath, blogPath, aboutPath, type BlogLang } from '../i18n/ui';
 import { readingTime, formatPostDate, pillarTitle, relatedServiceInfo } from '../lib/blog';
 
 interface Props {
@@ -27,7 +27,7 @@ const service = relatedService ? relatedServiceInfo(relatedService, lang) : unde
     <a class="post__pillar" href={`${blogPath[lang]}#${pillar.toLowerCase()}`}>{pillarTitle(pillar, lang)}</a>
     <h1 class="post__title">{title}</h1>
     <p class="post__meta">
-      <span>{t.blogBy} Romeo Mikava</span>
+      <span>{t.blogBy} <a href={aboutPath[lang]}>Romeo Mikava</a></span>
       <span aria-hidden="true">·</span>
       <time datetime={pubDate.toISOString()}>{formatPostDate(pubDate, lang)}</time>
       {updatedDate && <span aria-hidden="true">·</span>}
@@ -47,6 +47,7 @@ const service = relatedService ? relatedServiceInfo(relatedService, lang) : unde
     <p class="post-author__label">{t.authorLabel}</p>
     <p class="post-author__bio">{t.authorBio}</p>
     <p class="post-author__ai">{t.aiNote}</p>
+    <p class="post-author__more"><a href={aboutPath[lang]}>{t.aboutNav} →</a></p>
   </aside>
 
   {

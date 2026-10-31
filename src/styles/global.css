@@ -756,6 +756,7 @@ html[data-priceanim='blur'] .price-value {
 .post-author__label { margin: 0; font-family: var(--data); font-size: var(--fs-3xs); letter-spacing: .16em; text-transform: uppercase; color: var(--accent); }
 .post-author__bio { margin: var(--space-2) 0 0; }
 .post-author__ai { margin: var(--space-2) 0 0; font-size: var(--fs-xs); color: var(--ink-soft); }
+.post-author__more { margin: var(--space-3) 0 0; font-size: var(--fs-xs); }
 .post-service { margin-top: var(--space-8); padding: var(--space-6); background: var(--panel); border: 1px solid var(--rule); border-left: 3px solid var(--accent); border-radius: var(--radius-lg); }
 .post-service__label { margin: 0; font-family: var(--data); font-size: var(--fs-3xs); letter-spacing: .16em; text-transform: uppercase; color: var(--accent); }
 .post-service__name { margin: var(--space-2) 0 0; font-family: var(--display); font-weight: 600; font-size: var(--fs-xl); color: var(--ink); }
@@ -891,3 +892,11 @@ html[data-priceanim='blur'] .price-value {
 .case-shot figcaption { margin-top: var(--space-2); font-size: var(--fs-sm); color: var(--ink-soft); text-align: center; }
 .case-cta { display: flex; flex-direction: column; align-items: center; gap: var(--space-4); margin-block: var(--space-16); text-align: center; }
 .case-cta .app-panel__title { margin: 0; }
+.about-hero { display: grid; gap: var(--space-8); align-items: center; }
+@media (min-width: 860px) { .about-hero:has(.about-photo) { grid-template-columns: 220px 1fr; } }
+.about-photo { width: 220px; max-width: 100%; height: auto; aspect-ratio: 1; object-fit: cover; border-radius: var(--radius-lg); border: 1px solid var(--rule); }
+.about-text { max-width: 68ch; margin-bottom: var(--space-10); }
+.about-work { list-style: none; margin: var(--space-4) 0 0; padding: 0; display: grid; gap: var(--space-3); }
+.about-work li { display: grid; gap: var(--space-1); }
+.about-work__text { font-size: var(--fs-sm); color: var(--ink-soft); }
+.about-contact { list-style: none; margin: 0 0 var(--space-10); padding: 0; display: flex; flex-wrap: wrap; gap: var(--space-3) var(--space-6); }

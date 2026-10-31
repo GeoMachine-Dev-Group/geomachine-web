@@ -48,6 +48,20 @@ export const blogPath: Record<BlogLang, string> = {
   en: '/en/blog/',
 };
 
+/** Página «Sobre mí» (AboutPage.astro) en es, ru y en. En ka se enlaza la
+    inglesa, igual que los textos legales. */
+export type AboutLang = 'es' | 'ru' | 'en';
+
+export const aboutPath: Record<AboutLang, string> = {
+  es: '/es/sobre-mi/',
+  ru: '/ru/obo-mne/',
+  en: '/en/about/',
+};
+
+export function aboutLangFor(lang: Lang): AboutLang {
+  return lang === 'ka' ? 'en' : lang;
+}
+
 /** Estrecha el tipo además de responder: dentro del `if` ya se puede indexar
     blogPath con lang sin castearlo. */
 export function hasBlog(lang: Lang): lang is BlogLang {
@@ -140,6 +154,7 @@ export const ui = {
     legalPrivacy: 'Privacidad',
     legalCookies: 'Cookies',
     legalNav: 'Información legal',
+    aboutNav: 'Sobre mí',
     formConsentBefore: 'He leído la ',
     formConsentLink: 'política de privacidad',
     formConsentAfter: ' y acepto que mis datos se envíen por Telegram (fuera de la UE) para responder a mi solicitud.',
@@ -255,6 +270,7 @@ export const ui = {
     legalPrivacy: 'Конфиденциальность',
     legalCookies: 'Cookies',
     legalNav: 'Правовая информация',
+    aboutNav: 'Обо мне',
     formConsentBefore: 'Я прочитал(а) ',
     formConsentLink: 'политику конфиденциальности',
     formConsentAfter: ' и согласен(на), что мои данные будут переданы через Telegram (за пределами ЕС) для ответа на мой запрос.',
@@ -390,6 +406,7 @@ export const ui = {
     legalPrivacy: 'Privacy',
     legalCookies: 'Cookies',
     legalNav: 'Legal information',
+    aboutNav: 'About me',
     formConsentBefore: 'I have read the ',
     formConsentLink: 'privacy policy',
     formConsentAfter: ' and agree that my data will be sent via Telegram (outside the EU) to reply to my request.',
@@ -495,6 +512,8 @@ export const ui = {
     legalPrivacy: 'კონფიდენციალურობა',
     legalCookies: 'Cookies',
     legalNav: 'სამართლებრივი ინფორმაცია',
+    // ka sin revisar: aboutNav (2026-10-31). Enlaza a la página inglesa.
+    aboutNav: 'ჩემ შესახებ',
     formConsentBefore: 'წავიკითხე ',
     formConsentLink: 'კონფიდენციალურობის პოლიტიკა (ინგლისურად)',
     formConsentAfter: ' და ვეთანხმები, რომ ჩემი მონაცემები გაიგზავნოს Telegram-ით (ევროკავშირის გარეთ) ჩემს მოთხოვნაზე პასუხის გასაცემად.',

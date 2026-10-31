@@ -1,6 +1,6 @@
 ---
 import '../styles/global.css';
-import { ui, servicesPath, blogPath, languages, hasBlog, type Lang } from '../i18n/ui';
+import { ui, servicesPath, blogPath, aboutPath, aboutLangFor, languages, hasBlog, type Lang } from '../i18n/ui';
 import { DEFAULT_TIER, LANG_CURRENCY } from '../data/catalog';
 import { buildOrganization } from '../data/organization';
 import { legalPath, legalLangFor } from '../data/legal';
@@ -152,6 +152,7 @@ const preloadFont: Record<Lang, string> = {
         </a>
         <span>{t.plate}</span>
         <nav class="plate__links">
+          <a href={aboutPath[aboutLangFor(lang)]} hreflang={aboutLangFor(lang)}>{t.aboutNav}</a>
           {
             hasBlog(lang) && (
               <a href={blogPath[lang]} class="plate__blog-link">
@@ -178,7 +179,7 @@ const preloadFont: Record<Lang, string> = {
 
     <footer class="foot">
       <div class="shell foot__row">
-        <span>{t.footer}</span>
+        <span>{t.footer} · <a href={aboutPath[aboutLangFor(lang)]} hreflang={aboutLangFor(lang)}>Romeo Mikava</a></span>
         {/* En ka los textos legales van en inglés (no hay versión georgiana). */}
         <nav class="foot__legal" aria-label={t.legalNav}>
           <a href={legalPath('notice', lang)} hreflang={legalLangFor(lang)}>{t.legalNotice}</a>
