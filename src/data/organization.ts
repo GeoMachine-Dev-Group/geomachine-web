@@ -29,8 +29,11 @@ export function buildFounder(site: string, lang: Lang = 'es') {
     '@id': founderId(site),
     name: 'Romeo Mikava',
     url: `${site}${aboutPath[aboutLangFor(lang)]}`,
+    image: `${site}/romeo-mikava.webp`,
     jobTitle: 'Founder & developer',
     worksFor: { '@id': orgId(site) },
+    knowsLanguage: ['ka', 'es', 'ru', 'en'],
+    sameAs: ['https://github.com/geomachine1'],
   };
 }
 

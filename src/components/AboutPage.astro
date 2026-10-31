@@ -24,8 +24,28 @@ const PROFILE: {
   photo: { src: string; width: number; height: number } | null;
   career: Record<AboutLang, string[]>;
 } = {
-  photo: null,
-  career: { es: [], ru: [], en: [] },
+  // Selfi provisional (2026-11-01), recortado a 660×660; Romeo la sustituirá.
+  photo: { src: '/romeo-mikava.webp', width: 660, height: 660 },
+  career: {
+    es: [
+      'Nací en Abjasia. Terminé el colegio en Zugdidi y la carrera de Derecho en Tiflis.',
+      'Hace cinco años me vine a España y volví a estudiar: aprendí el idioma y ahora curso el segundo y último año del FP de grado medio de Sistemas Microinformáticos y Redes. Después quiero hacer el grado superior.',
+      'La informática me apasiona desde niño, y aprendí por mi cuenta, a base de probar. Llevo unos dos años programando en serio y aprendiendo a trabajar con IA: a guiarla, estructurar el trabajo y revisar lo que hace. Con ella hago en días lo que antes me costaba semanas.',
+      'Monté GeoMachine Developer Group porque veía negocios que necesitaban una web, una app o una automatización bien hecha y a un precio razonable. Atiendo en georgiano, mi lengua materna, y en español, ruso e inglés.',
+    ],
+    ru: [
+      'Я родился в Абхазии. Окончил школу в Зугдиди и юридический факультет в Тбилиси.',
+      'Пять лет назад переехал в Испанию и снова пошёл учиться: выучил язык и сейчас заканчиваю второй, последний курс колледжа по специальности «Микрокомпьютерные системы и сети» (FP de grado medio SMR). Дальше планирую высшую ступень (grado superior).',
+      'Информатикой увлекаюсь с детства и всему учился сам, на практике. Около двух лет программирую всерьёз и учусь работать с ИИ: направлять его, выстраивать работу и проверять результат. С ним я делаю за дни то, на что раньше уходили недели.',
+      'Я основал GeoMachine Developer Group, потому что видел бизнесы, которым нужны хорошо сделанные сайт, приложение или автоматизация по разумной цене. Общаюсь на грузинском (родной язык), русском, испанском и английском.',
+    ],
+    en: [
+      'I was born in Abkhazia. I finished school in Zugdidi and studied Law at university in Tbilisi.',
+      "Five years ago I moved to Spain and went back to studying: I learned the language and I'm now in the second and final year of a vocational IT qualification in microcomputer systems and networks (FP de grado medio SMR). Next I plan to take the higher-level diploma.",
+      "I've loved computing since I was a child and taught myself by trying things. I've been programming seriously for about two years and learning to work with AI: steering it, structuring the work and reviewing what it produces. With it, I get done in days what used to take me weeks.",
+      'I started GeoMachine Developer Group because I saw businesses that needed a well-built website, app or automation at a fair price. I work in Georgian, my native language, and in Spanish, Russian and English.',
+    ],
+  },
 };
 
 const content = {
@@ -186,7 +206,8 @@ const contact = [
   { label: 'hola@geomachine.es', href: 'mailto:hola@geomachine.es' },
   { label: 'Telegram', href: 'https://t.me/geomachine' },
   { label: 'WhatsApp', href: 'https://wa.me/34620811739' },
-  { label: 'GitHub', href: 'https://github.com/GeoMachine-Dev-Group' },
+  { label: 'GitHub (Romeo)', href: 'https://github.com/geomachine1' },
+  { label: 'GitHub (GeoMachine)', href: 'https://github.com/GeoMachine-Dev-Group' },
   { label: 'Google Maps', href: 'https://maps.google.com/?cid=16680236263507742665' },
 ];
 const career = PROFILE.career[lang];
