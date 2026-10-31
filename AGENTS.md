@@ -31,7 +31,9 @@ Historial reciente, todo por fast-forward y con la rama borrada después:
      favicon e iconos PNG; colores del manifest a `#10160f`.
    - **Tarifa**: fuera el selector Lanzamiento/Estándar. `LAUNCH_OPEN`
      (`src/data/catalog.ts`) sale de `LAUNCH_SLOTS`: con plazas libres, cada
-     tarjeta muestra el estándar tachado; al llenarse, la web pasa sola a
+     tarjeta muestra el estándar como precio futuro («Precio estándar
+     después del lanzamiento: …», sin tachar desde el 2026-10-31: nunca se
+     ha cobrado, así que tacharlo lo presentaba como rebaja); al llenarse, la web pasa sola a
      precio estándar. Para actualizar las plazas, editar `LAUNCH_SLOTS`.
    - **Moneda** inicial por idioma (`LANG_CURRENCY`: ru → rublos, ka → lari,
      es/en → euros). El selector ya no es fijo al hacer scroll: va en
@@ -178,10 +180,10 @@ Historial reciente, todo por fast-forward y con la rama borrada después:
   ven abiertas.
 
 **Pendientes:**
-- Revisión nativa del georgiano: hero, placeholders del formulario, plazas,
-  "Solicitar plaza", franja de trabajos, botón de contacto y texto de
-  WhatsApp. Todo va traducido por IA y marcado
-  en `src/i18n/ui.ts`.
+- Georgiano: `ui.ts` y `catalog.ts` revisados por Romeo el 2026-10-31 (se
+  quitaron las marcas). Siguen marcados como sin revisar: `NavCamPage`,
+  `AppAccountsPage`, `CaseKadriLabPage`, `FloatingChat` y un texto de
+  `Catalog.astro`. Lo ka nuevo se marca "ka sin revisar".
 - Decidir si se reinstala el hook `post-commit` de auto-push (ver más abajo).
 - Falta foto del fundador en la sección `.close`.
 - `gagraservis.ru` sigue sin publicar (decisión del 2026-09-10, no un fallo).

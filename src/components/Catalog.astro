@@ -111,16 +111,19 @@ function moneyWas(range: readonly number[], currency: Currency, unit: Unit) {
   return `${group(range[0], sep)}${nbsp}${CURRENCY_SYMBOL[currency]}${suffix(unit)}`;
 }
 
-/** Precio estándar tachado, salvo que en esa moneda coincida con el de lanzamiento (p. ej. landing en RU: «desde 30 000 ₽», sin tachado). */
+/** Precio estándar futuro con su etiqueta, salvo que en esa moneda coincida con el de lanzamiento (p. ej. landing en RU: «desde 30 000 ₽», sin aviso). */
 function wasFor(item: { launch: Item['launch']; standard: Item['standard'] }, currency: Currency, unit: Unit) {
-  return item.launch[currency][0] === item.standard[currency][0] ? '' : moneyWas(item.standard[currency], currency, unit);
+  if (item.launch[currency][0] === item.standard[currency][0]) return '';
+  return t.priceAfterLaunch.replace('{price}', moneyWas(item.standard[currency], currency, unit));
 }
 
 /**
  * Las 3 monedas viajan ya formateadas en el HTML estático, solo para la tarifa
  * activa (DEFAULT_TIER, que deciden las plazas libres). El script de Base.astro
  * elige con dataset[currency]: data-fromeur, data-detailgel, data-wasrub…
- * "was" es el precio estándar tachado y solo existe mientras haya plazas.
+ * "was" es el precio estándar que entra al llenarse las plazas: se anuncia
+ * como precio futuro, no tachado, porque nunca se ha cobrado. Solo existe
+ * mientras haya plazas.
  */
 function priceData(item: Item) {
   const rec = item[DEFAULT_TIER === 'launch' ? 'launchRecurring' : 'standardRecurring'];
@@ -263,16 +266,12 @@ const featuredMap: Record<string, Record<Lang, string>> = {
         : <span>gagraservis.ru</span>}
     </li>
     <li>
-      <span class="proof__tag">{t.statusDelivered}</span>
+      <span class="proof__tag">{t.proofOwnProject}</span>
       <a href="https://abhazservis.com/" target="_blank" rel="noopener">abhazservis.com</a>
     </li>
     <li>
       <span class="proof__tag">{t.statusDelivered}</span>
       <a href={kadriLabCasePath[lang]}>kadrilab.com</a>
-    </li>
-    <li>
-      <span class="proof__tag">{t.proofPrivateAi}</span>
-      <span>GeoBot AI Assistant</span>
     </li>
     <li>
       <span class="proof__tag">{t.proofDesktopApp}</span>
@@ -329,7 +328,7 @@ const featuredMap: Record<string, Record<Lang, string>> = {
         </div>
         {hasBlog(lang) && blogPillars.has(line.prefix) && (
           <a href={`${blogPath[lang]}#${line.prefix.toLowerCase()}`} class="line__blog-badge">
-            <span>📖 {t.blogSeeArticles.replace('{tema}', line.title[lang])}</span>
+            <span>{t.blogSeeArticles.replace('{tema}', line.title[lang])}</span>
           </a>
         )}
         {line.prefix === 'APP' && (

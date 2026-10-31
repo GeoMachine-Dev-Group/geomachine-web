@@ -9,12 +9,9 @@
  *     mostrada al interactuar con la tarjeta (hover/focus).
  *   - Nueva categoría SYS (Sistemas y Backend) y paquetes PACK-04/05/06.
  *
- * ⚠️ IMPORTANTE — revisión pendiente antes de publicar:
- *   El georgiano (ka) lo ha traducido Claude. Para una web de negocio real,
- *   recomiendo que alguien con georgiano nativo lo revise antes de publicar
- *   — sobre todo los textos de precios y condiciones, donde un matiz mal
- *   traducido puede generar un malentendido comercial. El inglés y el ruso
- *   tienen menos riesgo, pero una relectura rápida nunca está de más.
+ * Georgiano (ka): traducido por IA y revisado por Romeo Mikava el
+ *   2026-10-31. Un texto ka nuevo se marca con "ka sin revisar" hasta que
+ *   él lo repase, sobre todo si toca precios o condiciones.
  *
  * Lari georgiano (₾): igual que el rublo, NO es una conversión exacta del
  * euro. Se usa una tarifa de mercado redonda de 3,0 ₾/€ (el cambio real
@@ -92,10 +89,10 @@ export const lines: Line[] = [
     prefix: 'WEB',
     title: { es: 'Sitios web', ru: 'Сайты', en: 'Websites', ka: 'ვებგვერდები' },
     note: {
-      es: 'Estáticos, sin CMS pesado. Cargan en menos de un segundo y no se rompen solos. Pasa el cursor por una tarjeta para ver qué significa en la práctica.',
-      ru: 'Статические, без тяжёлой CMS. Загружаются меньше секунды и не ломаются сами. Наведите курсор на карточку, чтобы увидеть, что это значит на практике.',
-      en: "Static, no heavy CMS. They load in under a second and don't break on their own. Hover a card to see what it means in practice.",
-      ka: 'სტატიკური, მძიმე CMS-ის გარეშე. იტვირთება წამზე ნაკლებ დროში და თავისით არ იშლება. გადაატარეთ კურსორი ბარათზე პრაქტიკული მნიშვნელობის სანახავად.',
+      es: 'Estáticos, sin CMS pesado. Cargan en menos de un segundo y no se rompen solos. Toca o pasa el cursor por una tarjeta para ver qué significa en la práctica.',
+      ru: 'Статические, без тяжёлой CMS. Загружаются меньше секунды и не ломаются сами. Нажмите на карточку или наведите на неё курсор, чтобы увидеть, что это значит на практике.',
+      en: "Static, no heavy CMS. They load in under a second and don't break on their own. Tap or hover a card to see what it means in practice.",
+      ka: 'სტატიკური, მძიმე CMS-ის გარეშე. იტვირთება წამზე ნაკლებ დროში და თავისით არ იშლება. შეეხეთ ბარათს ან გადაატარეთ კურსორი პრაქტიკული მნიშვნელობის სანახავად.',
     },
     // Orden: Landing → Corporativa → Tienda online → Segundo idioma → Rediseño
     items: [
@@ -727,7 +724,6 @@ export const bundles: Bundle[] = [
         'Live on your domain with a nightly backup and a tested restore',
         'Code in your own repository, fully documented',
       ],
-      // ka: traducción automática, pendiente de revisión nativa.
       ka: [
         'მომხმარებლის ავტორიზაცია, მონაცემთა ბაზა და ადმინ-პანელი',
         'ხუთ ძირითად ფუნქციამდე',
@@ -739,7 +735,6 @@ export const bundles: Bundle[] = [
       es: 'Consigues tu producto funcionando en producción tres semanas después de cerrar el alcance, a precio cerrado — así pruebas tu idea con usuarios reales este mes, no el trimestre que viene. Si en ese plazo no está en producción, sigo trabajando sin coste hasta que lo esté, siempre que las respuestas lleguen en 48 horas. No incluye apps nativas de tienda, pagos online ni diseño a medida: se presupuestan aparte y antes de empezar.',
       ru: 'Вы получаете работающий продукт в продакшене через три недели после согласования объёма, по фиксированной цене — и проверяете идею на реальных пользователях в этом месяце, а не в следующем квартале. Если к этому сроку продукт не запущен, я продолжаю работать бесплатно, пока он не заработает, при условии что ответы приходят в течение 48 часов. Не входят нативные приложения для App Store и Google Play, онлайн-оплата и индивидуальный дизайн: они оцениваются отдельно и заранее.',
       en: 'You get your product running in production three weeks after we agree the scope, at a fixed price — so you test your idea with real users this month, not next quarter. If it is not live by then, I keep working at no cost until it is, as long as replies come within 48 hours. Native app-store apps, online payments and custom design are not included: they are quoted separately, before we start.',
-      // ka: traducción automática, pendiente de revisión nativa.
       ka: 'იღებთ მომუშავე პროდუქტს ფიქსირებულ ფასად, მოცულობის შეთანხმებიდან სამი კვირაში. თუ ამ ვადაში არ გაიშვა, მუშაობა უფასოდ გრძელდება, სანამ არ გაიშვება, თუ პასუხები 48 საათში მოდის. ნატიური აპლიკაციები, ონლაინ გადახდა და ინდივიდუალური დიზაინი არ შედის და ცალკე ფასდება.',
     },
     launch: { eur: [2900], rub: [174000], gel: [8700] },

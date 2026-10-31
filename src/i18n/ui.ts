@@ -1,9 +1,9 @@
 /**
  * Textos de interfaz — 4 idiomas (ES/RU/EN/KA).
  *
- * ⚠️ Igual que en catalog-i18n.ts: el georgiano (ka) conviene que lo repase
- * un hablante nativo antes de publicar. El inglés y el ruso tienen menos
- * riesgo pero también merecen una relectura.
+ * Georgiano (ka): traducido por IA y revisado por Romeo Mikava el
+ * 2026-10-31 (interfaz y catálogo). Un texto ka nuevo se marca con
+ * "ka sin revisar" hasta que él lo repase.
  *
  * Copy del hero (2026-09-10): título + un solo párrafo, sin eyebrow ni
  * segundo párrafo. El tono es concreto — quién te atiende y qué se entrega —
@@ -61,7 +61,6 @@ export const ui = {
     metaDescription:
       'Webs, aplicaciones, inteligencia artificial, mantenimiento y SEO. Precio cerrado desde el primer mensaje, entrega en días. Precios en euros, rublos y lari.',
     plate: 'Catálogo de servicios',
-    rev: 'Rev. 2026.08',
     company: 'GeoMachine Developer Group',
     heroTitle: 'El que te atiende es el que escribe el código.',
     heroBody:
@@ -72,7 +71,8 @@ export const ui = {
     slotsLeft: '{free} de {total} plazas libres',
     heroCtaSlot: 'Solicitar plaza',
     proofLabel: 'Trabajos',
-    proofPrivateAi: 'IA privada',
+    proofOwnProject: 'Proyecto propio',
+    priceAfterLaunch: 'Precio estándar después del lanzamiento: {price}',
     proofDesktopApp: 'App de escritorio',
     proofTruckApp: 'App GPS para camiones',
     cardStyles: { stack: 'Capas apiladas', tilt: 'Inclinación 3D' },
@@ -82,7 +82,7 @@ export const ui = {
     launchNote:
       'La tarifa de lanzamiento se aplica a los primeros clientes, a cambio de poder publicar el resultado como caso de estudio. Después pasa a estándar.',
     statusDelivered: 'Entregado',
-    statusDev: 'Fase de Desarrollo',
+    statusDev: 'En desarrollo',
     devProjectName: 'MVP Gestión de Transporte',
     colService: 'Servicio',
     colTime: 'Entrega',
@@ -162,6 +162,7 @@ export const ui = {
     blogFilterAll: 'Todos',
     blogFeatured: 'Destacado',
     blogBy: 'Por',
+    blogUpdated: 'actualizado el',
     blogSeeService: 'Ver en el catálogo',
     blogNavLabel: 'Navegación principal',
     blogBreadcrumbLabel: 'Migas de pan',
@@ -172,7 +173,6 @@ export const ui = {
     metaDescription:
       'Сайты, приложения, искусственный интеллект, обслуживание и SEO. Цена фиксируется с первого сообщения, результат — за дни. Цены в евро, рублях и грузинском лари.',
     plate: 'Каталог услуг',
-    rev: 'Ред. 2026.08',
     company: 'GeoMachine Developer Group',
     heroTitle: 'Вы общаетесь напрямую с разработчиком.',
     heroBody:
@@ -183,7 +183,8 @@ export const ui = {
     slotsLeft: 'Свободно мест: {free} из {total}',
     heroCtaSlot: 'Забронировать место',
     proofLabel: 'Работы',
-    proofPrivateAi: 'Приватный ИИ',
+    proofOwnProject: 'Собственный проект',
+    priceAfterLaunch: 'Стандартная цена после запуска: {price}',
     proofDesktopApp: 'Десктоп-приложение',
     proofTruckApp: 'GPS-приложение для грузовиков',
     cardStyles: { stack: 'Слоями', tilt: 'Наклон 3D' },
@@ -273,6 +274,7 @@ export const ui = {
     blogFilterAll: 'Все',
     blogFeatured: 'Главное',
     blogBy: 'Автор:',
+    blogUpdated: 'обновлено',
     blogSeeService: 'Смотреть в каталоге',
     blogNavLabel: 'Основная навигация',
     blogBreadcrumbLabel: 'Навигационная цепочка',
@@ -283,7 +285,6 @@ export const ui = {
     metaDescription:
       'Websites, applications, artificial intelligence, maintenance and SEO. Price closed from the first message, delivered in days. Pricing in euros, rubles and lari.',
     plate: 'Service catalog',
-    rev: 'Rev. 2026.08',
     company: 'GeoMachine Developer Group',
     heroTitle: 'You talk to the person who writes the code.',
     heroBody:
@@ -294,7 +295,8 @@ export const ui = {
     slotsLeft: '{free} of {total} spots left',
     heroCtaSlot: 'Request a spot',
     proofLabel: 'Work',
-    proofPrivateAi: 'Private AI',
+    proofOwnProject: 'Own project',
+    priceAfterLaunch: 'Standard price after launch: {price}',
     proofDesktopApp: 'Desktop app',
     proofTruckApp: 'Truck GPS app',
     cardStyles: { stack: 'Stacked layers', tilt: '3D tilt' },
@@ -367,6 +369,7 @@ export const ui = {
     blogFilterAll: 'All',
     blogFilterLabel: 'Filter by topic',
     blogBy: 'By',
+    blogUpdated: 'updated',
     blogRelated: 'Related service',
     blogRelatedArticles: 'Keep reading',
     blogSeeService: 'See it in the catalogue',
@@ -390,28 +393,21 @@ export const ui = {
     metaDescription:
       'ვებგვერდები, აპლიკაციები, ხელოვნური ინტელექტი, მოვლა და SEO. ფასი ფიქსირდება პირველივე შეტყობინებიდან, მზადდება დღეებში. ფასები ევროში, რუბლში და ლარში.',
     plate: 'სერვისების კატალოგი',
-    rev: 'რედ. 2026.08',
     company: 'GeoMachine Developer Group',
-    // heroTitle/heroBody: traducidos por IA, PENDIENTES de revisión por un
-    // hablante nativo antes de darlos por buenos. Es el primer texto que ve
-    // quien entra en /ka/momsakhurebebi/, así que un fallo de registro o de
-    // declinación aquí pesa más que en cualquier otra clave. Ver la misma
-    // advertencia sobre el georgiano al inicio de este archivo, en catalog.ts
-    // y en priceFrom más abajo.
     heroTitle: 'თქვენ პირდაპირ ესაუბრებით დეველოპერს.',
     heroBody:
       'ვებგვერდები, აპლიკაციები და ხელოვნური ინტელექტი თქვენს საკუთარ სერვერზე. ფიქსირებული ფასი პირველივე შეტყობინებიდან, ჩაბარება დღეებში და არა კვარტლებში.',
     currencyLabel: 'ვალუტა',
-    // heroAnchorsLabel/slotsTitle/slotsLeft: traducidos por IA, PENDIENTES de
-    // revisión nativa. slotsLeft va como "etiqueta: n / total" a propósito,
-    // para no depender de la declinación de "plaza" con el número.
+    // slotsLeft va como "etiqueta: n / total" a propósito, para no depender
+    // de la declinación de "plaza" con el número.
     heroAnchorsLabel: 'საწყისი ფასები',
     slotsTitle: 'გაშვების ფასი',
     slotsLeft: 'თავისუფალი ადგილები: {free} / {total}',
-    // heroCtaSlot y proof*: traducidos por IA, PENDIENTES de revisión nativa.
     heroCtaSlot: 'ადგილის მოთხოვნა',
     proofLabel: 'ნამუშევრები',
-    proofPrivateAi: 'კონფიდენციალური AI',
+    // ka sin revisar: proofOwnProject y priceAfterLaunch (2026-10-31).
+    proofOwnProject: 'საკუთარი პროექტი',
+    priceAfterLaunch: 'სტანდარტული ფასი გაშვების შემდეგ: {price}',
     proofDesktopApp: 'დესკტოპ აპლიკაცია',
     proofTruckApp: 'GPS აპლიკაცია სატვირთოებისთვის',
     paletteLabel: 'პალიტრა',
@@ -435,7 +431,7 @@ export const ui = {
     thenMonthly: 'შემდეგ',
     // priceFrom: intencionadamente vacío — "desde" en georgiano se resuelve
     // por declinación del sustantivo, no por prefijo fijo, y una traducción
-    // aquí sin revisión nativa podría ser gramaticalmente incorrecta. Con
+    // fija aquí podría ser gramaticalmente incorrecta. Con
     // priceFrom vacío, Catalog.astro muestra solo el número ("250 €"), sin
     // prefijo. Ver misma advertencia sobre el georgiano al inicio de este
     // archivo y en catalog.ts.
@@ -484,7 +480,6 @@ export const ui = {
     closeSteps: ["აგზავნით იდეას","იღებთ ფასს და ვადას","დამუშავება და მიწოდება"],
     blogSeeArticles: '{tema}: სტატიები',
     footer: 'GeoMachine Developer Group',
-    // legal* y formConsent*: traducidos por IA, PENDIENTES de revisión nativa.
     // Los textos legales no existen en ka: los enlaces llevan a la versión inglesa.
     legalNotice: 'სამართლებრივი ინფორმაცია',
     legalPrivacy: 'კონფიდენციალურობა',

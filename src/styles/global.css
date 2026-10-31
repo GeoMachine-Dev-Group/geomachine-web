@@ -336,7 +336,7 @@ a { color: inherit; }
 .card__price-from { display: block; font-family: var(--data); font-size: var(--fs-xl); font-weight: 600; color: var(--accent); }
 .card__price-detail { display: block; margin-top: .3rem; font-size: var(--fs-xs); color: var(--ink-soft); }
 .card__price-detail[hidden] { display: none; }
-.card__price-was { display: block; font-family: var(--data); font-size: var(--fs-xs); color: var(--ink-soft); text-decoration-color: var(--stamp); }
+.card__price-was { display: block; font-family: var(--data); font-size: var(--fs-xs); color: var(--ink-soft); }
 .card__price-was[hidden] { display: none; }
 .card:before {
   content: ''; position: absolute; inset: 0; background: var(--panel-2); border: 1px solid var(--rule);

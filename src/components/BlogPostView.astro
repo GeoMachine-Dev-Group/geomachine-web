@@ -16,7 +16,7 @@ interface Props {
 }
 const { lang, entry, related } = Astro.props;
 const t = ui[lang];
-const { title, pillar, pubDate, relatedService } = entry.data;
+const { title, pillar, pubDate, updatedDate, relatedService } = entry.data;
 const service = relatedService ? relatedServiceInfo(relatedService, lang) : undefined;
 ---
 
@@ -29,6 +29,10 @@ const service = relatedService ? relatedServiceInfo(relatedService, lang) : unde
       <span>{t.blogBy} {t.company}</span>
       <span aria-hidden="true">·</span>
       <time datetime={pubDate.toISOString()}>{formatPostDate(pubDate, lang)}</time>
+      {updatedDate && <span aria-hidden="true">·</span>}
+      {updatedDate && (
+        <span>{t.blogUpdated} <time datetime={updatedDate.toISOString()}>{formatPostDate(updatedDate, lang)}</time></span>
+      )}
       <span aria-hidden="true">·</span>
       <span>{readingTime(entry.body)} {t.readingTimeSuffix}</span>
     </p>

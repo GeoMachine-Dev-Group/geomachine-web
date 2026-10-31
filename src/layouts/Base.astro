@@ -150,7 +150,7 @@ const preloadFont: Record<Lang, string> = {
           <Logo class="plate__logo" width="28" height="28" />
           <span class="plate__mark">GEO<span>·</span>MACHINE</span>
         </a>
-        <span>{t.plate} — {t.rev}</span>
+        <span>{t.plate}</span>
         <nav class="plate__links">
           {
             hasBlog(lang) && (
@@ -185,7 +185,6 @@ const preloadFont: Record<Lang, string> = {
           <a href={legalPath('privacy', lang)} hreflang={legalLangFor(lang)}>{t.legalPrivacy}</a>
           <a href={legalPath('cookies', lang)} hreflang={legalLangFor(lang)}>{t.legalCookies}</a>
         </nav>
-        <span>{t.rev}</span>
       </div>
     </footer>
 

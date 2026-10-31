@@ -13,8 +13,9 @@ interface Props {
   /** Línea pequeña bajo el precio: rango completo + cuota recurrente si
       las hay, unidas por "·". Vacía si el precio grande ya lo dice todo. */
   initialDetail: string;
-  /** Precio estándar tachado mientras dura la tarifa de lanzamiento; vacío si
-      no aplica. Va con aria-hidden: el precio que se paga es el grande. */
+  /** Precio estándar que entrará al acabar la tarifa de lanzamiento, ya con
+      su etiqueta ("Precio estándar después del lanzamiento: …"); vacío si no
+      aplica. No va tachado: nunca se ha cobrado, así que no es un precio anterior. */
   initialWas?: string;
   featured?: boolean;
   featuredLabel?: string;
@@ -46,7 +47,7 @@ const {
     )}
 
     <div class="card__price" {...priceAttrs}>
-      <s class="price-value card__price-was" aria-hidden="true" hidden={!initialWas}>{initialWas}</s>
+      <span class="price-value card__price-was" hidden={!initialWas}>{initialWas}</span>
       <span class="price-value card__price-from">{initialFrom}</span>
       <p class="price-value card__price-detail" hidden={!initialDetail}>{initialDetail}</p>
     </div>
