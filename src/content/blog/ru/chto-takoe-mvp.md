@@ -4,6 +4,7 @@ description: "Что такое MVP простыми словами, зачем 
 pubDate: 2026-08-12
 pillar: "APP"
 relatedService: "APP-01"
+translationSlug: "que-es-un-mvp"
 draft: false
 ---
 

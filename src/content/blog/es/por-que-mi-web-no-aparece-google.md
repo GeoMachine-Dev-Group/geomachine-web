@@ -4,6 +4,7 @@ description: "Las razones técnicas por las que una web no aparece en Google aun
 pubDate: 2026-08-12
 pillar: "SEO"
 relatedService: "SEO-01"
+translationSlug: "pochemu-sayt-ne-v-poiske"
 draft: false
 ---
 

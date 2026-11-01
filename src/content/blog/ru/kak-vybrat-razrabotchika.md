@@ -3,6 +3,7 @@ title: "Как выбрать разработчика сайта и не пер
 description: "Реальные признаки надёжного веб-разработчика перед тем, как платить: что спрашивать, чему не доверять, и что всегда должно быть в серьёзной смете."
 pubDate: 2026-08-12
 pillar: "WEB"
+translationSlug: "como-elegir-desarrollador-freelance"
 draft: false
 ---
 

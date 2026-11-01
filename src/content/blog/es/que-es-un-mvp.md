@@ -4,6 +4,7 @@ description: "Qué es realmente un MVP, por qué no hace falta un presupuesto en
 pubDate: 2026-08-12
 pillar: "APP"
 relatedService: "APP-01"
+translationSlug: "chto-takoe-mvp"
 draft: false
 ---
 

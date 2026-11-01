@@ -4,6 +4,7 @@ description: "Diferencia real entre ChatGPT y montar tu propia IA privada: cuán
 pubDate: 2026-08-12
 pillar: "IA"
 relatedService: "IA-04"
+translationSlug: "bezopasnost-dannyh-ii"
 draft: false
 ---
 
@@ -29,6 +30,8 @@ Si no estás en ninguno de estos casos, probablemente ChatGPT normal te sirve pe
 ## Qué es exactamente una IA privada
 
 En vez de mandar tus datos a servidores externos, el modelo de IA corre **en tu propio servidor** — puede ser uno tuyo en la nube, o físicamente en tu oficina. Los datos nunca salen de ahí. Sigue siendo inteligencia artificial capaz de responder, redactar, analizar — solo que corre en tu infraestructura, no en la de un tercero.
+
+No vale cualquier máquina: lo que decide si responde rápido es la memoria de la tarjeta gráfica. Lo explico con mediciones propias en [qué hardware necesitas de verdad para IA en tu servidor](/es/blog/hardware-para-ia-local/).
 
 ## Cuánto cuesta de verdad
 

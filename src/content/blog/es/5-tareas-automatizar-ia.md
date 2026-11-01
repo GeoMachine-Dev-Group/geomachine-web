@@ -18,6 +18,10 @@ Precio, horario, disponibilidad, si haces envíos, si aceptas tal forma de pago 
 
 No sustituye una conversación de verdad cuando el cliente necesita algo específico — pero filtra las preguntas repetitivas para que tú solo entres cuando hace falta de verdad.
 
+**Cuándo no compensa todavía.** Si te llegan pocos mensajes al día, o las preguntas casi nunca se repiten, el asistente falla más de lo que ayuda: necesita preguntas que se repitan para acertar. Y si vendes negociando caso por caso, esa conversación tienes que llevarla tú.
+
+**Lo que cuesta.** En [mi catálogo](/es/servicios/#ia), un asistente así cuesta entre 500 € y 1.200 € montarlo, más 35–70 € al mes de servidor y mantenimiento. Se paga solo si contestar esos mensajes te quita una hora al día que podrías dedicar a trabajo que factura. Y no es «configurar y olvidarse»: hay que repasarlo cuando cambian tus precios o servicios, y tiene que pasarte la conversación cuando no sabe la respuesta, en vez de inventársela.
+
 ## 2. Redactar presupuestos que siguen la misma estructura
 
 Si cada presupuesto que envías tiene el mismo formato — servicio, precio, plazo, condiciones — y solo cambian los números, eso es exactamente el tipo de tarea que se automatiza bien. En vez de escribirlo desde cero cada vez, rellenas unos datos y sale el documento ya redactado, listo para revisar y enviar.

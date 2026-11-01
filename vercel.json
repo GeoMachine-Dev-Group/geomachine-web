@@ -40,6 +40,86 @@
       "source": "/ka/momsakhurebebi/navcam-conductor/",
       "destination": "/ka/momsakhurebebi/optimus/",
       "permanent": true
+    },
+    {
+      "source": "/es/blog/tienda-a-medida-vs-shopify-woocommerce",
+      "destination": "/es/servicios/#web",
+      "statusCode": 301
+    },
+    {
+      "source": "/es/blog/tienda-a-medida-vs-shopify-woocommerce/",
+      "destination": "/es/servicios/#web",
+      "statusCode": 301
+    },
+    {
+      "source": "/ru/blog/internet-magazin-pod-klyuch-vs-platformy",
+      "destination": "/ru/uslugi/#web",
+      "statusCode": 301
+    },
+    {
+      "source": "/ru/blog/internet-magazin-pod-klyuch-vs-platformy/",
+      "destination": "/ru/uslugi/#web",
+      "statusCode": 301
+    },
+    {
+      "source": "/es/blog/como-saber-si-una-tienda-online-es-fiable",
+      "destination": "/es/blog/",
+      "statusCode": 301
+    },
+    {
+      "source": "/es/blog/como-saber-si-una-tienda-online-es-fiable/",
+      "destination": "/es/blog/",
+      "statusCode": 301
+    },
+    {
+      "source": "/ru/blog/kak-proverit-internet-magazin-pered-oplatoy",
+      "destination": "/ru/blog/",
+      "statusCode": 301
+    },
+    {
+      "source": "/ru/blog/kak-proverit-internet-magazin-pered-oplatoy/",
+      "destination": "/ru/blog/",
+      "statusCode": 301
+    },
+    {
+      "source": "/es/blog/chatbot-ia-vs-contestar-tu-mismo",
+      "destination": "/es/blog/5-tareas-automatizar-ia/",
+      "statusCode": 301
+    },
+    {
+      "source": "/es/blog/chatbot-ia-vs-contestar-tu-mismo/",
+      "destination": "/es/blog/5-tareas-automatizar-ia/",
+      "statusCode": 301
+    },
+    {
+      "source": "/ru/blog/ii-assistent-whatsapp-cena",
+      "destination": "/ru/blog/5-zadach-biznesa-avtomatizirovat-ii/",
+      "statusCode": 301
+    },
+    {
+      "source": "/ru/blog/ii-assistent-whatsapp-cena/",
+      "destination": "/ru/blog/5-zadach-biznesa-avtomatizirovat-ii/",
+      "statusCode": 301
+    },
+    {
+      "source": "/es/blog/ia-empresas-datos-sensibles",
+      "destination": "/es/blog/ia-privada-vs-chatgpt/",
+      "statusCode": 301
+    },
+    {
+      "source": "/es/blog/ia-empresas-datos-sensibles/",
+      "destination": "/es/blog/ia-privada-vs-chatgpt/",
+      "statusCode": 301
+    },
+    {
+      "source": "/ru/blog/chastnyy-server-dlya-biznesa",
+      "destination": "/ru/blog/bezopasnost-dannyh-ii/",
+      "statusCode": 301
+    },
+    {
+      "source": "/ru/blog/chastnyy-server-dlya-biznesa/",
+      "destination": "/ru/blog/bezopasnost-dannyh-ii/",
+      "statusCode": 301
     }
   ],
   "headers": [

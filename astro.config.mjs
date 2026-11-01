@@ -81,6 +81,15 @@ export default defineConfig({
     '/en/services/navcam-conductor/': '/en/services/optimus/',
     '/ru/uslugi/navcam-conductor/': '/ru/uslugi/optimus/',
     '/ka/momsakhurebebi/navcam-conductor/': '/ka/momsakhurebebi/optimus/',
+    // B3 (2026-11-01): artículos retirados o fusionados. Mismos destinos en vercel.json.
+    '/es/blog/tienda-a-medida-vs-shopify-woocommerce/': { status: 301, destination: '/es/servicios/#web' },
+    '/ru/blog/internet-magazin-pod-klyuch-vs-platformy/': { status: 301, destination: '/ru/uslugi/#web' },
+    '/es/blog/como-saber-si-una-tienda-online-es-fiable/': { status: 301, destination: '/es/blog/' },
+    '/ru/blog/kak-proverit-internet-magazin-pered-oplatoy/': { status: 301, destination: '/ru/blog/' },
+    '/es/blog/chatbot-ia-vs-contestar-tu-mismo/': { status: 301, destination: '/es/blog/5-tareas-automatizar-ia/' },
+    '/ru/blog/ii-assistent-whatsapp-cena/': { status: 301, destination: '/ru/blog/5-zadach-biznesa-avtomatizirovat-ii/' },
+    '/es/blog/ia-empresas-datos-sensibles/': { status: 301, destination: '/es/blog/ia-privada-vs-chatgpt/' },
+    '/ru/blog/chastnyy-server-dlya-biznesa/': { status: 301, destination: '/ru/blog/bezopasnost-dannyh-ii/' },
   },
   i18n: {
     defaultLocale: 'es',

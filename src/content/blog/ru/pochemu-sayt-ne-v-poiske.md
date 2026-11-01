@@ -4,6 +4,7 @@ description: "Реальные технические причины, почем
 pubDate: 2026-08-12
 pillar: "SEO"
 relatedService: "SEO-01"
+translationSlug: "por-que-mi-web-no-aparece-google"
 draft: false
 ---
 
