@@ -2,7 +2,6 @@
 title: "Qué pasa si tu web se cae y nadie la mantiene"
 description: "Qué le pasa de verdad a una web sin mantenimiento: caídas que nadie ve, certificados caducados y copias que no existen. Y cuánto cuesta evitarlo."
 pubDate: 2026-09-13
-keyword: "mantenimiento web"
 pillar: "MNT"
 relatedService: "MNT-01"
 translationSlug: "obsluzhivanie-sayta-chto-teryaete"

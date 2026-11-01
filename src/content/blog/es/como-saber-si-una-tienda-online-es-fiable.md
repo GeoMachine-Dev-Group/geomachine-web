@@ -2,7 +2,6 @@
 title: "Cómo saber si una tienda online es fiable antes de pagar"
 description: "Siete comprobaciones de cinco minutos para saber si una tienda online es de fiar antes de pagar, y qué hacer si ya has pagado y algo no cuadra."
 pubDate: 2026-10-02
-keyword: "tienda online fiable"
 pillar: "WEB"
 relatedService: "WEB-03"
 translationSlug: "kak-proverit-internet-magazin-pered-oplatoy"

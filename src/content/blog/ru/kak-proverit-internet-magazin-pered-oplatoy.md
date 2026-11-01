@@ -2,7 +2,6 @@
 title: "Как проверить интернет-магазин перед оплатой"
 description: "Семь проверок на пять минут, чтобы понять, можно ли доверять интернет-магазину до оплаты, и что делать, если вы уже заплатили и что-то не так."
 pubDate: 2026-10-02
-keyword: "проверить интернет-магазин"
 pillar: "WEB"
 relatedService: "WEB-03"
 translationSlug: "como-saber-si-una-tienda-online-es-fiable"

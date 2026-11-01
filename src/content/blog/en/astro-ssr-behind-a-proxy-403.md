@@ -2,7 +2,6 @@
 title: "Every form returns 403: Astro SSR behind an HTTPS proxy"
 description: "Why an Astro site behind Cloudflare Tunnel or Nginx rejects every POST with 403, how to prove it in one request, and the fix that actually works."
 pubDate: 2026-09-14
-keyword: "astro ssr 403 forbidden post behind proxy"
 pillar: "SYS"
 relatedService: "SYS-02"
 draft: false

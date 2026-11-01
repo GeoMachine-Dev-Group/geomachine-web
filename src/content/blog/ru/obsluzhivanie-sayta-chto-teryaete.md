@@ -2,7 +2,6 @@
 title: "Обслуживание сайта: что теряете, если его нет"
 description: "Что реально происходит с сайтом без технической поддержки: от сбоев до потери позиций в поиске — и сколько стоит риск оставить сайт без присмотра."
 pubDate: 2026-08-12
-keyword: "техническая поддержка сайта"
 pillar: "MNT"
 relatedService: "MNT-01"
 translationSlug: "que-pasa-si-tu-web-se-cae-sin-mantenimiento"

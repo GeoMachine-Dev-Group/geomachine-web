@@ -2,7 +2,6 @@
 title: "What a business website actually costs in 2026"
 description: "Real price ranges for a landing page, a corporate site and an online store, what moves the number up or down, and the three costs quotes leave out."
 pubDate: 2026-09-14
-keyword: "how much does a business website cost"
 pillar: "WEB"
 relatedService: "WEB-02"
 featured: true

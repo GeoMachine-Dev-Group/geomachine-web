@@ -3,7 +3,6 @@ title: "Caso real: gagraservis.ru, taxi y excursiones en Gagra"
 description: "Cómo diseñé gagraservis.ru: tarifas cerradas antes de subir al coche, excursiones con detalle y una sola página que carga entera. Decisiones y cifras reales."
 pubDate: 2026-08-12
 updatedDate: 2026-09-14
-keyword: "taxi y excursiones gagra sitio web"
 pillar: "WEB"
 relatedService: "WEB-02"
 translationSlug: "gagraservis-realnyy-keys"

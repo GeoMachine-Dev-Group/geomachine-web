@@ -2,7 +2,6 @@
 title: "Private AI: when your data cannot leave the building"
 description: "What running AI on your own server costs, what it takes in hardware, and when a public assistant like ChatGPT is the wrong answer for a business."
 pubDate: 2026-09-14
-keyword: "private ai on own server for business"
 pillar: "IA"
 relatedService: "IA-04"
 draft: false

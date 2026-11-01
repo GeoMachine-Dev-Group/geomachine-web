@@ -11,8 +11,6 @@ const blog = defineCollection({
     description: z.string(),
     pubDate: z.coerce.date(),
     updatedDate: z.coerce.date().optional(),
-    /** Palabra clave objetivo (SEO on-page), una por artículo. */
-    keyword: z.string(),
     /** Pilar de la estrategia de contenido (ver Decisiones/estrategia-contenido.md). */
     pillar: z.enum(PILLARS),
     /**

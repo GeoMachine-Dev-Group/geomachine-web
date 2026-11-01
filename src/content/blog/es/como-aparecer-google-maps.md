@@ -2,7 +2,6 @@
 title: "Cómo aparecer en Google Maps cuando buscan tu negocio"
 description: "Guía práctica para aparecer en Google Maps cuando alguien busca tu negocio cerca: qué configurar, qué errores te bajan posiciones y cuándo pedir ayuda."
 pubDate: 2026-08-12
-keyword: "aparecer en google maps negocio"
 pillar: "SEO"
 relatedService: "SEO-03"
 translationSlug: "kak-poyavitsya-na-google-kartah"

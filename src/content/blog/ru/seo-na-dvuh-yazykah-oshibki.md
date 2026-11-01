@@ -2,7 +2,6 @@
 title: "SEO на двух языках: ошибки, из-за которых Google понижает сайт"
 description: "Самые частые ошибки при запуске сайта на двух языках, которые путают Google и понижают обе версии, и как правильно настроить hreflang."
 pubDate: 2026-10-01
-keyword: "многоязычное seo ошибки"
 pillar: "SEO"
 relatedService: "SEO-04"
 translationSlug: "seo-multiidioma-errores"

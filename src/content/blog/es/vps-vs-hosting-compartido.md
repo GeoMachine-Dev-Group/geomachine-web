@@ -2,7 +2,6 @@
 title: "VPS vs hosting compartido: cuándo merece la pena el salto"
 description: "Diferencia real entre hosting compartido y VPS, cuándo tu web ya se queda corta con el compartido, y qué esperar de precio y complejidad al dar el salto."
 pubDate: 2026-08-12
-keyword: "vps vs hosting compartido"
 pillar: "SYS"
 relatedService: "SYS-02"
 translationSlug: "vps-ili-obychnyy-hosting"

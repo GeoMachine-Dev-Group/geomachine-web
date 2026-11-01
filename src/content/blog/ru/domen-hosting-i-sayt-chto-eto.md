@@ -2,7 +2,6 @@
 title: "Домен, хостинг и сайт: что это и за что вы платите"
 description: "Домен, хостинг, сайт и сертификат простыми словами: что это, за что платят один раз, что продлевают и что проверить, чтобы всё было оформлено на вас."
 pubDate: 2026-10-02
-keyword: "домен и хостинг"
 pillar: "WEB"
 relatedService: "WEB-01"
 translationSlug: "dominio-hosting-y-web-que-es-cada-cosa"

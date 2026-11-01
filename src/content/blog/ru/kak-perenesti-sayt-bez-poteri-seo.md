@@ -2,7 +2,6 @@
 title: "Как перенести сайт и не потерять позиции в Google"
 description: "Практическое руководство: как перенести или переделать сайт, не потеряв SEO: что сделать до, во время и после переезда и какие ошибки обрушивают трафик."
 pubDate: 2026-09-30
-keyword: "перенос сайта без потери seo"
 pillar: "WEB"
 relatedService: "WEB-05"
 translationSlug: "como-migrar-web-sin-perder-seo"

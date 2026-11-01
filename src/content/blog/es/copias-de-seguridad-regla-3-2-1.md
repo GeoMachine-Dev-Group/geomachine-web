@@ -2,7 +2,6 @@
 title: "Copias de seguridad: la regla 3-2-1 explicada fácil"
 description: "Qué es de verdad una copia de seguridad, la regla 3-2-1 explicada sin tecnicismos, por qué sincronizar no es copiar y cómo comprobar que tu copia sirve."
 pubDate: 2026-10-02
-keyword: "copias de seguridad"
 pillar: "MNT"
 relatedService: "MNT-01"
 translationSlug: "rezervnye-kopii-pravilo-3-2-1"

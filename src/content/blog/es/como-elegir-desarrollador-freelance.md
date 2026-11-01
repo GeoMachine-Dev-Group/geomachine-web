@@ -2,7 +2,6 @@
 title: "Cómo elegir un desarrollador freelance sin que te timen"
 description: "Señales reales para saber si un desarrollador freelance es de fiar antes de pagarle: qué preguntar, de qué desconfiar, y qué debe incluir un presupuesto serio."
 pubDate: 2026-08-12
-keyword: "contratar desarrollador web freelance"
 pillar: "WEB"
 draft: false
 ---

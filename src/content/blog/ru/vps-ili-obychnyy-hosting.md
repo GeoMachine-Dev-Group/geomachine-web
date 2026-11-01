@@ -2,7 +2,6 @@
 title: "VPS или обычный хостинг: когда пора переезжать"
 description: "Реальная разница между общим хостингом и VPS: когда сайту становится тесно на общем, чего ждать по цене и сложности при переезде."
 pubDate: 2026-10-01
-keyword: "vps или хостинг"
 pillar: "SYS"
 relatedService: "SYS-02"
 translationSlug: "vps-vs-hosting-compartido"

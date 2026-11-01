@@ -2,7 +2,6 @@
 title: "Как появиться на Google Картах, когда ищут ваш бизнес"
 description: "Практическое руководство: как появиться на Google Картах, когда рядом ищут ваш бизнес — что настроить, какие ошибки снижают позиции и когда нужна помощь."
 pubDate: 2026-09-30
-keyword: "как появиться на google картах бизнес"
 pillar: "SEO"
 relatedService: "SEO-03"
 translationSlug: "como-aparecer-google-maps"

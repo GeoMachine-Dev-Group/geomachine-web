@@ -2,7 +2,6 @@
 title: "Tienda a medida vs Shopify vs WooCommerce: comparativa"
 description: "Comparativa real entre tienda a medida, Shopify y WooCommerce: costes a 1 y 3 años, ventajas de cada una, y cuándo cada opción es la correcta."
 pubDate: 2026-08-12
-keyword: "shopify vs tienda a medida"
 pillar: "WEB"
 relatedService: "WEB-03"
 draft: false

@@ -3,7 +3,6 @@ title: "Реальный кейс: gagraservis.ru — такси и экскур
 description: "Как спроектирован gagraservis.ru: цена известна до посадки, экскурсии с описанием и одна страница, которая грузится целиком. Решения и реальные цифры."
 pubDate: 2026-08-12
 updatedDate: 2026-09-14
-keyword: "сайт такси и экскурсий гагра"
 pillar: "WEB"
 relatedService: "WEB-02"
 translationSlug: "gagraservis-caso-real"

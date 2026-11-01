@@ -2,7 +2,6 @@
 title: "App nativa o PWA: qué necesita de verdad tu negocio"
 description: "Qué es una PWA, en qué se diferencia de una app nativa, cuándo te basta con una y cuándo no, y cuánto cuesta cada opción para un negocio pequeño."
 pubDate: 2026-09-14
-keyword: "pwa o app nativa"
 pillar: "APP"
 relatedService: "APP-04"
 translationSlug: "prilozhenie-ili-pwa"

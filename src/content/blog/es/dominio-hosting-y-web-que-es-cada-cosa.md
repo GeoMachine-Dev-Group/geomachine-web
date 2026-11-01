@@ -2,7 +2,6 @@
 title: "Dominio, hosting y web: qué es cada cosa y qué pagas"
 description: "Dominio, alojamiento, web y certificado sin jerga: qué es cada pieza, qué se paga una vez, qué se renueva y qué revisar para que todo esté a tu nombre."
 pubDate: 2026-10-02
-keyword: "dominio y hosting"
 pillar: "WEB"
 relatedService: "WEB-01"
 translationSlug: "domen-hosting-i-sayt-chto-eto"

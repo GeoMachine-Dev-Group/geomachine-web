@@ -2,7 +2,6 @@
 title: "5 tareas de tu negocio que ya puedes automatizar con IA"
 description: "Cinco tareas repetitivas de un negocio pequeño que la IA ya puede hacer sola hoy: qué hace cada una y qué no deberías automatizar todavía."
 pubDate: 2026-08-12
-keyword: "automatizar tareas negocio ia"
 pillar: "IA"
 relatedService: "IA-03"
 translationSlug: "5-zadach-biznesa-avtomatizirovat-ii"
