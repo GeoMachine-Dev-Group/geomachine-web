@@ -33,7 +33,7 @@ export function buildFounder(site: string, lang: Lang = 'es') {
     jobTitle: 'Founder & developer',
     worksFor: { '@id': orgId(site) },
     knowsLanguage: ['ka', 'es', 'ru', 'en'],
-    sameAs: ['https://github.com/geomachine1'],
+    sameAs: ['https://www.linkedin.com/in/romeo-mikava/', 'https://github.com/geomachine1'],
   };
 }
 
