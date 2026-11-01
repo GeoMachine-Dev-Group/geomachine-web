@@ -10,10 +10,17 @@
  * ni teléfonos: solo el enlace a kadrilab.com.
  *
  * ka: traducción automática, PENDIENTE DE REVISIÓN NATIVA (igual que el resto
- * del georgiano del sitio).
+ * del georgiano del sitio). statusTitle/statusPoints/statusNote en ka: ka sin revisar.
+ *
+ * «Dónde está hoy» (2026-11-01): fechas del repo geomachine1/kadrilab (primer
+ * commit 23-sep, SEO de lanzamiento 28-sep, 68 commits), lo que se ve en
+ * kadrilab.com (7 fotos de portfolio, 1 película publicada y 3 ocultas sin
+ * vídeo, retratos del equipo con monograma) y los PR del panel (4, todos pruebas
+ * de GeoMachine del 26-sep, cerrados). Si el estudio empieza a subir fotos,
+ * actualizar.
  */
 import Base from '../layouts/Base.astro';
-import { servicesPath, kadriLabCasePath, type Lang } from '../i18n/ui';
+import { servicesPath, kadriLabCasePath, multilingualPath, type Lang } from '../i18n/ui';
 import { orgId as buildOrgId } from '../data/organization';
 
 interface Props {
@@ -30,7 +37,7 @@ const content = {
       'Web bilingüe (EN/KA) para un estudio de foto y vídeo de Tbilisi, con un panel donde el cliente sube fotos y GeoMachine las revisa antes de publicar.',
     tagline: 'Caso de cliente',
     headline: 'kadrilab.com: web y panel para un estudio de foto y vídeo de Tbilisi',
-    lead: 'KADRI LAB es un estudio de foto y vídeo de Tbilisi (Georgia), con un equipo de tres personas. Cubre bodas y todo tipo de eventos. Hicimos su web bilingüe, en inglés y georgiano, y un panel desde el que sube sus propias fotos sin poder publicar nada por accidente.',
+    lead: 'KADRI LAB es un estudio de foto y vídeo de Tbilisi (Georgia), con un equipo de tres personas. Cubre bodas y todo tipo de eventos. Hice su web bilingüe, en inglés y georgiano, y un panel desde el que sube sus propias fotos sin poder publicar nada por accidente.',
     visit: 'Ver kadrilab.com',
     clientTitle: 'El cliente',
     clientText:
@@ -52,6 +59,15 @@ const content = {
     processTitle: 'El proceso',
     processSteps: ['1. Estrategia y textos', '2. Mockups', '3. Código', '4. Deploy'],
     processNote: 'Cada paso va en su propia rama y necesita aprobación antes de llegar a producción.',
+    statusTitle: 'Dónde está hoy',
+    statusPoints: [
+      'La hice entre el 23 y el 28 de septiembre de 2026: 68 commits, cada cambio en su rama.',
+      'El estudio todavía no ha subido ninguna foto desde el panel. Las cuatro subidas que hay son pruebas mías del 26 de septiembre, cerradas sin publicar.',
+      'El portfolio tiene 7 fotos y hay una película publicada. Las otras tres fichas de vídeo están ocultas porque aún no hay vídeo: mejor ninguna que una vacía.',
+      'Faltan los retratos del equipo: las tres personas salen con un monograma hasta que lleguen las fotos.',
+    ],
+    statusNote: 'Lo de dos idiomas, explicado:',
+    statusLink: 'web en varios idiomas',
     shotsTitle: 'Cómo se ve',
     shotsNote: 'Portada de kadrilab.com en inglés y en georgiano.',
     shotDesktop: 'Escritorio, 1440 px',
@@ -69,7 +85,7 @@ const content = {
       'A bilingual (EN/KA) website for a Tbilisi photo and video studio, with a panel where the client uploads photos and GeoMachine reviews them before publishing.',
     tagline: 'Client case',
     headline: 'kadrilab.com: a website and panel for a photo and video studio in Tbilisi',
-    lead: 'KADRI LAB is a photo and video studio in Tbilisi, Georgia, with a team of three. It covers weddings and every kind of event. We built its bilingual website, in English and Georgian, and a panel where the studio uploads its own photos without being able to publish anything by accident.',
+    lead: 'KADRI LAB is a photo and video studio in Tbilisi, Georgia, with a team of three. It covers weddings and every kind of event. I built its bilingual website, in English and Georgian, and a panel where the studio uploads its own photos without being able to publish anything by accident.',
     visit: 'Visit kadrilab.com',
     clientTitle: 'The client',
     clientText:
@@ -91,6 +107,15 @@ const content = {
     processTitle: 'The process',
     processSteps: ['1. Strategy and copy', '2. Mockups', '3. Code', '4. Deploy'],
     processNote: 'Each step lives on its own branch and needs approval before it reaches production.',
+    statusTitle: 'Where it stands today',
+    statusPoints: [
+      'I built it between 23 and 28 September 2026: 68 commits, each change on its own branch.',
+      'The studio has not uploaded any photo through the panel yet. The four uploads there are my own tests from 26 September, closed without publishing.',
+      'The portfolio has 7 photos and one film is published. The other three film entries are hidden because there is no video yet: none is better than an empty one.',
+      'The team portraits are missing: the three people show a monogram until their photos arrive.',
+    ],
+    statusNote: 'The two-language part, explained:',
+    statusLink: 'multilingual websites',
     shotsTitle: 'What it looks like',
     shotsNote: 'The kadrilab.com home page in English and in Georgian.',
     shotDesktop: 'Desktop, 1440 px',
@@ -108,7 +133,7 @@ const content = {
       'Двуязычный (EN/KA) сайт для фото- и видеостудии из Тбилиси и панель, где клиент загружает фото, а GeoMachine проверяет их перед публикацией.',
     tagline: 'Кейс клиента',
     headline: 'kadrilab.com: сайт и панель для фото- и видеостудии из Тбилиси',
-    lead: 'KADRI LAB — фото- и видеостудия из Тбилиси (Грузия), команда из трёх человек. Снимает свадьбы и мероприятия любого рода. Мы сделали её двуязычный сайт, на английском и грузинском, и панель, через которую студия сама загружает фото и не может случайно ничего опубликовать.',
+    lead: 'KADRI LAB — фото- и видеостудия из Тбилиси (Грузия), команда из трёх человек. Снимает свадьбы и мероприятия любого рода. Я сделал её двуязычный сайт, на английском и грузинском, и панель, через которую студия сама загружает фото и не может случайно ничего опубликовать.',
     visit: 'Открыть kadrilab.com',
     clientTitle: 'Клиент',
     clientText:
@@ -130,6 +155,15 @@ const content = {
     processTitle: 'Процесс',
     processSteps: ['1. Стратегия и тексты', '2. Макеты', '3. Код', '4. Деплой'],
     processNote: 'Каждый шаг идёт в своей ветке и требует одобрения, прежде чем попасть в продакшен.',
+    statusTitle: 'Где он сейчас',
+    statusPoints: [
+      'Я сделал его с 23 по 28 сентября 2026 года: 68 коммитов, каждое изменение в своей ветке.',
+      'Студия пока не загрузила через панель ни одного фото. Четыре загрузки, которые там есть, — мои тесты от 26 сентября, закрытые без публикации.',
+      'В портфолио 7 фото, и опубликован один фильм. Остальные три карточки видео скрыты, потому что видео ещё нет: лучше никакой, чем пустая.',
+      'Нет портретов команды: у троих вместо фото монограмма, пока фото не пришлют.',
+    ],
+    statusNote: 'Про два языка подробнее:',
+    statusLink: 'многоязычный сайт',
     shotsTitle: 'Как это выглядит',
     shotsNote: 'Главная страница kadrilab.com на английском и на грузинском.',
     shotDesktop: 'Десктоп, 1440 px',
@@ -169,6 +203,15 @@ const content = {
     processTitle: 'პროცესი',
     processSteps: ['1. სტრატეგია და ტექსტები', '2. მაკეტები', '3. კოდი', '4. დეპლოი'],
     processNote: 'თითოეული ნაბიჯი ცალკე ბრენჩზეა და პროდაქშენში მოხვედრამდე დამტკიცება სჭირდება.',
+    statusTitle: 'სად არის დღეს',
+    statusPoints: [
+      'საიტი შეიქმნა 2026 წლის 23–28 სექტემბერს: 68 commit, ყოველი ცვლილება ცალკე ბრენჩზე.',
+      'სტუდიას პანელიდან ჯერ არცერთი ფოტო არ აუტვირთავს. იქ არსებული ოთხი ატვირთვა 26 სექტემბრის ჩემი ტესტებია, გამოქვეყნების გარეშე დახურული.',
+      'პორტფოლიოში 7 ფოტოა და ერთი ფილმია გამოქვეყნებული. დანარჩენი სამი ვიდეოს ჩანაწერი დამალულია, რადგან ვიდეო ჯერ არ არის.',
+      'გუნდის პორტრეტები აკლია: სამივე ადამიანს მონოგრამა აქვს, სანამ ფოტოები მოვა.',
+    ],
+    statusNote: '',
+    statusLink: '',
     shotsTitle: 'როგორ გამოიყურება',
     shotsNote: 'kadrilab.com-ის მთავარი გვერდი ინგლისურად და ქართულად.',
     shotDesktop: 'კომპიუტერი, 1440 px',
@@ -287,6 +330,18 @@ const mobileShots = [shot('en', 'mobile'), shot('ka', 'mobile')];
           {t.processSteps.map((step) => <li>{step}</li>)}
         </ul>
         <p class="app-panel__text case-note">{t.processNote}</p>
+      </div>
+    </div>
+
+    <div class="app-panel">
+      <div>
+        <h2 class="app-panel__title">{t.statusTitle}</h2>
+        <ul class="app-panel__steps case-points">
+          {t.statusPoints.map((point) => <li>{point}</li>)}
+        </ul>
+        {lang !== 'ka' && (
+          <p class="app-panel__text case-note">{t.statusNote} <a href={multilingualPath[lang]}>{t.statusLink}</a></p>
+        )}
       </div>
     </div>
 
