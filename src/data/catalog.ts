@@ -668,7 +668,7 @@ export const lines: Line[] = [
           en: 'Component selection for heavy workloads',
           ka: 'კომპონენტების შერჩევა მძიმე დატვირთვისთვის',
         },
-        time: { es: '2–4 días', ru: '2–4 дня', en: '2–4 days', ka: '2–4 დღე' },
+        time: { es: '1–2 días', ru: '1–2 дня', en: '1–2 days', ka: '1–2 დღე' },
         unit: 'once',
         human: {
           es: 'Consigues saber qué piezas valen la pena antes de gastarte el dinero — así no pagas de más por specs que no vas a usar.',

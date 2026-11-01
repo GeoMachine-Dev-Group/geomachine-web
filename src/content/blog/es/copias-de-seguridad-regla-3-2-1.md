@@ -45,13 +45,13 @@ Con la sincronización pasa justo lo contrario. Si borras algo en un sitio, se b
 
 ## Una copia que no has probado no es una copia
 
-Una copia que no se puede restaurar es solo un fichero. Así que la he probado: el 1 de noviembre de 2026 cogí la copia nocturna del 31 de octubre y la restauré en una base de datos vacía y temporal, en mi ordenador, sin tocar la de la web.
+Una copia que no se puede restaurar es solo un fichero. Así que la probamos: el 1 de noviembre de 2026 cogimos la copia nocturna del 31 de octubre y la restauramos en una base de datos vacía y temporal, en mi ordenador, sin tocar la de la web. No era la primera vez: la primera prueba fue el 14 de septiembre, con la primera copia que se hizo.
 
 - Tardó **menos de un segundo**.
 - Salieron las **25 tablas** y **311 negocios**, de los que **291 están publicados**. Es exactamente la cifra que enseña la web ese día.
 - El paquete de fotos se abre y tiene sus 88 ficheros.
 
-Si no se hubiera abierto, o si las cifras no coincidieran, me habría enterado ese día, con tiempo para arreglarlo.
+Si no se hubiera abierto, o si las cifras no coincidieran, nos habríamos enterado ese día, con tiempo para arreglarlo.
 
 ## Lo que todavía me falta
 
