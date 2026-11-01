@@ -34,13 +34,19 @@ export const kadriLabCasePath: Record<Lang, string> = {
   ka: `${servicesPath.ka}case-kadrilab/`,
 };
 
-/** Página «apps de taxi» (TaxiAppPage.astro, B5). Sin georgiano: todo el ka del
-    sitio está sin revisar y esta página habla de precios y plazos. */
-export type TaxiAppLang = 'es' | 'ru' | 'en';
-export const taxiAppPath: Record<TaxiAppLang, string> = {
+/** Páginas por intención (IntentPage.astro, B5). Sin georgiano: todo el ka del
+    sitio está sin revisar y estas páginas hablan de precios y plazos. */
+export type IntentLang = 'es' | 'ru' | 'en';
+export type TaxiAppLang = IntentLang;
+export const taxiAppPath: Record<IntentLang, string> = {
   es: `${servicesPath.es}app-taxi/`,
   ru: `${servicesPath.ru}prilozhenie-taksi/`,
   en: `${servicesPath.en}taxi-app/`,
+};
+export const directoryPath: Record<IntentLang, string> = {
+  es: `${servicesPath.es}directorio-local/`,
+  ru: `${servicesPath.ru}spravochnik-organizatsiy/`,
+  en: `${servicesPath.en}local-directory/`,
 };
 
 /**

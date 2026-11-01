@@ -111,8 +111,10 @@ Hasta el 14 de septiembre no había ninguna copia automática, con un catálogo 
 
 ## Qué falta
 
-Lo comercial, sobre todo. Ningún dueño ha reclamado su ficha todavía, y la campaña para avisarles por WhatsApp está preparada pero sin mandar: el enlace de reclamar perdía la ficha por el camino si el dueño tenía que registrarse antes, y mandar 95 mensajes a un enlace que falla habría quemado la primera impresión. Primero se arregla el enlace.
+Lo comercial, sobre todo. Ningún dueño ha reclamado su ficha todavía, y la campaña para avisarles por WhatsApp está preparada pero sin mandar: el enlace de reclamar perdía la ficha por el camino si el dueño tenía que registrarse antes, y mandar 95 mensajes a un enlace que falla habría quemado la primera impresión. El enlace se arregló el 1 de noviembre: ahora el dueño vuelve a su ficha después de registrarse, y la campaña puede salir.
+
+Ese mismo día revisamos las 66 fichas que había metido un lote de investigación automática en septiembre: 7 eran negocios de los que no hay ningún rastro y se archivaron, y 12 tenían un teléfono o una dirección que no coincidía con la web oficial del negocio o con OpenStreetMap, y se corrigieron. Quedan 284 publicadas.
 
 Faltan también las reseñas propias, los favoritos y el seguimiento de contactos. Desde el 9 de octubre se cuentan los clics en teléfono, WhatsApp, Telegram y web de cada ficha, que es lo que habrá que enseñarle al dueño cuando llegue la ficha de pago. Si esa medición hubiera empezado el día de la venta, el primer trimestre se vendería sin nada que enseñar.
 
-**Puedes ver el sitio en vivo:** [abhazservis.com](https://abhazservis.com/)
+**Puedes ver el sitio en vivo:** [abhazservis.com](https://abhazservis.com/). Y si quieres uno así para tu ciudad: [directorio local a medida](/es/servicios/directorio-local/).

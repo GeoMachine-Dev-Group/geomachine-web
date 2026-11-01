@@ -1,0 +1,141 @@
+---
+/**
+ * Página por intención (B5): «quiero un directorio de negocios para mi ciudad».
+ * Todo sale de abhazservis.com (proyecto propio, repo abhazservis) con su estado
+ * a 1-nov-2026, incluido lo que no hay: ingresos, fichas con dueño, tráfico de
+ * verdad. Mismas cifras que el caso del blog (abhazservis-caso-real), salvo las
+ * fichas publicadas: 284 tras archivar el 1-nov las 7 que no existían.
+ * Precio y plazo: PACK-07 en catalog.ts. Plantilla: IntentPage.astro.
+ */
+import IntentPage, { type IntentContent } from './IntentPage.astro';
+import { blogPath, directoryPath, type IntentLang } from '../i18n/ui';
+
+interface Props {
+  lang: IntentLang;
+}
+const { lang } = Astro.props;
+
+const content: Record<IntentLang, IntentContent> = {
+  es: {
+    title: 'Directorio de negocios para tu ciudad: el mío en Abjasia',
+    description:
+      'Directorio local de negocios a medida: fichas, buscador, dueños que reclaman su ficha y panel de moderación. Basado en abhazservis.com, con sus cifras reales.',
+    tagline: 'Directorios locales',
+    headline: 'Un directorio de negocios para tu ciudad, hecho por quien ya tiene uno',
+    lead: 'abhazservis.com es mi directorio de negocios de Abjasia, en ruso: 284 fichas publicadas en 19 categorías y 8 localidades. El primer commit es del 2 de septiembre de 2026 y el panel de administración estaba listo el 10. Te ofrezco lo mismo para tu ciudad o tu sector.',
+    honest: 'A 1 de noviembre de 2026 el directorio no ha facturado nada y ningún dueño ha reclamado todavía su ficha. Google le dio 37 clics y 2.680 impresiones entre el 13 de septiembre y el 29 de octubre. Te cuento abajo qué funciona y qué cuesta.',
+    visit: 'Ver abhazservis.com',
+    partsTitle: 'Qué piezas lleva',
+    parts: [
+      { title: 'Fichas que no se rompen', text: 'Cada negocio vive en /ciudad/nombre, sin la categoría en la dirección. Cuando el catálogo pasó de 8 a 19 categorías, 32 fichas cambiaron de categoría y ninguna cambió de dirección.' },
+      { title: 'Buscador y orden', text: 'Buscador por nombre y listados por ciudad y categoría. Dentro de cada categoría salen primero las fichas más completas: foto, descripción, contacto.' },
+      { title: 'Dueños', text: 'El dueño se registra con correo o con Google o Yandex, reclama su ficha y, una vez aprobado, cambia fotos, horario y servicios desde su panel, sin esperar a nadie.' },
+      { title: 'Moderación y datos', text: 'Cola de moderación para fichas y reclamaciones, importación por lotes con la fuente de cada dato, aviso a los buscadores cuando una ficha cambia y tres copias de seguridad.' },
+    ],
+    priceTitle: 'Precio y plazo',
+    priceTimeLabel: 'Plazo:',
+    priceLaterLabel: 'Precio estándar después del lanzamiento:',
+    priceNote: 'abhazservis llegó al panel de administración en nueve días. Con un cliente cuento tres semanas, por las idas y vueltas que en un proyecto propio no hay.',
+    afterTitle: 'Lo difícil no es el código',
+    after: [
+      'Llenar el catálogo con datos que puedas defender: cada teléfono y cada dirección con una fuente que se pueda citar. Copiar de Google Maps o de 2GIS no está permitido.',
+      'Que Google indexe las fichas: una ficha con solo nombre y dirección no entra. En el mío, 65 de 291 estaban así.',
+      'Que los dueños lo conozcan y reclamen su ficha, uno a uno.',
+      'Decidir de qué vive: fichas destacadas, publicidad o servicios a los dueños.',
+    ],
+    afterNote: 'Eso no tiene precio cerrado porque depende de tu ciudad y de cuánto trabajo pongas tú. Te digo qué hice yo en cada punto.',
+    asideTitle: 'Cómo lo hice, con los errores',
+    asideText: 'En el caso del blog cuento el stack, por qué la dirección no lleva la categoría, el día que los tests borraron el catálogo, por qué Google no indexaba la mitad y de dónde sale cada dato.',
+    asideLink: 'Leer el caso de abhazservis.com',
+    asideHref: `${blogPath.es}abhazservis-caso-real/`,
+    readTitle: 'Para leer antes',
+    read: [
+      { text: 'Por qué tu web no aparece en Google', href: `${blogPath.es}por-que-mi-web-no-aparece-google/` },
+      { text: 'Copias de seguridad: la regla 3-2-1', href: `${blogPath.es}copias-de-seguridad-regla-3-2-1/` },
+    ],
+    ctaTitle: 'Cuéntame tu ciudad o tu sector',
+    ctaButton: 'Pedir presupuesto',
+    backToHome: 'Volver al catálogo',
+  },
+  ru: {
+    title: 'Справочник организаций для вашего города: мой — в Абхазии',
+    description:
+      'Местный справочник организаций под ключ: карточки, поиск, владельцы закрепляют карточки, модерация. На примере abhazservis.com, с реальными цифрами.',
+    tagline: 'Местные справочники',
+    headline: 'Справочник организаций для вашего города от того, у кого он уже есть',
+    lead: 'abhazservis.com — мой справочник организаций Абхазии: 284 опубликованные карточки, 19 категорий и 8 городов. Первый коммит — 2 сентября 2026 года, админ-панель была готова 10-го. Я предлагаю то же самое для вашего города или отрасли.',
+    honest: 'На 1 ноября 2026 года справочник ничего не заработал, и ни один владелец ещё не закрепил за собой карточку. Google дал ему 37 кликов и 2 680 показов с 13 сентября по 29 октября. Ниже — что работает и что даётся тяжело.',
+    visit: 'Открыть abhazservis.com',
+    partsTitle: 'Из чего он состоит',
+    parts: [
+      { title: 'Карточки, которые не ломаются', text: 'Каждая организация живёт по адресу /город/название, без категории в адресе. Когда категорий стало 19 вместо 8, 32 карточки сменили категорию, и ни одна не сменила адрес.' },
+      { title: 'Поиск и порядок', text: 'Поиск по названию и списки по городу и категории. Внутри категории первыми идут самые полные карточки: фото, описание, контакты.' },
+      { title: 'Владельцы', text: 'Владелец регистрируется по почте или через Google или Яндекс, подаёт заявку на свою карточку и после одобрения сам меняет фото, часы работы и услуги в своей панели, ничего не ожидая.' },
+      { title: 'Модерация и данные', text: 'Очередь модерации для карточек и заявок, загрузка партиями с источником каждого поля, уведомление поисковиков при изменении карточки и три резервные копии.' },
+    ],
+    priceTitle: 'Цена и срок',
+    priceTimeLabel: 'Срок:',
+    priceLaterLabel: 'Стандартная цена после запуска:',
+    priceNote: 'abhazservis дошёл до админ-панели за девять дней. С клиентом я закладываю три недели: в своём проекте нет согласований.',
+    afterTitle: 'Трудное — не код',
+    after: [
+      'Наполнить каталог данными, за которые можно отвечать: у каждого телефона и адреса — источник, на который можно сослаться. Копировать из Яндекс Карт или 2ГИС нельзя.',
+      'Добиться, чтобы карточки попали в индекс: карточку только с названием и адресом поисковик не берёт. У меня таких было 65 из 291.',
+      'Сделать так, чтобы владельцы узнали о справочнике и закрепили карточки, — по одному.',
+      'Решить, на чём он зарабатывает: выделенные карточки, реклама или услуги владельцам.',
+    ],
+    afterNote: 'Здесь нет фиксированной цены: всё зависит от города и от того, сколько работы возьмёте на себя вы. Я расскажу, что делал сам на каждом шаге.',
+    asideTitle: 'Как я это сделал, с ошибками',
+    asideText: 'В кейсе в блоге — стек, почему в адресе нет категории, день, когда тесты стёрли каталог, почему Google не индексировал половину и откуда берётся каждое поле.',
+    asideLink: 'Читать кейс abhazservis.com',
+    asideHref: `${blogPath.ru}abhazservis-realnyy-keys/`,
+    readTitle: 'Что почитать',
+    read: [
+      { text: 'Как поднять сайт в Яндексе', href: `${blogPath.ru}kak-podnyat-sayt-v-yandekse/` },
+    ],
+    ctaTitle: 'Расскажите про ваш город или отрасль',
+    ctaButton: 'Узнать цену',
+    backToHome: 'Вернуться к каталогу',
+  },
+  en: {
+    title: 'A business directory for your city: mine runs in Abkhazia',
+    description:
+      'A custom local business directory: listings, search, owners claiming their listing and a moderation panel. Based on abhazservis.com, with its real numbers.',
+    tagline: 'Local directories',
+    headline: 'A business directory for your city, built by someone who runs one',
+    lead: 'abhazservis.com is my business directory for Abkhazia, in Russian: 284 published listings in 19 categories and 8 towns. The first commit is from 2 September 2026 and the admin panel was ready on the 10th. I offer the same for your city or your sector.',
+    honest: 'As of 1 November 2026 the directory has earned nothing and no owner has claimed a listing yet. Google gave it 37 clicks and 2,680 impressions between 13 September and 29 October. Below: what works and what is hard.',
+    visit: 'Visit abhazservis.com',
+    partsTitle: 'What it is made of',
+    parts: [
+      { title: 'Listings that do not break', text: 'Each business lives at /town/name, with no category in the address. When the catalogue went from 8 to 19 categories, 32 listings changed category and none changed address.' },
+      { title: 'Search and ranking', text: 'Search by name and lists by town and category. Within a category, the most complete listings come first: photo, description, contact.' },
+      { title: 'Owners', text: 'An owner signs up with email or with Google or Yandex, claims their listing and, once approved, changes photos, opening hours and services from their own panel without waiting for anyone.' },
+      { title: 'Moderation and data', text: 'A moderation queue for listings and claims, batch imports with the source of each field, search engines notified when a listing changes, and three backups.' },
+    ],
+    priceTitle: 'Price and timeline',
+    priceTimeLabel: 'Timeline:',
+    priceLaterLabel: 'Standard price after launch:',
+    priceNote: 'abhazservis reached its admin panel in nine days. With a client I allow three weeks, for the back-and-forth that an own project does not have.',
+    afterTitle: 'The hard part is not the code',
+    after: [
+      'Filling the catalogue with data you can stand behind: every phone and address with a source you can cite. Copying from Google Maps or 2GIS is not allowed.',
+      'Getting listings indexed: a listing with only a name and an address does not get in. In mine, 65 of 291 were like that.',
+      'Getting owners to know about it and claim their listing, one by one.',
+      'Deciding how it makes money: featured listings, advertising or services for owners.',
+    ],
+    afterNote: 'That has no fixed price because it depends on your city and on how much work you take on. I will tell you what I did at each step.',
+    asideTitle: 'See it live',
+    asideText: 'The directory is in Russian, but you can browse the listings, search and owner sign-up as they are today.',
+    asideLink: 'Visit abhazservis.com',
+    asideHref: 'https://abhazservis.com/',
+    readTitle: 'Further reading',
+    read: [],
+    ctaTitle: 'Tell me about your city or sector',
+    ctaButton: 'Request a quote',
+    backToHome: 'Back to the catalogue',
+  },
+};
+---
+
+<IntentPage lang={lang} paths={directoryPath} packCode="PACK-07" proofUrl="https://abhazservis.com/" content={content[lang]} />

@@ -1,0 +1,186 @@
+---
+/**
+ * Plantilla de las páginas por intención (B5): «quiero una app de taxi»,
+ * «quiero un directorio local»… Cada página (TaxiAppPage, DirectoryPage) solo
+ * aporta sus textos, sus rutas y el código del paquete del catálogo; el precio y
+ * el plazo salen de catalog.ts para que no se desfasen.
+ *
+ * Regla de contenido: no son páginas puerta. Todo lo que dicen sale de un
+ * proyecto propio o de cliente que se puede abrir, con su estado real a la
+ * fecha, incluido lo que todavía no hay. Mismo formato visual que
+ * CaseKadriLabPage (clases .app-*). Sin georgiano: el ka del sitio está sin
+ * revisar y estas páginas hablan de precios y plazos.
+ */
+import Base from '../layouts/Base.astro';
+import { servicesPath, type IntentLang } from '../i18n/ui';
+import { orgId as buildOrgId } from '../data/organization';
+import { bundles, LAUNCH_OPEN, LANG_CURRENCY } from '../data/catalog';
+
+export interface IntentContent {
+  title: string;
+  description: string;
+  tagline: string;
+  headline: string;
+  lead: string;
+  honest: string;
+  visit: string;
+  partsTitle: string;
+  parts: { title: string; text: string }[];
+  priceTitle: string;
+  priceTimeLabel: string;
+  priceLaterLabel: string;
+  priceNote: string;
+  afterTitle: string;
+  after: string[];
+  afterNote: string;
+  asideTitle: string;
+  asideText: string;
+  asideLink: string;
+  asideHref: string;
+  readTitle: string;
+  read: { text: string; href: string }[];
+  ctaTitle: string;
+  ctaButton: string;
+  backToHome: string;
+}
+
+interface Props {
+  lang: IntentLang;
+  paths: Record<IntentLang, string>;
+  packCode: string;
+  proofUrl: string;
+  content: IntentContent;
+}
+const { lang, paths, packCode, proofUrl, content: t } = Astro.props;
+
+const pack = bundles.find((b) => b.code === packCode);
+if (!pack) throw new Error(`IntentPage: no existe el paquete ${packCode} en catalog.ts`);
+
+const nbsp = ' ';
+const THOUSANDS: Record<IntentLang, string> = { es: '.', en: ',', ru: nbsp };
+const SYMBOL = { eur: '€', rub: '₽', gel: '₾' } as const;
+const currency = LANG_CURRENCY[lang];
+const money = (n: number) => `${String(n).replace(/\B(?=(\d{3})+(?!\d))/g, THOUSANDS[lang])}${nbsp}${SYMBOL[currency]}`;
+const amount = (LAUNCH_OPEN ? pack.launch : pack.standard)[currency][0]!;
+const price = money(amount);
+const priceLater = LAUNCH_OPEN ? money(pack.standard[currency][0]!) : null;
+
+const site = 'https://geomachine.es';
+const hreflangAlternates = [
+  { hreflang: 'x-default', href: `${site}${paths.es}` },
+  ...(Object.keys(paths) as IntentLang[]).map((l) => ({ hreflang: l, href: `${site}${paths[l]}` })),
+];
+const pageUrl = `${site}${paths[lang]}`;
+const orgId = buildOrgId(site);
+const external = t.asideHref.startsWith('http');
+---
+
+<Base
+  lang={lang}
+  title={t.title}
+  description={t.description}
+  pageUrl={pageUrl}
+  hreflangAlternates={hreflangAlternates}
+  schema="none"
+>
+  <Fragment slot="head">
+    <script type="application/ld+json" is:inline set:html={JSON.stringify({
+      '@context': 'https://schema.org',
+      '@graph': [
+        {
+          '@type': 'WebPage',
+          '@id': `${pageUrl}#webpage`,
+          url: pageUrl,
+          name: t.title,
+          description: t.description,
+          inLanguage: lang,
+          isPartOf: { '@id': orgId },
+          mainEntity: { '@id': `${pageUrl}#service` },
+        },
+        {
+          '@type': 'Service',
+          '@id': `${pageUrl}#service`,
+          name: pack.name[lang],
+          serviceType: t.tagline,
+          provider: { '@id': orgId },
+          offers: { '@type': 'Offer', price: amount, priceCurrency: currency.toUpperCase() },
+        },
+      ],
+    })} />
+  </Fragment>
+
+  <section class="hero app-hero shell">
+    <p class="hero__eyebrow">{t.tagline}</p>
+    <h1 class="hero__title">{t.headline}</h1>
+    <p class="hero__body">{t.lead}</p>
+    <p class="hero__body case-note">{t.honest}</p>
+
+    <div class="app-hero__downloads">
+      <a href={proofUrl} class="app-download app-download--primary" target="_blank" rel="noopener">
+        {t.visit} ↗
+      </a>
+    </div>
+  </section>
+
+  <section class="shell app-section">
+    <h2 class="app-section__title">{t.partsTitle}</h2>
+    <div class="app-features app-features--two">
+      {t.parts.map(({ title, text }) => (
+        <div class="app-feature">
+          <h3 class="app-feature__title">{title}</h3>
+          <p class="app-feature__text">{text}</p>
+        </div>
+      ))}
+    </div>
+
+    <div class="app-panel">
+      <div>
+        <h2 class="app-panel__title">{t.priceTitle}</h2>
+        <p class="app-panel__text"><strong>{pack.name[lang]}: {price}</strong></p>
+        {priceLater && <p class="app-panel__text">{t.priceLaterLabel} {priceLater}</p>}
+        {pack.time && <p class="app-panel__text">{t.priceTimeLabel} {pack.time[lang]}</p>}
+        <ul class="app-panel__steps case-points">
+          {pack.includes[lang].map((item) => <li>{item}</li>)}
+        </ul>
+        <p class="app-panel__text case-note">{t.priceNote}</p>
+      </div>
+
+      <div>
+        <h2 class="app-panel__title">{t.afterTitle}</h2>
+        <ul class="app-panel__steps">
+          {t.after.map((item) => <li>{item}</li>)}
+        </ul>
+        <p class="app-panel__text case-note">{t.afterNote}</p>
+      </div>
+    </div>
+
+    <div class="app-panel">
+      <div>
+        <h2 class="app-panel__title">{t.asideTitle}</h2>
+        <p class="app-panel__text">{t.asideText}</p>
+        <p class="app-panel__text case-note">
+          {external
+            ? <a href={t.asideHref} target="_blank" rel="noopener">{t.asideLink} ↗</a>
+            : <a href={t.asideHref}>{t.asideLink}</a>}
+        </p>
+      </div>
+      {t.read.length > 0 && (
+        <div>
+          <h2 class="app-panel__title">{t.readTitle}</h2>
+          <ul class="app-panel__steps">
+            {t.read.map((r) => <li><a href={r.href}>{r.text}</a></li>)}
+          </ul>
+        </div>
+      )}
+    </div>
+
+    <div class="case-cta">
+      <h2 class="app-panel__title">{t.ctaTitle}</h2>
+      <a href={`${servicesPath[lang]}#contacto`} class="app-download app-download--primary">{t.ctaButton}</a>
+    </div>
+
+    <div class="app-back">
+      <a href={servicesPath[lang]}>← {t.backToHome}</a>
+    </div>
+  </section>
+</Base>
