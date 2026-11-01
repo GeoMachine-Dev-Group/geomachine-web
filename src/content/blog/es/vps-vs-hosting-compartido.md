@@ -2,6 +2,7 @@
 title: "VPS vs hosting compartido: cuándo merece la pena el salto"
 description: "Diferencia real entre hosting compartido y VPS, cuándo tu web ya se queda corta con el compartido, y qué esperar de precio y complejidad al dar el salto."
 pubDate: 2026-08-12
+updatedDate: 2026-11-01
 pillar: "SYS"
 relatedService: "SYS-02"
 translationSlug: "vps-ili-obychnyy-hosting"
@@ -34,6 +35,17 @@ Si tu web funciona bien y no te está dando problemas, este artículo no es para
 ## Lo que también cambia (y hay que saberlo)
 
 Un VPS no viene "listo para usar" como el hosting compartido — alguien tiene que configurarlo: sistema operativo, servidor web, seguridad, copias de seguridad. Si no tienes conocimientos técnicos (o a alguien que los tenga), esto puede convertirse en un dolor de cabeza real en vez de una mejora.
+
+## Dónde tengo yo mis propias webs, y por qué
+
+Cada una de mis webs está en un sitio distinto, y no por capricho: cada una necesita una cosa diferente.
+
+- **Esta web, geomachine.es**, son páginas que se generan una vez y se sirven tal cual. No necesita ni compartido ni VPS: está en Vercel, una plataforma pensada para este tipo de webs, que la publica sola cada vez que subo un cambio.
+- **[abhazservis.com](/es/blog/abhazservis-caso-real/)**, el directorio de negocios, tiene base de datos y servidor propio, y funciona en un miniordenador en mi casa conectado a internet a través de un túnel de Cloudflare. Me cuesta casi nada y tengo control total. El precio es otro: cuando se cae el internet de casa, se cae la web. Pasó varios días entre agosto y septiembre, y lo cuento en [qué pasa si tu web se cae](/es/blog/que-pasa-si-tu-web-se-cae-sin-mantenimiento/).
+- **El taxi que estoy montando** necesita base de datos, posiciones en tiempo real, un motor que calcula rutas por las calles y tareas que corren solas cada pocos segundos. Eso no cabe en un hosting compartido: va en un VPS. El primero, el 27 de octubre, dejó de responder, probablemente porque caducó la suscripción. Lo monté en un VPS de otro proveedor a partir de la copia del día anterior.
+- **El correo de abhazservis.com** sí está en un hosting compartido, y para eso basta.
+
+La lección del VPS que desapareció es la que menos se cuenta: **un VPS es tuyo para todo**, también para renovarlo a tiempo y para tener la copia fuera de él.
 
 ## Cuánto cuesta de verdad
 
