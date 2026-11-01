@@ -8,6 +8,7 @@ import Schema from '../components/Schema.astro';
 import FloatingChat from '../components/FloatingChat.astro';
 import Logo from '../components/Logo.astro';
 import Analytics from '@vercel/analytics/astro';
+import SpeedInsights from '@vercel/speed-insights/astro';
 
 interface HreflangAlt {
   hreflang: string;
@@ -353,5 +354,6 @@ const preloadFont: Record<Lang, string> = {
         <head> sería markup inválido. Sin cookies, como el Plausible al
         que sustituye. */}
     {analytics && <Analytics />}
+    {analytics && <SpeedInsights />}
   </body>
 </html>
