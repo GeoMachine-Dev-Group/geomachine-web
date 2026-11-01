@@ -1,7 +1,8 @@
 ---
 title: "App nativa o PWA: qué necesita de verdad tu negocio"
-description: "Qué es una PWA, en qué se diferencia de una app nativa, cuándo te basta con una y cuándo no, y cuánto cuesta cada opción para un negocio pequeño."
+description: "Qué es una PWA, en qué se diferencia de una app nativa y cuándo te basta con una, con el caso del taxi que estoy montando, que usa las dos."
 pubDate: 2026-09-14
+updatedDate: 2026-11-01
 pillar: "APP"
 relatedService: "APP-04"
 translationSlug: "prilozhenie-ili-pwa"
@@ -32,6 +33,14 @@ La diferencia está en cómo llega al móvil: no pasa por la App Store ni por Go
 ## Cuándo te basta con una PWA
 
 Si tu app es, en el fondo, una forma cómoda de que tus clientes hagan algo contigo —reservar, pedir, consultar su historial, recibir avisos—, una PWA cubre lo que necesitas. Es el caso de la mayoría de negocios pequeños: una peluquería con citas, un restaurante con pedidos, una academia con horarios, un servicio de taxi o de excursiones.
+
+## Mi caso: el taxi que estoy montando usa las dos
+
+En [Абхаз Сервис Такси](/es/blog/cuanto-cuesta-app-como-uber/), la app de taxi que estoy montando en Abjasia, no elegí una de las dos: tiene ambas, cada una por un motivo.
+
+- **El pasajero usa una PWA.** Entra en taxi.abhazservis.com, pide el coche y sigue el viaje, y si quiere la instala en la pantalla de inicio. Alguien que acaba de cruzar la frontera no va a buscar una app en una tienda para un solo viaje: necesita pedir el coche en un minuto.
+- **El conductor usa una app nativa de Android.** Tiene que mandar su posición cada pocos segundos con el móvil bloqueado en el bolsillo, horas seguidas. Ese es justo el trabajo en segundo plano que una web no puede hacer. Y aun siendo nativa costó: entre finales de septiembre y el 4 de octubre preparé ocho versiones hasta que los Xiaomi dejaron de cortarle la posición.
+- **Ninguna de las dos está en una tienda.** La app del conductor se descarga desde el propio dominio. En Android se puede, si el conductor permite instalar apps de fuera de Google Play; en iPhone no. Para unos pocos conductores a los que les mandas el enlace sirve; para que te encuentren clientes que te buscan, no.
 
 ## Cuándo necesitas una app nativa
 
