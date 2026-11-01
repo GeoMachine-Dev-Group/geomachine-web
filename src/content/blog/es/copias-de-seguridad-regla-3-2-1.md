@@ -1,76 +1,82 @@
 ---
-title: "Copias de seguridad: la regla 3-2-1 explicada fácil"
-description: "Qué es de verdad una copia de seguridad, la regla 3-2-1 explicada sin tecnicismos, por qué sincronizar no es copiar y cómo comprobar que tu copia sirve."
+title: "Copias de seguridad: la regla 3-2-1 y cómo la aplico yo"
+description: "La regla 3-2-1 explicada con un caso real: las copias nocturnas de abhazservis.com, la prueba de restaurarlas y lo que todavía me falta."
 pubDate: 2026-10-02
+updatedDate: 2026-11-01
 pillar: "MNT"
 relatedService: "MNT-01"
 translationSlug: "rezervnye-kopii-pravilo-3-2-1"
 draft: false
 ---
 
-El móvil se cae al agua, se rompe la pantalla o desaparece en el metro. Al día siguiente ya tienes otro, pero falta lo que de verdad importaba: años de fotos, los documentos escaneados, las notas. Y casi siempre aparece la misma frase: «Pensaba que tenía copia».
+Todo el mundo sabe que hay que hacer copias de seguridad. Lo difícil es saber si las que tienes te sacarían de un apuro. Aquí te explico la regla que uso para comprobarlo y te la enseño aplicada a un proyecto mío en producción, [abhazservis.com](https://abhazservis.com/), con lo que hace bien y lo que todavía no.
 
-Una copia de seguridad no es algo técnico ni caro. Es una costumbre, y hay una regla sencilla que la convierte en algo fiable.
+## La regla 3-2-1, en tres líneas
 
-## Qué es una copia de seguridad (y qué no)
+- **3 copias** de tus datos: el original y dos copias.
+- **2 soportes distintos**: si falla un disco o una máquina, la otra copia sigue ahí.
+- **1 copia fuera** del sitio donde están las demás: si hay un robo, un incendio o una inundación, se pierde todo lo que estaba en el mismo lugar.
 
-Una copia de seguridad es un **segundo ejemplar de tus archivos que sobrevive aunque el primero desaparezca**. La clave está en esa última parte: si la copia se pierde junto con el original, no era una copia.
+## Qué hay que copiar en abhazservis
 
-Por eso no cuentan como copia:
+abhazservis es un directorio de negocios de Abjasia. Lo que no se puede volver a hacer si se pierde son dos cosas:
 
-- Las fotos guardadas en dos carpetas **del mismo móvil**.
-- Un disco externo que vive **pegado al ordenador**, en la misma mesa, y que se perdería en el mismo robo o el mismo incendio.
-- Un pendrive que guardaste hace años y que nunca has vuelto a abrir. Quizá funciona, o quizá no: no lo sabes.
+- **La base de datos**: las fichas de los negocios, con sus datos, horarios, categorías y localidades.
+- **Las fotos** que se han subido a la web.
 
-## La regla 3-2-1
+El código no entra aquí: está en git, en mi ordenador, en un repositorio de copia aparte y en GitHub. Si se pierde la máquina, el código se recupera en minutos. Los datos no.
 
-Es la forma más fácil de recordar cómo hacerlo bien:
+## Cómo está montado
 
-- **3 copias** de lo que te importa: el original y dos copias más.
-- **2 soportes distintos**: por ejemplo, el móvil y un disco externo. Si un tipo de soporte falla, el otro sigue ahí.
-- **1 copia fuera de casa** (o fuera de la oficina): en la nube o en un disco que guardas en otro sitio, como en casa de un familiar. Si pasa algo en el lugar donde están los otros dos, esta sigue a salvo.
+La web funciona en un miniordenador (un NUC) que tengo en casa. Las copias van así:
 
-Un ejemplo para una persona normal: las fotos están en el **móvil**; una vez al mes las pasas a un **disco externo** que guardas en un cajón, y además el móvil las sube a un **servicio en la nube**. Tres copias, dos tipos de soporte y una fuera de casa.
+1. **Cada noche, a las 03:30 (hora UTC)**, el NUC vuelca la base de datos entera a un fichero y empaqueta las fotos. Guarda las de los últimos 14 días.
+2. **Cada mañana, a las 09:00**, mi ordenador de trabajo se trae esas copias y guarda las de los últimos 60 días. Si a esa hora el ordenador está apagado, la copia se hace en cuanto lo enciendo.
+3. **Si la copia más reciente tiene más de 36 horas**, el ordenador me avisa con una alerta en pantalla. Así me entero el mismo día de que la copia nocturna ha dejado de funcionar, y no el día que necesite restaurarla.
+4. **Antes de un cambio delicado en los datos**, hago además una copia a mano. La última fue el 31 de octubre, antes de aplicar una tanda de correcciones a las fichas.
+
+Son ficheros pequeños: la base de datos entera ocupa unos 180 KB y las fotos, unos 6 MB. Guardar dos meses de copias no cuesta nada.
 
 ## Sincronizar no es copiar
 
-Esta es la trampa más común. Muchos servicios **sincronizan**: lo que haces en un aparato se repite en todos los demás. Es muy cómodo, pero también se repiten los errores:
+Este es el detalle que más importa, y el que más gente pasa por alto. Mi ordenador **no sincroniza** la carpeta del NUC: solo añade lo nuevo. Si alguien borrara las copias del NUC, o se vaciara su disco, mi copia no se vaciaría con él.
 
-- Si **borras** una carpeta por error en el ordenador, se borra también en la nube y en el móvil.
-- Si un programa malicioso **estropea o bloquea** tus archivos, la versión estropeada se sincroniza y sustituye a la buena.
-
-Una copia de seguridad de verdad guarda **cómo estaban tus archivos en un momento concreto**, y no cambia cuando cambias el original. Si usas un servicio que sincroniza, comprueba si guarda versiones anteriores y durante cuánto tiempo. Si no las guarda, no es tu copia de seguridad: es otra pantalla de lo mismo.
+Con la sincronización pasa justo lo contrario. Si borras algo en un sitio, se borra en todos; si un virus cifra tus archivos, la versión cifrada sustituye a la buena en todas partes. Si usas un servicio que sincroniza, comprueba si guarda versiones anteriores y durante cuánto tiempo. Si no las guarda, no es una copia de seguridad.
 
 ## Una copia que no has probado no es una copia
 
-La única forma de saber que una copia sirve es **recuperar algo de ella**. De vez en cuando, elige un archivo al azar (una foto antigua, un documento) y ábrelo desde la copia. Si se abre bien, la copia funciona. Si no lo encuentras o no se abre, mejor descubrirlo hoy que el día que la necesites.
+Una copia que no se puede restaurar es solo un fichero. Así que la he probado: el 1 de noviembre de 2026 cogí la copia nocturna del 31 de octubre y la restauré en una base de datos vacía y temporal, en mi ordenador, sin tocar la de la web.
 
-## Cada cuánto hacer copia
+- Tardó **menos de un segundo**.
+- Salieron las **25 tablas** y **311 negocios**, de los que **291 están publicados**. Es exactamente la cifra que enseña la web ese día.
+- El paquete de fotos se abre y tiene sus 88 ficheros.
 
-No hay un número mágico. Hazte esta pregunta: **¿cuánto te dolería perder todo lo que ha pasado desde tu última copia?**
+Si no se hubiera abierto, o si las cifras no coincidieran, me habría enterado ese día, con tiempo para arreglarlo.
 
-- Si son unas cuantas fotos, con una copia al mes puede bastar.
-- Si es el trabajo de cada día, la copia tiene que ser diaria, y **automática**. Las copias que dependen de acordarse acaban dejando de hacerse.
+## Lo que todavía me falta
 
-## Y si tienes un negocio
+Si repaso la regla 3-2-1, mi montaje cumple dos de las tres:
 
-La regla es la misma, pero lo que se pierde duele más: las facturas, los datos de clientes, los presupuestos y, si la tienes, la **web**.
+- ✅ **3 copias**: la base de datos de la web, la copia nocturna del NUC y la de mi ordenador.
+- ✅ **2 soportes**: el NUC y mi ordenador son máquinas y discos distintos. La copia del NUC está en la misma máquina que la web, así que protege de un error o de un borrado, no de que falle el NUC. Para eso está la de mi ordenador.
+- ❌ **1 fuera de casa**: las dos máquinas están en la misma casa. Un robo o un incendio se llevaría las dos.
 
-Con la web pasa algo curioso: casi nadie se pregunta quién hace sus copias hasta que algo sale mal. Una actualización que falla, un ataque o un archivo borrado por error. Si hay copias hechas de forma regular, se vuelve a un estado que funcionaba. Si no las hay, puede tocar rehacer la web desde cero.
+Hay un segundo punto flojo: **las copias no van cifradas**. Me lo señaló la auditoría de seguridad del proyecto del 30 de octubre. Quien se llevara uno de los dos discos podría leer la base de datos entera.
 
-Tu web no necesita mantenimiento obligatorio para seguir funcionando. Pero si quieres que alguien vigile que no se caiga y que tenga **copias de seguridad**, eso es exactamente lo que incluye el mantenimiento.
+Lo siguiente es cifrar las copias al crearlas y mandar una a un sitio fuera de casa. Cuando esté hecho, lo añadiré aquí.
 
-## Lista rápida
+## Lista rápida para tu negocio
 
-- [ ] ¿Tienes **3 copias** de lo que no puedes perder?
-- [ ] ¿Están en **2 tipos de soporte** distintos?
-- [ ] ¿Hay **1 copia fuera** de casa o de la oficina?
-- [ ] Si usas un servicio que sincroniza, ¿guarda **versiones anteriores**?
-- [ ] ¿Has **recuperado un archivo** de tu copia en los últimos meses?
-- [ ] En tu negocio, ¿sabes **quién hace las copias de tu web** y dónde están?
+- [ ] Sé **qué datos** no podría volver a hacer si se pierden (clientes, pedidos, fotos, facturas).
+- [ ] Hay una copia **automática**, que no depende de que alguien se acuerde.
+- [ ] Hay al menos una copia en **otra máquina** y otra **fuera del local**.
+- [ ] La copia **no se sincroniza**: si borro algo, la copia lo conserva.
+- [ ] Algo me **avisa** si la copia deja de hacerse.
+- [ ] He **restaurado** una copia alguna vez y he comprobado que los datos estaban.
+- [ ] Las copias van **cifradas**, o están donde nadie más pueda llevárselas.
 
-Si has contestado «no» a alguna, ya sabes por dónde empezar.
+Si te falta alguna, ya sabes por dónde empezar.
 
 ---
 
-**¿Tu web tiene copias de seguridad, o nadie lo sabe?** El plan de mantenimiento **Basic** incluye alojamiento, copias, certificado y vigilancia de caídas, desde **25 € al mes** con la tarifa de lanzamiento. [Mira los planes de mantenimiento aquí](/es/servicios/#mnt).
+**¿Tu web tiene copias de verdad, o solo crees que las tiene?** Las copias de seguridad y la vigilancia de caídas entran en el [mantenimiento](/es/servicios/#mnt). Escríbeme y te digo qué te falta.
