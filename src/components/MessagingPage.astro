@@ -1,0 +1,143 @@
+---
+/**
+ * Página por intención (B5): «quiero que mi negocio funcione por WhatsApp y
+ * Telegram». Sale de lo que está en marcha a 1-nov-2026: el formulario de esta
+ * web, que llega a Telegram (src/pages/api/contact.ts); los avisos del taxi por
+ * Telegram (uber-mvp #118); los botones de gagraservis.ru (llamar, WhatsApp,
+ * Telegram y MAX; el de la excursión al Ritsa abre WhatsApp con el mensaje ya
+ * escrito) y los clics de contacto que cuenta abhazservis desde el 9-oct
+ * (ninguno en WhatsApp ni Telegram todavía). No hay asistente que conteste a
+ * clientes entregado: la página lo dice. Botón de proyecto: gagraservis.ru,
+ * lo único de esto que se ve desde fuera. Precio: IA-03 e IA-02 en catalog.ts.
+ * Plantilla: IntentPage.astro.
+ */
+import IntentPage, { type IntentContent } from './IntentPage.astro';
+import { blogPath, messagingPath, taxiAppPath, type IntentLang } from '../i18n/ui';
+
+interface Props {
+  lang: IntentLang;
+}
+const { lang } = Astro.props;
+
+const content: Record<IntentLang, IntentContent> = {
+  es: {
+    title: 'WhatsApp y Telegram para tu negocio: formularios, avisos y botones',
+    description:
+      'Formularios que llegan a Telegram, avisos automáticos cuando algo falla y botones que abren el chat. Lo que tengo funcionando, lo que no he entregado y cuánto cuesta.',
+    tagline: 'WhatsApp y Telegram',
+    headline: 'Que lo importante te llegue al móvil, por WhatsApp o Telegram',
+    lead: 'Lo que alguien escribe en el formulario de esta web me llega a Telegram. El taxi que estoy montando me avisa por Telegram cuando algo falla y cuando se arregla. Te monto lo mismo: los mensajes de tus clientes y los avisos de tu negocio, en el chat que ya miras.',
+    honest: 'Un asistente que conteste solo a tus clientes por WhatsApp todavía no lo he entregado a nadie: lo que tengo funcionando son formularios, avisos y botones. Y en abhazservis, que cuenta los clics en cada ficha desde el 9 de octubre de 2026, nadie ha pulsado todavía el botón de WhatsApp ni el de Telegram.',
+    visit: 'Ver gagraservis.ru',
+    partsTitle: 'Qué tengo funcionando',
+    parts: [
+      { title: 'El formulario, a Telegram', text: 'Cada mensaje del formulario de esta web llega a Telegram con el nombre, el contacto y el idioma en que se escribió. Va en texto plano: un asterisco del cliente no rompe el envío.' },
+      { title: 'Sin spam', text: 'Un campo oculto que una persona nunca rellena y un mínimo de tres segundos entre abrir el formulario y enviarlo. A un bot que cae en el filtro se le responde como si todo fuera bien, para no darle pistas.' },
+      { title: 'Avisos cuando algo falla', text: 'El taxi manda un Telegram si falla el cálculo de rutas o si se atasca una de sus tareas automáticas, y otro cuando vuelve a funcionar. Me entero sin tener que mirar.' },
+      { title: 'Botones que abren el chat', text: 'En gagraservis.ru, los botones de llamar, WhatsApp, Telegram y MAX quedan bajo el pulgar. El de la excursión al lago Ritsa abre WhatsApp con el mensaje ya escrito. MAX no deja abrir un chat a partir de un número, así que su botón enseña el número para copiarlo.' },
+    ],
+    priceTitle: 'Precio',
+    priceTimeLabel: 'Plazo:',
+    priceLaterLabel: 'Precio estándar después del lanzamiento:',
+    priceNote: 'Formularios y avisos entran en la automatización. El asistente es para cuando te llegan tantas preguntas repetidas que contestarlas te quita una hora al día.',
+    afterTitle: 'Cuándo no te lo recomiendo',
+    after: [
+      'Un asistente, si te llegan pocos mensajes al día o las preguntas casi nunca se repiten: falla más de lo que ayuda.',
+      'Un asistente, si vendes negociando caso por caso: esa conversación tienes que llevarla tú.',
+      'Solo WhatsApp, si tus clientes usan otra app: gagraservis.ru tiene también Telegram y MAX.',
+    ],
+    afterNote: 'Y si lo que quieres es contar cuánta gente te escribe, primero hay que medirlo. Te lo digo antes de presupuestar.',
+    asideTitle: 'Lo que automatizo y lo que descarté',
+    asideText: 'En el blog cuento cinco tareas que ya se pueden automatizar, cuándo no compensa cada una, y una que descarté: las descripciones automáticas de fichas, de las que salieron bien 2 de 11.',
+    asideLink: 'Leer «5 tareas de tu negocio que ya puedes automatizar con IA»',
+    asideHref: `${blogPath.es}5-tareas-automatizar-ia/`,
+    readTitle: 'Dónde está funcionando',
+    read: [
+      { text: 'Caso: gagraservis, la web de taxi de Gagra', href: `${blogPath.es}gagraservis-caso-real/` },
+      { text: 'Aplicación de taxi a medida', href: taxiAppPath.es },
+    ],
+    ctaTitle: 'Cuéntame qué mensajes te llegan y por dónde',
+    ctaButton: 'Pedir presupuesto',
+    backToHome: 'Volver al catálogo',
+  },
+  ru: {
+    title: 'WhatsApp и Telegram для бизнеса: заявки, уведомления и кнопки',
+    description:
+      'Заявки с сайта в Telegram, автоматические уведомления, когда что-то сломалось, и кнопки, которые открывают чат. Что у меня работает, чего я ещё не сдавал и сколько это стоит.',
+    tagline: 'WhatsApp и Telegram',
+    headline: 'Чтобы важное приходило на телефон — в WhatsApp или Telegram',
+    lead: 'То, что пишут в форме на этом сайте, приходит мне в Telegram. Такси, которое я делаю, пишет мне в Telegram, когда что-то ломается и когда снова работает. Я сделаю то же самое для вас: сообщения клиентов и уведомления вашего бизнеса — в чате, который вы и так читаете.',
+    honest: 'Ассистента, который сам отвечает клиентам в WhatsApp, я ещё никому не сдавал: у меня работают формы, уведомления и кнопки. А в abhazservis, где клики в каждой карточке считаются с 9 октября 2026 года, на кнопку WhatsApp или Telegram пока не нажал никто.',
+    visit: 'Открыть gagraservis.ru',
+    partsTitle: 'Что у меня работает',
+    parts: [
+      { title: 'Заявки — в Telegram', text: 'Каждая заявка из формы на этом сайте приходит в Telegram с именем, контактом и языком, на котором её написали. Обычным текстом: звёздочка в сообщении клиента не ломает отправку.' },
+      { title: 'Без спама', text: 'Скрытое поле, которое человек никогда не заполнит, и минимум три секунды между открытием формы и отправкой. Боту, который попал в фильтр, отвечают, будто всё в порядке, чтобы не подсказывать.' },
+      { title: 'Уведомления о сбоях', text: 'Такси пишет в Telegram, если сломался расчёт маршрутов или зависла одна из автоматических задач, и ещё раз — когда всё снова работает. Я узнаю об этом, ничего не проверяя.' },
+      { title: 'Кнопки, которые открывают чат', text: 'На gagraservis.ru кнопки звонка, WhatsApp, Telegram и MAX под большим пальцем. Кнопка экскурсии на озеро Рица открывает WhatsApp с уже написанным сообщением. MAX не открывает чат по номеру, поэтому его кнопка показывает номер, чтобы его скопировать.' },
+    ],
+    priceTitle: 'Цена',
+    priceTimeLabel: 'Срок:',
+    priceLaterLabel: 'Стандартная цена после запуска:',
+    priceNote: 'Формы и уведомления входят в автоматизацию. Ассистент нужен, когда одинаковых вопросов так много, что ответы на них отнимают час в день.',
+    afterTitle: 'Когда я это не советую',
+    after: [
+      'Ассистента — если сообщений в день мало или вопросы почти не повторяются: он больше ошибается, чем помогает.',
+      'Ассистента — если вы продаёте, договариваясь с каждым отдельно: этот разговор должны вести вы.',
+      'Только WhatsApp — если ваши клиенты пользуются другим мессенджером: у gagraservis.ru есть ещё Telegram и MAX.',
+    ],
+    afterNote: 'А если вы хотите знать, сколько людей вам пишет, сначала это нужно измерить. Я скажу это до сметы.',
+    asideTitle: 'Что я автоматизирую и от чего отказался',
+    asideText: 'В блоге — пять задач, которые уже можно автоматизировать, когда каждая не окупается, и одна, от которой я отказался: автоматические описания карточек, из которых удачными вышли 2 из 11.',
+    asideLink: 'Читать «5 задач бизнеса, которые уже можно автоматизировать с ИИ»',
+    asideHref: `${blogPath.ru}5-zadach-biznesa-avtomatizirovat-ii/`,
+    readTitle: 'Где это работает',
+    read: [
+      { text: 'Кейс: gagraservis, сайт такси в Гагре', href: `${blogPath.ru}gagraservis-realnyy-keys/` },
+      { text: 'Приложение такси под ключ', href: taxiAppPath.ru },
+    ],
+    ctaTitle: 'Расскажите, какие сообщения вам приходят и откуда',
+    ctaButton: 'Узнать цену',
+    backToHome: 'Вернуться к каталогу',
+  },
+  en: {
+    title: 'WhatsApp and Telegram for your business: forms, alerts and buttons',
+    description:
+      'Website forms delivered to Telegram, automatic alerts when something breaks, and buttons that open the chat. What I run, what I have not delivered yet and what it costs.',
+    tagline: 'WhatsApp and Telegram',
+    headline: 'What matters reaches your phone, on WhatsApp or Telegram',
+    lead: 'What people write in this site’s contact form reaches me on Telegram. The taxi app I am building alerts me on Telegram when something breaks and when it is fixed. I set up the same for you: your customers’ messages and your business alerts, in the chat you already read.',
+    honest: 'I have not delivered an assistant that answers customers on WhatsApp by itself yet: what I run are forms, alerts and buttons. And on abhazservis, which has counted clicks on every listing since 9 October 2026, nobody has tapped the WhatsApp or Telegram button yet.',
+    visit: 'Visit gagraservis.ru',
+    partsTitle: 'What I run',
+    parts: [
+      { title: 'The form, to Telegram', text: 'Every message from this site’s form reaches Telegram with the name, the contact and the language it was written in. As plain text: an asterisk in a customer’s message does not break the send.' },
+      { title: 'No spam', text: 'A hidden field no person ever fills in and at least three seconds between opening the form and sending it. A bot caught by the filter gets an “all fine” reply, so it gets no hints.' },
+      { title: 'Alerts when something breaks', text: 'The taxi app sends a Telegram message if route calculation fails or one of its scheduled jobs gets stuck, and another when it works again. I find out without checking.' },
+      { title: 'Buttons that open the chat', text: 'On gagraservis.ru the call, WhatsApp, Telegram and MAX buttons sit under the thumb. The Lake Ritsa tour button opens WhatsApp with the message already written. MAX cannot open a chat from a number, so its button shows the number to copy.' },
+    ],
+    priceTitle: 'Price',
+    priceTimeLabel: 'Timeline:',
+    priceLaterLabel: 'Standard price after launch:',
+    priceNote: 'Forms and alerts fall under task automation. The assistant is for when repeated questions take you an hour a day to answer.',
+    afterTitle: 'When I would not recommend it',
+    after: [
+      'An assistant, if you get few messages a day or the questions rarely repeat: it gets more wrong than it helps.',
+      'An assistant, if you sell by negotiating case by case: that conversation has to be yours.',
+      'WhatsApp only, if your customers use another app: gagraservis.ru also has Telegram and MAX.',
+    ],
+    afterNote: 'And if you want to know how many people contact you, that has to be measured first. I will tell you before quoting.',
+    asideTitle: 'Where alerts already matter',
+    asideText: 'The taxi app’s Telegram alerts are part of its admin side: route failures and stuck jobs reach the phone of whoever runs it. The taxi app page explains the rest of it.',
+    asideLink: 'Read the taxi app page',
+    asideHref: taxiAppPath.en,
+    readTitle: 'Further reading',
+    read: [],
+    ctaTitle: 'Tell me what messages you get and where',
+    ctaButton: 'Request a quote',
+    backToHome: 'Back to the catalogue',
+  },
+};
+---
+
+<IntentPage lang={lang} paths={messagingPath} itemCodes={['IA-03', 'IA-02']} proofUrl="https://gagraservis.ru/" content={content[lang]} />

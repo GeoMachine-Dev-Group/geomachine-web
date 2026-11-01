@@ -58,6 +58,11 @@ export const privateAiPath: Record<IntentLang, string> = {
   ru: `${servicesPath.ru}privatnyy-ii/`,
   en: `${servicesPath.en}private-ai/`,
 };
+export const messagingPath: Record<IntentLang, string> = {
+  es: `${servicesPath.es}whatsapp-telegram/`,
+  ru: `${servicesPath.ru}whatsapp-telegram/`,
+  en: `${servicesPath.en}whatsapp-telegram/`,
+};
 
 /**
  * El blog existe en es, ru y en. En georgiano no: todo el `ka` del sitio va

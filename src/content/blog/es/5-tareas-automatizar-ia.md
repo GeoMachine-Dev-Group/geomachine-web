@@ -67,4 +67,4 @@ No automatizo nada a ciegas — primero hago una [auditoría de procesos](/es/se
 
 ---
 
-**¿Tienes alguna de estas cinco en tu día a día?** Escríbeme cuál te quita más tiempo y te digo si merece la pena automatizarla. [Mira los servicios de IA aquí](/es/servicios/#ia).
+**¿Tienes alguna de estas cinco en tu día a día?** Escríbeme cuál te quita más tiempo y te digo si merece la pena automatizarla. [Mira los servicios de IA aquí](/es/servicios/#ia), o [formularios y avisos por WhatsApp y Telegram](/es/servicios/whatsapp-telegram/).
