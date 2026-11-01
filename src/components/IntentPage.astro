@@ -13,7 +13,7 @@
  * revisar y estas páginas hablan de precios y plazos.
  */
 import Base from '../layouts/Base.astro';
-import { servicesPath, type IntentLang } from '../i18n/ui';
+import { servicesPath, ui, type IntentLang } from '../i18n/ui';
 import { orgId as buildOrgId } from '../data/organization';
 import { bundles, lines, LAUNCH_OPEN, LANG_CURRENCY } from '../data/catalog';
 
@@ -52,7 +52,8 @@ interface Props {
   packCode?: string;
   /** …o servicios sueltos, que se pintan con su rango («150–250 €»). */
   itemCodes?: string[];
-  proofUrl: string;
+  /** Proyecto que se puede abrir. Sin él no hay botón (una IA privada no tiene nada público). */
+  proofUrl?: string;
   content: IntentContent;
 }
 const { lang, paths, packCode, itemCodes = [], proofUrl, content: t } = Astro.props;
@@ -77,12 +78,15 @@ const tierOf = (o: { launch: typeof bundles[number]['launch']; standard: typeof 
   (LAUNCH_OPEN ? o.launch : o.standard)[currency];
 const price = pack ? range(tierOf(pack)) : null;
 const priceLater = pack && LAUNCH_OPEN ? range(pack.standard[currency]) : null;
+// Servicios con cuota (IA): «1.500–3.500 € + 90–200 €/mes». Sin la cuota, el precio engañaría.
+const withMonthly = (once: string, recurring?: typeof bundles[number]['launch']) =>
+  recurring ? `${once} + ${range(recurring[currency])}${ui[lang].perMonth}` : once;
 const itemRows = items.map((i) => ({
   name: i.name[lang],
   spec: i.spec[lang],
   time: i.time?.[lang],
-  price: range(tierOf(i)),
-  later: LAUNCH_OPEN ? range(i.standard[currency]) : null,
+  price: withMonthly(range(tierOf(i)), LAUNCH_OPEN ? i.launchRecurring : i.standardRecurring),
+  later: LAUNCH_OPEN ? withMonthly(range(i.standard[currency]), i.standardRecurring) : null,
 }));
 // Para el JSON-LD: el precio más bajo de lo que se ofrece.
 const amount = Math.min(...(pack ? [tierOf(pack)[0]!] : items.map((i) => tierOf(i)[0]!)));
@@ -138,11 +142,13 @@ const external = t.asideHref.startsWith('http');
     <p class="hero__body">{t.lead}</p>
     <p class="hero__body case-note">{t.honest}</p>
 
-    <div class="app-hero__downloads">
-      <a href={proofUrl} class="app-download app-download--primary" target="_blank" rel="noopener">
-        {t.visit} ↗
-      </a>
-    </div>
+    {proofUrl && (
+      <div class="app-hero__downloads">
+        <a href={proofUrl} class="app-download app-download--primary" target="_blank" rel="noopener">
+          {t.visit} ↗
+        </a>
+      </div>
+    )}
   </section>
 
   <section class="shell app-section">

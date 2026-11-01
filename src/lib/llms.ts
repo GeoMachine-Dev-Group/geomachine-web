@@ -9,7 +9,7 @@
  */
 import type { CollectionEntry } from 'astro:content';
 import { lines, bundles, type Currency, type Item, type Unit } from '../data/catalog';
-import { servicesPath, blogPath, kadriLabCasePath, taxiAppPath, directoryPath, multilingualPath, type BlogLang } from '../i18n/ui';
+import { servicesPath, blogPath, kadriLabCasePath, taxiAppPath, directoryPath, multilingualPath, privateAiPath, type BlogLang } from '../i18n/ui';
 
 const SITE = 'https://geomachine.es';
 const CATALOG = `${SITE}${servicesPath.en}`;
@@ -112,6 +112,7 @@ ${blogSection(posts, false)}
 - [taxi.abhazservis.com](https://taxi.abhazservis.com/) — GeoMachine's own taxi app for Abkhazia (proximity dispatch, Android driver app with background GPS, installable passenger web app, commission with debt limit, admin panel). In production since 2026; as of 1 Nov 2026 no trip completed by a real passenger yet. Taxi app service page: [${SITE}${taxiAppPath.en}](${SITE}${taxiAppPath.en})
 - Local business directory service page (based on abhazservis.com): [${SITE}${directoryPath.en}](${SITE}${directoryPath.en})
 - Multilingual website service page (this site is in four languages; kadrilab.com in English and Georgian): [${SITE}${multilingualPath.en}](${SITE}${multilingualPath.en})
+- Private AI service page (local models on your own machine; based on GeoMachine's own setup, no client delivery yet): [${SITE}${privateAiPath.en}](${SITE}${privateAiPath.en})
 - [GeoMachine Accounts](${SITE}/en/services/app-accounts/) — free local inventory and net-profit desktop app.
 
 ## Quotes
@@ -168,6 +169,7 @@ ${blogSection(posts, true)}
 - [taxi.abhazservis.com](https://taxi.abhazservis.com/) — GeoMachine's own taxi app for Abkhazia, built since August 2026: orders move from driver to driver by proximity and then to an open board; fares from the real street route; Android driver app with background GPS tested on Xiaomi phones; passenger app is an installable website; each trip adds to the driver's commission debt and over a limit the driver stops receiving orders; admin panel with live map and Telegram alerts; nightly encrypted backups, restored for real on 27 Oct 2026. Technical base in three weeks; as of 1 Nov 2026 no trip completed by a real passenger yet. Service page: [English](${SITE}${taxiAppPath.en}) · [Spanish](${SITE}${taxiAppPath.es}) · [Russian](${SITE}${taxiAppPath.ru})
 - Local business directory service page, based on abhazservis.com (284 published listings, 19 categories, 8 towns as of 1 Nov 2026; no revenue and no owner-claimed listings yet): [English](${SITE}${directoryPath.en}) · [Spanish](${SITE}${directoryPath.es}) · [Russian](${SITE}${directoryPath.ru})
 - Multilingual website service page: per-language routes, hreflang both ways with x-default (also in the sitemap), prices in the reader's currency, translations reviewed by a native speaker before they are expanded. Based on geomachine.es (Spanish, Russian, English, Georgian) and kadrilab.com (English, Georgian): [English](${SITE}${multilingualPath.en}) · [Spanish](${SITE}${multilingualPath.es}) · [Russian](${SITE}${multilingualPath.ru})
+- Private AI service page: questions answered from your own documents on your own machine, nothing sent to third parties. Based on GeoMachine's own setup since August 2026 (16 GB AMD card, about 1,640 indexed note chunks, Qwen3 14B, Open WebUI bound to localhost); not yet delivered to a client. Says when it does not pay off: [English](${SITE}${privateAiPath.en}) · [Spanish](${SITE}${privateAiPath.es}) · [Russian](${SITE}${privateAiPath.ru})
 - gagraservis.ru — taxi, excursions, hotels and restaurants in Gagra, in Russian. Delivered 2026-07-28, currently not published online. Case study: [Spanish](${SITE}${blogPath.es}gagraservis-caso-real/) · [Russian](${SITE}${blogPath.ru}gagraservis-realnyy-keys/)
 
 ## Desktop software

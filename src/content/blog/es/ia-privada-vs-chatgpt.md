@@ -47,7 +47,7 @@ En el mismo equipo del artículo sobre [qué hardware necesitas para IA](/es/blo
 ## Cuánto cuesta
 
 - **El hardware.** Lo que manda es la memoria de la tarjeta gráfica. La nuestra, de 16 GB, costó entre 650 y 680 € hace unos dos años. Con 16 GB van bien los modelos de 8B a 14B, que bastan para clasificar, resumir, extraer datos y buscar en documentos. Para modelos medianos, con más calidad, hacen falta 24 GB o más.
-- **El montaje.** Es el servicio de [IA privada en tu servidor](/es/servicios/#ia); el precio actual está en la página de servicios. Si todavía no sabes qué comprar, la [auditoría de hardware](/es/servicios/#sys) te dice qué tarjeta y qué modelo encajan antes de gastar nada.
+- **El montaje.** Es el servicio de [IA privada en tu servidor](/es/servicios/ia-privada/); el precio actual está en la página de servicios. Si todavía no sabes qué comprar, la [auditoría de hardware](/es/servicios/#sys) te dice qué tarjeta y qué modelo encajan antes de gastar nada.
 
 ## Lo que no cambia
 
@@ -55,4 +55,4 @@ Sigue siendo IA: se equivoca, necesita a una persona revisando las decisiones im
 
 ---
 
-**¿Manejas datos que no deberían salir de tu empresa?** Cuéntame tu caso y te digo cuál de las tres opciones te encaja, aunque la respuesta sea que no necesitas una IA propia. [Mira el servicio aquí](/es/servicios/#ia).
+**¿Manejas datos que no deberían salir de tu empresa?** Cuéntame tu caso y te digo cuál de las tres opciones te encaja, aunque la respuesta sea que no necesitas una IA propia. [Mira qué incluye y cuánto cuesta](/es/servicios/ia-privada/).

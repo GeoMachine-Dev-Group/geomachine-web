@@ -1,0 +1,133 @@
+---
+/**
+ * Página por intención (B5): «quiero IA sin que mis datos salgan de la empresa».
+ * Sale del montaje propio contado en ia-privada-vs-chatgpt y hardware-para-ia-local
+ * (tarjeta AMD de 16 GB, notas indexadas, Qwen3, Open WebUI solo en local). No
+ * hay cliente entregado de IA privada: la página lo dice. Sin botón de proyecto,
+ * porque no hay nada público que abrir. Precio: IA-04 (con cuota mensual) y
+ * SYS-03 en catalog.ts. Plantilla: IntentPage.astro.
+ */
+import IntentPage, { type IntentContent } from './IntentPage.astro';
+import { blogPath, privateAiPath, type IntentLang } from '../i18n/ui';
+
+interface Props {
+  lang: IntentLang;
+}
+const { lang } = Astro.props;
+
+const content: Record<IntentLang, IntentContent> = {
+  es: {
+    title: 'IA privada en tu servidor: tus datos no salen de la empresa',
+    description:
+      'IA en tu propio equipo para preguntar a tus documentos sin mandarlos a nadie. Lo que tengo montado, cuánto cuesta y cuándo no compensa.',
+    tagline: 'IA privada',
+    headline: 'Una IA que responde sobre tus documentos sin mandarlos a nadie',
+    lead: 'Desde agosto de 2026 tengo IA funcionando en mi propio equipo: le pregunto a las notas de todos mis proyectos, con datos de clientes, y ni las notas ni las preguntas salen de la máquina. Te monto lo mismo con tus contratos, tu manual o tus expedientes.',
+    honest: 'Todavía no lo he montado para ningún cliente: lo que te enseño es lo mío. Y el modelo que cabe en un equipo normal no es tan bueno como los grandes de pago; lo que ganas es que los datos se quedan en casa.',
+    visit: '',
+    partsTitle: 'Qué tengo montado',
+    parts: [
+      { title: 'Preguntas a tus documentos', text: 'Unos 1.640 fragmentos de mis notas, indexados en el propio equipo. Un modelo pequeño encuentra los relevantes y un Qwen3 de 14B responde a partir de ellos.' },
+      { title: 'Un chat como el de ChatGPT', text: 'Open WebUI en el navegador, conectado al modelo local. Se usa sin abrir una terminal.' },
+      { title: 'Cerrado a la red', text: 'El servidor de modelos y el chat solo responden a peticiones del propio equipo. Una IA «privada» que puede consultar cualquiera conectado al wifi no es tan privada.' },
+      { title: 'En una tarjeta de 16 GB', text: 'Una AMD de 16 GB, que costó entre 650 y 680 €. Un Qwen3 de 30B no cabe entero y va repartido con la memoria del sistema, a 17–28 tokens por segundo.' },
+    ],
+    priceTitle: 'Precio',
+    priceTimeLabel: 'Plazo:',
+    priceLaterLabel: 'Precio estándar después del lanzamiento:',
+    priceNote: 'La auditoría es para antes de comprar nada: te digo qué tarjeta y qué modelo encajan con lo que quieres hacer.',
+    afterTitle: 'Cuándo no te lo recomiendo',
+    after: [
+      'Si son veinte preguntas a la semana: un plan de empresa con contrato de datos sale más barato que comprar y mantener un equipo.',
+      'Si lo que buscas es la mejor calidad: los modelos que caben en una tarjeta normal van por detrás de los grandes de pago.',
+      'Si tus datos pueden salir con un contrato de tratamiento: es lo que usa la mayoría de las empresas, y está bien.',
+    ],
+    afterNote: 'Compensa cuando los datos no pueden salir, por ley o por contrato, o cuando se hacen las mismas preguntas a los mismos documentos todos los días.',
+    asideTitle: 'Las tres opciones, explicadas',
+    asideText: 'En el blog explico las tres formas reales de usar IA con datos sensibles, lo que aprendí montando la mía (un modelo pequeño entrenado se inventaba datos y lo descarté) y cuánto cuesta cada cosa.',
+    asideLink: 'Leer «IA privada o ChatGPT: cuándo tus datos no deben salir de la empresa»',
+    asideHref: `${blogPath.es}ia-privada-vs-chatgpt/`,
+    readTitle: 'Para leer antes',
+    read: [{ text: 'Qué hardware necesitas para IA local', href: `${blogPath.es}hardware-para-ia-local/` }],
+    ctaTitle: 'Cuéntame qué datos manejas',
+    ctaButton: 'Pedir presupuesto',
+    backToHome: 'Volver al catálogo',
+  },
+  ru: {
+    title: 'Приватный ИИ на вашем сервере: данные не покидают компанию',
+    description:
+      'ИИ на вашем собственном компьютере, чтобы задавать вопросы по своим документам, никуда их не отправляя. Что у меня работает, сколько стоит и когда это не окупается.',
+    tagline: 'Приватный ИИ',
+    headline: 'ИИ, который отвечает по вашим документам и никуда их не отправляет',
+    lead: 'С августа 2026 года у меня ИИ работает на собственном компьютере: я задаю вопросы по заметкам всех моих проектов, с данными клиентов, и ни заметки, ни вопросы не покидают машину. Я сделаю то же самое с вашими договорами, инструкциями или делами клиентов.',
+    honest: 'Для клиента я это ещё не делал: показываю то, что работает у меня. И модель, которая помещается в обычный компьютер, слабее больших платных; выигрываете вы в том, что данные остаются у вас.',
+    visit: '',
+    partsTitle: 'Что у меня работает',
+    parts: [
+      { title: 'Вопросы по документам', text: 'Около 1 640 фрагментов моих заметок проиндексированы на самом компьютере. Маленькая модель находит нужные, а Qwen3 на 14B отвечает по ним.' },
+      { title: 'Чат, как у ChatGPT', text: 'Open WebUI в браузере, подключённый к локальной модели. Пользоваться можно без терминала.' },
+      { title: 'Закрыт от сети', text: 'Сервер моделей и чат отвечают только на запросы с самого компьютера. «Приватный» ИИ, к которому может обратиться любой в офисном Wi-Fi, не такой уж приватный.' },
+      { title: 'На видеокарте 16 ГБ', text: 'AMD на 16 ГБ, стоила 650–680 €. Qwen3 на 30B целиком не помещается и делится с системной памятью, выдавая 17–28 токенов в секунду.' },
+    ],
+    priceTitle: 'Цена',
+    priceTimeLabel: 'Срок:',
+    priceLaterLabel: 'Стандартная цена после запуска:',
+    priceNote: 'Аудит — до любой покупки: я скажу, какая видеокарта и какая модель подходят под вашу задачу.',
+    afterTitle: 'Когда я это не советую',
+    after: [
+      'Если вопросов два десятка в неделю: корпоративный тариф с договором об обработке данных дешевле, чем покупать и обслуживать компьютер.',
+      'Если вам нужно лучшее качество: модели, которые помещаются в обычную видеокарту, уступают большим платным.',
+      'Если ваши данные можно передавать по договору об обработке: так работает большинство компаний, и это нормально.',
+    ],
+    afterNote: 'Это окупается, когда данные нельзя передавать по закону или договору, или когда одни и те же вопросы к одним и тем же документам задают каждый день.',
+    asideTitle: 'Три варианта, по порядку',
+    asideText: 'В блоге я разбираю три реальных способа работать с ИИ и чувствительными данными, что я понял, собирая свой (маленькая обученная модель выдумывала данные, и я от неё отказался), и сколько что стоит.',
+    asideLink: 'Читать статью о безопасности данных и ИИ',
+    asideHref: `${blogPath.ru}bezopasnost-dannyh-ii/`,
+    readTitle: 'Что почитать',
+    read: [{ text: 'Какое железо нужно для ИИ', href: `${blogPath.ru}kakoe-zhelezo-nuzhno-dlya-ii/` }],
+    ctaTitle: 'Расскажите, с какими данными вы работаете',
+    ctaButton: 'Узнать цену',
+    backToHome: 'Вернуться к каталогу',
+  },
+  en: {
+    title: 'Private AI on your server: your data stays in the company',
+    description:
+      'AI on your own machine to ask questions about your documents without sending them anywhere. What I run, what it costs and when it does not pay off.',
+    tagline: 'Private AI',
+    headline: 'An AI that answers about your documents without sending them anywhere',
+    lead: 'Since August 2026 I have run AI on my own machine: I ask questions about the notes from all my projects, client data included, and neither the notes nor the questions leave the machine. I set up the same with your contracts, your manual or your case files.',
+    honest: 'I have not set this up for a client yet: what I show you is my own. And the model that fits on an ordinary machine is not as good as the big paid ones; what you gain is that the data stays in-house.',
+    visit: '',
+    partsTitle: 'What I run',
+    parts: [
+      { title: 'Questions about your documents', text: 'About 1,640 chunks of my notes, indexed on the machine itself. A small model finds the relevant ones and a 14B Qwen3 answers from them.' },
+      { title: 'A chat like ChatGPT', text: 'Open WebUI in the browser, connected to the local model. It can be used without opening a terminal.' },
+      { title: 'Closed to the network', text: 'The model server and the chat only answer requests from the machine itself. A “private” AI that anyone on the office Wi-Fi can query is not that private.' },
+      { title: 'On a 16 GB card', text: 'An AMD 16 GB card that cost €650–680. A 30B Qwen3 does not fit whole and is split with system memory, at 17–28 tokens per second.' },
+    ],
+    priceTitle: 'Price',
+    priceTimeLabel: 'Timeline:',
+    priceLaterLabel: 'Standard price after launch:',
+    priceNote: 'The audit comes before buying anything: I tell you which card and which model fit what you want to do.',
+    afterTitle: 'When I would not recommend it',
+    after: [
+      'If it is twenty questions a week: a business plan with a data processing agreement costs less than buying and maintaining a machine.',
+      'If you want the best quality: models that fit on an ordinary card lag behind the big paid ones.',
+      'If your data can leave under a processing agreement: that is what most companies use, and it is fine.',
+    ],
+    afterNote: 'It pays off when the data cannot leave, by law or by contract, or when the same questions are asked of the same documents every day.',
+    asideTitle: 'Why I say this',
+    asideText: 'I trained a small model to write business descriptions: it was fast, but it made things up, and I went back to a larger one. A private AI changes where the data lives, not what the AI can do.',
+    asideLink: 'Read the private AI article (Spanish)',
+    asideHref: `${blogPath.es}ia-privada-vs-chatgpt/`,
+    readTitle: 'Further reading',
+    read: [],
+    ctaTitle: 'Tell me what data you handle',
+    ctaButton: 'Request a quote',
+    backToHome: 'Back to the catalogue',
+  },
+};
+---
+
+<IntentPage lang={lang} paths={privateAiPath} itemCodes={['IA-04', 'SYS-03']} content={content[lang]} />

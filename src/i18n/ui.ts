@@ -53,6 +53,11 @@ export const multilingualPath: Record<IntentLang, string> = {
   ru: `${servicesPath.ru}mnogoyazychnyy-sayt/`,
   en: `${servicesPath.en}multilingual-website/`,
 };
+export const privateAiPath: Record<IntentLang, string> = {
+  es: `${servicesPath.es}ia-privada/`,
+  ru: `${servicesPath.ru}privatnyy-ii/`,
+  en: `${servicesPath.en}private-ai/`,
+};
 
 /**
  * El blog existe en es, ru y en. En georgiano no: todo el `ka` del sitio va
