@@ -1,6 +1,6 @@
 ---
 title: "Copias de seguridad: la regla 3-2-1 y cómo la aplico yo"
-description: "La regla 3-2-1 explicada con un caso real: las copias nocturnas de abhazservis.com, la prueba de restaurarlas y lo que todavía me falta."
+description: "La regla 3-2-1 explicada con un caso real: las copias nocturnas de abhazservis.com, la copia cifrada fuera de casa y la prueba de restaurarlas."
 pubDate: 2026-10-02
 updatedDate: 2026-11-01
 pillar: "MNT"
@@ -9,7 +9,7 @@ translationSlug: "rezervnye-kopii-pravilo-3-2-1"
 draft: false
 ---
 
-Todo el mundo sabe que hay que hacer copias de seguridad. Lo difícil es saber si las que tienes te sacarían de un apuro. Aquí te explico la regla que uso para comprobarlo y te la enseño aplicada a un proyecto mío en producción, [abhazservis.com](https://abhazservis.com/), con lo que hace bien y lo que todavía no.
+Todo el mundo sabe que hay que hacer copias de seguridad. Lo difícil es saber si las que tienes te sacarían de un apuro. Aquí te explico la regla que uso para comprobarlo y te la enseño aplicada a un proyecto mío en producción, [abhazservis.com](https://abhazservis.com/), con lo que tenía y con lo que le faltaba hasta hace poco.
 
 ## La regla 3-2-1, en tres líneas
 
@@ -32,10 +32,11 @@ La web funciona en un miniordenador (un NUC) que tengo en casa. Las copias van a
 
 1. **Cada noche, a las 03:30 (hora UTC)**, el NUC vuelca la base de datos entera a un fichero y empaqueta las fotos. Guarda las de los últimos 14 días.
 2. **Cada mañana, a las 09:00**, mi ordenador de trabajo se trae esas copias y guarda las de los últimos 60 días. Si a esa hora el ordenador está apagado, la copia se hace en cuanto lo enciendo.
-3. **Si la copia más reciente tiene más de 36 horas**, el ordenador me avisa con una alerta en pantalla. Así me entero el mismo día de que la copia nocturna ha dejado de funcionar, y no el día que necesite restaurarla.
-4. **Antes de un cambio delicado en los datos**, hago además una copia a mano. La última fue el 31 de octubre, antes de aplicar una tanda de correcciones a las fichas.
+3. **Justo después, mi ordenador cifra las copias y sube una a Cloudflare R2**, un almacenamiento en la nube fuera de casa. Allí guarda una por día durante 30 días y una por mes durante un año, y cada domingo comprueba que lo subido se puede leer.
+4. **Si la copia más reciente tiene más de 36 horas**, el ordenador me avisa con una alerta en pantalla. Así me entero el mismo día de que la copia nocturna ha dejado de funcionar, y no el día que necesite restaurarla.
+5. **Antes de un cambio delicado en los datos**, hago además una copia a mano. La última fue el 31 de octubre, antes de aplicar una tanda de correcciones a las fichas.
 
-Son ficheros pequeños: la base de datos entera ocupa unos 180 KB y las fotos, unos 6 MB. Guardar dos meses de copias no cuesta nada.
+Son ficheros pequeños: la base de datos entera ocupa unos 180 KB y las fotos, unos 6 MB. Guardar dos meses de copias no cuesta nada, y en la nube los 275 MB de copias ocupan 16 MB, porque se comprimen y no se repite lo que ya estaba subido. Cabe de sobra en el plan gratuito.
 
 ## Sincronizar no es copiar
 
@@ -53,17 +54,17 @@ Una copia que no se puede restaurar es solo un fichero. Así que la probamos: el
 
 Si no se hubiera abierto, o si las cifras no coincidieran, nos habríamos enterado ese día, con tiempo para arreglarlo.
 
-## Lo que todavía me falta
+## Cómo queda con la regla 3-2-1
 
-Si repaso la regla 3-2-1, mi montaje cumple dos de las tres:
+Desde el 1 de noviembre de 2026, el montaje cumple las tres:
 
-- ✅ **3 copias**: la base de datos de la web, la copia nocturna del NUC y la de mi ordenador.
-- ✅ **2 soportes**: el NUC y mi ordenador son máquinas y discos distintos. La copia del NUC está en la misma máquina que la web, así que protege de un error o de un borrado, no de que falle el NUC. Para eso está la de mi ordenador.
-- ❌ **1 fuera de casa**: las dos máquinas están en la misma casa. Un robo o un incendio se llevaría las dos.
+- ✅ **3 copias**: la base de datos de la web, la copia de mi ordenador y la de la nube. La del NUC es una más, pero está en la misma máquina que la web: protege de un error o de un borrado, no de que falle el NUC.
+- ✅ **2 soportes**: el NUC, mi ordenador y la nube son máquinas y discos distintos.
+- ✅ **1 fuera de casa**: la de Cloudflare R2. Si un robo o un incendio se llevara los dos equipos, los datos seguirían ahí.
 
-Hay un segundo punto flojo: **las copias no van cifradas**. Me lo señaló la auditoría de seguridad del proyecto del 30 de octubre. Quien se llevara uno de los dos discos podría leer la base de datos entera.
+Hasta ese día faltaba la copia fuera de casa. La auditoría de seguridad del proyecto del 30 de octubre lo había señalado, y con ello otro punto flojo: las copias no iban cifradas. Ahora, la que sale de casa se cifra en mi ordenador antes de subirla, así que en la nube solo hay datos ilegibles sin la contraseña. Esa contraseña está guardada aparte, en un gestor de contraseñas: si se perdiera, la copia no serviría de nada.
 
-Lo siguiente es cifrar las copias al crearlas y mandar una a un sitio fuera de casa. Cuando esté hecho, lo añadiré aquí.
+Y como una copia sin probar no cuenta, ese mismo día restauramos la de la nube en una carpeta aparte: salió idéntica al original, fichero a fichero.
 
 ## Lista rápida para tu negocio
 
