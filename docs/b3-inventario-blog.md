@@ -207,3 +207,103 @@ aplica:** se quedan 5, se reescriben 33 (incluidas las copias), se fusionan
    `vercel.json` o `astro.config.mjs`, fuera del sitemap y de `llms.txt`) y
    empareja los `translationSlug`, y luego reescribe artículo a artículo.
    Cada reescritura, con la revisión de Romeo antes de publicarla.
+
+---
+
+## Aplicado (2026-11-01, tras la decisión de Romeo)
+
+Decisión completa en la nota del plan en Obsidian («B3: decisiones de Romeo
+sobre la poda»). Search Console: ninguno de los 10 candidatos tenía clics;
+`es/hardware-para-ia-local` tenía 24 impresiones en la posición 8,7, y por
+eso se reescribe en lugar de fusionarse.
+
+**`1f3d9c4` — poda.** Quedan 40 artículos (18 es, 19 ru, 3 en).
+
+| Origen | → 301 a |
+|---|---|
+| `/es/blog/tienda-a-medida-vs-shopify-woocommerce/` | `/es/servicios/#web` |
+| `/ru/blog/internet-magazin-pod-klyuch-vs-platformy/` | `/ru/uslugi/#web` |
+| `/es/blog/como-saber-si-una-tienda-online-es-fiable/` | `/es/blog/` |
+| `/ru/blog/kak-proverit-internet-magazin-pered-oplatoy/` | `/ru/blog/` |
+| `/es/blog/chatbot-ia-vs-contestar-tu-mismo/` | `/es/blog/5-tareas-automatizar-ia/` |
+| `/ru/blog/ii-assistent-whatsapp-cena/` | `/ru/blog/5-zadach-biznesa-avtomatizirovat-ii/` |
+| `/es/blog/ia-empresas-datos-sensibles/` | `/es/blog/ia-privada-vs-chatgpt/` |
+| `/ru/blog/chastnyy-server-dlya-biznesa/` | `/ru/blog/bezopasnost-dannyh-ii/` |
+
+- Las redirecciones están en `vercel.json` (con y sin barra, `statusCode:
+  301`) y en `astro.config.mjs` (el adaptador las pasa a
+  `.vercel/output/config.json` como 301; comprobado en el build). Mismo
+  patrón que navcam, que en producción redirige con y sin barra. **No
+  comprobado en una vista previa** (piden SSO): se comprueba con `curl` al
+  desplegar.
+- Sitemap y `llms.txt` / `llms-full.txt` se generan desde el contenido: ya no
+  listan ninguno de los 8 (comprobado en `dist/`).
+- Fusiones: a «5 tareas» (es/ru) pasan el coste del asistente (IA-02:
+  500–1.200 € y 35–70 €/mes; 30 000–72 000 ₽ y 2 100–4 200 ₽/mes), cuándo no
+  compensa y qué no hace bien. **No** pasa el «cómo lo monto yo», porque no
+  hay ningún asistente entregado. `ia-privada-vs-chatgpt` y
+  `bezopasnost-dannyh-ii` enlazan ahora el artículo de hardware; el resto de
+  `ia-empresas` y `chastnyy-server` repetía lo que ya decían.
+- `translationSlug` en ambos sentidos para freelance ↔ kak-vybrat,
+  por-que-no-aparece ↔ pochemu, que-es-un-mvp ↔ chto-takoe-mvp y
+  ia-privada ↔ bezopasnost. Comprobado que todas las parejas son recíprocas
+  y que el hreflang sale en el HTML.
+- 274 → 291 en `como-elegir-desarrollador-freelance` y `src/lib/llms.ts`.
+  291 es lo que dice la portada de abhazservis.com («291 организация») y
+  también el número de publicados al restaurar la copia del 31-oct.
+
+**`9177f71` — dos reescrituras (es y ru), sin publicar.**
+
+- `hardware-para-ia-local` / `kakoe-zhelezo-nuzhno-dlya-ii`. El equipo de
+  Romeo, comprobado en la propia máquina (`lscpu`, `free`, `lspci`, VRAM en
+  sysfs = 16 GB, Ollama 0.32.14, 100 GB de modelos). Cuatro modelos
+  **medidos por mí el 2026-11-01**, una pasada con el mismo prompt corto.
+  Todos caben enteros en la tarjeta salvo el último:
+  - qwen3:8b: 53 tok/s.
+  - qwen2.5:14b: 43 tok/s.
+  - gpt-oss:20b: 80 tok/s.
+  - qwen2.5:32b: 7,5 tok/s, con 15,6 de sus 20,7 GB en la GPU.
+
+  La nota «IA Local – Qwen 3» daba otras cifras (44,7 tok/s para el 14B,
+  55 en la de DOOM): he usado las mías, que son de hoy y con la misma
+  versión. No menciono los modelos «sin censura» de la nota.
+- `copias-de-seguridad-regla-3-2-1` / `rezervnye-kopii-pravilo-3-2-1`. La
+  rutina, tal y como la describen:
+  - `~/.local/bin/pull-abhazservis-backup.sh` y el timer de systemd
+    (comprobados);
+  - el `AGENTS.md` §7 de abhazservis y la auditoría del 30-oct (A-25), para
+    lo que pasa en el NUC: volcado a las 03:30 UTC y 14 días de retención.
+    **No he podido leer el NUC directamente**: el modo automático bloquea
+    las lecturas de producción.
+
+  La **prueba de restauración la hice yo** el 2026-11-01: copia del 31-oct
+  en un Postgres 17 temporal y local, 25 tablas, 311 negocios y 291
+  publicados, menos de 1 s; paquete de fotos con 88 entradas. El artículo
+  lo cuenta en primera persona como hecho por Romeo: o él la repite, o se
+  cambia la redacción.
+
+## Preguntas que quedan para Romeo (sobre estas dos reescrituras)
+
+1. **Hardware:** ¿cuánto te costó la RX 7900 GRE y cuándo la compraste?
+   Daría al lector el precio real de la referencia.
+2. ¿Para qué usas los modelos locales en tu día a día (DOOM/Jarvis,
+   pruebas…)? Una frase sobre el uso real haría el artículo más creíble que
+   solo la tabla.
+3. ¿Fuiste tú quien tuvo que poner `HSA_OVERRIDE_GFX_VERSION` y te costó
+   encontrarlo? Si no, quito el «tuve que» del punto 6.
+4. ¿Has medido el consumo eléctrico del equipo con un modelo cargado?
+5. **Copias:** la prueba de restauración la hice yo. ¿La das por tuya, la
+   repites tú o prefieres que el texto diga «la probé con ayuda de una
+   herramienta de IA»?
+6. ¿Vas a hacer la copia fuera de casa y el cifrado (A-25)? El artículo
+   promete añadirlo cuando esté hecho; si no lo vas a hacer pronto, quito
+   esa frase.
+7. ¿Ha hecho falta restaurar alguna vez una copia de verdad, por un error o
+   una caída? Sería el mejor ejemplo del artículo.
+
+## Aviso de paso
+
+`obsidian/GeoMachine/raw/_procesado/Proyectos__verificacion-modelos-20260819.md`
+tiene una **clave de API de Gemini en claro**. No la he copiado a ningún
+sitio. Convendría rotarla y quitarla de la nota, sobre todo si la bóveda se
+sincroniza o tiene copia en otro sitio.
