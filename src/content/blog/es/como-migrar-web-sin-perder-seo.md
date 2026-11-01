@@ -1,53 +1,70 @@
 ---
-title: "Cómo migrar tu web sin perder posiciones en Google"
-description: "Guía práctica para migrar o rediseñar tu web sin perder el SEO que ya tienes: qué hacer antes, durante y después del cambio, y qué errores hunden el tráfico."
+title: "Cómo migrar tu web sin perder posiciones en Google: cuatro cambios reales"
+description: "Qué hacer antes, durante y después de cambiar direcciones, dominio o servidor, con cuatro migraciones de nuestras propias webs en otoño de 2026 y lo que salió mal."
 pubDate: 2026-08-12
+updatedDate: 2026-11-01
 pillar: "WEB"
 relatedService: "WEB-05"
 translationSlug: "kak-perenesti-sayt-bez-poteri-seo"
 draft: false
 ---
 
-Tienes una web anticuada, sabes que necesita un rediseño, pero llevas meses posponiéndolo por un miedo muy razonable: **¿y si al cambiarla pierdo las visitas que ya tengo?** Es un miedo justificado — pasa con frecuencia cuando la migración se hace mal. También es totalmente evitable si se hace bien.
+El miedo a rediseñar una web es razonable: si el cambio se hace mal, las visitas que ya tenías se van. Pero se puede evitar, y la mejor forma de explicarlo es con cambios hechos de verdad. Entre septiembre y noviembre de 2026 hice cuatro en mis propias webs: cambié la dirección principal de esta, renombré un servicio en cuatro idiomas, quité ocho artículos del blog y moví un servidor entero. Te cuento cada uno y qué aprendí.
 
-Aquí está el proceso real, no la versión resumida.
+## Por qué se pierde posicionamiento
 
-## Por qué se pierde posicionamiento al migrar (cuando se hace mal)
+Google no recuerda tu web como marca: recuerda **direcciones concretas**. Si tu página de servicios estaba en `tuweb.com/servicios` y en la web nueva está en `tuweb.com/lo-que-ofrecemos`, para Google la antigua ha dejado de existir, y lo que había ganado se pierde si no se le dice adónde se ha ido. Eso se le dice con una **redirección 301**: «esta página se ha mudado aquí, para siempre».
 
-Google no "recuerda" tu web como marca — recuerda **URLs concretas**. Si tu página de servicios estaba en `tuweb.com/servicios` y en la web nueva pasa a estar en `tuweb.com/lo-que-ofrecemos`, para Google esa URL antigua simplemente dejó de existir, y toda la confianza que había acumulado en años se pierde de golpe si no se hace nada al respecto.
+## Caso 1: la misma web en dos direcciones
 
-Este es el error número uno, y el más fácil de evitar.
+Hasta el 13 de septiembre de 2026, geomachine.es tenía la dirección principal con `www`, mientras el sitemap, las etiquetas canónicas, los datos para buscadores y Yandex decían la versión sin `www`. La web funcionaba en las dos, pero le daba a Google dos respuestas distintas a la pregunta de cuál es la buena.
 
-## Antes de tocar nada: audita lo que ya tienes
+Lo arreglamos eligiendo una, la de sin `www`, y haciendo que la otra redirija a ella. Hoy `www.geomachine.es` responde con una redirección permanente a `geomachine.es`. Siete semanas después, Search Console todavía enseña impresiones de artículos con la dirección con `www`. **Google tarda en olvidar**, y eso es normal: lo importante es que todo apunte al mismo sitio.
 
-1. **Lista todas las URLs que existen ahora mismo**, y cuáles reciben tráfico real (Google Search Console te lo dice).
-2. **Identifica qué páginas están posicionadas** — no todas las páginas de una web reciben visitas por igual, algunas son las que de verdad traen clientes.
-3. **Guarda esta lista** — la vas a necesitar en el paso siguiente.
+## Caso 2: cambiar el nombre de una página
 
-## Durante la migración: la parte que nadie se salta sin arrepentirse
+El 18 de octubre la app que se llamaba NavCam pasó a llamarse Optimus, y con ella la dirección de su página en los cuatro idiomas: `/es/servicios/navcam-conductor/` pasó a `/es/servicios/optimus/`, y lo mismo en ruso, inglés y georgiano. Cada dirección vieja redirige a la nueva de su idioma, no todas a la española.
 
-**Redirecciones 301, una por una.** Cada URL antigua que cambie de dirección necesita una redirección 301 explícita hacia su nueva ubicación. No es opcional, no es "ya lo hará Google solo" — sin esto, cada enlace antiguo (interno y externo) apunta a una página que ya no existe, y eso es tráfico perdido de verdad, no teórico.
+Un detalle que se olvida: en esta web las direcciones terminan en barra, y la vieja podía llegar con barra y sin ella. Hubo que poner las dos redirecciones en cada idioma, ocho en total. Si solo pones una, la mitad de los enlaces antiguos acaban en un error.
 
-**Mantén la estructura de contenido, aunque cambie el diseño.** Puedes rediseñar completamente cómo se ve tu web sin cambiar qué información tiene cada página — eso es lo ideal. Cambiar el diseño Y la estructura de contenido a la vez multiplica el riesgo.
+## Caso 3: quitar artículos que no aportaban
 
-**No borres contenido que ya posiciona**, aunque a ti ya no te guste cómo está escrito. Si una página trae visitas, reescríbela — no la elimines sin más.
+El 1 de noviembre retiré cuatro artículos del blog y fusioné otros cuatro con artículos parecidos. Antes de tocar nada miré en Search Console qué traía cada uno: **ninguno de los ocho tenía un solo clic en tres meses, y casi todos ni siquiera salían en los resultados**. Por eso se podían quitar sin perder nada.
 
-## Después de migrar: verificación, no fe ciega
+Cada uno redirige a lo más útil para quien llegue por la dirección vieja: los fusionados, al artículo que ahora cubre su tema; los retirados, a la página de servicios o al índice del blog. Ojo con esto último: si redirige a una página genérica, Google puede tratarla como si la dirección ya no existiera. Con cero clics, no había nada que perder.
 
-1. **Comprueba que todas las redirecciones funcionan de verdad**, entrando a las URLs antiguas una por una (o con una herramienta que lo automatice).
-2. **Vuelve a enviar el sitemap actualizado** en Search Console.
-3. **Vigila las próximas 2-3 semanas** — es normal ver alguna fluctuación pequeña mientras Google reprocesa las URLs nuevas. Una caída grande y sostenida sí es señal de que algo salió mal.
+Después de publicar comprobé las 16 redirecciones una por una (ocho direcciones, con y sin barra). Las 16 llevaban a su destino.
 
-## El error más caro que veo repetirse
+## Caso 4: cambiar de servidor
 
-Cambiar de plataforma o de dominio a la vez que se hace el rediseño visual. Cada uno de estos cambios por separado ya tiene su propio riesgo — hacerlos los dos juntos hace casi imposible saber qué salió mal si algo falla, porque hay demasiadas variables cambiando a la vez.
+El 27 de octubre el servidor del taxi que estoy montando dejó de responder. Lo monté en un servidor nuevo a partir de la copia del día anterior y cambié el DNS para que el dominio apuntara a la nueva máquina. Las direcciones de la web no cambiaron, así que para Google no hubo migración: solo un rato sin respuesta.
 
-Si puedes evitarlo, hazlo en pasos separados: primero el rediseño manteniendo la misma estructura de URLs, y en otro momento (si hace falta) el cambio de dominio o plataforma.
+Esto es lo que más tranquiliza de un cambio de servidor bien hecho: si las direcciones se quedan igual, el posicionamiento no se toca. El riesgo está en el tiempo que el sitio esté caído, y eso depende de tener una copia que funcione.
+
+## Lo que hago siempre, con lo aprendido
+
+**Antes**
+1. Lista de todas las direcciones que existen y cuáles traen visitas. Search Console te lo dice.
+2. Para cada una que cambie, decide adónde va. Las que traen visitas no se borran: se reescriben o se redirigen a su equivalente.
+
+**Durante**
+- Una redirección 301 por cada dirección que cambie, con y sin barra final si tu web admite las dos.
+- Cada idioma redirige a su propio idioma.
+- Si puedes, cambia el diseño sin cambiar las direcciones. Cambiar las dos cosas a la vez multiplica el riesgo y, si algo falla, no sabes qué fue.
+
+**Después**
+1. Comprueba cada redirección de verdad, no te fíes de que «debería funcionar».
+2. Vuelve a enviar el sitemap en Search Console.
+3. Vigila unas semanas. Alguna fluctuación es normal; una caída grande y sostenida es que algo salió mal.
+
+## El error más caro
+
+Cambiar de plataforma, de dominio y de diseño a la vez. Cada cambio por separado tiene su riesgo; juntos hacen casi imposible saber qué falló. Hazlos por pasos: primero el diseño con las mismas direcciones, y después, si hace falta, lo demás.
 
 ## Cómo lo hago yo
 
-Antes de tocar una sola línea del rediseño, hago el inventario completo de URLs actuales y decido, junto contigo, cuáles se mantienen igual y cuáles necesitan redirección. La migración en sí [se entrega en 2-4 días](/es/servicios/#web), con las redirecciones ya probadas antes de darla por terminada — no "debería funcionar", sino verificado.
+Antes de tocar el rediseño hago el inventario de las direcciones actuales y decidimos juntos cuáles se quedan y cuáles se redirigen. La migración [se entrega en 2–4 días](/es/servicios/#web), con cada redirección comprobada antes de darla por terminada.
 
 ---
 
-**¿Tienes una web anticuada que necesita cambio pero te da miedo perder lo que ya tienes?** Cuéntame cómo está montada ahora y te digo el plan concreto. [Mira el servicio de migración aquí](/es/servicios/#web).
+**¿Tienes una web que necesita cambio pero te da miedo perder lo que ya tienes?** Cuéntame cómo está montada ahora y te digo el plan concreto. [Mira el servicio de migración aquí](/es/servicios/#web).
