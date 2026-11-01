@@ -2,6 +2,7 @@
 title: "Qué es un MVP y por qué no necesitas gastar 20.000€"
 description: "Qué es realmente un MVP, por qué no hace falta un presupuesto enorme para validar una idea de app, y cuánto cuesta de verdad la primera versión funcional."
 pubDate: 2026-08-12
+updatedDate: 2026-11-01
 pillar: "APP"
 relatedService: "APP-01"
 translationSlug: "chto-takoe-mvp"
@@ -31,6 +32,14 @@ Si construyes la versión completa de golpe y resulta que la gente no lo usa com
 ## Cuánto cuesta de verdad un MVP
 
 Un MVP con usuarios, base de datos y un panel de gestión básico se mueve entre **1.800€ y 4.500€**, y tarda entre **2 y 4 semanas** — no meses, no cinco cifras. El rango depende de cuántas funciones mínimas necesites de verdad y de qué tan compleja sea la lógica detrás (no es lo mismo un listado simple que un sistema de reservas con disponibilidad en tiempo real).
+
+## Dos MVP míos, y lo que me enseñaron
+
+**[abhazservis.com](/es/blog/abhazservis-caso-real/), un directorio de negocios de Abjasia.** Del primer commit al panel de administración pasaron nueve días, del 2 al 10 de septiembre de 2026. A una pregunta ya ha respondido: los buscadores traen gente a las fichas. Poca, pero real: 37 clics desde Google en siete semanas, y Yandex marcó por su cuenta una de las fichas como página importante. A la pregunta que de verdad importa, si los dueños pagarán por aparecer mejor, todavía no ha respondido, porque la parte comercial no ha empezado: ningún dueño ha reclamado su ficha. Un MVP hecho rápido no te dice nada si no lo pones delante de la gente que tiene que pagarlo.
+
+También sirvió para descartar algo antes de construirlo: probé a generar las descripciones de las fichas automáticamente y salieron bien 2 de 11. Saberlo antes de montarlo para dos mil fichas fue más barato que cualquier descripción.
+
+**[El taxi que estoy montando en Abjasia](/es/blog/cuanto-cuesta-app-como-uber/).** La parte técnica, el servidor, el reparto de pedidos, el viaje completo, la comisión y el panel, estuvo en tres semanas. Pero nueve semanas después todavía no hay viajes de pasajeros reales: faltaba que el GPS funcionara con el móvil bloqueado en los Xiaomi de los conductores, lo que pide la ley y la tarifa real. La lección: el «mínimo» de un MVP no es el mínimo de código, es **lo mínimo para que la gente lo use de verdad**, y a veces eso incluye cosas que no son programar.
 
 ## Qué no es un MVP
 
