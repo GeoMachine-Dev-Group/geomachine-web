@@ -1,0 +1,142 @@
+---
+/**
+ * Página por intención (B5): «tengo un negocio de turismo en Abjasia y quiero
+ * web». Sale de gagraservis.ru (taxi y excursiones en Gagra: precio en la
+ * primera pantalla, 17 destinos, 52 KB, la sección de hoteles quitada por no
+ * poder comprobarla, la web perdida en agosto) y de abhazservis.com, consultado
+ * en producción el 1-nov-2026: 121 de las 284 fichas publicadas son hoteles; de
+ * esos, 20 tienen web propia apuntada, 62 WhatsApp y 95 teléfono. Sin datos de
+ * tráfico ni de llamadas de gagraservis: la página lo dice. Sin nombrar
+ * buscadores ni mapas rusos. Precio: WEB-01 y WEB-02 en catalog.ts (en ru sale
+ * en rublos). Plantilla: IntentPage.astro.
+ */
+import IntentPage, { type IntentContent } from './IntentPage.astro';
+import { blogPath, directoryPath, tourismPath, type IntentLang } from '../i18n/ui';
+
+interface Props {
+  lang: IntentLang;
+}
+const { lang } = Astro.props;
+
+const content: Record<IntentLang, IntentContent> = {
+  es: {
+    title: 'Web para turismo en Abjasia: hoteles, excursiones y traslados',
+    description:
+      'Webs para hoteles, excursiones y traslados en Abjasia, con el precio a la vista y el contacto a un toque. Basado en gagraservis.ru y en las 121 fichas de hoteles de abhazservis.com.',
+    tagline: 'Turismo en Abjasia',
+    headline: 'Una web para tu hotel, tus excursiones o tus traslados en Abjasia',
+    lead: 'Hice la web de ГаграЛЁТ, un taxi de Gagra que también hace excursiones: de la frontera de Psou a Gagra, 1500 ₽, a la vista en la primera pantalla. Y llevo abhazservis.com, un directorio de Abjasia donde 121 de las 284 fichas son hoteles. Te hago la web de tu negocio con lo que he aprendido en los dos.',
+    honest: 'De gagraservis no tengo cifras de visitas ni de llamadas que enseñarte: lo que demuestra son decisiones, no resultados. Y en abhazservis, de los 121 hoteles solo 20 tienen una web propia que yo conozca; 62 tienen WhatsApp. La mayoría vive del teléfono y de las recomendaciones.',
+    visit: 'Ver gagraservis.ru',
+    partsTitle: 'Qué hago, y dónde lo aprendí',
+    parts: [
+      { title: 'El precio, antes de que pregunten', text: 'En la zona el precio se negocia, y quien llega de fuera no llama si no sabe cuánto va a pagar. En gagraservis se elige el destino entre 17 y sale el precio; el botón de WhatsApp abre el chat con la ruta ya escrita.' },
+      { title: 'Que cargue en la carretera', text: 'La de gagraservis es una sola página: 52 KB de HTML y unos 0,5 MB de fotos, cuando la original pesaba 1 MB en un solo archivo. Se nota más con mala cobertura que cualquier otra optimización.' },
+      { title: 'Solo lo que puedas defender', text: 'La web original tenía hoteles y restaurantes recomendados, con estrellas y precios que no se apoyaban en nada. Los quité: una recomendación falsa le resta confianza a todo, también a tus tarifas.' },
+      { title: 'Con copia, desde el primer día', text: 'gagraservis vivía solo en un servidor, y en agosto ese servidor dejó de responder. La recuperé de un archivo guardado en Telegram. Hoy cada web que hago está en un repositorio con copia.' },
+    ],
+    priceTitle: 'Precio',
+    priceTimeLabel: 'Plazo:',
+    priceLaterLabel: 'Precio estándar después del lanzamiento:',
+    priceNote: 'Una página basta para un traslado o unas pocas excursiones, como gagraservis. La web de varias páginas es para un hotel con habitaciones, temporada y normas que explicar.',
+    afterTitle: 'Cuándo no te lo recomiendo',
+    after: [
+      'Si casi todos tus clientes repiten o llegan recomendados: con un número de WhatsApp bien puesto puede bastarte.',
+      'Si no vas a tener los precios al día: un precio viejo en la web es peor que ninguno.',
+      'Si tienes cien excursiones: eso ya no cabe en una página, y hace falta un catálogo con buscador.',
+    ],
+    afterNote: 'Y si tu hotel ya está en abhazservis.com, puedes reclamar la ficha y llevarla tú antes de pagar una web.',
+    asideTitle: 'El caso completo',
+    asideText: 'En el blog cuento cómo se hizo gagraservis: el talón de embarque de la portada, los tres rediseños, lo que quité y la web que perdí por no tener copia.',
+    asideLink: 'Leer el caso de gagraservis.ru',
+    asideHref: `${blogPath.es}gagraservis-caso-real/`,
+    readTitle: 'También',
+    read: [
+      { text: 'Caso: abhazservis.com, el directorio de Abjasia', href: `${blogPath.es}abhazservis-caso-real/` },
+      { text: 'Un directorio como abhazservis para tu zona', href: directoryPath.es },
+    ],
+    ctaTitle: 'Cuéntame qué ofreces y en qué parte de Abjasia',
+    ctaButton: 'Pedir presupuesto',
+    backToHome: 'Volver al catálogo',
+  },
+  ru: {
+    title: 'Сайт для туризма в Абхазии: гостиницы, экскурсии, трансферы',
+    description:
+      'Сайты для гостиниц, экскурсий и трансферов в Абхазии: цена на виду, связь в одно касание. На примере gagraservis.ru и 121 карточки гостиниц на abhazservis.com.',
+    tagline: 'Туризм в Абхазии',
+    headline: 'Сайт для вашей гостиницы, экскурсий или трансфера в Абхазии',
+    lead: 'Я сделал сайт ГаграЛЁТ — такси в Гагре, которое возит и на экскурсии: от границы на Псоу до Гагры 1500 ₽, на первом же экране. И я веду abhazservis.com, справочник Абхазии, где 121 из 284 карточек — гостиницы. Сделаю сайт и вашему бизнесу, с тем, чему научился на обоих проектах.',
+    honest: 'Цифр посещений или звонков по gagraservis у меня нет: этот проект показывает решения, а не результаты. А на abhazservis из 121 гостиницы собственный сайт, насколько я знаю, есть только у 20; WhatsApp — у 62. Большинство живёт телефоном и рекомендациями.',
+    visit: 'Открыть gagraservis.ru',
+    partsTitle: 'Что я делаю и где этому научился',
+    parts: [
+      { title: 'Цена — до того, как спросят', text: 'Здесь о цене договариваются, а приезжий не звонит, если не знает, сколько заплатит. На gagraservis выбираешь одно из 17 направлений — и видишь цену; кнопка WhatsApp открывает чат с уже написанным маршрутом.' },
+      { title: 'Чтобы открывался в дороге', text: 'gagraservis — одна страница: 52 КБ HTML и около 0,5 МБ фото, а исходный сайт весил 1 МБ одним файлом. При плохой связи это заметнее любой другой оптимизации.' },
+      { title: 'Только то, за что можно ответить', text: 'На исходном сайте были рекомендованные гостиницы и рестораны со звёздами и ценами, которые ни на чём не основывались. Я их убрал: ложная рекомендация подрывает доверие ко всему, и к вашим тарифам тоже.' },
+      { title: 'С копией с первого дня', text: 'gagraservis жил только на одном сервере, и в августе сервер перестал отвечать. Я восстановил сайт из файла, сохранённого в Telegram. Теперь каждый мой сайт лежит в репозитории с копией.' },
+    ],
+    priceTitle: 'Цена',
+    priceTimeLabel: 'Срок:',
+    priceLaterLabel: 'Стандартная цена после запуска:',
+    priceNote: 'Для трансфера или нескольких экскурсий хватает одной страницы, как у gagraservis. Сайт из нескольких страниц — для гостиницы, где нужно рассказать о номерах, сезоне и правилах.',
+    afterTitle: 'Когда я это не советую',
+    after: [
+      'Если почти все клиенты возвращаются или приходят по рекомендации: может хватить хорошо заметного номера WhatsApp.',
+      'Если вы не будете держать цены актуальными: старая цена на сайте хуже, чем никакой.',
+      'Если у вас сто экскурсий: это уже не помещается на одну страницу, нужен каталог с поиском.',
+    ],
+    afterNote: 'А если ваша гостиница уже есть на abhazservis.com, вы можете закрепить карточку за собой и вести её сами, прежде чем платить за сайт.',
+    asideTitle: 'Кейс целиком',
+    asideText: 'В блоге я рассказываю, как делался gagraservis: посадочный талон на первом экране, три редизайна, что я убрал и сайт, который я потерял без копии.',
+    asideLink: 'Читать кейс gagraservis.ru',
+    asideHref: `${blogPath.ru}gagraservis-realnyy-keys/`,
+    readTitle: 'Ещё',
+    read: [
+      { text: 'Кейс: abhazservis.com, справочник Абхазии', href: `${blogPath.ru}abhazservis-realnyy-keys/` },
+      { text: 'Справочник, как abhazservis, для вашего региона', href: directoryPath.ru },
+    ],
+    ctaTitle: 'Расскажите, что вы предлагаете и где в Абхазии',
+    ctaButton: 'Узнать цену',
+    backToHome: 'Вернуться к каталогу',
+  },
+  en: {
+    title: 'Websites for tourism in Abkhazia: hotels, tours and transfers',
+    description:
+      'Websites for hotels, tours and transfers in Abkhazia, with the price in plain sight and contact one tap away. Based on gagraservis.ru and the 121 hotel listings on abhazservis.com.',
+    tagline: 'Tourism in Abkhazia',
+    headline: 'A website for your hotel, tours or transfers in Abkhazia',
+    lead: 'I built the site for ГаграЛЁТ, a taxi in Gagra that also runs tours: from the Psou border to Gagra, 1500 ₽, on the first screen. And I run abhazservis.com, a directory of Abkhazia where 121 of the 284 listings are hotels. I build your business’s site with what I learned on both.',
+    honest: 'I have no visit or call figures for gagraservis: it shows decisions, not results. And on abhazservis, of the 121 hotels only 20 have a website of their own that I know of; 62 have WhatsApp. Most of them run on the phone and on word of mouth.',
+    visit: 'Visit gagraservis.ru',
+    partsTitle: 'What I do, and where I learned it',
+    parts: [
+      { title: 'The price, before they ask', text: 'Around there the fare is haggled over, and visitors do not call if they do not know what they will pay. On gagraservis you pick one of 17 destinations and the price shows; the WhatsApp button opens the chat with the route already written.' },
+      { title: 'Loads on the road', text: 'gagraservis is a single page: 52 KB of HTML and about 0.5 MB of photos, where the original weighed 1 MB in one file. On a bad connection that matters more than any other optimisation.' },
+      { title: 'Only what you can stand behind', text: 'The original site recommended hotels and restaurants with stars and prices that rested on nothing. I removed them: one false recommendation undermines everything, your fares included.' },
+      { title: 'Backed up from day one', text: 'gagraservis lived on a single server, and in August that server stopped responding. I recovered the site from a file saved in Telegram. Every site I build now lives in a repository with a backup.' },
+    ],
+    priceTitle: 'Price',
+    priceTimeLabel: 'Timeline:',
+    priceLaterLabel: 'Standard price after launch:',
+    priceNote: 'One page is enough for a transfer or a few tours, like gagraservis. The multi-page site is for a hotel with rooms, seasons and rules to explain.',
+    afterTitle: 'When I would not recommend it',
+    after: [
+      'If most of your customers come back or arrive by recommendation: a well-placed WhatsApp number may be enough.',
+      'If you will not keep prices up to date: an old price on a website is worse than none.',
+      'If you have a hundred tours: that no longer fits on one page and needs a searchable catalogue.',
+    ],
+    afterNote: 'And if your hotel is already on abhazservis.com, you can claim the listing and run it yourself before paying for a website.',
+    asideTitle: 'See it live',
+    asideText: 'gagraservis.ru is in Russian, but you can try the boarding-pass fare picker, the price board and the contact buttons as they are today.',
+    asideLink: 'Visit gagraservis.ru',
+    asideHref: 'https://gagraservis.ru/',
+    readTitle: 'Further reading',
+    read: [{ text: 'A directory like abhazservis for your area', href: directoryPath.en }],
+    ctaTitle: 'Tell me what you offer and where in Abkhazia',
+    ctaButton: 'Request a quote',
+    backToHome: 'Back to the catalogue',
+  },
+};
+---
+
+<IntentPage lang={lang} paths={tourismPath} itemCodes={['WEB-01', 'WEB-02']} proofUrl="https://gagraservis.ru/" content={content[lang]} />

@@ -9,7 +9,7 @@
  */
 import type { CollectionEntry } from 'astro:content';
 import { lines, bundles, type Currency, type Item, type Unit } from '../data/catalog';
-import { servicesPath, blogPath, kadriLabCasePath, taxiAppPath, directoryPath, multilingualPath, privateAiPath, messagingPath, type BlogLang } from '../i18n/ui';
+import { servicesPath, blogPath, kadriLabCasePath, taxiAppPath, directoryPath, multilingualPath, privateAiPath, messagingPath, tourismPath, type BlogLang } from '../i18n/ui';
 
 const SITE = 'https://geomachine.es';
 const CATALOG = `${SITE}${servicesPath.en}`;
@@ -114,6 +114,7 @@ ${blogSection(posts, false)}
 - Multilingual website service page (this site is in four languages; kadrilab.com in English and Georgian): [${SITE}${multilingualPath.en}](${SITE}${multilingualPath.en})
 - Private AI service page (local models on your own machine; based on GeoMachine's own setup, no client delivery yet): [${SITE}${privateAiPath.en}](${SITE}${privateAiPath.en})
 - WhatsApp and Telegram service page (forms delivered to Telegram, failure alerts, chat buttons; no customer-answering assistant delivered yet): [${SITE}${messagingPath.en}](${SITE}${messagingPath.en})
+- Tourism website service page for Abkhazia (based on gagraservis.ru and abhazservis.com): [${SITE}${tourismPath.en}](${SITE}${tourismPath.en})
 - [GeoMachine Accounts](${SITE}/en/services/app-accounts/) — free local inventory and net-profit desktop app.
 
 ## Quotes
@@ -172,7 +173,8 @@ ${blogSection(posts, true)}
 - Multilingual website service page: per-language routes, hreflang both ways with x-default (also in the sitemap), prices in the reader's currency, translations reviewed by a native speaker before they are expanded. Based on geomachine.es (Spanish, Russian, English, Georgian) and kadrilab.com (English, Georgian): [English](${SITE}${multilingualPath.en}) · [Spanish](${SITE}${multilingualPath.es}) · [Russian](${SITE}${multilingualPath.ru})
 - Private AI service page: questions answered from your own documents on your own machine, nothing sent to third parties. Based on GeoMachine's own setup since August 2026 (16 GB AMD card, about 1,640 indexed note chunks, Qwen3 14B, Open WebUI bound to localhost); not yet delivered to a client. Says when it does not pay off: [English](${SITE}${privateAiPath.en}) · [Spanish](${SITE}${privateAiPath.es}) · [Russian](${SITE}${privateAiPath.ru})
 - WhatsApp and Telegram service page: this site's contact form delivered to Telegram (plain text, honeypot and a 3-second time trap), Telegram alerts from the taxi app when route calculation fails or a scheduled job gets stuck and when it recovers, and call/WhatsApp/Telegram/MAX buttons on gagraservis.ru (one opens WhatsApp with the message pre-written). No assistant that answers customers by itself has been delivered yet; abhazservis has counted contact clicks since 9 Oct 2026 and none on WhatsApp or Telegram so far: [English](${SITE}${messagingPath.en}) · [Spanish](${SITE}${messagingPath.es}) · [Russian](${SITE}${messagingPath.ru})
-- gagraservis.ru — taxi, excursions, hotels and restaurants in Gagra, in Russian. Delivered 2026-07-28, currently not published online. Case study: [Spanish](${SITE}${blogPath.es}gagraservis-caso-real/) · [Russian](${SITE}${blogPath.ru}gagraservis-realnyy-keys/)
+- [gagraservis.ru](https://gagraservis.ru/) — website of ГаграЛЁТ, a taxi and tour service in Gagra (Abkhazia), in Russian: fare shown on the first screen (Psou border to Gagra 1500 ₽), 17 destinations, call/WhatsApp/Telegram/MAX buttons, a single 52 KB page. Delivered 2026-07-28, lost with its server in August and recovered, redesigned and live again since 2026-10-24. Case study: [Spanish](${SITE}${blogPath.es}gagraservis-caso-real/) · [Russian](${SITE}${blogPath.ru}gagraservis-realnyy-keys/)
+- Tourism website service page for Abkhazia (hotels, tours, transfers), based on gagraservis.ru and abhazservis.com (121 of its 284 listings are hotels; only 20 of those have a website of their own on record, 62 have WhatsApp; as of 1 Nov 2026): [English](${SITE}${tourismPath.en}) · [Spanish](${SITE}${tourismPath.es}) · [Russian](${SITE}${tourismPath.ru})
 
 ## Desktop software
 - [GeoMachine Accounts](${SITE}/en/services/app-accounts/) — free local inventory and net-profit tracking app (Windows and Linux), SQLite database, no cloud and no subscription.

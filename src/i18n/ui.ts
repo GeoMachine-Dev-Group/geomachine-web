@@ -63,6 +63,11 @@ export const messagingPath: Record<IntentLang, string> = {
   ru: `${servicesPath.ru}whatsapp-telegram/`,
   en: `${servicesPath.en}whatsapp-telegram/`,
 };
+export const tourismPath: Record<IntentLang, string> = {
+  es: `${servicesPath.es}web-turismo-abjasia/`,
+  ru: `${servicesPath.ru}sayt-dlya-turizma-abhazii/`,
+  en: `${servicesPath.en}abkhazia-tourism-website/`,
+};
 
 /**
  * El blog existe en es, ru y en. En georgiano no: todo el `ka` del sitio va
