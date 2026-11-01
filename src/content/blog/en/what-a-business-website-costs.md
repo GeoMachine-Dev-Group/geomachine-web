@@ -2,6 +2,7 @@
 title: "What a business website actually costs in 2026"
 description: "Real price ranges for a landing page, a corporate site and an online store, what moves the number up or down, and the three costs quotes leave out."
 pubDate: 2026-09-14
+updatedDate: 2026-11-01
 pillar: "WEB"
 relatedService: "WEB-02"
 featured: true
@@ -12,11 +13,15 @@ Most answers to this question are useless on purpose. "It depends" protects the 
 
 ## The ranges
 
-- **Landing page — 500 to 900 €.** One page, one goal: a form, a call, a booking. Copy, design, mobile, basic technical SEO, analytics.
-- **Corporate website — 1,200 to 2,500 €.** Several sections, a service catalogue, contact form, structured data, a blog if you want one.
-- **Online store — 2,500 to 6,000 €.** Everything above plus catalogue, cart, payment, tax and shipping rules, and order handling.
-- **Second language — 400 to 900 €** on top, per language.
-- **Redesign and migration of an existing site — 800 to 2,000 €.**
+Two prices for each, because that is how my [catalogue](/en/services/) works right now: a launch price for the first five clients, and the standard price that applies once those five places are taken. The launch price is the one you pay today.
+
+| What | Launch price | Standard price |
+|---|---|---|
+| **Landing page.** One page, one goal: a form, a call, a booking. Copy, design, mobile, basic technical SEO, analytics. | 250 – 400 € | 500 – 900 € |
+| **Corporate website.** Several sections, a service catalogue, contact form, structured data, a blog if you want one. | 550 – 900 € | 1,200 – 2,500 € |
+| **Online store.** Everything above plus catalogue, cart, payment, tax and shipping rules, and order handling. | 1,200 – 2,200 € | 2,500 – 6,000 € |
+| **Second language**, on top, per language. | 150 – 250 € | 400 – 900 € |
+| **Redesign and migration** of an existing site. | 400 – 800 € | 800 – 2,000 € |
 
 A range is not indecision. It means the final number depends on scope, and scope is settled before anything is signed. Whoever gives you a single figure before understanding what you need is either guessing or planning to bill the difference later.
 
@@ -34,9 +39,9 @@ A range is not indecision. It means the final number depends on scope, and scope
 
 **1. Hosting and domain.** Small, but not zero, and recurring. A domain is 10 to 15 € a year. Hosting for a static site can be free and for a site with a real backend starts around 5 to 20 € a month. Anyone quoting "hosting included forever" is including one year.
 
-**2. Maintenance.** A site is not furniture. Dependencies get security patches, integrations change their APIs, certificates expire, and forms break silently — you only find out through the enquiries that never arrive. Plans start at 49 € a month. If you would rather not pay it, fine, but then decide *who* checks the site and *how often*, and write it down. "Whenever we notice" means "when a customer tells us it has been down for a week".
+**2. Maintenance.** A site is not furniture. Dependencies get security patches, integrations change their APIs, certificates expire, and forms break silently — you only find out through the enquiries that never arrive. Plans start at 25 € a month at the launch price (49 € standard). If you would rather not pay it, fine, but then decide *who* checks the site and *how often*, and write it down. "Whenever we notice" means "when a customer tells us it has been down for a week".
 
-**3. Changes after launch.** Every site gets them, because you only really see what you need once it is live. Either you budget for a bundle of hours or you will negotiate each change under pressure. Hours run 35 to 60 € depending on volume.
+**3. Changes after launch.** Every site gets them, because you only really see what you need once it is live. Either you budget for a bundle of hours or you will negotiate each change under pressure. Hours run 22 to 30 € at the launch price (35 to 60 € standard), depending on volume.
 
 ## What it costs when it goes wrong
 

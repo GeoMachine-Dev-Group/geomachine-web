@@ -2,6 +2,7 @@
 title: "Cómo elegir un desarrollador freelance sin que te timen"
 description: "Señales reales para saber si un desarrollador freelance es de fiar antes de pagarle: qué preguntar, de qué desconfiar, y qué debe incluir un presupuesto serio."
 pubDate: 2026-08-12
+updatedDate: 2026-11-01
 pillar: "WEB"
 translationSlug: "kak-vybrat-razrabotchika"
 draft: false
@@ -48,7 +49,9 @@ Una web no es un objeto que se entrega y se olvida — necesita hosting, copias 
 
 ## Cómo aplico esto yo mismo
 
-No te lo cuento desde fuera — esto es exactamente cómo trabajo: te doy el precio después de entender qué necesitas, no antes; el rango depende del alcance real, como puedes ver en [mi catálogo de servicios](/es/servicios/); se factura 50% al empezar y 50% al entregar; y puedes comprobar trabajo real mío ahora mismo, no una maqueta — [abhazservis.com](https://abhazservis.com/) está en producción, con 273 fichas publicadas, ábrelo tú mismo. Hoy el catálogo ya tiene 291 negocios.
+No te lo cuento desde fuera — esto es exactamente cómo trabajo: te doy el precio después de entender qué necesitas, no antes; el rango depende del alcance real, como puedes ver en [mi catálogo de servicios](/es/servicios/); se factura 50% al empezar y 50% al entregar; y puedes comprobar trabajo real mío ahora mismo, no una maqueta: [abhazservis.com](https://abhazservis.com/) está en producción, con 291 negocios publicados a 1 de noviembre de 2026. Ábrelo tú mismo.
+
+Nada de esto tienes que creértelo porque lo diga yo: el pago 50/50 y los rangos de precio están publicados en la [página de servicios](/es/servicios/), y en el blog cuento [cómo se construyó abhazservis](/es/blog/abhazservis-caso-real/), incluidos los errores y lo que todavía no funciona. Aplícame a mí la misma lista que te propongo para cualquier otro.
 
 Si alguna vez un desarrollador te da todas estas señales al revés — precio antes de preguntar, pago completo por adelantado, sin nada por escrito — no es mala suerte si algo sale mal después. Ya lo sabías desde el primer mensaje.
 

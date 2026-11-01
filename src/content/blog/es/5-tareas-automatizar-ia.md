@@ -2,6 +2,7 @@
 title: "5 tareas de tu negocio que ya puedes automatizar con IA"
 description: "Cinco tareas repetitivas de un negocio pequeño que la IA ya puede hacer sola hoy: qué hace cada una y qué no deberías automatizar todavía."
 pubDate: 2026-08-12
+updatedDate: 2026-11-01
 pillar: "IA"
 relatedService: "IA-03"
 translationSlug: "5-zadach-biznesa-avtomatizirovat-ii"
@@ -37,6 +38,16 @@ Si cada semana o cada mes te sientas a mirar números y escribir un resumen (ven
 ## 5. Clasificar y priorizar lo que te llega
 
 Si recibes mensajes o solicitudes de distintos sitios (WhatsApp, email, formulario web) y tienes que decidir manualmente qué es urgente y qué puede esperar, eso también es automatizable — un sistema puede leer lo que llega y ponerlo en orden antes de que tú lo veas.
+
+## Lo que tengo automatizado yo, y lo que descarté
+
+Te lo digo claro: un asistente que conteste a clientes, el del punto 1, todavía no lo he entregado a nadie. Lo que sí tengo funcionando en mis propios proyectos es esto:
+
+- **Avisos que llegan solos.** El taxi que estoy montando me manda un mensaje por Telegram si falla el cálculo de rutas o si se atasca una de sus tareas automáticas. Las copias de seguridad de [abhazservis.com](/es/blog/abhazservis-caso-real/) me avisan en el ordenador si la última tiene más de 36 horas o si falla la copia cifrada fuera de casa. No tengo que acordarme de mirar: me entero cuando hay algo que mirar.
+- **Los mensajes de la web, ordenados.** Lo que alguien escribe en el formulario de esta web me llega a Telegram con la fecha y el idioma en que me escribió. No es inteligencia artificial, y no hace falta que lo sea: es el punto 5 resuelto con lo más simple que funciona.
+- **Textos con IA, revisados por mí.** Me ayudo de IA para redactar y traducir, también estos artículos. La experiencia, los datos y la revisión final son míos.
+
+Y una que descarté: probé a generar automáticamente las descripciones de las fichas de abhazservis a partir de sus datos. Salieron bien 2 de 11, y las dos parecían hechas con el mismo molde. No las automaticé. Saberlo antes de montarlo para dos mil fichas fue la parte útil del experimento.
 
 ## Lo que NO deberías automatizar todavía
 

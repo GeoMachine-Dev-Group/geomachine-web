@@ -2,6 +2,7 @@
 title: "Cuánto cuesta una landing page en 2026: precios reales"
 description: "Precios reales de una landing page en 2026, explicados: qué cambia entre 250€ y 900€, qué te están cobrando de más las agencias, y cómo saber qué necesitas tú."
 pubDate: 2026-08-12
+updatedDate: 2026-11-01
 pillar: "WEB"
 relatedService: "WEB-01"
 translationSlug: "skolko-stoit-lending-2026"
@@ -46,7 +47,7 @@ Una landing de "reserva ya" con 3 bloques (qué ofreces, por qué tú, cómo con
 **3. ¿Hace falta algo técnico añadido?**
 Un formulario simple que manda un email es rápido. Un formulario que se conecta a tu CRM, o que calcula un presupuesto automático según lo que rellene el usuario, ya no es "solo una landing" — es una pequeña pieza de software.
 
-## Un ejemplo real, para que lo veas aplicado
+## Cómo lo aplico en mi propio catálogo
 
 Este mismo criterio es el que uso yo en [mi propio catálogo de servicios](/es/servicios/#web) — no tengo un precio único de landing page, tengo un rango de **250€ a 400€** en tarifa de lanzamiento (y hasta 900€ en tarifa estándar), y te digo por adelantado qué mueve el número: si ya tienes fotos y textos listos, vas a la parte baja; si hay que redactarlo desde cero, a la alta.
 
