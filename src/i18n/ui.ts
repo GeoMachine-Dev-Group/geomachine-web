@@ -387,6 +387,7 @@ export const ui = {
     blogMetaDescription:
       'Articles on web development, AI for small businesses, SEO and apps, with real prices and projects of my own. Written by the person who builds them.',
     blogEmpty: 'No articles published yet.',
+    blogBack: '← Back to the blog',
     blogFeatured: 'Featured',
     blogFilterAll: 'All',
     blogFilterLabel: 'Filter by topic',
@@ -397,6 +398,9 @@ export const ui = {
     blogUpdated: 'updated',
     blogRelated: 'Related service',
     blogRelatedArticles: 'Keep reading',
+    navHome: 'Home',
+    navServices: 'Services',
+    navContact: 'Contact',
     blogSeeService: 'See it in the catalogue',
     blogNavLabel: 'Main navigation',
     blogBreadcrumbLabel: 'Breadcrumb',
