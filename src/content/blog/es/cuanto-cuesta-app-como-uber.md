@@ -63,4 +63,4 @@ No empiezo por «cuántas pantallas quieres». Empiezo por qué pasa en los caso
 
 ---
 
-**¿Tienes una idea de app de transporte o de reservas en tiempo real?** Cuéntame el caso concreto y te digo qué entra en las tres primeras semanas y qué viene después. [Mira el paquete aquí](/es/servicios/#paquetes).
+**¿Tienes una idea de app de transporte o de reservas en tiempo real?** Cuéntame el caso concreto y te digo qué entra en las tres primeras semanas y qué viene después. [Mira qué incluye y cuánto cuesta](/es/servicios/app-taxi/).

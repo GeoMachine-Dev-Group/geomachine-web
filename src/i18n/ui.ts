@@ -34,6 +34,15 @@ export const kadriLabCasePath: Record<Lang, string> = {
   ka: `${servicesPath.ka}case-kadrilab/`,
 };
 
+/** Página «apps de taxi» (TaxiAppPage.astro, B5). Sin georgiano: todo el ka del
+    sitio está sin revisar y esta página habla de precios y plazos. */
+export type TaxiAppLang = 'es' | 'ru' | 'en';
+export const taxiAppPath: Record<TaxiAppLang, string> = {
+  es: `${servicesPath.es}app-taxi/`,
+  ru: `${servicesPath.ru}prilozhenie-taksi/`,
+  en: `${servicesPath.en}taxi-app/`,
+};
+
 /**
  * El blog existe en es, ru y en. En georgiano no: todo el `ka` del sitio va
  * traducido por IA y sin revisar por un nativo, y doce artículos largos en esas

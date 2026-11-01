@@ -1,0 +1,279 @@
+---
+/**
+ * Página por intención (B5): «quiero una app de taxi». No es una página puerta:
+ * todo lo que dice sale del taxi propio (taxi.abhazservis.com, repo uber-mvp) y
+ * de gagraservis.ru, con su estado real a la fecha, incluido lo que aún no hay
+ * (viajes de pasajeros reales). Precio y plazo salen de PACK-04 en catalog.ts,
+ * para que no se desfasen. Mismo formato que CaseKadriLabPage (clases .app-*).
+ *
+ * Sin georgiano a propósito (ver taxiAppPath en ui.ts).
+ */
+import Base from '../layouts/Base.astro';
+import { servicesPath, blogPath, taxiAppPath, type TaxiAppLang } from '../i18n/ui';
+import { orgId as buildOrgId } from '../data/organization';
+import { bundles, LAUNCH_OPEN, LANG_CURRENCY } from '../data/catalog';
+
+interface Props {
+  lang: TaxiAppLang;
+}
+const { lang } = Astro.props;
+
+const TAXI_URL = 'https://taxi.abhazservis.com/';
+const pack = bundles.find((b) => b.code === 'PACK-04')!;
+
+const nbsp = ' ';
+const THOUSANDS: Record<TaxiAppLang, string> = { es: '.', en: ',', ru: nbsp };
+const SYMBOL = { eur: '€', rub: '₽', gel: '₾' } as const;
+const currency = LANG_CURRENCY[lang];
+const money = (n: number) => `${String(n).replace(/\B(?=(\d{3})+(?!\d))/g, THOUSANDS[lang])}${nbsp}${SYMBOL[currency]}`;
+const price = money((LAUNCH_OPEN ? pack.launch : pack.standard)[currency][0]!);
+const priceLater = LAUNCH_OPEN ? money(pack.standard[currency][0]!) : null;
+
+const content = {
+  es: {
+    title: 'App de taxi a medida: la mía ya funciona en Abjasia',
+    description:
+      'Apps de taxi a medida: pedidos en tiempo real, asignación por cercanía, app del conductor con GPS en segundo plano y panel. Precio cerrado y lo que tardó la mía.',
+    tagline: 'Apps de taxi',
+    headline: 'Tu app de taxi, hecha por quien ya ha montado la suya',
+    lead: 'Desde agosto de 2026 construyo una app de taxi para Abjasia, Абхаз Сервис Такси. Está en producción: el pasajero pide el coche y el conductor lo recibe. Lo que te ofrezco es lo mismo, para tu ciudad.',
+    visit: 'Ver taxi.abhazservis.com',
+    honest: 'A 1 de noviembre de 2026 todavía no hay viajes completados por pasajeros reales y la app del conductor no se ha repartido. La parte técnica está; salir a la calle es otra cosa, y te lo cuento abajo.',
+    partsTitle: 'Qué piezas lleva',
+    parts: [
+      { title: 'Pedidos y asignación', text: 'El pedido pasa de conductor en conductor por cercanía; si nadie lo coge, sale en un tablón. El precio se calcula con la ruta real por las calles.' },
+      { title: 'App del conductor', text: 'Android, con la posición enviándose aunque el móvil esté bloqueado en el bolsillo. Probada en Xiaomi reales, que es lo que más cuesta.' },
+      { title: 'App del pasajero', text: 'Una web que se instala en el móvil, sin pasar por las tiendas de apps. Evita publicar dos apps desde el primer día.' },
+      { title: 'Comisión y panel', text: 'Cada viaje suma lo que debe el conductor y, si pasa de un límite, deja de recibir pedidos. Panel con el mapa en vivo, los pedidos sin atender y avisos por Telegram.' },
+    ],
+    priceTitle: 'Precio y plazo',
+    priceName: pack.name.es,
+    priceTime: `Plazo: ${pack.time?.es}`,
+    priceLaterLabel: 'Precio estándar después del lanzamiento:',
+    priceNote: 'Es la base técnica: lo que en mi taxi estuvo listo en tres semanas (del 9 al 30 de agosto).',
+    afterTitle: 'Lo que viene después, y no tiene precio cerrado',
+    after: [
+      'GPS en segundo plano en los móviles de tus conductores: en la mía hicieron falta ocho versiones de la app.',
+      'Lo legal: qué documentos pide tu ciudad a cada coche y conductor, y si la app es un taxi o un intermediario.',
+      'La tarifa real: cómo cobran los taxis que ya trabajan allí, de día y de noche, en ciudad y en carretera.',
+      'Los primeros conductores en la calle.',
+    ],
+    afterNote: 'En la mía eso fueron nueve semanas más. Te doy la lista para que no te pille por sorpresa.',
+    siteTitle: '¿Solo necesitas la web del taxi?',
+    siteText: 'Si lo que quieres es que te llamen con el precio claro, no hace falta una app. gagraservis.ru, la web del taxi ГаграЛЁТ en Gagra, es una sola página con el precio de cada trayecto y botones para llamar o escribir.',
+    siteLink: 'Ver el caso de gagraservis.ru',
+    siteHref: `${blogPath.es}gagraservis-caso-real/`,
+    readTitle: 'Para leer antes',
+    read: [{ text: 'Cuánto cuesta y cuánto tarda una app como Uber: lo que me ha llevado la mía', href: `${blogPath.es}cuanto-cuesta-app-como-uber/` }],
+    ctaTitle: 'Cuéntame tu ciudad y tu idea',
+    ctaButton: 'Pedir presupuesto',
+    backToHome: 'Volver al catálogo',
+  },
+  ru: {
+    title: 'Приложение такси под ключ: моё уже работает в Абхазии',
+    description:
+      'Приложение такси на заказ: заказы в реальном времени, распределение по близости, приложение водителя с GPS в фоне и админ-панель. Фиксированная цена и сколько делалось моё.',
+    tagline: 'Приложения такси',
+    headline: 'Ваше приложение такси от того, кто уже сделал своё',
+    lead: 'С августа 2026 года я делаю приложение такси для Абхазии — Абхаз Сервис Такси. Оно работает: пассажир вызывает машину, водитель получает заказ. Я предлагаю то же самое для вашего города.',
+    visit: 'Открыть taxi.abhazservis.com',
+    honest: 'На 1 ноября 2026 года ещё нет ни одной поездки, завершённой настоящим пассажиром, и приложение водителя пока не роздано. Техническая часть готова, а выйти на улицу — другое дело, об этом ниже.',
+    partsTitle: 'Из чего оно состоит',
+    parts: [
+      { title: 'Заказы и распределение', text: 'Заказ переходит от водителя к водителю по близости; если никто не берёт, он попадает на общую доску. Цена считается по реальному маршруту по улицам.' },
+      { title: 'Приложение водителя', text: 'Android, координаты уходят, даже когда телефон заблокирован и лежит в кармане. Проверено на настоящих Xiaomi — это самое трудное.' },
+      { title: 'Приложение пассажира', text: 'Сайт, который устанавливается на телефон, без магазинов приложений. Не нужно с первого дня публиковать два приложения.' },
+      { title: 'Комиссия и панель', text: 'Каждая поездка добавляется к долгу водителя, и при превышении лимита он перестаёт получать заказы. Панель с картой в реальном времени, заказами без ответа и уведомлениями в Telegram.' },
+    ],
+    priceTitle: 'Цена и срок',
+    priceName: pack.name.ru,
+    priceTime: `Срок: ${pack.time?.ru}`,
+    priceLaterLabel: 'Стандартная цена после запуска:',
+    priceNote: 'Это техническая основа: то, что в моём такси было готово за три недели (с 9 по 30 августа).',
+    afterTitle: 'Что дальше и почему без фиксированной цены',
+    after: [
+      'GPS в фоне на телефонах ваших водителей: в моём понадобилось восемь версий приложения.',
+      'Юридическая часть: какие документы ваш город требует на каждую машину и водителя, и кто вы — такси или посредник.',
+      'Настоящий тариф: как берут деньги такси, которые там уже работают, днём и ночью, в городе и на трассе.',
+      'Первые водители на линии.',
+    ],
+    afterNote: 'У меня это заняло ещё девять недель. Я дам вам этот список, чтобы он не стал сюрпризом.',
+    siteTitle: 'Нужен только сайт такси?',
+    siteText: 'Если вам нужно, чтобы звонили с понятной ценой, приложение не обязательно. gagraservis.ru, сайт такси ГаграЛЁТ в Гагре, — одна страница с ценой каждой поездки и кнопками позвонить или написать.',
+    siteLink: 'Смотреть кейс gagraservis.ru',
+    siteHref: `${blogPath.ru}gagraservis-realnyy-keys/`,
+    readTitle: 'Что почитать',
+    read: [
+      { text: 'Сколько стоит и сколько делается приложение такси: мой опыт', href: `${blogPath.ru}skolko-stoit-prilozhenie-kak-uber/` },
+      { text: 'Сколько стоит сайт для такси в 2026 году', href: `${blogPath.ru}skolko-stoit-sayt-taksi-2026/` },
+    ],
+    ctaTitle: 'Расскажите про ваш город и идею',
+    ctaButton: 'Узнать цену',
+    backToHome: 'Вернуться к каталогу',
+  },
+  en: {
+    title: 'Custom taxi app: mine already runs in Abkhazia',
+    description:
+      'Custom taxi apps: real-time orders, proximity dispatch, a driver app with background GPS and an admin panel. A fixed price, and how long mine took.',
+    tagline: 'Taxi apps',
+    headline: 'Your taxi app, built by someone who has already built one',
+    lead: 'Since August 2026 I have been building a taxi app for Abkhazia, Абхаз Сервис Такси. It is in production: passengers order a car and drivers receive the order. I offer the same for your city.',
+    visit: 'Visit taxi.abhazservis.com',
+    honest: 'As of 1 November 2026 no trip has yet been completed by a real passenger, and the driver app has not been handed out. The technical part is done; getting onto the street is another matter, explained below.',
+    partsTitle: 'What it is made of',
+    parts: [
+      { title: 'Orders and dispatch', text: 'An order moves from driver to driver by proximity; if nobody takes it, it goes to an open board. The fare uses the real route along the streets.' },
+      { title: 'Driver app', text: 'Android, sending its position even when the phone is locked in a pocket. Tested on real Xiaomi phones, which is the hard part.' },
+      { title: 'Passenger app', text: 'A website that installs on the phone, with no app store. No need to publish two apps on day one.' },
+      { title: 'Commission and panel', text: 'Each trip adds to what the driver owes; over a limit, they stop receiving orders. A panel with a live map, unanswered orders and Telegram alerts.' },
+    ],
+    priceTitle: 'Price and timeline',
+    priceName: pack.name.en,
+    priceTime: `Timeline: ${pack.time?.en}`,
+    priceLaterLabel: 'Standard price after launch:',
+    priceNote: 'This is the technical base: what was ready in three weeks in my own taxi (9 to 30 August).',
+    afterTitle: 'What comes next, without a fixed price',
+    after: [
+      'Background GPS on your drivers’ phones: mine needed eight versions of the app.',
+      'The legal side: which documents your city requires for each car and driver, and whether the app is a taxi or an intermediary.',
+      'The real fare: how the taxis already working there charge, day and night, in town and on the highway.',
+      'The first drivers on the street.',
+    ],
+    afterNote: 'In mine that took nine more weeks. I give you the list so it does not catch you off guard.',
+    siteTitle: 'Only need a taxi website?',
+    siteText: 'If what you want is calls from people who already know the price, you do not need an app. gagraservis.ru, the website of the ГаграЛЁТ taxi in Gagra, is a single page with the fare for each trip and buttons to call or message.',
+    siteLink: 'Visit gagraservis.ru',
+    siteHref: 'https://gagraservis.ru/',
+    readTitle: 'Further reading',
+    read: [],
+    ctaTitle: 'Tell me about your city and your idea',
+    ctaButton: 'Request a quote',
+    backToHome: 'Back to the catalogue',
+  },
+}[lang];
+
+const t = content;
+const site = 'https://geomachine.es';
+const hreflangAlternates = [
+  { hreflang: 'x-default', href: `${site}${taxiAppPath.es}` },
+  ...(Object.keys(taxiAppPath) as TaxiAppLang[]).map((l) => ({ hreflang: l, href: `${site}${taxiAppPath[l]}` })),
+];
+const pageUrl = `${site}${taxiAppPath[lang]}`;
+const orgId = buildOrgId(site);
+const amount = (LAUNCH_OPEN ? pack.launch : pack.standard)[currency][0]!;
+const external = t.siteHref.startsWith('http');
+---
+
+<Base
+  lang={lang}
+  title={t.title}
+  description={t.description}
+  pageUrl={pageUrl}
+  hreflangAlternates={hreflangAlternates}
+  schema="none"
+>
+  <Fragment slot="head">
+    <script type="application/ld+json" is:inline set:html={JSON.stringify({
+      '@context': 'https://schema.org',
+      '@graph': [
+        {
+          '@type': 'WebPage',
+          '@id': `${pageUrl}#webpage`,
+          url: pageUrl,
+          name: t.title,
+          description: t.description,
+          inLanguage: lang,
+          isPartOf: { '@id': orgId },
+          mainEntity: { '@id': `${pageUrl}#service` },
+        },
+        {
+          '@type': 'Service',
+          '@id': `${pageUrl}#service`,
+          name: t.priceName,
+          serviceType: t.tagline,
+          provider: { '@id': orgId },
+          offers: {
+            '@type': 'Offer',
+            price: amount,
+            priceCurrency: currency.toUpperCase(),
+          },
+        },
+      ],
+    })} />
+  </Fragment>
+
+  <section class="hero app-hero shell">
+    <p class="hero__eyebrow">{t.tagline}</p>
+    <h1 class="hero__title">{t.headline}</h1>
+    <p class="hero__body">{t.lead}</p>
+    <p class="hero__body case-note">{t.honest}</p>
+
+    <div class="app-hero__downloads">
+      <a href={TAXI_URL} class="app-download app-download--primary" target="_blank" rel="noopener">
+        {t.visit} ↗
+      </a>
+    </div>
+  </section>
+
+  <section class="shell app-section">
+    <h2 class="app-section__title">{t.partsTitle}</h2>
+    <div class="app-features app-features--two">
+      {t.parts.map(({ title, text }) => (
+        <div class="app-feature">
+          <h3 class="app-feature__title">{title}</h3>
+          <p class="app-feature__text">{text}</p>
+        </div>
+      ))}
+    </div>
+
+    <div class="app-panel">
+      <div>
+        <h2 class="app-panel__title">{t.priceTitle}</h2>
+        <p class="app-panel__text"><strong>{t.priceName}: {price}</strong></p>
+        {priceLater && <p class="app-panel__text">{t.priceLaterLabel} {priceLater}</p>}
+        <p class="app-panel__text">{t.priceTime}</p>
+        <ul class="app-panel__steps case-points">
+          {pack.includes[lang].map((item) => <li>{item}</li>)}
+        </ul>
+        <p class="app-panel__text case-note">{t.priceNote}</p>
+      </div>
+
+      <div>
+        <h2 class="app-panel__title">{t.afterTitle}</h2>
+        <ul class="app-panel__steps">
+          {t.after.map((item) => <li>{item}</li>)}
+        </ul>
+        <p class="app-panel__text case-note">{t.afterNote}</p>
+      </div>
+    </div>
+
+    <div class="app-panel">
+      <div>
+        <h2 class="app-panel__title">{t.siteTitle}</h2>
+        <p class="app-panel__text">{t.siteText}</p>
+        <p class="app-panel__text case-note">
+          {external
+            ? <a href={t.siteHref} target="_blank" rel="noopener">{t.siteLink} ↗</a>
+            : <a href={t.siteHref}>{t.siteLink}</a>}
+        </p>
+      </div>
+      {t.read.length > 0 && (
+        <div>
+          <h2 class="app-panel__title">{t.readTitle}</h2>
+          <ul class="app-panel__steps">
+            {t.read.map((r) => <li><a href={r.href}>{r.text}</a></li>)}
+          </ul>
+        </div>
+      )}
+    </div>
+
+    <div class="case-cta">
+      <h2 class="app-panel__title">{t.ctaTitle}</h2>
+      <a href={`${servicesPath[lang]}#contacto`} class="app-download app-download--primary">{t.ctaButton}</a>
+    </div>
+
+    <div class="app-back">
+      <a href={servicesPath[lang]}>← {t.backToHome}</a>
+    </div>
+  </section>
+</Base>
