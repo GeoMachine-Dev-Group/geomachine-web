@@ -60,8 +60,8 @@ Si falla alguno, ya tienes trabajo concreto pendiente.
 
 ## Cómo lo hago yo
 
-Configuro el hreflang desde el primer día de una web multiidioma, no como un parche posterior, y compruebo que cada idioma tenga el mismo contenido y que nadie publique una traducción sin revisar. Lo reviso dentro de [cualquier proyecto multiidioma](/es/servicios/#seo), con una lista de comprobación antes de dar el trabajo por terminado.
+Configuro el hreflang desde el primer día de una web multiidioma, no como un parche posterior, y compruebo que cada idioma tenga el mismo contenido y que nadie publique una traducción sin revisar. Lo reviso dentro de [cualquier proyecto multiidioma](/es/servicios/web-multiidioma/), con una lista de comprobación antes de dar el trabajo por terminado.
 
 ---
 
-**¿Tu web ya está en varios idiomas pero sospechas que algo no está bien configurado?** Dime cuáles y reviso los puntos técnicos de verdad. [Mira el servicio aquí](/es/servicios/#seo).
+**¿Tu web ya está en varios idiomas pero sospechas que algo no está bien configurado?** Dime cuáles y reviso los puntos técnicos de verdad. [Mira qué hago y cuánto cuesta](/es/servicios/web-multiidioma/).

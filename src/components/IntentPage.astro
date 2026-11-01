@@ -2,8 +2,9 @@
 /**
  * Plantilla de las páginas por intención (B5): «quiero una app de taxi»,
  * «quiero un directorio local»… Cada página (TaxiAppPage, DirectoryPage) solo
- * aporta sus textos, sus rutas y el código del paquete del catálogo; el precio y
- * el plazo salen de catalog.ts para que no se desfasen.
+ * aporta sus textos, sus rutas y el código del paquete (o de los servicios
+ * sueltos) del catálogo; el precio y el plazo salen de catalog.ts para que no
+ * se desfasen.
  *
  * Regla de contenido: no son páginas puerta. Todo lo que dicen sale de un
  * proyecto propio o de cliente que se puede abrir, con su estado real a la
@@ -14,7 +15,7 @@
 import Base from '../layouts/Base.astro';
 import { servicesPath, type IntentLang } from '../i18n/ui';
 import { orgId as buildOrgId } from '../data/organization';
-import { bundles, LAUNCH_OPEN, LANG_CURRENCY } from '../data/catalog';
+import { bundles, lines, LAUNCH_OPEN, LANG_CURRENCY } from '../data/catalog';
 
 export interface IntentContent {
   title: string;
@@ -47,23 +48,45 @@ export interface IntentContent {
 interface Props {
   lang: IntentLang;
   paths: Record<IntentLang, string>;
-  packCode: string;
+  /** Un paquete (precio cerrado)… */
+  packCode?: string;
+  /** …o servicios sueltos, que se pintan con su rango («150–250 €»). */
+  itemCodes?: string[];
   proofUrl: string;
   content: IntentContent;
 }
-const { lang, paths, packCode, proofUrl, content: t } = Astro.props;
+const { lang, paths, packCode, itemCodes = [], proofUrl, content: t } = Astro.props;
 
-const pack = bundles.find((b) => b.code === packCode);
-if (!pack) throw new Error(`IntentPage: no existe el paquete ${packCode} en catalog.ts`);
+const pack = packCode ? bundles.find((b) => b.code === packCode) : undefined;
+if (packCode && !pack) throw new Error(`IntentPage: no existe el paquete ${packCode} en catalog.ts`);
+const allItems = lines.flatMap((l) => l.items);
+const items = itemCodes.map((code) => {
+  const item = allItems.find((i) => i.code === code);
+  if (!item) throw new Error(`IntentPage: no existe el servicio ${code} en catalog.ts`);
+  return item;
+});
+if (!pack && items.length === 0) throw new Error('IntentPage: falta packCode o itemCodes');
 
 const nbsp = ' ';
 const THOUSANDS: Record<IntentLang, string> = { es: '.', en: ',', ru: nbsp };
 const SYMBOL = { eur: '€', rub: '₽', gel: '₾' } as const;
 const currency = LANG_CURRENCY[lang];
 const money = (n: number) => `${String(n).replace(/\B(?=(\d{3})+(?!\d))/g, THOUSANDS[lang])}${nbsp}${SYMBOL[currency]}`;
-const amount = (LAUNCH_OPEN ? pack.launch : pack.standard)[currency][0]!;
-const price = money(amount);
-const priceLater = LAUNCH_OPEN ? money(pack.standard[currency][0]!) : null;
+const range = (r: readonly number[]) => (r.length > 1 && r[0] !== r[1] ? `${money(r[0]!).replace(`${nbsp}${SYMBOL[currency]}`, '')}–${money(r[1]!)}` : money(r[0]!));
+const tierOf = (o: { launch: typeof bundles[number]['launch']; standard: typeof bundles[number]['standard'] }) =>
+  (LAUNCH_OPEN ? o.launch : o.standard)[currency];
+const price = pack ? range(tierOf(pack)) : null;
+const priceLater = pack && LAUNCH_OPEN ? range(pack.standard[currency]) : null;
+const itemRows = items.map((i) => ({
+  name: i.name[lang],
+  spec: i.spec[lang],
+  time: i.time?.[lang],
+  price: range(tierOf(i)),
+  later: LAUNCH_OPEN ? range(i.standard[currency]) : null,
+}));
+// Para el JSON-LD: el precio más bajo de lo que se ofrece.
+const amount = Math.min(...(pack ? [tierOf(pack)[0]!] : items.map((i) => tierOf(i)[0]!)));
+const serviceName = pack ? pack.name[lang] : items.map((i) => i.name[lang]).join(' + ');
 
 const site = 'https://geomachine.es';
 const hreflangAlternates = [
@@ -100,7 +123,7 @@ const external = t.asideHref.startsWith('http');
         {
           '@type': 'Service',
           '@id': `${pageUrl}#service`,
-          name: pack.name[lang],
+          name: serviceName,
           serviceType: t.tagline,
           provider: { '@id': orgId },
           offers: { '@type': 'Offer', price: amount, priceCurrency: currency.toUpperCase() },
@@ -136,12 +159,23 @@ const external = t.asideHref.startsWith('http');
     <div class="app-panel">
       <div>
         <h2 class="app-panel__title">{t.priceTitle}</h2>
-        <p class="app-panel__text"><strong>{pack.name[lang]}: {price}</strong></p>
-        {priceLater && <p class="app-panel__text">{t.priceLaterLabel} {priceLater}</p>}
-        {pack.time && <p class="app-panel__text">{t.priceTimeLabel} {pack.time[lang]}</p>}
-        <ul class="app-panel__steps case-points">
-          {pack.includes[lang].map((item) => <li>{item}</li>)}
-        </ul>
+        {pack && (
+          <>
+            <p class="app-panel__text"><strong>{pack.name[lang]}: {price}</strong></p>
+            {priceLater && <p class="app-panel__text">{t.priceLaterLabel} {priceLater}</p>}
+            {pack.time && <p class="app-panel__text">{t.priceTimeLabel} {pack.time[lang]}</p>}
+            <ul class="app-panel__steps case-points">
+              {pack.includes[lang].map((item) => <li>{item}</li>)}
+            </ul>
+          </>
+        )}
+        {itemRows.map((r) => (
+          <div class="case-points">
+            <p class="app-panel__text"><strong>{r.name}: {r.price}</strong></p>
+            {r.later && <p class="app-panel__text">{t.priceLaterLabel} {r.later}</p>}
+            <p class="app-panel__text">{r.spec}{r.time && ` · ${t.priceTimeLabel} ${r.time}`}</p>
+          </div>
+        ))}
         <p class="app-panel__text case-note">{t.priceNote}</p>
       </div>
 

@@ -48,6 +48,11 @@ export const directoryPath: Record<IntentLang, string> = {
   ru: `${servicesPath.ru}spravochnik-organizatsiy/`,
   en: `${servicesPath.en}local-directory/`,
 };
+export const multilingualPath: Record<IntentLang, string> = {
+  es: `${servicesPath.es}web-multiidioma/`,
+  ru: `${servicesPath.ru}mnogoyazychnyy-sayt/`,
+  en: `${servicesPath.en}multilingual-website/`,
+};
 
 /**
  * El blog existe en es, ru y en. En georgiano no: todo el `ka` del sitio va

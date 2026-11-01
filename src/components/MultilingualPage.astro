@@ -1,0 +1,136 @@
+---
+/**
+ * Página por intención (B5): «quiero mi web en varios idiomas». Sale de
+ * geomachine.es (cuatro idiomas, con los errores que se contaron en el
+ * artículo seo-multiidioma-errores), de kadrilab.com (inglés y georgiano) y de
+ * abhazservis.com, que es solo en ruso a propósito. Precio: WEB-04 y SEO-04 en
+ * catalog.ts. Plantilla: IntentPage.astro.
+ */
+import IntentPage, { type IntentContent } from './IntentPage.astro';
+import { blogPath, kadriLabCasePath, multilingualPath, type IntentLang } from '../i18n/ui';
+
+interface Props {
+  lang: IntentLang;
+}
+const { lang } = Astro.props;
+
+const content: Record<IntentLang, IntentContent> = {
+  es: {
+    title: 'Web en varios idiomas: la mía está en cuatro',
+    description:
+      'Webs multiidioma con hreflang, direcciones por idioma, moneda de quien lee y traducción revisada. Con lo que funcionó y los errores que cometí en la mía, en cuatro idiomas.',
+    tagline: 'Webs multiidioma',
+    headline: 'Tu web en varios idiomas, sin que Google se líe',
+    lead: 'Esta web está en español, ruso, inglés y georgiano, y la de KADRI LAB, un estudio de foto de Tiflis, en inglés y georgiano. Te ofrezco lo mismo: cada idioma con sus direcciones, sus precios en la moneda de quien lee y una traducción que alguien ha revisado.',
+    honest: 'En la mía he cometido varios de los errores típicos y los he contado: el georgiano estuvo publicado sin revisar hasta el 31 de octubre de 2026, y siete parejas de artículos no estaban enlazadas entre sí. Abajo, qué hago para que no te pase.',
+    visit: 'Ver kadrilab.com',
+    partsTitle: 'Qué hago en cada web multiidioma',
+    parts: [
+      { title: 'Una dirección por idioma', text: 'Cada idioma con sus propias rutas, traducidas: /es/servicios/, /ru/uslugi/, /en/services/. Nada de cambiar el idioma con un botón que deja la misma dirección.' },
+      { title: 'Hreflang en los dos sentidos', text: 'Cada página dice cuál es su traducción, y la traducción apunta de vuelta, con un x-default. También en el sitemap, donde las herramientas no saben emparejar direcciones distintas solas.' },
+      { title: 'Adaptar, no solo traducir', text: 'Precios en euros, rublos o lari según el idioma, números escritos como se escriben en cada uno, y, si la página existe en el otro idioma, al cambiarlo se sigue en ella.' },
+      { title: 'Traducción revisada', text: 'Lo que no ha revisado alguien que habla el idioma se marca como pendiente y no se amplía. Por eso esta web no tiene blog en georgiano: es mejor pocas páginas bien escritas que muchas que suenan a máquina.' },
+    ],
+    priceTitle: 'Precio',
+    priceTimeLabel: 'Plazo:',
+    priceLaterLabel: 'Precio estándar después del lanzamiento:',
+    priceNote: 'El segundo idioma se suma a la web; el SEO multiidioma es para una web que ya tiene varios idiomas y no aparece bien en buscadores.',
+    afterTitle: 'Cuándo no te lo recomiendo',
+    after: [
+      'Si tus clientes hablan un solo idioma. abhazservis.com es solo en ruso a propósito: montar idiomas «por si acaso» es pagar complejidad por adelantado.',
+      'Si no tienes quien revise la traducción. Mejor un idioma bien escrito que dos con uno que suena a máquina.',
+      'Si piensas redirigir según el país del visitante. Confunde a Google y molesta a quien quiere otra versión: que elija la persona.',
+    ],
+    afterNote: 'Te lo digo antes de presupuestar, no después.',
+    asideTitle: 'Los errores, con nombre y fecha',
+    asideText: 'En el blog cuento los cinco errores típicos de una web multiidioma con lo que nos pasó en la nuestra: el x-default que faltaba, el menú en inglés que salía vacío y cómo lo descubrió Search Console.',
+    asideLink: 'Leer «SEO en dos idiomas: errores que hacen que Google te penalice»',
+    asideHref: `${blogPath.es}seo-multiidioma-errores/`,
+    readTitle: 'Webs en varios idiomas que he hecho',
+    read: [
+      { text: 'Caso: kadrilab.com, web en inglés y georgiano', href: kadriLabCasePath.es },
+    ],
+    ctaTitle: 'Dime en qué idiomas venden tus clientes',
+    ctaButton: 'Pedir presupuesto',
+    backToHome: 'Volver al catálogo',
+  },
+  ru: {
+    title: 'Многоязычный сайт: мой — на четырёх языках',
+    description:
+      'Многоязычные сайты с hreflang, адресами для каждого языка, валютой читателя и проверенным переводом. Что сработало и какие ошибки я сделал на своём сайте на четырёх языках.',
+    tagline: 'Многоязычные сайты',
+    headline: 'Ваш сайт на нескольких языках, и чтобы поисковики не путались',
+    lead: 'Этот сайт — на испанском, русском, английском и грузинском, а сайт KADRI LAB, фотостудии из Тбилиси, — на английском и грузинском. Я предлагаю то же самое: у каждого языка свои адреса, цены в валюте читателя и перевод, который кто-то проверил.',
+    honest: 'На своём сайте я допустил несколько типичных ошибок и рассказал о них: грузинская версия висела без проверки до 31 октября 2026 года, а семь пар статей не были связаны между собой. Ниже — что я делаю, чтобы с вами этого не случилось.',
+    visit: 'Открыть kadrilab.com',
+    partsTitle: 'Что я делаю на каждом многоязычном сайте',
+    parts: [
+      { title: 'Свой адрес для каждого языка', text: 'У каждого языка свои переведённые пути: /es/servicios/, /ru/uslugi/, /en/services/. Никакой смены языка кнопкой, которая оставляет тот же адрес.' },
+      { title: 'Hreflang в обе стороны', text: 'Каждая страница указывает свой перевод, а перевод ссылается обратно, с x-default. И в карте сайта тоже: инструменты сами не умеют связывать разные адреса.' },
+      { title: 'Адаптация, а не только перевод', text: 'Цены в евро, рублях или лари в зависимости от языка, числа записаны так, как принято в каждом языке, а если у страницы есть перевод, при смене языка остаёшься на ней.' },
+      { title: 'Проверенный перевод', text: 'То, что не проверил носитель языка, помечается как непроверенное и не расширяется. Поэтому у этого сайта нет блога на грузинском: лучше немного хорошо написанных страниц, чем много таких, что звучат как машина.' },
+    ],
+    priceTitle: 'Цена',
+    priceTimeLabel: 'Срок:',
+    priceLaterLabel: 'Стандартная цена после запуска:',
+    priceNote: 'Второй язык добавляется к сайту; многоязычное SEO — для сайта, у которого уже есть несколько языков, но в поиске он виден плохо.',
+    afterTitle: 'Когда я это не советую',
+    after: [
+      'Если ваши клиенты говорят на одном языке. abhazservis.com — только на русском, и это специально: делать языки «на всякий случай» значит платить за сложность заранее.',
+      'Если некому проверить перевод. Лучше один хорошо написанный язык, чем два, один из которых звучит как машина.',
+      'Если вы хотите перенаправлять по стране посетителя. Это путает поисковики и раздражает тех, кто хочет другую версию: пусть выбирает человек.',
+    ],
+    afterNote: 'Я скажу это до сметы, а не после.',
+    asideTitle: 'Ошибки — с названиями и датами',
+    asideText: 'В блоге я разбираю пять типичных ошибок многоязычного сайта на примере нашего: недостающий x-default, пустое меню в английской версии и как его нашёл Search Console.',
+    asideLink: 'Читать «SEO на двух языках: ошибки, из-за которых Google понижает сайт»',
+    asideHref: `${blogPath.ru}seo-na-dvuh-yazykah-oshibki/`,
+    readTitle: 'Многоязычные сайты, которые я сделал',
+    read: [
+      { text: 'Кейс: kadrilab.com, сайт на английском и грузинском', href: kadriLabCasePath.ru },
+    ],
+    ctaTitle: 'Скажите, на каких языках говорят ваши клиенты',
+    ctaButton: 'Узнать цену',
+    backToHome: 'Вернуться к каталогу',
+  },
+  en: {
+    title: 'Multilingual website: mine is in four languages',
+    description:
+      'Multilingual websites with hreflang, per-language addresses, the reader’s currency and reviewed translation. What worked, and the mistakes I made on my own four-language site.',
+    tagline: 'Multilingual websites',
+    headline: 'Your website in several languages, without confusing Google',
+    lead: 'This site is in Spanish, Russian, English and Georgian, and the KADRI LAB site, for a photo studio in Tbilisi, is in English and Georgian. I offer the same: each language with its own addresses, prices in the reader’s currency and a translation someone has reviewed.',
+    honest: 'On mine I made several of the typical mistakes and wrote them up: the Georgian version was live unreviewed until 31 October 2026, and seven pairs of articles were not linked to each other. Below, what I do so it does not happen to you.',
+    visit: 'Visit kadrilab.com',
+    partsTitle: 'What I do on every multilingual site',
+    parts: [
+      { title: 'One address per language', text: 'Each language has its own translated routes: /es/servicios/, /ru/uslugi/, /en/services/. No language button that keeps the same address.' },
+      { title: 'Hreflang both ways', text: 'Every page names its translation and the translation points back, with an x-default. In the sitemap too, where tools cannot pair different addresses on their own.' },
+      { title: 'Adapt, not just translate', text: 'Prices in euros, roubles or lari depending on the language, numbers written the way each language writes them, and, when the page exists in the other language, switching keeps you on it.' },
+      { title: 'Reviewed translation', text: 'Anything a native speaker has not reviewed is marked as pending and not expanded. That is why this site has no Georgian blog: a few well-written pages beat many that sound machine-made.' },
+    ],
+    priceTitle: 'Price',
+    priceTimeLabel: 'Timeline:',
+    priceLaterLabel: 'Standard price after launch:',
+    priceNote: 'A second language is added to a website; multilingual SEO is for a site that already has several languages and does not show up well in search.',
+    afterTitle: 'When I would not recommend it',
+    after: [
+      'If your customers speak one language. abhazservis.com is Russian-only on purpose: adding languages “just in case” is paying for complexity up front.',
+      'If nobody can review the translation. One well-written language beats two where one sounds machine-made.',
+      'If you plan to redirect by the visitor’s country. It confuses Google and annoys people who want another version: let the person choose.',
+    ],
+    afterNote: 'I will tell you before quoting, not after.',
+    asideTitle: 'A site built this way',
+    asideText: 'kadrilab.com is in English and Georgian; switching language keeps you on the same page. The case study explains the site and its photo panel.',
+    asideLink: 'Read the kadrilab.com case study',
+    asideHref: kadriLabCasePath.en,
+    readTitle: 'Further reading',
+    read: [],
+    ctaTitle: 'Tell me which languages your customers speak',
+    ctaButton: 'Request a quote',
+    backToHome: 'Back to the catalogue',
+  },
+};
+---
+
+<IntentPage lang={lang} paths={multilingualPath} itemCodes={['WEB-04', 'SEO-04']} proofUrl="https://kadrilab.com/" content={content[lang]} />
