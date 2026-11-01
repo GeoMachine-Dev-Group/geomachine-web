@@ -186,10 +186,11 @@ Historial reciente, todo por fast-forward y con la rama borrada después:
   `Catalog.astro`. Lo ka nuevo se marca "ka sin revisar".
 - Decidir si se reinstala el hook `post-commit` de auto-push (ver más abajo).
 - Falta foto del fundador en la sección `.close`.
-- `gagraservis.ru` sigue sin publicar (decisión del 2026-09-10, no un fallo).
-  Mientras siga así, nada del sitio debe enlazar a ese dominio: la franja de
-  trabajos y los artículos que lo citaban apuntan ya al caso del blog. Los
-  pasos para volver a publicarlo están en el `AGENTS.md` de ese repo.
+- `gagraservis.ru` **vuelve a estar publicada desde el 2026-10-24** (rediseño v3,
+  servida desde el NUC por el túnel de Cloudflare). El caso del blog (es/ru) se
+  reescribió el 2026-11-01 con la versión actual y ya enlaza al dominio; capturas
+  en `public/images/casos/gagralet-{desktop,mobile}.webp`. La franja de trabajos
+  sigue apuntando al caso del blog, no al dominio.
 - Del caso de gagraservis se quitó la afirmación de que el sitio era bilingüe
   con hreflang: la única copia que se conserva (2026-08-21) es monolingüe rusa
   y no hay forma de comprobarlo. Si aparece el original del VPS, se revisa.

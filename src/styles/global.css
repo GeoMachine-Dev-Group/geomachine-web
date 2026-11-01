@@ -751,6 +751,10 @@ html[data-priceanim='blur'] .price-value {
 .post__body a:hover { color: var(--ink); }
 .post__body hr { border: 0; border-top: 1px solid var(--rule); margin: 2.5em 0; }
 .post__body code { font-family: var(--data); font-size: .88em; background: var(--panel-2); border: 1px solid var(--rule-soft); border-radius: var(--radius-xs); padding: .08em .35em; }
+/* Capturas de los casos (markdown `![…](/images/casos/…)`). Las de móvil son
+   verticales: a todo el ancho de la columna ocuparían varias pantallas. */
+.post__body img { display: block; max-width: 100%; height: auto; margin-top: var(--space-6); border: 1px solid var(--rule); border-radius: var(--radius-md); }
+.post__body img[src$="-mobile.webp"] { max-width: min(100%, 20rem); }
 
 .post-author { margin-top: var(--space-12); padding-top: var(--space-6); border-top: 1px solid var(--rule); }
 .post-author__label { margin: 0; font-family: var(--data); font-size: var(--fs-3xs); letter-spacing: .16em; text-transform: uppercase; color: var(--accent); }
