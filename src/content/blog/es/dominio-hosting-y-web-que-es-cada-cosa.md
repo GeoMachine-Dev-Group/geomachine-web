@@ -2,6 +2,7 @@
 title: "Dominio, hosting y web: qué es cada cosa y qué pagas"
 description: "Dominio, alojamiento, web y certificado sin jerga: qué es cada pieza, qué se paga una vez, qué se renueva y qué revisar para que todo esté a tu nombre."
 pubDate: 2026-10-02
+updatedDate: 2026-11-01
 pillar: "WEB"
 relatedService: "WEB-01"
 translationSlug: "domen-hosting-i-sayt-chto-eto"
@@ -53,6 +54,15 @@ El candado junto a la dirección depende de un **certificado** que protege la co
 | Mantenimiento | Que alguien vigile todo lo anterior | Opcional, mensual |
 
 Tu web no necesita mantenimiento obligatorio para seguir funcionando. Pero alguien tiene que ocuparse de que el alojamiento siga activo y el certificado no caduque; si no quieres hacerlo tú, eso es lo que cubre un plan de mantenimiento.
+
+## Lo que me ha pasado con mis propios dominios
+
+Esta lista no sale de un manual: cada punto me ha pasado a mí en los últimos meses.
+
+- **Dominios comprados que no llevaban a ningún sitio.** Además de abhazservis.com registré las versiones `.info` y `.online`. Hasta el 31 de octubre de 2026 enseñaban una página en blanco del proveedor en vez de llevar a la web. Ahora redirigen a la principal. Si compras variantes de tu nombre para protegerlo, haz que lleven a tu web.
+- **Pagar alojamiento que no usas.** El plan de alojamiento de abhazservis.com con su proveedor se renueva el 5 de diciembre, pero la web no está ahí: está en un servidor propio. De ese plan solo uso el correo. Toca decidir si renovarlo o pasar el correo a otro sitio. Es justo la pregunta de «qué incluye exactamente cada factura».
+- **No saber quién controla las direcciones.** Con geomachine.es llegó a haber una configuración a medio hacer en Cloudflare que nunca se activó, mientras el dominio seguía funcionando desde su registrador. Se borró el 13 de septiembre. Conviene saber en qué panel se decide adónde apunta tu dominio, y que sea uno solo.
+- **Un servidor que se dejó de pagar.** El 27 de octubre el servidor del taxi que estoy montando dejó de responder, probablemente porque caducó la suscripción. Había copia del día anterior y lo monté en otro. Por eso en la lista de abajo están las fechas de renovación.
 
 ## Qué revisar antes de pagar (o en lo que ya tienes)
 
