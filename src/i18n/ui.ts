@@ -36,37 +36,43 @@ export const kadriLabCasePath: Record<Lang, string> = {
 
 /** Páginas por intención (IntentPage.astro, B5). Sin georgiano: todo el ka del
     sitio está sin revisar y estas páginas hablan de precios y plazos. */
-export type IntentLang = 'es' | 'ru' | 'en';
+export type IntentLang = 'es' | 'ru' | 'en' | 'ka';
 export type TaxiAppLang = IntentLang;
 export const taxiAppPath: Record<IntentLang, string> = {
   es: `${servicesPath.es}app-taxi/`,
   ru: `${servicesPath.ru}prilozhenie-taksi/`,
   en: `${servicesPath.en}taxi-app/`,
+  ka: `${servicesPath.ka}taxi-app/`,
 };
 export const directoryPath: Record<IntentLang, string> = {
   es: `${servicesPath.es}directorio-local/`,
   ru: `${servicesPath.ru}spravochnik-organizatsiy/`,
   en: `${servicesPath.en}local-directory/`,
+  ka: `${servicesPath.ka}local-directory/`,
 };
 export const multilingualPath: Record<IntentLang, string> = {
   es: `${servicesPath.es}web-multiidioma/`,
   ru: `${servicesPath.ru}mnogoyazychnyy-sayt/`,
   en: `${servicesPath.en}multilingual-website/`,
+  ka: `${servicesPath.ka}multilingual-website/`,
 };
 export const privateAiPath: Record<IntentLang, string> = {
   es: `${servicesPath.es}ia-privada/`,
   ru: `${servicesPath.ru}privatnyy-ii/`,
   en: `${servicesPath.en}private-ai/`,
+  ka: `${servicesPath.ka}private-ai/`,
 };
 export const messagingPath: Record<IntentLang, string> = {
   es: `${servicesPath.es}whatsapp-telegram/`,
   ru: `${servicesPath.ru}whatsapp-telegram/`,
   en: `${servicesPath.en}whatsapp-telegram/`,
+  ka: `${servicesPath.ka}whatsapp-telegram/`,
 };
 export const tourismPath: Record<IntentLang, string> = {
   es: `${servicesPath.es}web-turismo-abjasia/`,
   ru: `${servicesPath.ru}sayt-dlya-turizma-abhazii/`,
   en: `${servicesPath.en}abkhazia-tourism-website/`,
+  ka: `${servicesPath.ka}abkhazia-tourism-website/`,
 };
 
 /**

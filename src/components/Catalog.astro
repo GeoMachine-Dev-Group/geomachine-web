@@ -12,7 +12,7 @@ import {
   type Currency,
 } from '../data/catalog';
 import { getCollection } from 'astro:content';
-import { ui, blogPath, kadriLabCasePath, hasBlog, type Lang, type IntentLang } from '../i18n/ui';
+import { ui, blogPath, kadriLabCasePath, hasBlog, type Lang } from '../i18n/ui';
 import { intents, intentUi } from '../data/intents';
 import { isPublished } from '../lib/blog';
 import ServiceCard from './ServiceCard.astro';
@@ -290,17 +290,17 @@ const featuredMap: Record<string, Record<Lang, string>> = {
 </div>
 
 {
-  lang !== 'ka' && (
+  (
     <section class="intents shell" aria-labelledby="intents-title">
-      <h2 class="intents__title" id="intents-title">{intentUi[lang as IntentLang].sectionTitle}</h2>
-      <p class="intents__lead">{intentUi[lang as IntentLang].sectionLead}</p>
+      <h2 class="intents__title" id="intents-title">{intentUi[lang].sectionTitle}</h2>
+      <p class="intents__lead">{intentUi[lang].sectionLead}</p>
       <ul class="intents__list">
         {intents.map((i) => (
           <li class="intents__item">
-            <a class="intents__link" href={i.paths[lang as IntentLang]}>
-              <span class="intents__name">{i.title[lang as IntentLang]}</span>
-              <span class="intents__text">{i.text[lang as IntentLang]}</span>
-              <span class="intents__more">{intentUi[lang as IntentLang].more} →</span>
+            <a class="intents__link" href={i.paths[lang]}>
+              <span class="intents__name">{i.title[lang]}</span>
+              <span class="intents__text">{i.text[lang]}</span>
+              <span class="intents__more">{intentUi[lang].more} →</span>
             </a>
           </li>
         ))}

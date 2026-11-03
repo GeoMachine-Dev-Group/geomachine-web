@@ -35,11 +35,12 @@ export const intents: IntentInfo[] = [
   {
     key: 'taxi',
     paths: taxiAppPath,
-    title: { es: 'App de taxi', ru: 'Приложение такси', en: 'Taxi app' },
+    title: { es: 'App de taxi', ru: 'Приложение такси', en: 'Taxi app', ka: 'ტაქსის აპლიკაცია' },
     text: {
       es: 'Pasajero, conductor y panel, con asignación al coche más cercano. Piloto en Abjasia.',
       ru: 'Пассажир, водитель и панель, заказ уходит ближайшей машине. Пилот в Абхазии.',
       en: 'Passenger, driver and admin apps, with nearest-car dispatch. Pilot in Abkhazia.',
+      ka: 'მგზავრი, მძღოლი და პანელი, შეკვეთა უახლოეს მანქანას გადაეცემა. პილოტი აფხაზეთში.',
     },
     related: ['messaging', 'directory'],
     blogCodes: ['PACK-04'],
@@ -47,11 +48,12 @@ export const intents: IntentInfo[] = [
   {
     key: 'directory',
     paths: directoryPath,
-    title: { es: 'Directorio local', ru: 'Справочник организаций', en: 'Local directory' },
+    title: { es: 'Directorio local', ru: 'Справочник организаций', en: 'Local directory', ka: 'ორგანიზაციების ცნობარი' },
     text: {
       es: 'Catálogo de negocios por ciudad y categoría, como abhazservis.com.',
       ru: 'Каталог организаций по городам и категориям, как abhazservis.com.',
       en: 'A business directory by town and category, like abhazservis.com.',
+      ka: 'ბიზნესების კატალოგი დასახლებებისა და კატეგორიების მიხედვით, როგორც abhazservis.com.',
     },
     related: ['tourism', 'multilingual'],
     blogCodes: ['PACK-07'],
@@ -59,11 +61,12 @@ export const intents: IntentInfo[] = [
   {
     key: 'multilingual',
     paths: multilingualPath,
-    title: { es: 'Web multiidioma', ru: 'Многоязычный сайт', en: 'Multilingual website' },
+    title: { es: 'Web multiidioma', ru: 'Многоязычный сайт', en: 'Multilingual website', ka: 'მრავალენოვანი საიტი' },
     text: {
       es: 'Tu web en varios idiomas, bien montada para Google y Yandex.',
       ru: 'Сайт на нескольких языках, правильно настроенный для Google и Яндекса.',
       en: 'Your site in several languages, set up properly for Google and Yandex.',
+      ka: 'თქვენი საიტი რამდენიმე ენაზე, სწორად აწყობილი Google-ისა და Yandex-ისთვის.',
     },
     related: ['tourism', 'directory'],
     blogCodes: ['WEB-04', 'SEO-04'],
@@ -71,11 +74,12 @@ export const intents: IntentInfo[] = [
   {
     key: 'privateAi',
     paths: privateAiPath,
-    title: { es: 'IA privada', ru: 'Приватный ИИ', en: 'Private AI' },
+    title: { es: 'IA privada', ru: 'Приватный ИИ', en: 'Private AI', ka: 'პირადი AI' },
     text: {
       es: 'Una IA que responde con tus documentos en tu propio equipo, sin sacar los datos.',
       ru: 'ИИ, который отвечает по вашим документам на вашем сервере, данные не уходят наружу.',
       en: 'An AI that answers from your documents on your own machine, with no data leaving it.',
+      ka: 'AI, რომელიც თქვენს დოკუმენტებზე თქვენსავე კომპიუტერზე პასუხობს, მონაცემების გაუსვლელად.',
     },
     related: ['messaging', 'multilingual'],
     blogCodes: ['IA-04', 'SYS-03'],
@@ -83,11 +87,12 @@ export const intents: IntentInfo[] = [
   {
     key: 'messaging',
     paths: messagingPath,
-    title: { es: 'WhatsApp y Telegram', ru: 'WhatsApp и Telegram', en: 'WhatsApp and Telegram' },
+    title: { es: 'WhatsApp y Telegram', ru: 'WhatsApp и Telegram', en: 'WhatsApp and Telegram', ka: 'WhatsApp და Telegram' },
     text: {
       es: 'Formularios que llegan a tu Telegram, avisos y botones para que te escriban.',
       ru: 'Заявки с сайта в ваш Telegram, уведомления и кнопки, чтобы вам писали.',
       en: 'Site forms delivered to your Telegram, alerts and buttons so customers message you.',
+      ka: 'საიტის ფორმები თქვენს Telegram-ში, გაფრთხილებები და ღილაკები, რომ მოგწეროთ.',
     },
     related: ['privateAi', 'taxi'],
     blogCodes: ['IA-03', 'IA-02'],
@@ -95,11 +100,12 @@ export const intents: IntentInfo[] = [
   {
     key: 'tourism',
     paths: tourismPath,
-    title: { es: 'Web de turismo en Abjasia', ru: 'Сайт для туризма в Абхазии', en: 'Tourism website in Abkhazia' },
+    title: { es: 'Web de turismo en Abjasia', ru: 'Сайт для туризма в Абхазии', en: 'Tourism website in Abkhazia', ka: 'ტურისტული საიტი აფხაზეთში' },
     text: {
       es: 'Traslados, alojamiento o excursiones, con precios claros y contacto directo.',
       ru: 'Трансферы, жильё или экскурсии, с понятными ценами и прямой связью.',
       en: 'Transfers, stays or tours, with clear prices and direct contact.',
+      ka: 'ტრანსფერები, განთავსება ან ექსკურსიები, გასაგები ფასებით და პირდაპირი კონტაქტით.',
     },
     related: ['directory', 'messaging'],
     blogCodes: [],
@@ -134,5 +140,13 @@ export const intentUi: Record<IntentLang, { sectionTitle: string; sectionLead: s
     more: 'See the page',
     related: 'Other services',
     home: 'Services',
+  },
+  // ka: traducido por IA, sin revisar.
+  ka: {
+    sectionTitle: 'რით შემიძლია დაგეხმაროთ',
+    sectionLead: 'ყოველ მომსახურებას თავისი გვერდი აქვს: რეალური პროექტი, ფასი და ის, რაც ჯერ არ მუშაობს.',
+    more: 'დაწვრილებით',
+    related: 'სხვა მომსახურებები',
+    home: 'მომსახურებები',
   },
 };

@@ -9,8 +9,8 @@
  * Regla de contenido: no son páginas puerta. Todo lo que dicen sale de un
  * proyecto propio o de cliente que se puede abrir, con su estado real a la
  * fecha, incluido lo que todavía no hay. Mismo formato visual que
- * CaseKadriLabPage (clases .app-*). Sin georgiano: el ka del sitio está sin
- * revisar y estas páginas hablan de precios y plazos.
+ * CaseKadriLabPage (clases .app-*). El ka (2026-11-03) está traducido por IA
+ * desde el inglés y sin revisar, como el resto del georgiano del sitio.
  */
 import Base from '../layouts/Base.astro';
 import { servicesPath, ui, type IntentLang } from '../i18n/ui';
@@ -70,7 +70,7 @@ const items = itemCodes.map((code) => {
 if (!pack && items.length === 0) throw new Error('IntentPage: falta packCode o itemCodes');
 
 const nbsp = ' ';
-const THOUSANDS: Record<IntentLang, string> = { es: '.', en: ',', ru: nbsp };
+const THOUSANDS: Record<IntentLang, string> = { es: '.', en: ',', ru: nbsp, ka: nbsp };
 const SYMBOL = { eur: '€', rub: '₽', gel: '₾' } as const;
 const currency = LANG_CURRENCY[lang];
 const money = (n: number) => `${String(n).replace(/\B(?=(\d{3})+(?!\d))/g, THOUSANDS[lang])}${nbsp}${SYMBOL[currency]}`;
