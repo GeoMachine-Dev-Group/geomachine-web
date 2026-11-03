@@ -222,6 +222,31 @@ a { color: inherit; }
 .proof__list a { color: var(--ink); text-decoration: none; border-bottom: 1px solid var(--rule); }
 .proof__list a:hover { color: var(--accent); border-color: var(--accent); }
 
+/* Las seis páginas por intención (src/data/intents.ts): bloque de la portada,
+   ruta de navegación y «otros servicios» de cada página. Sin georgiano. */
+.intents { padding-block: var(--space-6) var(--space-10); }
+.intents__title { margin: 0 0 var(--space-2); font-family: var(--display); font-size: var(--fs-2xl); font-weight: 500; }
+.intents__lead { margin: 0 0 var(--space-6); max-width: 60ch; color: var(--ink-soft); line-height: 1.5; }
+.intents__list { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--space-4); }
+.intents__link {
+  display: flex; flex-direction: column; gap: var(--space-2); height: 100%; padding: var(--space-5);
+  border: 1px solid var(--rule-soft); border-radius: var(--radius-md); color: var(--ink); text-decoration: none;
+  transition: background .2s ease, border-color .2s ease;
+}
+.intents__link:hover, .intents__link:focus-visible { background: var(--panel); border-color: var(--accent); }
+.intents__name { font-family: var(--display); font-size: var(--fs-lg); font-weight: 500; }
+.intents__text { color: var(--ink-soft); font-size: var(--fs-sm); line-height: 1.5; flex: 1; }
+.intents__more { font-family: var(--data); font-size: var(--fs-2xs); letter-spacing: .08em; text-transform: uppercase; color: var(--accent); }
+.intents--related { padding-block: var(--space-6) var(--space-6); }
+.intents--related .intents__list { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.crumbs { font-family: var(--data); font-size: var(--fs-2xs); letter-spacing: .08em; text-transform: uppercase; color: var(--ink-soft); padding-block: var(--space-4) 0; }
+.crumbs ol { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: var(--space-2); }
+.crumbs li + li::before { content: '›'; margin-right: var(--space-2); }
+.crumbs a { color: var(--ink-soft); text-decoration: none; border-bottom: 1px solid var(--rule); }
+.crumbs a:hover { color: var(--accent); border-color: var(--accent); }
+@media (max-width: 860px) { .intents__list { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 480px) { .intents__list, .intents--related .intents__list { grid-template-columns: minmax(0, 1fr); } }
+
 @media (max-width: 720px) {
   .hero__corner { width: 20px; height: 20px; }
   .hero__slots { flex-direction: column; gap: var(--space-2); letter-spacing: .18em; }

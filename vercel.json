@@ -2,6 +2,46 @@
   "$schema": "https://openapi.vercel.sh/vercel.json",
   "redirects": [
     {
+      "permanent": true,
+      "source": "/es",
+      "destination": "/es/servicios/"
+    },
+    {
+      "permanent": true,
+      "source": "/es/",
+      "destination": "/es/servicios/"
+    },
+    {
+      "permanent": true,
+      "source": "/ru",
+      "destination": "/ru/uslugi/"
+    },
+    {
+      "permanent": true,
+      "source": "/ru/",
+      "destination": "/ru/uslugi/"
+    },
+    {
+      "permanent": true,
+      "source": "/en",
+      "destination": "/en/services/"
+    },
+    {
+      "permanent": true,
+      "source": "/en/",
+      "destination": "/en/services/"
+    },
+    {
+      "permanent": true,
+      "source": "/ka",
+      "destination": "/ka/momsakhurebebi/"
+    },
+    {
+      "permanent": true,
+      "source": "/ka/",
+      "destination": "/ka/momsakhurebebi/"
+    },
+    {
       "source": "/es/servicios/navcam-conductor",
       "destination": "/es/servicios/optimus/",
       "permanent": true

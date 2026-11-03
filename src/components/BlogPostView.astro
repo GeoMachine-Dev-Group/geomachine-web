@@ -60,7 +60,7 @@ const service = relatedService ? relatedServiceInfo(relatedService, lang) : unde
         </p>
         <div class="post-service__actions">
           <a class="btn btn--solid" href={`${servicesPath[lang]}#contacto`}>{t.ctaButton}</a>
-          <a class="btn btn--ghost" href={`${servicesPath[lang]}#${service.anchor}`}>{t.blogSeeService}</a>
+          <a class="btn btn--ghost" href={service.page ?? `${servicesPath[lang]}#${service.anchor}`}>{t.blogSeeService}</a>
         </div>
       </aside>
     )

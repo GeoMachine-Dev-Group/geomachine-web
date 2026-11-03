@@ -1,6 +1,7 @@
 import type { CollectionEntry } from 'astro:content';
 import { ui, blogPath, type BlogLang } from '../i18n/ui';
 import { lines, bundles, DEFAULT_TIER, LANG_CURRENCY, type Currency, type Unit } from '../data/catalog';
+import { intentForCode } from '../data/intents';
 
 /** Un draft es visible en `astro dev` (para revisarlo) pero nunca en build de
     producción — así nunca genera ruta ni aparece en el sitemap. */
@@ -178,6 +179,8 @@ export interface RelatedServiceInfo {
   section: string;
   anchor: string;
   price: string;
+  /** Página por intención de ese servicio (src/data/intents.ts), si la hay: el botón lleva ahí y no al catálogo. */
+  page?: string;
 }
 
 /**
@@ -201,6 +204,7 @@ export function relatedServiceInfo(code: string, lang: BlogLang): RelatedService
       section: t.bundlesTitle,
       anchor: catalogAnchor(code),
       price: from(bundle[DEFAULT_TIER][currency], 'once'),
+      page: intentForCode(code)?.paths[lang],
     };
   }
 
@@ -212,6 +216,7 @@ export function relatedServiceInfo(code: string, lang: BlogLang): RelatedService
         section: line.title[lang],
         anchor: catalogAnchor(code),
         price: from(item[DEFAULT_TIER][currency], item.unit),
+        page: intentForCode(code)?.paths[lang],
       };
     }
   }

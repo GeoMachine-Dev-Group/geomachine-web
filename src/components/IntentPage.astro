@@ -16,6 +16,7 @@ import Base from '../layouts/Base.astro';
 import { servicesPath, ui, type IntentLang } from '../i18n/ui';
 import { orgId as buildOrgId } from '../data/organization';
 import { bundles, lines, LAUNCH_OPEN, LANG_CURRENCY } from '../data/catalog';
+import { intents, intentByKey, intentUi } from '../data/intents';
 
 export interface IntentContent {
   title: string;
@@ -100,6 +101,12 @@ const hreflangAlternates = [
 const pageUrl = `${site}${paths[lang]}`;
 const orgId = buildOrgId(site);
 const external = t.asideHref.startsWith('http');
+// Ruta de navegación y «otros servicios»: salen de intents.ts por la ruta de esta página.
+const self = intents.find((i) => i.paths.es === paths.es);
+if (!self) throw new Error(`IntentPage: ${paths.es} no está en src/data/intents.ts`);
+const related = self.related.map((k) => intentByKey[k]);
+const iu = intentUi[lang];
+const homeUrl = `${site}${servicesPath[lang]}`;
 ---
 
 <Base
@@ -123,6 +130,15 @@ const external = t.asideHref.startsWith('http');
           inLanguage: lang,
           isPartOf: { '@id': orgId },
           mainEntity: { '@id': `${pageUrl}#service` },
+          breadcrumb: { '@id': `${pageUrl}#breadcrumb` },
+        },
+        {
+          '@type': 'BreadcrumbList',
+          '@id': `${pageUrl}#breadcrumb`,
+          itemListElement: [
+            { '@type': 'ListItem', position: 1, name: iu.home, item: homeUrl },
+            { '@type': 'ListItem', position: 2, name: self.title[lang], item: pageUrl },
+          ],
         },
         {
           '@type': 'Service',
@@ -135,6 +151,13 @@ const external = t.asideHref.startsWith('http');
       ],
     })} />
   </Fragment>
+
+  <nav class="crumbs shell" aria-label="breadcrumb">
+    <ol>
+      <li><a href={servicesPath[lang]}>{iu.home}</a></li>
+      <li aria-current="page">{self.title[lang]}</li>
+    </ol>
+  </nav>
 
   <section class="hero app-hero shell">
     <p class="hero__eyebrow">{t.tagline}</p>
@@ -218,6 +241,21 @@ const external = t.asideHref.startsWith('http');
       <h2 class="app-panel__title">{t.ctaTitle}</h2>
       <a href={`${servicesPath[lang]}#contacto`} class="app-download app-download--primary">{t.ctaButton}</a>
     </div>
+
+    <section class="intents intents--related" aria-labelledby="related-title">
+      <h2 class="app-panel__title" id="related-title">{iu.related}</h2>
+      <ul class="intents__list">
+        {related.map((i) => (
+          <li class="intents__item">
+            <a class="intents__link" href={i.paths[lang]}>
+              <span class="intents__name">{i.title[lang]}</span>
+              <span class="intents__text">{i.text[lang]}</span>
+              <span class="intents__more">{iu.more} →</span>
+            </a>
+          </li>
+        ))}
+      </ul>
+    </section>
 
     <div class="app-back">
       <a href={servicesPath[lang]}>← {t.backToHome}</a>

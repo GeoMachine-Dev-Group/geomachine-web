@@ -77,6 +77,11 @@ export default defineConfig({
   trailingSlash: 'always',
   redirects: {
     '/': '/es/servicios/',
+    // /es/, /ru/, /en/ y /ka/ daban 404 (2026-11-03): la portada de cada idioma es su página de servicios.
+    '/es/': { status: 301, destination: '/es/servicios/' },
+    '/ru/': { status: 301, destination: '/ru/uslugi/' },
+    '/en/': { status: 301, destination: '/en/services/' },
+    '/ka/': { status: 301, destination: '/ka/momsakhurebebi/' },
     '/es/servicios/navcam-conductor/': '/es/servicios/optimus/',
     '/en/services/navcam-conductor/': '/en/services/optimus/',
     '/ru/uslugi/navcam-conductor/': '/ru/uslugi/optimus/',
