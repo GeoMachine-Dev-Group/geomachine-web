@@ -141,7 +141,7 @@ export const intentUi: Record<IntentLang, { sectionTitle: string; sectionLead: s
     related: 'Other services',
     home: 'Services',
   },
-  // ka: traducido por IA, sin revisar.
+  // ka: revisado por Romeo Mikava el 2026-11-03.
   ka: {
     sectionTitle: 'რით შემიძლია დაგეხმაროთ',
     sectionLead: 'ყოველ მომსახურებას თავისი გვერდი აქვს: რეალური პროექტი, ფასი და ის, რაც ჯერ არ მუშაობს.',
