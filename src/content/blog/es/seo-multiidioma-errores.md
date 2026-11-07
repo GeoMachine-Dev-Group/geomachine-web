@@ -31,6 +31,8 @@ Este lo cometimos nosotros. El georgiano de esta web lo tradujo una IA y estuvo 
 
 Por la misma razón no abrimos el blog en georgiano: doce artículos largos traducidos por IA sin revisar habrían agrandado el problema en vez de resolverlo. Un idioma con pocas páginas bien escritas es mejor que uno con muchas páginas que suenan a máquina.
 
+Si dudas entre poner un botón de traducción automática o hacer versiones reales de cada página, lo comparamos en [cómo traducir una página web](/es/blog/como-traducir-una-pagina-web/).
+
 ## Error 3: redirigir según el país del visitante
 
 Detectar desde dónde entra alguien y mandarlo automáticamente a su idioma parece buena idea, pero confunde a Google, que rastrea desde lugares que no coinciden con tus clientes, y molesta a quien quiere ver otra versión. Nuestra portada lleva siempre a la versión en español, y en cada página hay un selector para cambiar de idioma. Que elija la persona.
