@@ -1,5 +1,6 @@
 ---
 title: "Caso real: abhazservis.com, un directorio de 273 negocios en nueve días"
+seoTitle: "Caso real: abhazservis.com, 273 negocios en nueve días"
 description: "Cómo construí abhazservis.com: directorio de negocios de Abjasia con Astro SSR, Express y PostgreSQL en servidor propio. Decisiones, cifras reales y errores."
 pubDate: 2026-09-14
 updatedDate: 2026-11-01

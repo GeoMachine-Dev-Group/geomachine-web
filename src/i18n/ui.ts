@@ -112,7 +112,7 @@ export function hasBlog(lang: Lang): lang is BlogLang {
 export const ui = {
   es: {
     htmlLang: 'es',
-    metaTitle: 'Webs, apps, IA, mantenimiento y SEO — GeoMachine Developer Group',
+    metaTitle: 'Webs, apps, IA, mantenimiento y SEO — GeoMachine',
     metaDescription:
       'Webs, aplicaciones, inteligencia artificial, mantenimiento y SEO. Precio cerrado desde el primer mensaje, entrega en días. Precios en euros, rublos y lari.',
     plate: 'Catálogo de servicios',
@@ -202,6 +202,7 @@ export const ui = {
     formConsentNote: 'Responsable: Romeo Mikava (GeoMachine Developer Group). Finalidad: responder a tu solicitud. Si prefieres no usar Telegram, escríbeme a hola@geomachine.es. Tus derechos, en la política de privacidad.',
     formConsentError: 'Marca la casilla de privacidad para poder enviar el mensaje.',
     blogTitle: 'Blog',
+    blogMetaTitle: 'Blog sobre webs, apps, IA y SEO — GeoMachine',
     blogMetaDescription:
       'Artículos sobre desarrollo web, IA aplicada a negocios pequeños, SEO y aplicaciones, con precios reales y casos propios. Los escribe quien hace los proyectos.',
     blogEmpty: 'Todavía no hay artículos publicados.',
@@ -228,7 +229,7 @@ export const ui = {
   },
   ru: {
     htmlLang: 'ru',
-    metaTitle: 'Сайты, приложения, ИИ, сервис и SEO — GeoMachine Developer Group',
+    metaTitle: 'Сайты, приложения, ИИ, сервис и SEO — GeoMachine',
     metaDescription:
       'Сайты, приложения, искусственный интеллект, обслуживание и SEO. Цена фиксируется с первого сообщения, результат — за дни. Цены в евро, рублях и грузинском лари.',
     plate: 'Каталог услуг',
@@ -318,6 +319,7 @@ export const ui = {
     formConsentNote: 'Ответственный: Romeo Mikava (GeoMachine Developer Group). Цель: ответить на ваш запрос. Если не хотите использовать Telegram, напишите на hola@geomachine.es. Ваши права — в политике конфиденциальности.',
     formConsentError: 'Отметьте согласие с политикой конфиденциальности, чтобы отправить сообщение.',
     blogTitle: 'Блог',
+    blogMetaTitle: 'Блог о сайтах, приложениях, ИИ и SEO — GeoMachine',
     blogMetaDescription:
       'Статьи о веб-разработке, ИИ для малого бизнеса, SEO и приложениях: реальные цены и собственные кейсы. Пишет тот, кто сам делает проекты.',
     blogEmpty: 'Пока нет опубликованных статей.',
@@ -344,7 +346,7 @@ export const ui = {
   },
   en: {
     htmlLang: 'en',
-    metaTitle: 'Websites, apps, AI, support and SEO — GeoMachine Developer Group',
+    metaTitle: 'Websites, apps, AI, support and SEO — GeoMachine',
     metaDescription:
       'Websites, applications, artificial intelligence, maintenance and SEO. Price closed from the first message, delivered in days. Pricing in euros, rubles and lari.',
     plate: 'Service catalog',
@@ -423,6 +425,7 @@ export const ui = {
     closeSteps: ["You send your idea","You get price and date","Development and delivery"],
     blogSeeArticles: 'Articles on {tema}',
     blogTitle: 'Blog',
+    blogMetaTitle: 'Blog on websites, apps, AI and SEO — GeoMachine',
     blogIntro:
       'Practical articles on websites, AI, SEO and systems for small businesses: what it costs, what works and what is not worth paying for.',
     blogMetaDescription:
@@ -460,7 +463,7 @@ export const ui = {
   },
   ka: {
     htmlLang: 'ka',
-    metaTitle: 'საიტები, აპები, AI, მოვლა და SEO — GeoMachine Developer Group',
+    metaTitle: 'საიტები, აპები, AI, მოვლა და SEO — GeoMachine',
     metaDescription:
       'ვებგვერდები, აპლიკაციები, ხელოვნური ინტელექტი, მოვლა და SEO. ფასი ფიქსირდება პირველივე შეტყობინებიდან, მზადდება დღეებში. ფასები ევროში, რუბლში და ლარში.',
     plate: 'სერვისების კატალოგი',

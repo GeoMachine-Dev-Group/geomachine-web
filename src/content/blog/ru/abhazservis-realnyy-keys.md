@@ -1,5 +1,6 @@
 ---
 title: "Реальный кейс: abhazservis.com — каталог из 273 организаций за девять дней"
+seoTitle: "Кейс: abhazservis.com — 273 организации за девять дней"
 description: "Как построен abhazservis.com: каталог организаций Абхазии на Astro SSR, Express и PostgreSQL, на собственном сервере. Решения, реальные цифры и ошибки."
 pubDate: 2026-09-14
 updatedDate: 2026-11-01

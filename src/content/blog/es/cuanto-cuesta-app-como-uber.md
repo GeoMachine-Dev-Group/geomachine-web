@@ -1,5 +1,6 @@
 ---
 title: "Cuánto cuesta y cuánto tarda una app como Uber: lo que me ha llevado la mía"
+seoTitle: "Cuánto cuesta una app como Uber: lo que me ha llevado la mía"
 description: "Tiempo y coste reales de una app de taxi tipo Uber, con el caso de la que estoy montando en Abjasia: qué salió en tres semanas y qué lleva otras nueve."
 pubDate: 2026-08-12
 updatedDate: 2026-11-01

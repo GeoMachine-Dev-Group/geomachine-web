@@ -1,6 +1,6 @@
 ---
 title: "Caso real: gagraservis.ru, el taxi ГаграЛЁТ en Gagra"
-description: "La web del taxi ГаграЛЁТ en Gagra: precio antes de subir, una sola página, tres rediseños, lo que quité porque no estaba comprobado y la web que perdí por no tener copia."
+description: "La web del taxi ГаграЛЁТ en Gagra: precio antes de subir, una sola página, tres rediseños y la web que perdí por no tener copia."
 pubDate: 2026-08-12
 updatedDate: 2026-11-01
 pillar: "WEB"

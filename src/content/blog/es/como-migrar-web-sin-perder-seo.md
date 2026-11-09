@@ -1,6 +1,7 @@
 ---
 title: "Cómo migrar tu web sin perder posiciones en Google: cuatro cambios reales"
-description: "Qué hacer antes, durante y después de cambiar direcciones, dominio o servidor, con cuatro migraciones de nuestras propias webs en otoño de 2026 y lo que salió mal."
+seoTitle: "Cómo migrar tu web sin perder posiciones en Google"
+description: "Qué hacer antes, durante y después de cambiar direcciones, dominio o servidor, con cuatro migraciones reales de nuestras webs y lo que salió mal."
 pubDate: 2026-08-12
 updatedDate: 2026-11-01
 pillar: "WEB"

@@ -7,6 +7,10 @@ const blog = defineCollection({
   type: 'content',
   schema: z.object({
     title: z.string(),
+    /** Título para la etiqueta <title> si `title` pasa de ~60 caracteres
+        (Google lo corta). El titular visible, la portada y el JSON-LD
+        siguen usando `title`. */
+    seoTitle: z.string().max(60).optional(),
     /** Meta description SEO — recomendado ~150-160 caracteres. */
     description: z.string(),
     pubDate: z.coerce.date(),

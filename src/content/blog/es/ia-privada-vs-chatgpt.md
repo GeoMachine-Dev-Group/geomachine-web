@@ -1,5 +1,6 @@
 ---
 title: "IA privada o ChatGPT: cuándo tus datos no deben salir de la empresa"
+seoTitle: "IA privada o ChatGPT: cuándo tus datos no deben salir"
 description: "Las tres opciones reales para usar IA con datos sensibles, lo que tenemos montado en local y lo que hemos aprendido: dónde compensa una IA propia y dónde no."
 pubDate: 2026-08-12
 updatedDate: 2026-11-01

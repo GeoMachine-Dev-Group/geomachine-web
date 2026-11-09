@@ -1,5 +1,6 @@
 ---
 title: "Por qué tu web no aparece en Google: los datos de nuestras dos webs"
+seoTitle: "Por qué tu web no aparece en Google: datos de dos webs"
 description: "Qué significan «Descubierta» y «Rastreada: sin indexar», con los datos reales de Search Console de nuestras dos webs y lo que hicimos en cada caso."
 pubDate: 2026-08-12
 updatedDate: 2026-11-01

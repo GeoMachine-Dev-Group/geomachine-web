@@ -16,7 +16,7 @@ const site = Astro.site?.origin ?? 'https://geomachine.es';
 <Base
   lang="ru"
   pageUrl={`${site}${blogPath.ru}`}
-  title={`${t.blogTitle} — ${t.company}`}
+  title={t.blogMetaTitle}
   description={t.blogMetaDescription}
   hreflangAlternates={blogIndexHreflang(site)}
   schema="none"

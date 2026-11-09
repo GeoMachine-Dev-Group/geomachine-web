@@ -1,6 +1,7 @@
 ---
 title: "Dos horas en cola o tres minutos en casa: por qué compilo en local el APK de mi app de taxi"
-description: "El APK del conductor llevaba casi dos horas en la cola gratuita de Expo sin empezar. En mi PC tardó 187 segundos. Qué hizo falta, cuánto ocupa y qué pasa con la firma."
+seoTitle: "Por qué compilo en local el APK de mi app de taxi"
+description: "El APK del conductor llevaba casi dos horas en la cola gratuita de Expo. En mi PC tardó 187 segundos. Qué hizo falta, cuánto ocupa y qué pasa con la firma."
 pubDate: 2026-11-03
 pillar: "APP"
 relatedService: "PACK-04"
