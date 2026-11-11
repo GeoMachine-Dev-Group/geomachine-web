@@ -167,51 +167,51 @@ a { color: inherit; }
   padding-block: clamp(3.5rem, 9vw, 6rem) clamp(3rem, 7vw, 4.5rem);
   background: radial-gradient(ellipse 55% 45% at 50% 30%, rgba(169, 116, 69, .13), transparent 70%);
 }
-/* Escena 3D de fondo (HeroScene.astro + src/scripts/hero-scene). .hero-stage
-   envuelve al hero para que el lienzo pueda ir a sangre —el hero es un .shell
-   con ancho máximo— sin recurrir a 100vw, que mete scroll horizontal. El lienzo
-   va detrás de todo (z-index -1 dentro del contexto que abre isolation) y entra
-   con un fundido cuando el primer fotograma está pintado; hasta entonces se ve el
-   resplandor CSS de siempre. --hero-scene-mode le dice al script qué encuadre
-   toca: aquí manda el CSS, no un matchMedia duplicado en JS. */
-.hero-stage { position: relative; isolation: isolate; overflow-x: clip; }
-.hero-scene {
-  --hero-scene-mode: wide;
-  position: absolute; inset: 0; z-index: -1; overflow: hidden; pointer-events: none;
-  -webkit-mask-image: linear-gradient(to bottom, transparent, #000 6%, #000 90%, transparent);
-  mask-image: linear-gradient(to bottom, transparent, #000 6%, #000 90%, transparent);
-}
-.hero-scene__canvas { display: block; width: 100%; height: 100%; opacity: 0; transition: opacity 1.6s ease; }
+/* Escultura de partículas (HeroScene.astro + src/scripts/hero-scene). En pantallas
+   anchas el hero pasa a dos columnas: el texto a la izquierda y la escultura a
+   la derecha, con sitio propio, sin texto encima. Los precios y la nota siguen
+   abajo, a todo el ancho. En estrecho todo va en una columna y la escultura
+   queda entre la línea de plazas y el titular. El lienzo entra con un fundido
+   cuando hay algo pintado; hasta entonces el hueco está vacío y reservado, así
+   que no hay salto de maqueta. */
+/* La línea de plazas va en un cobre algo más claro que --accent: el de la paleta
+   se queda en 3,3:1 sobre el resplandor del hero y con este pasa de 4,5:1 (AA). */
+.hero--atelier .hero__slots { color: #c9965f; }
+.hero-scene { position: relative; width: 100%; height: 13.5rem; margin-block: calc(var(--space-4) * -1) var(--space-2); }
+.hero-scene__canvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; opacity: 0; transition: opacity 1.4s ease; }
 .hero-scene.is-live .hero-scene__canvas { opacity: 1; }
-/* Velo de legibilidad. No es una capa fija sobre el lienzo: lo lleva cada bloque
-   de texto, del color exacto de la página, así que sigue al texto en cualquier
-   idioma y ancho. Del cuerpo hacia abajo los velos tienen todos el mismo ancho y
-   se solapan: juntos forman una sola columna en penumbra, difuminada por los
-   lados. El titular lleva mucho menos —es grande y crema, y la luz de la lámpara
-   cae justo detrás— y la línea de plazas, una elipse pequeña. */
-.hero--atelier :is(.hero__slots, .hero__title, .hero__body, .hero__actions, .hero__prices, .hero__note) { position: relative; }
-.hero--atelier :is(.hero__slots, .hero__title, .hero__body, .hero__actions, .hero__prices, .hero__note)::before {
-  content: ''; position: absolute; z-index: -1; pointer-events: none; opacity: 0; transition: opacity 1.6s ease;
-  top: -1.5rem; bottom: -1.5rem; left: 50%; width: min(100vw, 66rem); translate: -50% 0;
-  background: rgba(16, 22, 15, .93);
-  -webkit-mask-image: linear-gradient(to right, transparent, #000 22%, #000 78%, transparent), linear-gradient(to bottom, transparent, #000 1.4rem, #000 calc(100% - 1.4rem), transparent);
-  mask-image: linear-gradient(to right, transparent, #000 22%, #000 78%, transparent), linear-gradient(to bottom, transparent, #000 1.4rem, #000 calc(100% - 1.4rem), transparent);
-  -webkit-mask-composite: source-in; mask-composite: intersect;
+.hero-scene__caption {
+  position: absolute; left: 50%; bottom: -.75rem; translate: -50% 0; display: inline-flex; align-items: baseline; gap: var(--space-3);
+  font-family: var(--data); font-size: var(--fs-2xs); letter-spacing: .18em; text-transform: uppercase; text-decoration: none; white-space: nowrap;
+  color: var(--ink); padding: var(--space-2) var(--space-3); border-bottom: 1px solid var(--rule);
+  opacity: 0; transition: opacity 1.4s ease, border-color .2s ease, color .2s ease;
 }
-.hero--atelier .hero__title::before { background: rgba(16, 22, 15, .38); }
-/* La marca y la línea de plazas abren su propio contexto de apilado (z-index 0):
-   así su velo queda por encima del resplandor cobre del fondo del hero, no por
-   debajo. Hace falta: el cobre de la línea de plazas sobre el color de la página
-   da 4,7:1, y con el resplandor detrás bajaba de 4,5 (ya pasaba antes del 3D). */
-.hero--atelier :is(.hero-mark, .hero__slots) { position: relative; z-index: 0; }
-.hero--atelier .hero-mark::before { content: ''; position: absolute; z-index: -1; pointer-events: none; opacity: 0; transition: opacity 1.6s ease; inset: -1.6rem -3.5rem -2.6rem; background: radial-gradient(closest-side, rgba(16, 22, 15, .96) 62%, rgba(16, 22, 15, 0)); }
-/* Los velos solo existen mientras hay escena (o póster) detrás: aparecen con el
-   mismo fundido que el lienzo. Sin escena, el hero se ve exactamente como antes. */
-.hero-scene.is-live ~ .hero--atelier :is(.hero-mark, .hero__slots, .hero__title, .hero__body, .hero__actions, .hero__prices, .hero__note)::before { opacity: 1; }
-.hero--atelier .hero__slots::before {
-  top: -1.4rem; bottom: -1.4rem; width: min(100vw, 46rem); background: var(--paper);
-  -webkit-mask-image: radial-gradient(closest-side, #000 72%, transparent); mask-image: radial-gradient(closest-side, #000 72%, transparent);
+.hero-scene.is-live .hero-scene__caption { opacity: 1; }
+.hero-scene__caption:hover, .hero-scene__caption:focus-visible { color: var(--accent); border-color: var(--accent); }
+.hero-scene__index { color: var(--accent); }
+.hero-scene__caption.is-swapping .hero-scene__name { animation: hero-scene-swap .7s ease-out; }
+@keyframes hero-scene-swap { from { opacity: 0; transform: translateY(.5em); } to { opacity: 1; transform: none; } }
+@media (min-width: 860px) {
+  /* section.hero--atelier: un punto más de especificidad que las reglas base del
+     hero, que van más abajo en la hoja. */
+  .hero--atelier {
+    display: grid; grid-template-columns: minmax(0, 1.14fr) minmax(0, .86fr); column-gap: var(--space-8);
+    justify-items: start; align-content: start; text-align: left;
+    background: radial-gradient(ellipse 42% 46% at 76% 40%, rgba(169, 116, 69, .16), transparent 70%);
+  }
+  .hero--atelier > :is(.hero-mark, .hero__slots, .hero__title, .hero__body, .hero__actions) { grid-column: 1; }
+  section.hero--atelier .hero__title { font-size: clamp(2.2rem, 3.7vw, 3.6rem); max-width: none; }
+  section.hero--atelier .hero__body { max-width: 44ch; }
+  section.hero--atelier .hero__actions { justify-content: flex-start; }
+  .hero--atelier .hero__slots .hero__rule:first-child { display: none; }
+  .hero-scene { grid-column: 2; grid-row: 1 / span 5; align-self: stretch; height: auto; min-height: 30rem; margin: 0; }
+  /* El lienzo desborda su columna: la escultura necesita aire y puede pisar el
+     margen (es luz que se suma; no tapa nada). */
+  .hero-scene__canvas { inset: auto; left: -24%; top: -9%; width: 158%; height: 118%; pointer-events: none; }
+  .hero--atelier > :is(.hero__prices, .hero__note) { grid-column: 1 / -1; justify-self: center; text-align: center; }
+  section.hero--atelier .hero__prices { margin-top: var(--space-8); }
 }
+@media (prefers-reduced-motion: reduce) { .hero-scene__caption.is-swapping .hero-scene__name { animation: none; } }
 .hero__corner { position: absolute; width: 36px; height: 36px; border: 0 solid var(--accent); pointer-events: none; }
 .hero__corner--tl { top: clamp(1rem, 3vw, 2.25rem); left: var(--pad); border-top-width: 1px; border-left-width: 1px; }
 .hero__corner--tr { top: clamp(1rem, 3vw, 2.25rem); right: var(--pad); border-top-width: 1px; border-right-width: 1px; }
@@ -292,17 +292,6 @@ a { color: inherit; }
 @media (max-width: 860px) { .intents__list { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 @media (max-width: 480px) { .intents__list, .intents--related .intents__list { grid-template-columns: minmax(0, 1fr); } }
 
-/* Sin márgenes a los lados no hay sitio para la escena detrás del texto: baja a
-   una franja propia bajo el hero, con otro encuadre (modo band). */
-@media (max-width: 860px) {
-  .hero-stage { padding-bottom: 12rem; }
-  .hero-scene {
-    --hero-scene-mode: band;
-    top: auto; height: 25rem;
-    -webkit-mask-image: linear-gradient(to bottom, transparent 20%, #000 52%, #000 90%, transparent);
-    mask-image: linear-gradient(to bottom, transparent 20%, #000 52%, #000 90%, transparent);
-  }
-}
 @media (max-width: 720px) {
   .hero__corner { width: 20px; height: 20px; }
   .hero__slots { flex-direction: column; gap: var(--space-2); letter-spacing: .18em; }

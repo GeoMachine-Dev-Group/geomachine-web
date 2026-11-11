@@ -179,33 +179,33 @@ Historial reciente, todo por fast-forward y con la rama borrada después:
   encabezado en algunos lectores de pantalla. Sin JS, las tres respuestas se
   ven abiertas.
 
-- **Hero 3D (rama `claude/hero-3d-fdf783`, 2026-11-11, SIN fusionar).** Detrás
-  del hero del catálogo hay una escena Three.js: la mesa de un artesano de noche
-  (flexo de cobre, pie de rey, planos, carta lacrada, teclado), toda procedural.
-  `src/components/HeroScene.astro` es el hueco y el cargador;
-  `src/scripts/hero-scene/` es la escena. Lo que no se ve leyendo el código:
-  - **Se carga tarde y aparte**: tras `load`, con el hero a la vista y solo con
-    WebGL 2 por hardware. El chunk (three + escena) pesa 546 KB, 142 KB en gzip.
-    El LCP sigue siendo el titular. En móvil la escena va en una franja bajo el
-    hero y no se descarga hasta que se llega a ella.
-  - **Los objetos no tienen coordenadas fijas**: se colocan proyectando sobre la
-    mesa puntos de pantalla tomados del título, el cuerpo y los precios
-    (`compose()` en `index.ts`). Si se cambia la maqueta del hero, la escena se
-    recoloca sola; si se renombra una de esas clases, deja de hacerlo.
-  - **El modo lo decide el CSS** con `--hero-scene-mode` (`wide` / `band` por
-    debajo de 860 px); el script solo lo lee.
-  - **Velos de legibilidad**: cada bloque de texto del hero lleva un `::before`
-    del color de la página que solo aparece con `.hero-scene.is-live`. Están
-    medidos: AA en los cuatro idiomas. Si se sube la luz de la lámpara (`SPOT`),
-    hay que volver a medir el titular.
-  - **Póster sin WebGL**: `src/assets/hero/*.webp`, pintado en el `<canvas>` en
-    2D (no como imagen de fondo, que sería candidata a LCP). Si cambia la escena,
-    regenerarlos con `scripts/hero-poster.mjs`.
-  - **`envMapIntensity` por material solo funciona con `material.envMap`**, no
-    con `scene.environment` (Three.js lo ignora en ese caso). Por eso el entorno
-    se asigna material a material.
+- **Hero con escultura de partículas (rama `claude/hero-3d-fdf783`, 2026-11-11,
+  SIN fusionar).** El hero del catálogo pasa a dos columnas en escritorio (texto
+  a la izquierda, escultura a la derecha; precios y nota debajo, a todo el
+  ancho) y en estrecho la escultura va entre la línea de plazas y el titular.
+  La escultura son 46.000 puntos de luz (22.000 en móvil) que toman la forma de
+  las seis líneas del catálogo —web, app, IA, mantenimiento, SEO, sistemas— y
+  se deshacen en remolino para pasar de una a otra. Un primer intento, un
+  escritorio de artesano modelado con Three.js, se descartó: no decía nada de
+  lo que se vende. Lo que no se ve leyendo el código:
+  - **WebGL 2 a pelo, sin Three.js.** `src/scripts/hero-scene/` (index.ts el
+    render, shapes.ts las figuras) pesa 15 KB, 6,4 KB en gzip, en un chunk aparte
+    que se carga tras `load`, con el hero a la vista y WebGL por hardware. No
+    añadir una librería 3D para esto.
+  - **Las figuras salen del catálogo**: `HeroScene.astro` pasa las líneas
+    (`prefix` y `title`) y el rótulo enlaza a `#web`, `#app`… Una línea nueva
+    necesita su figura en `shapes.ts` (`BUILDERS`); sin ella, no aparece en la
+    escultura. Sin texto dentro del lienzo: el nombre va en el rótulo HTML,
+    traducido.
+  - Los tres precios del hero cambian la figura al pasar el cursor o al
+    enfocarlos (`a.hero__price[href^="#"]`).
+  - **Póster sin WebGL**: `src/assets/hero/escultura.webp`, pintado en el
+    `<canvas>` en 2D y no como imagen, para que no sea candidato a LCP. Si
+    cambian las figuras, regenerarlo con `scripts/hero-poster.mjs`.
+  - La maqueta en dos columnas usa `section.hero--atelier` para ganar en
+    especificidad a las reglas base del hero, que van más abajo en la hoja.
   - El navegador integrado de Claude no tiene WebGL: ahí se ve el póster. Para
-    ver la escena, Chrome headless con `--use-angle=gl-egl --enable-gpu`.
+    ver la escultura, Chrome headless con `--use-angle=gl-egl --enable-gpu`.
 
 **Pendientes:**
 - Georgiano: `ui.ts` y `catalog.ts` revisados por Romeo el 2026-10-31 (se

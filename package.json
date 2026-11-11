@@ -17,10 +17,6 @@
     "@vercel/speed-insights": "^2.0.0",
     "astro": "^5.18.2",
     "qrcode": "1.5.4",
-    "satori": "^0.33.4",
-    "three": "^0.180.0"
-  },
-  "devDependencies": {
-    "@types/three": "^0.180.0"
+    "satori": "^0.33.4"
   }
 }

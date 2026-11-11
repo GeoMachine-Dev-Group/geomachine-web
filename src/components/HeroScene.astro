@@ -1,23 +1,34 @@
 ---
-/* Fondo 3D del hero "atelier privado". Aquí solo va el hueco y el cargador: la
-   escena (Three.js) está en src/scripts/hero-scene y se descarga aparte, cuando
-   la página ya ha cargado, el hero está a la vista y el equipo tiene WebGL 2 por
-   hardware. Hasta entonces se ve el fondo CSS del hero.
+/* Escultura de partículas del hero: una nube de luz que toma la forma de cada
+   línea del catálogo. Aquí va el hueco, el rótulo y el cargador; la escena
+   (WebGL 2 a pelo, sin librerías) está en src/scripts/hero-scene y se descarga
+   aparte, con la página ya cargada, el hero a la vista y WebGL por hardware.
 
-   Sin WebGL (o con ahorro de datos, o si la escena falla) se pinta un póster
-   renderizado de la propia escena. Se dibuja en el mismo <canvas>, en 2D, y no
-   como imagen de fondo a propósito: un lienzo no es candidato a LCP, una imagen
-   de fondo de ese tamaño sí, y le quitaría el puesto al titular. Los pósteres se
-   regeneran con scripts/hero-poster.mjs. */
+   Sin WebGL, con ahorro de datos o si la escena falla, se pinta un póster de la
+   propia escultura. Se dibuja en el <canvas>, en 2D, y no como imagen: un lienzo
+   no es candidato a LCP y así no le quita el puesto al titular. El póster se
+   regenera con scripts/hero-poster.mjs. */
+import { lines } from '../data/catalog';
+import type { Lang } from '../i18n/ui';
+
+interface Props {
+  lang: Lang;
+}
+const { lang } = Astro.props;
+const data = lines.map((l) => ({ id: l.prefix, name: l.title[lang] }));
+const pad = (n: number) => String(n).padStart(2, '0');
 ---
 
-<div class="hero-scene" aria-hidden="true" data-hero-scene>
-  <canvas class="hero-scene__canvas"></canvas>
+<div class="hero-scene" data-hero-scene data-lines={JSON.stringify(data)}>
+  <canvas class="hero-scene__canvas" aria-hidden="true"></canvas>
+  <a class="hero-scene__caption" href={`#${data[0].id.toLowerCase()}`} data-hero-caption>
+    <span class="hero-scene__index" data-hero-index>{pad(1)} / {pad(data.length)}</span>
+    <span class="hero-scene__name" data-hero-name>{data[0].name}</span>
+  </a>
 </div>
 
 <script>
-  import posterWide from '../assets/hero/atelier-wide.webp?url';
-  import posterBand from '../assets/hero/atelier-band.webp?url';
+  import poster from '../assets/hero/escultura.webp?url';
 
   const host = document.querySelector<HTMLElement>('[data-hero-scene]');
 
@@ -38,7 +49,6 @@
     if (host.dataset.heroScene === 'poster') return;
     host.dataset.heroScene = 'poster';
     host.classList.remove('is-live');
-    const band = getComputedStyle(host).getPropertyValue('--hero-scene-mode').trim() === 'band';
     const img = new Image();
     img.decoding = 'async';
     img.onload = () => {
@@ -46,26 +56,26 @@
       const old = host.querySelector('canvas');
       const canvas = document.createElement('canvas');
       canvas.className = 'hero-scene__canvas';
+      canvas.setAttribute('aria-hidden', 'true');
       old?.replaceWith(canvas);
       const paint = () => {
-        const w = host.clientWidth;
-        const h = host.clientHeight;
+        const w = canvas.clientWidth;
+        const h = canvas.clientHeight;
         if (!w || !h) return;
         const dpr = Math.min(devicePixelRatio || 1, 2);
         canvas.width = Math.round(w * dpr);
         canvas.height = Math.round(h * dpr);
-        // Como la escena: escala fijada por el alto y centrado horizontal, que es
-        // lo que mantiene cada objeto en su sitio respecto a la columna de texto.
-        const k = Math.max(canvas.height / img.naturalHeight, canvas.width / img.naturalWidth);
+        // Entera y centrada, como la escultura en vivo.
+        const k = Math.min(canvas.height / img.naturalHeight, canvas.width / img.naturalWidth);
         const dw = img.naturalWidth * k;
         const dh = img.naturalHeight * k;
-        canvas.getContext('2d')?.drawImage(img, (canvas.width - dw) / 2, canvas.height - dh, dw, dh);
+        canvas.getContext('2d')?.drawImage(img, (canvas.width - dw) / 2, (canvas.height - dh) / 2, dw, dh);
       };
       paint();
       new ResizeObserver(paint).observe(host);
       requestAnimationFrame(() => host.classList.add('is-live'));
     };
-    img.src = band ? posterBand : posterWide;
+    img.src = poster;
   }
 
   if (host) {
@@ -83,8 +93,8 @@
         if (!entries.some((e) => e.isIntersecting)) return;
         io.disconnect();
         // Después de pintar: ni la escena ni el póster compiten con el primer render.
-        if ('requestIdleCallback' in window) requestIdleCallback(start, { timeout: 1500 });
-        else setTimeout(start, 200);
+        if ('requestIdleCallback' in window) requestIdleCallback(start, { timeout: 1200 });
+        else setTimeout(start, 150);
       });
       io.observe(host);
     };
