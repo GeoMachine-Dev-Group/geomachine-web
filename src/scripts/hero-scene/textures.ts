@@ -1,5 +1,5 @@
 import { CanvasTexture, NoColorSpace, RepeatWrapping, SRGBColorSpace, type Texture } from 'three';
-import { clamp, lerp, makeNoise, rng, smoothstep } from './noise';
+import { breathe, clamp, lerp, makeNoise, rng, smoothstep } from './noise';
 
 /* Todas las texturas de la escena se pintan aquí, en canvas 2D, al arrancar.
    No se descarga ninguna imagen: madera, papel, metal cepillado y las escalas
@@ -20,7 +20,7 @@ function asTexture(c: HTMLCanvasElement, srgb: boolean, anisotropy: number): Can
 }
 
 /** Mapa de normales a partir de un campo de alturas (0..1), por diferencias centrales. */
-function normalsFromHeight(height: Float32Array, w: number, h: number, strength: number, wrapX = true) {
+function normalsFromHeight(height: Float32Array, w: number, h: number, strength: number) {
   const c = canvas(w, h);
   const ctx = c.getContext('2d')!;
   const img = ctx.createImageData(w, h);
@@ -29,8 +29,8 @@ function normalsFromHeight(height: Float32Array, w: number, h: number, strength:
     const y0 = Math.max(0, y - 1);
     const y1 = Math.min(h - 1, y + 1);
     for (let x = 0; x < w; x++) {
-      const x0 = wrapX ? (x - 1 + w) % w : Math.max(0, x - 1);
-      const x1 = wrapX ? (x + 1) % w : Math.min(w - 1, x + 1);
+      const x0 = (x - 1 + w) % w;
+      const x1 = (x + 1) % w;
       const dx = (height[y * w + x1] - height[y * w + x0]) * strength;
       const dy = (height[y1 * w + x] - height[y0 * w + x]) * strength;
       const inv = 1 / Math.hypot(dx, dy, 1);
@@ -53,8 +53,11 @@ export interface SurfaceMaps {
 
 /** Roble oscuro ahumado: una tabla larga (veta a lo largo de U). Cada tabla del
     tablero usa esta misma textura con otro desplazamiento, así que la resolución
-    se gasta en detalle y no en superficie. */
-export function oakMaps(w: number, h: number, anisotropy: number): SurfaceMaps {
+    se gasta en detalle y no en superficie. Es la textura cara de la escena (un
+    millón de píxeles de ruido), así que va troceada: cede el hilo cada pocos
+    milisegundos y, como la veta apenas cambia a lo largo de la tabla, el ruido
+    se evalúa en una de cada cuatro columnas y se interpola. */
+export async function oakMaps(w: number, h: number, anisotropy: number): Promise<SurfaceMaps> {
   const { noise, fbm } = makeNoise(7);
   const r = rng(11);
   const albedo = canvas(w, h);
@@ -62,59 +65,70 @@ export function oakMaps(w: number, h: number, anisotropy: number): SurfaceMaps {
   const img = actx.createImageData(w, h);
   const d = img.data;
   const height = new Float32Array(w * h);
+  const wearField = new Float32Array(w * h);
   const k = w / 2048; // el dibujo se define a 2048 px y escala con la resolución
 
   // Los campos de ruido se evalúan en X y en X - periodo y se funden: así la
   // tabla enlaza consigo misma al repetirse y no se ve dónde acaba la textura.
   const PERIOD = 2048;
-  const wearField = new Float32Array(w * h);
-  const field = (X: number, Y: number) => ({
+  const STEP = 4;
+  const cols = w / STEP + 1;
+  const F = 5; // campos por muestra: fibra, anillos, manchas, rayos, desgaste
+  const row = new Float32Array(cols * F);
+  const sample = (X: number, Y: number, out: Float32Array, o: number, weight: number) => {
     // Fibra fina, muy estirada a lo largo de la tabla.
-    fibre: 0.6 * fbm(X / 260, Y / 4.5, 4) + 0.4 * fbm(X / 700, Y / 16, 3),
+    out[o] += weight * (0.6 * fbm(X / 260, Y / 4.5, 4) + 0.4 * fbm(X / 700, Y / 16, 3));
     // Lo que serpentean los anillos de crecimiento, y lo desiguales que son de ancho.
-    warp: fbm(X / 1400, Y / 60, 3),
-    // Desgaste de la cera, para el mapa de rugosidad.
-    wear: fbm(X / 330 + 8, Y / 150 + 2, 3),
+    out[o + 1] += weight * fbm(X / 1400, Y / 60, 3);
     // Manchas grandes de tono: ninguna tabla es uniforme.
-    blotch: fbm(X / 900 + 3.1, Y / 240 + 1.7, 2),
+    out[o + 2] += weight * fbm(X / 900 + 3.1, Y / 240 + 1.7, 2);
     // Rayos medulares del roble: destellos cortos y claros, cruzados a la veta.
-    ray: smoothstep(0.74, 0.9, noise(X / 22, Y / 9 + 40)) * smoothstep(0.5, 0.8, fbm(X / 400, Y / 120 + 9, 2)),
-  });
+    out[o + 3] += weight * smoothstep(0.74, 0.9, noise(X / 22, Y / 9 + 40)) * smoothstep(0.5, 0.8, fbm(X / 400, Y / 120 + 9, 2));
+    // Desgaste de la cera, para el mapa de rugosidad.
+    out[o + 4] += weight * fbm(X / 330 + 8, Y / 150 + 2, 3);
+  };
+
   for (let y = 0; y < h; y++) {
-    for (let x = 0; x < w; x++) {
-      const X = x / k;
-      const Y = y / k;
+    const Y = y / k;
+    row.fill(0);
+    for (let c = 0; c < cols; c++) {
+      const X = (c * STEP) / k;
       const m = X / PERIOD;
-      const a = field(X, Y);
-      const b = field(X - PERIOD, Y);
-      const fibre = lerp(a.fibre, b.fibre, m);
+      sample(X, Y, row, c * F, 1 - m);
+      sample(X - PERIOD, Y, row, c * F, m);
+    }
+    for (let x = 0; x < w; x++) {
+      const c = (x / STEP) | 0;
+      const f = (x % STEP) / STEP;
+      const o = c * F;
+      const at = (n: number) => row[o + n] + (row[o + F + n] - row[o + n]) * f;
+      const fibre = at(0);
       // Anillo de crecimiento: sube despacio (madera de primavera) y cae de golpe
       // en una línea oscura y fina (madera de verano). Nunca dos del mismo ancho.
-      const phase = Y / 10 + lerp(a.warp, b.warp, m) * 9;
+      const phase = Y / 10 + at(1) * 9;
       const r01 = phase - Math.floor(phase);
-      const ringSharp = smoothstep(0, 0.7, r01) * (1 - smoothstep(0.88, 1, r01));
-      const blotch = lerp(a.blotch, b.blotch, m);
-      const ray = lerp(a.ray, b.ray, m);
-
-      let tone = 0.48 * fibre + 0.15 * ringSharp + 0.37 * blotch;
-      tone = clamp(tone + ray * 0.2, 0, 1);
+      const ring = smoothstep(0, 0.7, r01) * (1 - smoothstep(0.88, 1, r01));
+      const ray = at(3);
+      const tone = clamp(0.48 * fibre + 0.15 * ring + 0.37 * at(2) + ray * 0.2, 0, 1);
 
       // Rampa de color: de casi negro tostado a miel oscura.
       const t = smoothstep(0.24, 0.82, tone);
-      const i = (y * w + x) * 4;
+      const idx = y * w + x;
+      const i = idx * 4;
       d[i] = lerp(24, 80, t) + ray * 14;
       d[i + 1] = lerp(15, 50, t) + ray * 9;
       d[i + 2] = lerp(9, 27, t) + ray * 4;
       d[i + 3] = 255;
-      height[y * w + x] = 0.55 + 0.14 * fibre + 0.04 * ringSharp;
-      wearField[y * w + x] = lerp(a.wear, b.wear, m);
+      height[idx] = 0.55 + 0.14 * fibre + 0.04 * ring;
+      wearField[idx] = at(4);
     }
+    if ((y & 7) === 7) await breathe();
   }
   actx.putImageData(img, 0, 0);
 
   // Poros abiertos (el roble es de poro grueso): trazos cortos, oscuros, a favor de veta.
   const pores = canvas(w, h);
-  const pctx = pores.getContext('2d')!;
+  const pctx = pores.getContext('2d', { willReadFrequently: true })!;
   pctx.fillStyle = '#000';
   pctx.fillRect(0, 0, w, h);
   pctx.strokeStyle = '#fff';
@@ -131,9 +145,8 @@ export function oakMaps(w: number, h: number, anisotropy: number): SurfaceMaps {
     pctx.lineTo(x + len, y + (r() - 0.5) * 1.6 * k);
     pctx.stroke();
   }
+  await breathe();
   const poreData = pctx.getImageData(0, 0, w, h).data;
-  actx.globalCompositeOperation = 'multiply';
-  actx.globalAlpha = 0.38;
   // Los poros oscurecen la madera: se multiplica el negativo.
   const neg = canvas(w, h);
   const nctx = neg.getContext('2d')!;
@@ -141,32 +154,34 @@ export function oakMaps(w: number, h: number, anisotropy: number): SurfaceMaps {
   nctx.fillRect(0, 0, w, h);
   nctx.globalCompositeOperation = 'difference';
   nctx.drawImage(pores, 0, 0);
+  actx.globalCompositeOperation = 'multiply';
+  actx.globalAlpha = 0.38;
   actx.drawImage(neg, 0, 0);
   actx.globalCompositeOperation = 'source-over';
   actx.globalAlpha = 1;
+  await breathe();
 
   const rough = canvas(w, h);
   const rctx = rough.getContext('2d')!;
   const rimg = rctx.createImageData(w, h);
   const rd = rimg.data;
-  for (let y = 0; y < h; y++) {
-    for (let x = 0; x < w; x++) {
-      const idx = y * w + x;
-      const pore = poreData[idx * 4] / 255;
-      height[idx] -= pore * 0.22;
-      // Madera encerada, no barnizada: brillo apagado y desigual; el poro no brilla.
-      const wear = wearField[idx];
-      const v = clamp(0.56 + wear * 0.26 + pore * 0.18, 0, 1) * 255;
-      const i = idx * 4;
-      rd[i] = rd[i + 1] = rd[i + 2] = v;
-      rd[i + 3] = 255;
-    }
+  for (let idx = 0; idx < w * h; idx++) {
+    const pore = poreData[idx * 4] / 255;
+    height[idx] -= pore * 0.22;
+    // Madera encerada, no barnizada: brillo apagado y desigual; el poro no brilla.
+    const v = clamp(0.56 + wearField[idx] * 0.26 + pore * 0.18, 0, 1) * 255;
+    const i = idx * 4;
+    rd[i] = rd[i + 1] = rd[i + 2] = v;
+    rd[i + 3] = 255;
   }
   rctx.putImageData(rimg, 0, 0);
+  await breathe();
+  const normal = normalsFromHeight(height, w, h, 2.4);
+  await breathe();
 
   const maps: SurfaceMaps = {
     map: asTexture(albedo, true, anisotropy),
-    normalMap: asTexture(normalsFromHeight(height, w, h, 2.4), false, anisotropy),
+    normalMap: asTexture(normal, false, anisotropy),
     roughnessMap: asTexture(rough, false, anisotropy),
   };
   for (const t of Object.values(maps)) {

@@ -27,7 +27,7 @@ import {
 } from 'three';
 import { extrudeFlat, polygonShape, rod, shadows, slab } from './geo';
 import { makeNoise, rng, smoothstep } from './noise';
-import { blueprintTexture, brushedMaps, contactTexture, oakMaps, plainPaperTexture, scaleTexture } from './textures';
+import { blueprintTexture, brushedMaps, contactTexture, plainPaperTexture, scaleTexture, type SurfaceMaps } from './textures';
 
 /* Los objetos de la mesa, modelados a mano. Unidades: metros (el pie de rey se
    dibuja en milímetros y se escala). Cada constructor devuelve un grupo apoyado
@@ -55,7 +55,7 @@ export function contact(shape: 'disc' | 'box', w: number, d: number, opacity: nu
   return mesh;
 }
 
-export function buildMaterials(q: Quality) {
+export function buildMaterials(q: Quality, oak: SurfaceMaps) {
   const brushed = brushedMaps(256, q.anisotropy);
   const metal = (color: string, roughness: number, repeat: [number, number], normal = 0.35) => {
     const roughnessMap = brushed.roughnessMap.clone();
@@ -74,7 +74,7 @@ export function buildMaterials(q: Quality) {
     });
   };
   return {
-    oak: oakMaps(q.wood, q.wood / 4, q.anisotropy),
+    oak,
     copper: metal('#c07c4c', 0.5, [3, 3], 0.2),
     copperDark: metal('#8a5433', 0.8, [2, 2]),
     brass: metal('#d2ad62', 0.4, [1, 6], 0.2),

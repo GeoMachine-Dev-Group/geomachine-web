@@ -53,7 +53,7 @@ export function buildEnvironment(renderer: WebGLRenderer): Texture {
   panel(1.1, 3.6, [0.8, 1.35, 1.2], [-6.5, 2.4, -3.2]); // ventana, luz de noche
 
   const pmrem = new PMREMGenerator(renderer);
-  const texture = pmrem.fromScene(scene, 0.035).texture;
+  const texture = pmrem.fromScene(scene, 0, 0.1, 100, { size: 128 }).texture;
   pmrem.dispose();
   scene.traverse((o) => {
     if (o instanceof Mesh) {

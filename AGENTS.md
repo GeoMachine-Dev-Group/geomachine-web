@@ -179,6 +179,34 @@ Historial reciente, todo por fast-forward y con la rama borrada después:
   encabezado en algunos lectores de pantalla. Sin JS, las tres respuestas se
   ven abiertas.
 
+- **Hero 3D (rama `claude/hero-3d-fdf783`, 2026-11-11, SIN fusionar).** Detrás
+  del hero del catálogo hay una escena Three.js: la mesa de un artesano de noche
+  (flexo de cobre, pie de rey, planos, carta lacrada, teclado), toda procedural.
+  `src/components/HeroScene.astro` es el hueco y el cargador;
+  `src/scripts/hero-scene/` es la escena. Lo que no se ve leyendo el código:
+  - **Se carga tarde y aparte**: tras `load`, con el hero a la vista y solo con
+    WebGL 2 por hardware. El chunk (three + escena) pesa 546 KB, 142 KB en gzip.
+    El LCP sigue siendo el titular. En móvil la escena va en una franja bajo el
+    hero y no se descarga hasta que se llega a ella.
+  - **Los objetos no tienen coordenadas fijas**: se colocan proyectando sobre la
+    mesa puntos de pantalla tomados del título, el cuerpo y los precios
+    (`compose()` en `index.ts`). Si se cambia la maqueta del hero, la escena se
+    recoloca sola; si se renombra una de esas clases, deja de hacerlo.
+  - **El modo lo decide el CSS** con `--hero-scene-mode` (`wide` / `band` por
+    debajo de 860 px); el script solo lo lee.
+  - **Velos de legibilidad**: cada bloque de texto del hero lleva un `::before`
+    del color de la página que solo aparece con `.hero-scene.is-live`. Están
+    medidos: AA en los cuatro idiomas. Si se sube la luz de la lámpara (`SPOT`),
+    hay que volver a medir el titular.
+  - **Póster sin WebGL**: `src/assets/hero/*.webp`, pintado en el `<canvas>` en
+    2D (no como imagen de fondo, que sería candidata a LCP). Si cambia la escena,
+    regenerarlos con `scripts/hero-poster.mjs`.
+  - **`envMapIntensity` por material solo funciona con `material.envMap`**, no
+    con `scene.environment` (Three.js lo ignora en ese caso). Por eso el entorno
+    se asigna material a material.
+  - El navegador integrado de Claude no tiene WebGL: ahí se ve el póster. Para
+    ver la escena, Chrome headless con `--use-angle=gl-egl --enable-gpu`.
+
 **Pendientes:**
 - Georgiano: `ui.ts` y `catalog.ts` revisados por Romeo el 2026-10-31 (se
   quitaron las marcas). Siguen marcados como sin revisar: `NavCamPage`,

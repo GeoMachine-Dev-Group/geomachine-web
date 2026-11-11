@@ -9,10 +9,12 @@ import {
   WebGLRenderer,
   type Mesh,
   type Object3D,
+  type Texture,
 } from 'three';
 import { buildBeam, buildDust } from './atmosphere';
 import { buildEnvironment } from './env';
-import { clamp } from './noise';
+import { breathe, clamp } from './noise';
+import { oakMaps } from './textures';
 import {
   buildBlueprint,
   buildCaliper,
@@ -45,6 +47,8 @@ const FOV = 28;
 const BEAM_SPREAD = 0.82; // tangente del semiángulo visible del haz
 const BEAM_LENGTH = 0.5;
 
+const BAND_REF = 440; // ancho de referencia del modo franja, en px CSS
+
 type Mode = 'wide' | 'band';
 
 interface Framing {
@@ -58,10 +62,19 @@ interface Framing {
 
 const FRAMING: Record<Mode, Framing> = {
   wide: { pitch: 0.74, scale: () => 820, light: 1 },
-  band: { pitch: 0.62, scale: (w) => w / 0.95, light: 0.52 },
+  band: { pitch: 0.62, scale: (w) => Math.min(w, BAND_REF) / 0.95, light: 0.52 },
 };
 
 const pause = () => new Promise<void>((resolve) => setTimeout(resolve, 0));
+
+let lap = performance.now();
+/** Cronómetro de fases del montaje; solo habla en desarrollo. */
+const mark = (label: string) => {
+  if (!import.meta.env.DEV) return;
+  const now = performance.now();
+  console.log(`[hero] ${label}: ${Math.round(now - lap)} ms`);
+  lap = now;
+};
 
 export async function mount(host: HTMLElement): Promise<void> {
   const canvas = host.querySelector('canvas');
@@ -85,6 +98,7 @@ export async function mount(host: HTMLElement): Promise<void> {
   renderer.toneMappingExposure = 1;
   renderer.shadowMap.enabled = true;
   renderer.shadowMap.type = PCFSoftShadowMap;
+  renderer.debug.checkShaderErrors = import.meta.env.DEV; // en producción, sin la comprobación síncrona de cada programa
   renderer.shadowMap.autoUpdate = false; // nada se mueve salvo la cámara: la sombra se calcula una vez
 
   const quality: Quality = {
@@ -97,7 +111,11 @@ export async function mount(host: HTMLElement): Promise<void> {
   // --- Construcción, repartida en varias tareas para no bloquear la página. ---
   const scene = new Scene();
   const camera = new PerspectiveCamera(FOV, 1, 0.1, 12);
-  const materials = buildMaterials(quality);
+  lap = performance.now();
+  const oak = await oakMaps(quality.wood, quality.wood / 4, quality.anisotropy);
+  mark('madera (troceada)');
+  const materials = buildMaterials(quality, oak);
+  mark('materiales');
   await pause();
 
   scene.add(buildDesk(materials));
@@ -105,6 +123,7 @@ export async function mount(host: HTMLElement): Promise<void> {
   const blueprint = buildBlueprint(quality.anisotropy);
   const folded = buildFoldedPlan(quality.anisotropy);
   const caliper = buildCaliper(materials, quality.anisotropy);
+  mark('mesa, lámpara, planos, pie de rey');
   await pause();
   const letter = buildLetter(materials, quality.anisotropy);
   const stamp = buildStamp(materials);
@@ -115,6 +134,7 @@ export async function mount(host: HTMLElement): Promise<void> {
   const dust = buildDust(quality.dust, BEAM_LENGTH, lamp.mouthRadius, BEAM_SPREAD);
   beam.mesh.position.y = dust.points.position.y = -lamp.mouth;
   lamp.head.add(beam.mesh, dust.points);
+  mark('carta, cuño, teclado, aire');
 
   // Relleno difuso, frío y muy bajo (la noche que entra por la ventana). Con él
   // la madera que queda fuera de la lámpara no es negro puro sino el verde casi
@@ -130,6 +150,7 @@ export async function mount(host: HTMLElement): Promise<void> {
     const material = (o as Mesh).material;
     if (material instanceof MeshStandardMaterial) material.envMap = environment;
   });
+  mark('entorno');
 
   // --- Encuadre y composición. ---
   const target = new Vector3();
@@ -202,16 +223,20 @@ export async function mount(host: HTMLElement): Promise<void> {
     } else {
       // Franja: todo junto y al alcance de la lámpara, con el charco de luz
       // sobre la madera, entre los papeles.
-      pool = worldAt(W * 0.42, H * 0.78);
-      headAt = worldAt(W * 0.7, H * 0.37, lamp.headHeight);
-      put(keyboard, worldAt(W * 0.4, H * 0.5), 0.1);
-      put(blueprint, worldAt(W * 0.05, H * 0.56), 0.45);
-      const stack = worldAt(W * 0.27, H * 0.85);
+      // El bodegón mide lo mismo en un móvil que en una tableta: se compone sobre
+      // un ancho de referencia (el de un móvil) y se centra.
+      const ref = Math.min(W, BAND_REF);
+      const at = (fx: number, fy: number, atHeight = 0) => worldAt(W / 2 + (fx - 0.5) * ref, H * fy, atHeight);
+      pool = at(0.42, 0.78);
+      headAt = at(0.7, 0.37, lamp.headHeight);
+      put(keyboard, at(0.4, 0.5), 0.1);
+      put(blueprint, at(0.05, 0.56), 0.45);
+      const stack = at(0.27, 0.85);
       put(folded, stack, -0.2);
       put(caliper, stack, 0.35);
       caliper.position.y = 0.0048;
-      put(letter, worldAt(W * 0.71, H * 0.87), -0.25);
-      put(stamp, worldAt(W * 0.9, H * 0.72), 0);
+      put(letter, at(0.71, 0.87), -0.25);
+      put(stamp, at(0.9, 0.72), 0);
     }
     const base = new Vector3(headAt.x, 0, headAt.z).addScaledVector(armDir, -lamp.reach);
     lamp.pose(base, yaw, pool);
@@ -299,17 +324,6 @@ export async function mount(host: HTMLElement): Promise<void> {
     if (!run && onScreen && !document.hidden) draw(0); // escena quieta: un solo fotograma
   };
 
-  new ResizeObserver(() => {
-    resize();
-    if (!raf) draw(0);
-  }).observe(host);
-  new IntersectionObserver(([entry]) => {
-    onScreen = entry.isIntersecting;
-    sync();
-  }).observe(host);
-  document.addEventListener('visibilitychange', sync);
-  reducedMotion.addEventListener('change', sync);
-
   if (!coarse) {
     window.addEventListener(
       'pointermove',
@@ -347,8 +361,40 @@ export async function mount(host: HTMLElement): Promise<void> {
   if (import.meta.env.DEV) Object.assign(window, { __heroDebug: { scene, camera, renderer, lamp, materials, beam, dust, compose, draw } });
 
   resize();
+  mark('composición');
+  // Los shaders se compilan en paralelo (KHR_parallel_shader_compile) antes del
+  // primer render, que si no los compilaría todos de golpe y en síncrono.
+  await renderer.compileAsync(scene, camera);
+  mark('shaders');
+  // Y las texturas se suben de una en una, cada una en su tarea, en vez de
+  // todas dentro del primer render.
+  const seen = new Set<Texture>();
+  scene.traverse((o) => {
+    const material = (o as Mesh).material as MeshStandardMaterial | undefined;
+    for (const t of [material?.map, material?.normalMap, material?.roughnessMap]) if (t) seen.add(t);
+  });
+  for (const t of seen) {
+    renderer.initTexture(t);
+    await breathe(4);
+  }
+  mark('texturas');
   await pause();
   draw(0);
+  mark('primer fotograma');
   host.classList.add('is-live');
+
+  // Los observadores se conectan al final: su primera llamada llega enseguida y,
+  // antes de tiempo, dispararía un render completo con los shaders sin compilar.
+  new ResizeObserver(() => {
+    if (host.clientWidth === width && host.clientHeight === height && readMode() === mode) return;
+    resize();
+    if (!raf) draw(0);
+  }).observe(host);
+  new IntersectionObserver(([entry]) => {
+    onScreen = entry.isIntersecting;
+    sync();
+  }).observe(host);
+  document.addEventListener('visibilitychange', sync);
+  reducedMotion.addEventListener('change', sync);
   sync();
 }

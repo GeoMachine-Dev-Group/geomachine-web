@@ -54,3 +54,16 @@ export const smoothstep = (a: number, b: number, v: number) => {
   const t = clamp((v - a) / (b - a), 0, 1);
   return t * t * (3 - 2 * t);
 };
+
+let sliceStart = 0;
+/** Cede el hilo principal si la tarea en curso lleva más de `budget` ms. Las
+    texturas se generan píxel a píxel: sin esto serían una sola tarea de medio
+    segundo, con la página sin responder mientras tanto. */
+export async function breathe(budget = 8): Promise<void> {
+  const now = performance.now();
+  if (now - sliceStart < budget) return;
+  const yielder = (globalThis as { scheduler?: { yield?: () => Promise<void> } }).scheduler;
+  if (yielder?.yield) await yielder.yield();
+  else await new Promise<void>((resolve) => setTimeout(resolve, 0));
+  sliceStart = performance.now();
+}
