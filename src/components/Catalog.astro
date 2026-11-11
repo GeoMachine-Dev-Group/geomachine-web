@@ -1,4 +1,5 @@
 ---
+import HeroScene from './HeroScene.astro';
 import {
   lines,
   bundles,
@@ -207,6 +208,8 @@ const featuredMap: Record<string, Record<Lang, string>> = {
 };
 ---
 
+<div class="hero-stage">
+<HeroScene />
 <section class="hero hero--atelier shell">
   <span class="hero__corner hero__corner--tl" aria-hidden="true"></span>
   <span class="hero__corner hero__corner--tr" aria-hidden="true"></span>
@@ -257,6 +260,7 @@ const featuredMap: Record<string, Record<Lang, string>> = {
   </ul>
   {LAUNCH_OPEN && <p class="hero__note">{t.launchNote}</p>}
 </section>
+</div>
 
 <div class="proof shell">
   <ul class="proof__list" aria-label={t.proofLabel}>

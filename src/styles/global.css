@@ -167,6 +167,48 @@ a { color: inherit; }
   padding-block: clamp(3.5rem, 9vw, 6rem) clamp(3rem, 7vw, 4.5rem);
   background: radial-gradient(ellipse 55% 45% at 50% 30%, rgba(169, 116, 69, .13), transparent 70%);
 }
+/* Escena 3D de fondo (HeroScene.astro + src/scripts/hero-scene). .hero-stage
+   envuelve al hero para que el lienzo pueda ir a sangre —el hero es un .shell
+   con ancho máximo— sin recurrir a 100vw, que mete scroll horizontal. El lienzo
+   va detrás de todo (z-index -1 dentro del contexto que abre isolation) y entra
+   con un fundido cuando el primer fotograma está pintado; hasta entonces se ve el
+   resplandor CSS de siempre. --hero-scene-mode le dice al script qué encuadre
+   toca: aquí manda el CSS, no un matchMedia duplicado en JS. */
+.hero-stage { position: relative; isolation: isolate; overflow-x: clip; }
+.hero-scene {
+  --hero-scene-mode: wide;
+  position: absolute; inset: 0; z-index: -1; overflow: hidden; pointer-events: none;
+  -webkit-mask-image: linear-gradient(to bottom, transparent, #000 6%, #000 90%, transparent);
+  mask-image: linear-gradient(to bottom, transparent, #000 6%, #000 90%, transparent);
+}
+.hero-scene__canvas { display: block; width: 100%; height: 100%; opacity: 0; transition: opacity 1.6s ease; }
+.hero-scene.is-live .hero-scene__canvas { opacity: 1; }
+/* Velo de legibilidad. No es una capa fija sobre el lienzo: lo lleva cada bloque
+   de texto, del color exacto de la página, así que sigue al texto en cualquier
+   idioma y ancho. Del cuerpo hacia abajo los velos tienen todos el mismo ancho y
+   se solapan: juntos forman una sola columna en penumbra, difuminada por los
+   lados. El titular lleva mucho menos —es grande y crema, y la luz de la lámpara
+   cae justo detrás— y la línea de plazas, una elipse pequeña. */
+.hero--atelier :is(.hero__slots, .hero__title, .hero__body, .hero__actions, .hero__prices, .hero__note) { position: relative; }
+.hero--atelier :is(.hero__slots, .hero__title, .hero__body, .hero__actions, .hero__prices, .hero__note)::before {
+  content: ''; position: absolute; z-index: -1; pointer-events: none;
+  top: -1.5rem; bottom: -1.5rem; left: 50%; width: min(100vw, 66rem); translate: -50% 0;
+  background: rgba(16, 22, 15, .93);
+  -webkit-mask-image: linear-gradient(to right, transparent, #000 22%, #000 78%, transparent), linear-gradient(to bottom, transparent, #000 1.4rem, #000 calc(100% - 1.4rem), transparent);
+  mask-image: linear-gradient(to right, transparent, #000 22%, #000 78%, transparent), linear-gradient(to bottom, transparent, #000 1.4rem, #000 calc(100% - 1.4rem), transparent);
+  -webkit-mask-composite: source-in; mask-composite: intersect;
+}
+.hero--atelier .hero__title::before { background: rgba(16, 22, 15, .38); }
+/* La marca y la línea de plazas abren su propio contexto de apilado (z-index 0):
+   así su velo queda por encima del resplandor cobre del fondo del hero, no por
+   debajo. Hace falta: el cobre de la línea de plazas sobre el color de la página
+   da 4,7:1, y con el resplandor detrás bajaba de 4,5 (ya pasaba antes del 3D). */
+.hero--atelier :is(.hero-mark, .hero__slots) { position: relative; z-index: 0; }
+.hero--atelier .hero-mark::before { content: ''; position: absolute; z-index: -1; pointer-events: none; inset: -1.6rem -3.5rem -2.6rem; background: radial-gradient(closest-side, rgba(16, 22, 15, .96) 62%, rgba(16, 22, 15, 0)); }
+.hero--atelier .hero__slots::before {
+  top: -1.4rem; bottom: -1.4rem; width: min(100vw, 46rem); background: var(--paper);
+  -webkit-mask-image: radial-gradient(closest-side, #000 72%, transparent); mask-image: radial-gradient(closest-side, #000 72%, transparent);
+}
 .hero__corner { position: absolute; width: 36px; height: 36px; border: 0 solid var(--accent); pointer-events: none; }
 .hero__corner--tl { top: clamp(1rem, 3vw, 2.25rem); left: var(--pad); border-top-width: 1px; border-left-width: 1px; }
 .hero__corner--tr { top: clamp(1rem, 3vw, 2.25rem); right: var(--pad); border-top-width: 1px; border-right-width: 1px; }
@@ -247,6 +289,17 @@ a { color: inherit; }
 @media (max-width: 860px) { .intents__list { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 @media (max-width: 480px) { .intents__list, .intents--related .intents__list { grid-template-columns: minmax(0, 1fr); } }
 
+/* Sin márgenes a los lados no hay sitio para la escena detrás del texto: baja a
+   una franja propia bajo el hero, con otro encuadre (modo band). */
+@media (max-width: 860px) {
+  .hero-stage { padding-bottom: 12rem; }
+  .hero-scene {
+    --hero-scene-mode: band;
+    top: auto; height: 25rem;
+    -webkit-mask-image: linear-gradient(to bottom, transparent 20%, #000 52%, #000 90%, transparent);
+    mask-image: linear-gradient(to bottom, transparent 20%, #000 52%, #000 90%, transparent);
+  }
+}
 @media (max-width: 720px) {
   .hero__corner { width: 20px; height: 20px; }
   .hero__slots { flex-direction: column; gap: var(--space-2); letter-spacing: .18em; }

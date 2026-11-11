@@ -1,0 +1,54 @@
+---
+/* Fondo 3D del hero "atelier privado". Aquí solo va el hueco y el cargador: la
+   escena (Three.js) está en src/scripts/hero-scene y se descarga aparte, cuando
+   la página ya ha cargado, el hero está a la vista y el equipo tiene WebGL 2 por
+   hardware. Hasta entonces, y si nunca llega, se ve el fondo CSS del hero (y, sin
+   WebGL, un póster renderizado de la propia escena). El lienzo no es un candidato
+   a LCP, así que no compite con el titular. */
+---
+
+<div class="hero-scene" aria-hidden="true" data-hero-scene>
+  <canvas class="hero-scene__canvas"></canvas>
+</div>
+
+<script>
+  const host = document.querySelector<HTMLElement>('[data-hero-scene]');
+
+  function hasFastWebGL(): boolean {
+    try {
+      const probe = document.createElement('canvas');
+      // failIfMajorPerformanceCaveat descarta el renderizado por software.
+      const gl = probe.getContext('webgl2', { failIfMajorPerformanceCaveat: true });
+      if (!gl) return false;
+      gl.getExtension('WEBGL_lose_context')?.loseContext();
+      return true;
+    } catch {
+      return false;
+    }
+  }
+
+  if (host) {
+    const saveData = (navigator as Navigator & { connection?: { saveData?: boolean } }).connection?.saveData;
+    const showPoster = () => host.classList.add('hero-scene--static');
+    if (saveData || !hasFastWebGL()) {
+      showPoster();
+    } else {
+      const start = () =>
+        import('../scripts/hero-scene/index')
+          .then((m) => m.mount(host))
+          .catch(showPoster);
+      const whenVisible = () => {
+        const io = new IntersectionObserver((entries) => {
+          if (!entries.some((e) => e.isIntersecting)) return;
+          io.disconnect();
+          // Después de pintar: la escena nunca compite con el primer render.
+          if ('requestIdleCallback' in window) requestIdleCallback(start, { timeout: 1500 });
+          else setTimeout(start, 200);
+        });
+        io.observe(host);
+      };
+      if (document.readyState === 'complete') whenVisible();
+      else window.addEventListener('load', whenVisible, { once: true });
+    }
+  }
+</script>
