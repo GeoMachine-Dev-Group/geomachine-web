@@ -2,9 +2,13 @@
 /* Fondo 3D del hero "atelier privado". Aquí solo va el hueco y el cargador: la
    escena (Three.js) está en src/scripts/hero-scene y se descarga aparte, cuando
    la página ya ha cargado, el hero está a la vista y el equipo tiene WebGL 2 por
-   hardware. Hasta entonces, y si nunca llega, se ve el fondo CSS del hero (y, sin
-   WebGL, un póster renderizado de la propia escena). El lienzo no es un candidato
-   a LCP, así que no compite con el titular. */
+   hardware. Hasta entonces se ve el fondo CSS del hero.
+
+   Sin WebGL (o con ahorro de datos, o si la escena falla) se pinta un póster
+   renderizado de la propia escena. Se dibuja en el mismo <canvas>, en 2D, y no
+   como imagen de fondo a propósito: un lienzo no es candidato a LCP, una imagen
+   de fondo de ese tamaño sí, y le quitaría el puesto al titular. Los pósteres se
+   regeneran con scripts/hero-poster.mjs. */
 ---
 
 <div class="hero-scene" aria-hidden="true" data-hero-scene>
@@ -12,6 +16,9 @@
 </div>
 
 <script>
+  import posterWide from '../assets/hero/atelier-wide.webp?url';
+  import posterBand from '../assets/hero/atelier-band.webp?url';
+
   const host = document.querySelector<HTMLElement>('[data-hero-scene]');
 
   function hasFastWebGL(): boolean {
@@ -27,28 +34,61 @@
     }
   }
 
+  function showPoster(host: HTMLElement) {
+    if (host.dataset.heroScene === 'poster') return;
+    host.dataset.heroScene = 'poster';
+    host.classList.remove('is-live');
+    const band = getComputedStyle(host).getPropertyValue('--hero-scene-mode').trim() === 'band';
+    const img = new Image();
+    img.decoding = 'async';
+    img.onload = () => {
+      // Lienzo nuevo: uno que ya ha tenido contexto WebGL no admite 2D.
+      const old = host.querySelector('canvas');
+      const canvas = document.createElement('canvas');
+      canvas.className = 'hero-scene__canvas';
+      old?.replaceWith(canvas);
+      const paint = () => {
+        const w = host.clientWidth;
+        const h = host.clientHeight;
+        if (!w || !h) return;
+        const dpr = Math.min(devicePixelRatio || 1, 2);
+        canvas.width = Math.round(w * dpr);
+        canvas.height = Math.round(h * dpr);
+        // Como la escena: escala fijada por el alto y centrado horizontal, que es
+        // lo que mantiene cada objeto en su sitio respecto a la columna de texto.
+        const k = Math.max(canvas.height / img.naturalHeight, canvas.width / img.naturalWidth);
+        const dw = img.naturalWidth * k;
+        const dh = img.naturalHeight * k;
+        canvas.getContext('2d')?.drawImage(img, (canvas.width - dw) / 2, canvas.height - dh, dw, dh);
+      };
+      paint();
+      new ResizeObserver(paint).observe(host);
+      requestAnimationFrame(() => host.classList.add('is-live'));
+    };
+    img.src = band ? posterBand : posterWide;
+  }
+
   if (host) {
     const saveData = (navigator as Navigator & { connection?: { saveData?: boolean } }).connection?.saveData;
-    const showPoster = () => host.classList.add('hero-scene--static');
-    if (saveData || !hasFastWebGL()) {
-      showPoster();
-    } else {
-      const start = () =>
-        import('../scripts/hero-scene/index')
-          .then((m) => m.mount(host))
-          .catch(showPoster);
-      const whenVisible = () => {
-        const io = new IntersectionObserver((entries) => {
-          if (!entries.some((e) => e.isIntersecting)) return;
-          io.disconnect();
-          // Después de pintar: la escena nunca compite con el primer render.
-          if ('requestIdleCallback' in window) requestIdleCallback(start, { timeout: 1500 });
-          else setTimeout(start, 200);
-        });
-        io.observe(host);
-      };
-      if (document.readyState === 'complete') whenVisible();
-      else window.addEventListener('load', whenVisible, { once: true });
-    }
+    const start = () => {
+      if (saveData || !hasFastWebGL()) return showPoster(host);
+      // La escena avisa con este evento si pierde el contexto WebGL.
+      host.addEventListener('hero-scene:lost', () => showPoster(host), { once: true });
+      import('../scripts/hero-scene/index')
+        .then((m) => m.mount(host))
+        .catch(() => showPoster(host));
+    };
+    const whenVisible = () => {
+      const io = new IntersectionObserver((entries) => {
+        if (!entries.some((e) => e.isIntersecting)) return;
+        io.disconnect();
+        // Después de pintar: ni la escena ni el póster compiten con el primer render.
+        if ('requestIdleCallback' in window) requestIdleCallback(start, { timeout: 1500 });
+        else setTimeout(start, 200);
+      });
+      io.observe(host);
+    };
+    if (document.readyState === 'complete') whenVisible();
+    else window.addEventListener('load', whenVisible, { once: true });
   }
 </script>

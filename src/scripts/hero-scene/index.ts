@@ -270,6 +270,7 @@ export async function mount(host: HTMLElement): Promise<void> {
   let raf = 0;
   let last = 0;
   let onScreen = true;
+  let dead = false;
   let slow = 0;
   const frame = (now: number) => {
     raf = requestAnimationFrame(frame);
@@ -286,6 +287,7 @@ export async function mount(host: HTMLElement): Promise<void> {
     draw(dt);
   };
   const sync = () => {
+    if (dead) return;
     const run = onScreen && !document.hidden && !reducedMotion.matches;
     if (run && !raf) {
       last = performance.now();
@@ -338,8 +340,8 @@ export async function mount(host: HTMLElement): Promise<void> {
     e.preventDefault();
     cancelAnimationFrame(raf);
     raf = 0;
-    host.classList.remove('is-live');
-    host.classList.add('hero-scene--static');
+    dead = true;
+    host.dispatchEvent(new Event('hero-scene:lost')); // el cargador pone el póster
   });
 
   if (import.meta.env.DEV) Object.assign(window, { __heroDebug: { scene, camera, renderer, lamp, materials, beam, dust, compose, draw } });

@@ -191,7 +191,7 @@ a { color: inherit; }
    cae justo detrás— y la línea de plazas, una elipse pequeña. */
 .hero--atelier :is(.hero__slots, .hero__title, .hero__body, .hero__actions, .hero__prices, .hero__note) { position: relative; }
 .hero--atelier :is(.hero__slots, .hero__title, .hero__body, .hero__actions, .hero__prices, .hero__note)::before {
-  content: ''; position: absolute; z-index: -1; pointer-events: none;
+  content: ''; position: absolute; z-index: -1; pointer-events: none; opacity: 0; transition: opacity 1.6s ease;
   top: -1.5rem; bottom: -1.5rem; left: 50%; width: min(100vw, 66rem); translate: -50% 0;
   background: rgba(16, 22, 15, .93);
   -webkit-mask-image: linear-gradient(to right, transparent, #000 22%, #000 78%, transparent), linear-gradient(to bottom, transparent, #000 1.4rem, #000 calc(100% - 1.4rem), transparent);
@@ -204,7 +204,10 @@ a { color: inherit; }
    debajo. Hace falta: el cobre de la línea de plazas sobre el color de la página
    da 4,7:1, y con el resplandor detrás bajaba de 4,5 (ya pasaba antes del 3D). */
 .hero--atelier :is(.hero-mark, .hero__slots) { position: relative; z-index: 0; }
-.hero--atelier .hero-mark::before { content: ''; position: absolute; z-index: -1; pointer-events: none; inset: -1.6rem -3.5rem -2.6rem; background: radial-gradient(closest-side, rgba(16, 22, 15, .96) 62%, rgba(16, 22, 15, 0)); }
+.hero--atelier .hero-mark::before { content: ''; position: absolute; z-index: -1; pointer-events: none; opacity: 0; transition: opacity 1.6s ease; inset: -1.6rem -3.5rem -2.6rem; background: radial-gradient(closest-side, rgba(16, 22, 15, .96) 62%, rgba(16, 22, 15, 0)); }
+/* Los velos solo existen mientras hay escena (o póster) detrás: aparecen con el
+   mismo fundido que el lienzo. Sin escena, el hero se ve exactamente como antes. */
+.hero-scene.is-live ~ .hero--atelier :is(.hero-mark, .hero__slots, .hero__title, .hero__body, .hero__actions, .hero__prices, .hero__note)::before { opacity: 1; }
 .hero--atelier .hero__slots::before {
   top: -1.4rem; bottom: -1.4rem; width: min(100vw, 46rem); background: var(--paper);
   -webkit-mask-image: radial-gradient(closest-side, #000 72%, transparent); mask-image: radial-gradient(closest-side, #000 72%, transparent);
