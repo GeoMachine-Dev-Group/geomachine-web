@@ -72,14 +72,16 @@ const whatsappHref = `https://wa.me/34620811739?text=${encodeURIComponent(l.what
     const close = () => { if (menu.matches(':popover-open')) menu.hidePopover(); };
     menu.querySelectorAll('a').forEach((a) => a.addEventListener('click', close));
 
-    /* Visible al perder de vista la cabecera; oculto cerca de cualquier
+    /* Visible al bajar más allá del principio del contenido (la cabecera es
+       fija y nunca sale de pantalla: se observa el centinela que Base.astro
+       pone al inicio de <main>); oculto cerca de cualquier
        elemento que declare data-fab-hide-near (el catálogo lo pone en la
        lista de precios de entrada del hero y en la sección de contacto,
        para no tapar precios ni el CTA de cierre). El blog no lo declara,
        así que ahí se queda visible. */
-    const header = document.querySelector('.plate');
+    const sentinel = document.querySelector('[data-plate-sentinel]');
     const hideNearEls = document.querySelectorAll('[data-fab-hide-near]');
-    let pastHeader = !header;
+    let pastHeader = !sentinel;
     const nearHideState = new Map<Element, boolean>();
     const sync = () => {
       const nearHide = Array.from(nearHideState.values()).some(Boolean);
@@ -88,11 +90,11 @@ const whatsappHref = `https://wa.me/34620811739?text=${encodeURIComponent(l.what
       if (!visible) close();
     };
 
-    if (header) {
+    if (sentinel) {
       new IntersectionObserver(
         ([entry]) => { pastHeader = !entry.isIntersecting; sync(); },
         { rootMargin: '-10% 0px 0px 0px' }
-      ).observe(header);
+      ).observe(sentinel);
     }
     if (hideNearEls.length) {
       const hideNearObserver = new IntersectionObserver(

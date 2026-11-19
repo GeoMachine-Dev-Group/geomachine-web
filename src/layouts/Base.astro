@@ -1,7 +1,7 @@
 ---
 import '../styles/global.css';
 import { ui, servicesPath, blogPath, aboutPath, aboutLangFor, languages, hasBlog, type Lang } from '../i18n/ui';
-import { DEFAULT_TIER, LANG_CURRENCY } from '../data/catalog';
+import { DEFAULT_TIER, LANG_CURRENCY, LAUNCH_OPEN } from '../data/catalog';
 import { buildOrganization } from '../data/organization';
 import { legalPath, legalLangFor } from '../data/legal';
 import Schema from '../components/Schema.astro';
@@ -178,7 +178,7 @@ const preloadFont: Record<Lang, string> = {
           <Logo class="plate__logo" width="28" height="28" />
           <span class="plate__mark">GEO<span>·</span>MACHINE</span>
         </a>
-        <span>{t.plate}</span>
+        <span class="plate__tagline">{t.plate}</span>
         <nav class="plate__links">
           <a href={aboutPath[aboutLangFor(lang)]} hreflang={aboutLangFor(lang)}>{t.aboutNav}</a>
           {
@@ -198,10 +198,19 @@ const preloadFont: Record<Lang, string> = {
               ))
           }
         </nav>
+        {/* Mismo texto que el botón del hero. En el catálogo, data-open-modal
+            abre el <dialog> de contacto (script de abajo); donde no hay
+            modal (blog, páginas de servicio) navega al formulario. */}
+        <a href={`${servicesPath[lang]}#contacto`} class="plate__cta" data-open-modal>
+          {LAUNCH_OPEN ? t.heroCtaSlot : t.ctaButton}
+        </a>
       </div>
     </header>
 
     <main id="main">
+      {/* Centinela para el botón flotante (FloatingChat.astro): la cabecera ya
+          no sale de pantalla, así que se observa el principio del contenido. */}
+      <div class="plate-sentinel" data-plate-sentinel aria-hidden="true"></div>
       <slot />
     </main>
 
