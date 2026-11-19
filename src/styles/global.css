@@ -400,13 +400,41 @@ html[data-cardstyle='tilt'] .card__inner {
   transform: perspective(900px) rotateX(var(--ry, 0deg)) rotateY(var(--rx, 0deg));
   transition: transform .15s ease-out, border-color .3s;
 }
-html[data-cardstyle='tilt'] .card__inner:after {
-  content: ''; position: absolute; inset: 0; pointer-events: none; opacity: 0; transition: opacity .3s;
-  background: radial-gradient(circle at var(--mx, 50%) var(--my, 50%), var(--accent-soft), transparent 60%);
-}
 html[data-cardstyle='tilt'] .card:hover .card__inner { border-color: var(--accent); }
 html[data-cardstyle='tilt'] .card:hover .card__price { opacity: 1; }
-html[data-cardstyle='tilt'] .card:hover .card__inner:after { opacity: 1; }
+
+/* Brillo cobre y borde de luz que siguen al cursor. Reutilizan --mx/--my,
+   que escribe el script de inclinación de Base.astro (una vez por fotograma);
+   aquí solo se anima opacity. Van con z-index -1 dentro de .card__inner
+   (isolation: isolate) para quedar sobre el fondo pero bajo el texto: no
+   tiñen las letras ni bajan el contraste. Solo con puntero fino y sin
+   reducción de movimiento: en táctil el script no escribe las variables. */
+@media (hover: hover) and (pointer: fine) and (prefers-reduced-motion: no-preference) {
+  html[data-cardstyle='tilt'] .card__inner { isolation: isolate; }
+  html[data-cardstyle='tilt'] .card__inner:before,
+  html[data-cardstyle='tilt'] .card__inner:after {
+    content: ''; position: absolute; pointer-events: none; z-index: -1;
+    border-radius: inherit; opacity: 0; transition: opacity .3s ease-out;
+  }
+  /* Brillo: halo radial de acento, tenue. */
+  html[data-cardstyle='tilt'] .card__inner:after {
+    inset: 0;
+    background: radial-gradient(circle at var(--mx, 50%) var(--my, 50%), var(--accent-soft), transparent 55%);
+  }
+  /* Borde de luz: el mismo degradado en acento pleno, recortado a un anillo
+     de 1px con mask-composite (contenido excluido del total). inset -1px
+     lo pone encima del borde real de la tarjeta. */
+  html[data-cardstyle='tilt'] .card__inner:before {
+    inset: -1px; padding: 1px;
+    background: radial-gradient(circle at var(--mx, 50%) var(--my, 50%), var(--accent), transparent 40%);
+    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    mask-composite: exclude;
+  }
+  html[data-cardstyle='tilt'] .card:hover .card__inner:after { opacity: 1; }
+  html[data-cardstyle='tilt'] .card:hover .card__inner:before { opacity: .9; }
+}
 
 @media (prefers-reduced-motion: reduce) {
   html[data-cardstyle='tilt'] .card__inner { transform: none !important; transition: none; }
