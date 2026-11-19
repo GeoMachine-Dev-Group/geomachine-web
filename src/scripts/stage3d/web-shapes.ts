@@ -48,7 +48,7 @@ export const PIECE_ROT: Vec3 = [0.06, -0.16, 0];
 export const CAMERA = {
   fov: 32,
   dir: [0.32, 0.4, 1] as Vec3,
-  target: [0.25, -0.05, -0.55] as Vec3,
+  target: [0.3, -0.05, -0.55] as Vec3,
   halfW: 2.35,
   halfH: 1.58,
 };
@@ -66,11 +66,26 @@ export function cameraDistance(aspect: number) {
   return Math.max(CAMERA.halfH / t, CAMERA.halfW / (t * aspect));
 }
 
+/** Punto al que mira la cámara. En vertical se sube, lo que baja la pieza
+    en el encuadre y la deja centrada con su sombra debajo. */
+export function cameraTarget(aspect: number): Vec3 {
+  const t = CAMERA.target;
+  return aspect < 1 ? [t[0], t[1] + 0.43, t[2]] : [t[0], t[1], t[2]];
+}
+
 /** Posición de la cámara para un lienzo de esa proporción. */
 export function cameraEye(aspect: number): Vec3 {
-  const d = norm(CAMERA.dir);
-  const k = cameraDistance(aspect);
-  return [CAMERA.target[0] + d[0] * k, CAMERA.target[1] + d[1] * k, CAMERA.target[2] + d[2] * k];
+  // En un lienzo vertical (la columna derecha a toda altura en escritorio)
+  // sobra alto: la cámara sube y mira más desde arriba, de modo que la
+  // profundidad de la pieza ocupa ese alto en vez de dejar franjas vacías.
+  const lift = Math.max(0, 1 - aspect) * 0.5;
+  const d = norm([CAMERA.dir[0], CAMERA.dir[1] + lift, CAMERA.dir[2]]);
+  // El ancho de encuadre (halfW) cubre la forma más ancha en apaisado; en
+  // vertical sobra ancho de verdad y la pieza quedaba pequeña: se acerca.
+  const near = aspect < 1 ? Math.max(0.76, Math.min(1, 0.76 + (aspect - 0.65) * 0.7)) : 1;
+  const k = cameraDistance(aspect) * near;
+  const t = cameraTarget(aspect);
+  return [t[0] + d[0] * k, t[1] + d[1] * k, t[2] + d[2] * k];
 }
 
 /**
@@ -121,7 +136,7 @@ export function webShapes(i: number): ShapeSet {
     case 1: // Corporativa: cinco hojas en abanico hacia el fondo, la de delante levantada
       for (let k = 0; k < 5; k++) {
         s.slabs[k] = pose(
-          [-0.45 + 0.24 * k, (k === 0 ? 0.18 : 0) - 0.04 * k, 0.45 - 0.68 * k],
+          [-0.15 + 0.24 * k, (k === 0 ? 0.18 : 0) - 0.04 * k, 0.45 - 0.68 * k],
           [0, 0.05 * k, -0.014 * k],
           1 - 0.15 * k,
         );

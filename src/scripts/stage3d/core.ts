@@ -59,7 +59,7 @@ export interface PieceItem {
 
 export interface ShapePlugin {
   pieceRotation: Vec3;
-  camera: { fov: number; target: Vec3; eye(aspect: number): Vec3 };
+  camera: { fov: number; target(aspect: number): Vec3; eye(aspect: number): Vec3 };
   /** Sombra de contacto bajo la pieza (plano horizontal). */
   shadow?: { y: number; z: number; w: number; d: number };
   /** Construye las piezas; todo lo que cree debe colgar de `root`. */
@@ -260,7 +260,7 @@ export function mountStage3D(stage: HTMLElement, plugin: ShapePlugin): (() => vo
       renderer.setSize(w, h, false);
       camera.aspect = w / Math.max(1, h);
       camera.position.set(...plugin.camera.eye(camera.aspect));
-      camera.lookAt(...plugin.camera.target);
+      camera.lookAt(...plugin.camera.target(camera.aspect));
       camera.updateProjectionMatrix();
       render();
     }

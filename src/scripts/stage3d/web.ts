@@ -19,7 +19,7 @@ import {
 import { mountStage3D, type PieceItem, type ShapePlugin, type Tokens } from './core';
 import {
   CAMERA, CART, PAGE_LINES, PIECE_ROT, SHADOW, SLAB, SLAB_COUNT, TILE, TILE_COUNT,
-  cameraEye, scattered, webShapes,
+  cameraEye, cameraTarget, scattered, webShapes,
 } from './web-shapes';
 
 /** Vidrio. `soft` para las piezas pequeñas (losetas y carrito): menos barniz
@@ -44,7 +44,7 @@ function lines(color: Color) {
 
 const webPlugin: ShapePlugin = {
   pieceRotation: PIECE_ROT,
-  camera: { fov: CAMERA.fov, target: CAMERA.target, eye: cameraEye },
+  camera: { fov: CAMERA.fov, target: cameraTarget, eye: cameraEye },
   shadow: SHADOW,
   scattered,
 

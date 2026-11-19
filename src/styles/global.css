@@ -541,31 +541,23 @@ a { color: inherit; }
 }
 
 /* --- Pieza 3D del configurador (stage--visual; piloto en WEB) ---------------
-   La columna derecha se aplana (display: contents) para que lista, cita y
-   pieza sean filas de la rejilla del panel: la pieza va debajo de la cita y
-   ocupa todo lo que queda hasta el borde inferior y el derecho del panel
-   (mínimo 16 rem). La línea que separaba las columnas pasa a ser el borde
-   derecho de la columna izquierda, que abarca las tres filas.
-   Por debajo de 860 px la pieza es una banda arriba del panel (≤ 200 px).
-   Dentro va la ilustración SVG (sin JS, sin WebGL o mientras carga); el
-   lienzo único del escenario se coloca encima con transform y la sustituye
-   con un fundido. Nunca cubre texto: el hueco no tiene otra cosa. */
-.stage--visual .stage__side { display: contents; }
-.stage--visual .stage__panel {
-  grid-template-areas: 'main check' 'main quote' 'main visual';
-  grid-template-rows: auto auto 1fr; row-gap: 0; min-block-size: 48rem;
-}
-.stage--visual .stage__main {
-  grid-area: main; padding-right: clamp(2rem, 5vw, 4rem); border-right: 1px solid var(--rule-soft);
-}
-.stage--visual .stage__check { grid-area: check; }
-.stage--visual .stage__quote { grid-area: quote; margin-top: var(--space-8); align-self: start; }
-.stage__visual {
-  grid-area: visual; display: grid; min-width: 0;
-  margin: var(--space-6) calc(var(--stage-pad) * -1) calc(var(--stage-pad) * -1) 0;
-}
-.stage__visual-box { position: relative; min-height: 16rem; }
+   Escritorio: a la izquierda todo el texto en flujo natural (código, nombre,
+   precio, lista, cita, CTA y fecha), que es lo que marca el alto del panel;
+   a la derecha la pieza a toda altura, como foto de producto, sin línea
+   divisoria (con la pieza al lado sobraba). Por debajo de 860 px la pieza es
+   una banda arriba del panel (≤ 200 px) y el texto vuelve al orden de las
+   demás líneas: precio y CTA antes que la lista.
+   Dentro del hueco va la ilustración SVG (sin JS, sin WebGL o mientras
+   carga), en dos proporciones, una por disposición; el lienzo único del
+   escenario se coloca encima con transform y la sustituye con un fundido.
+   Nunca cubre texto: el hueco no tiene otra cosa. */
+.stage--visual .stage__panel { grid-template-columns: minmax(0, 1.12fr) minmax(0, .88fr); }
+.stage__main--text { justify-content: flex-start; gap: var(--space-7); }
+.stage__main--text .stage__check { margin-top: var(--space-1); }
+.stage__visual { display: grid; min-width: 0; }
+.stage__visual-box { position: relative; min-height: 22rem; }
 .stage__visual-svg { position: absolute; inset: 0; display: block; width: 100%; height: 100%; transition: opacity .4s ease; }
+.stage__visual-svg--wide { display: none; }
 .stage.has-3d .stage__visual-svg { opacity: 0; }
 
 .pv-face { fill: color-mix(in srgb, var(--panel-2) 78%, transparent); stroke: var(--accent); stroke-width: 1; stroke-linejoin: round; }
@@ -581,19 +573,22 @@ a { color: inherit; }
 .stage__canvas.is-live { opacity: 1; }
 
 @media (max-width: 860px) {
-  .stage--visual .stage__panel {
-    grid-template-areas: 'visual' 'main' 'check' 'quote'; grid-template-rows: auto; min-block-size: 0;
-  }
-  .stage--visual .stage__main { padding-right: 0; border-right: 0; }
-  .stage--visual .stage__check { margin-top: var(--space-8); padding-top: var(--space-8); border-top: 1px solid var(--rule-soft); }
-  .stage__visual { margin: calc(var(--stage-pad) * -1) calc(var(--stage-pad) * -1) var(--space-2); }
+  .stage--visual .stage__panel { grid-template-columns: minmax(0, 1fr); }
+  .stage__visual { order: -1; margin: calc(var(--stage-pad) * -1) calc(var(--stage-pad) * -1) calc(var(--space-6) * -1); }
   .stage__visual-box { min-height: 0; height: 12.5rem; }
+  .stage__visual-svg--tall { display: none; }
+  .stage__visual-svg--wide { display: block; }
+  .stage__main--text { gap: var(--space-8); }
+  .stage__main--text .stage__top { order: 1; }
+  .stage__main--text .stage__bottom { order: 2; }
+  .stage__main--text .stage__check { order: 3; margin-top: 0; padding-top: var(--space-8); border-top: 1px solid var(--rule-soft); }
+  .stage__main--text .stage__quote { order: 4; }
 }
 @media (max-width: 720px) {
-  .stage__visual { margin: calc(var(--space-6) * -1) calc(var(--space-5) * -1) var(--space-1); }
+  .stage__visual { margin: calc(var(--space-6) * -1) calc(var(--space-5) * -1) calc(var(--space-5) * -1); }
   .stage__visual-box { height: 11.5rem; }
-  .stage--visual .stage__check { margin-top: var(--space-6); padding-top: var(--space-6); }
-  .stage--visual .stage__quote { margin-top: var(--space-6); }
+  .stage__main--text { gap: var(--space-6); }
+  .stage__main--text .stage__check { padding-top: var(--space-6); }
 }
 @media (prefers-reduced-motion: reduce) {
   .stage__visual-svg, .stage__canvas { transition: none; }

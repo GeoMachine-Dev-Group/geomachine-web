@@ -97,6 +97,27 @@ function priceParts(text: string) {
     {
       items.map((item, i) => {
         const price = priceParts(item.initialFrom);
+        /* Lista y cita. Sin pieza 3D van en la columna derecha; con pieza, en
+           la columna de texto entre el precio y el CTA, y la derecha es la
+           pieza a toda altura. */
+        const details = (
+          <Fragment>
+            <ul class="stage__check">
+              {item.checklist.map((line, n) => (
+                <li style={`--i: ${n}`}>
+                  <svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M4 8.5l2.75 2.75L12 5.5" /></svg>
+                  <span>{line}</span>
+                </li>
+              ))}
+            </ul>
+            <figure class="stage__quote">
+              <figcaption class="stage__quote-label">{labels.benefit}</figcaption>
+              <blockquote>
+                <p>{item.human}</p>
+              </blockquote>
+            </figure>
+          </Fragment>
+        );
         return (
           <section
             class="stage__panel"
@@ -105,7 +126,7 @@ function priceParts(text: string) {
             aria-labelledby={`${id}-tab-${i}`}
             hidden={i !== 0}
           >
-            <div class="stage__main">
+            <div class:list={['stage__main', { 'stage__main--text': visual }]}>
               <div class="stage__top">
                 <p class="stage__meta">
                   <span class="stage__code">{item.code}</span>
@@ -125,6 +146,8 @@ function priceParts(text: string) {
                 </div>
               </div>
 
+              {visual && details}
+
               <div class="stage__bottom">
                 <div class="stage__foot">
                   <a class="btn btn--solid stage__cta" href="#contacto" data-service={ctaService} data-fab-hide-near>
@@ -141,29 +164,15 @@ function priceParts(text: string) {
               </div>
             </div>
 
-            <div class="stage__side">
-              <ul class="stage__check">
-                {item.checklist.map((line, n) => (
-                  <li style={`--i: ${n}`}>
-                    <svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M4 8.5l2.75 2.75L12 5.5" /></svg>
-                    <span>{line}</span>
-                  </li>
-                ))}
-              </ul>
-              <figure class="stage__quote">
-                <figcaption class="stage__quote-label">{labels.benefit}</figcaption>
-                <blockquote>
-                  <p>{item.human}</p>
-                </blockquote>
-              </figure>
-              {visual && (
-                <div class="stage__visual" aria-hidden="true">
-                  <div class="stage__visual-box">
-                    <StageVisual kind={visual} index={i} />
-                  </div>
+            {!visual && <div class="stage__side">{details}</div>}
+            {visual && (
+              <div class="stage__visual" aria-hidden="true">
+                <div class="stage__visual-box">
+                  <StageVisual kind={visual} index={i} shape="tall" />
+                  <StageVisual kind={visual} index={i} shape="wide" />
                 </div>
-              )}
-            </div>
+              </div>
+            )}
           </section>
         );
       })
