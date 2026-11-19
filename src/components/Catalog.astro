@@ -345,7 +345,7 @@ const featuredMap: Record<string, Record<Lang, string>> = {
         <span class="line__prefix">{line.prefix}</span>
         <div>
           <h2 class="line__title">{line.title[lang]}</h2>
-          <p class="line__note">{line.note[lang]}</p>
+          <p class="line__note">{line.hint ? `${line.note[lang]} ${line.hint[lang]}` : line.note[lang]}</p>
         </div>
         {hasBlog(lang) && blogPillars.has(line.prefix) && (
           <a href={`${blogPath[lang]}#${line.prefix.toLowerCase()}`} class="line__blog-badge">

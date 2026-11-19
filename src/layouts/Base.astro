@@ -2,7 +2,7 @@
 import '../styles/global.css';
 import { ui, servicesPath, blogPath, aboutPath, aboutLangFor, languages, hasBlog, type Lang } from '../i18n/ui';
 import { DEFAULT_TIER, LANG_CURRENCY } from '../data/catalog';
-import { buildOrganization } from '../data/organization';
+import { buildOrganization, buildWebSite } from '../data/organization';
 import { legalPath, legalLangFor } from '../data/legal';
 import Schema from '../components/Schema.astro';
 import FloatingChat from '../components/FloatingChat.astro';
@@ -133,7 +133,7 @@ const preloadFont: Record<Lang, string> = {
          SoftwareApplication...) solo referencian este @id, nunca lo redeclaran. -->
     <script type="application/ld+json" is:inline set:html={JSON.stringify({
       '@context': 'https://schema.org',
-      ...buildOrganization(site, lang),
+      '@graph': [buildOrganization(site, lang), buildWebSite(site)],
     })} />
 
     <link

@@ -81,6 +81,10 @@ export interface Line {
   prefix: string;
   title: Localized;
   note: Localized;
+  /** Instrucción de interfaz («toca una tarjeta…»). Va aparte de `note`
+      porque `note` también sale en el JSON-LD y en llms.txt, donde una
+      instrucción para el ratón no describe nada. */
+  hint?: Localized;
   items: Item[];
 }
 
@@ -89,10 +93,16 @@ export const lines: Line[] = [
     prefix: 'WEB',
     title: { es: 'Sitios web', ru: 'Сайты', en: 'Websites', ka: 'ვებგვერდები' },
     note: {
-      es: 'Estáticos, sin CMS pesado. Cargan en menos de un segundo y no se rompen solos. Toca o pasa el cursor por una tarjeta para ver qué significa en la práctica.',
-      ru: 'Статические, без тяжёлой CMS. Загружаются меньше секунды и не ломаются сами. Нажмите на карточку или наведите на неё курсор, чтобы увидеть, что это значит на практике.',
-      en: "Static, no heavy CMS. They load in under a second and don't break on their own. Tap or hover a card to see what it means in practice.",
-      ka: 'სტატიკური, მძიმე CMS-ის გარეშე. იტვირთება წამზე ნაკლებ დროში და თავისით არ იშლება. შეეხეთ ბარათს ან გადაატარეთ კურსორი პრაქტიკული მნიშვნელობის სანახავად.',
+      es: 'Estáticos, sin CMS pesado. Cargan en menos de un segundo y no se rompen solos.',
+      ru: 'Статические, без тяжёлой CMS. Загружаются меньше секунды и не ломаются сами.',
+      en: "Static, no heavy CMS. They load in under a second and don't break on their own.",
+      ka: 'სტატიკური, მძიმე CMS-ის გარეშე. იტვირთება წამზე ნაკლებ დროში და თავისით არ იშლება.',
+    },
+    hint: {
+      es: 'Toca o pasa el cursor por una tarjeta para ver qué significa en la práctica.',
+      ru: 'Нажмите на карточку или наведите на неё курсор, чтобы увидеть, что это значит на практике.',
+      en: 'Tap or hover a card to see what it means in practice.',
+      ka: 'შეეხეთ ბარათს ან გადაატარეთ კურსორი პრაქტიკული მნიშვნელობის სანახავად.',
     },
     // Orden: Landing → Corporativa → Tienda online → Segundo idioma → Rediseño
     items: [

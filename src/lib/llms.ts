@@ -83,14 +83,16 @@ ${(Object.keys(blogPath) as BlogLang[])
 
 /** Índice corto: para que una IA sepa qué ofreces y dónde mirar. */
 export function llmsTxt(posts: CollectionEntry<'blog'>[]): string {
+  /* Cada servicio con su precio, en lugar de un «desde X €» por categoría:
+     el mínimo de Aplicaciones era el bono de horas (22 €/hora), y una IA lo
+     repetía como si fuera el precio de una app. */
   const services = lines
     .map((line) => {
-      const from = Math.min(...line.items.map((i) => i.launch.eur[0]));
-      const unit = line.items.every((i) => i.unit === 'month') ? '/month' : '';
+      const codes = line.items.map((i) => i.code).join(', ');
       return `### [${line.title.en}](${anchor(line.prefix)})
 ${line.note.en}
-- ${line.items.length} services (${line.prefix}-01 … ${line.items[line.items.length - 1].code.split('-')[1]}), from ${from} €${unit} with launch pricing.
-- ${line.items.map((i) => i.name.en).join(' · ')}`;
+- ${line.items.length} services (${codes}). Launch prices:
+${line.items.map((i) => `  - ${i.name.en}: ${money(i.launch.eur, 'eur', i.unit)}`).join('\n')}`;
     })
     .join('\n\n');
 

@@ -82,9 +82,14 @@ export function buildOrganization(site: string, lang: Lang) {
     logo: `${site}/icon-512.png`,
     description: t.metaDescription,
     priceRange,
+    /** Misma zona que la ficha de Google (Comunidad de Madrid y España, con
+        la dirección oculta) más los mercados donde hay trabajo entregado:
+        Abjasia (abhazservis, ГаграЛЁТ, el taxi) y Georgia (KADRI LAB). */
     areaServed: [
-      { '@type': 'Country', name: 'Georgia' },
+      { '@type': 'AdministrativeArea', name: 'Comunidad de Madrid' },
       { '@type': 'Country', name: 'Spain' },
+      { '@type': 'Place', name: 'Abkhazia' },
+      { '@type': 'Country', name: 'Georgia' },
       { '@type': 'Country', name: 'Russia' },
     ],
     availableLanguage: Object.entries(languages).map(([code, name]) => ({
@@ -110,5 +115,28 @@ export function buildOrganization(site: string, lang: Lang) {
     ],
     knowsAbout: KNOWS_ABOUT,
     makesOffer: makesOfferRefs(site, lang),
+  };
+}
+
+export function websiteId(site: string): string {
+  return `${site}/#website`;
+}
+
+/**
+ * Nodo WebSite: es lo que Google usa para el nombre del sitio que enseña en
+ * los resultados. Sin él, Google lo deduce del título y la búsqueda de
+ * «geomachine» mezcla esta web con las otras dos GeoMachine. El nombre es
+ * siempre el completo: «GeoMachine» a secas no se usa ni como alternativa
+ * (ver la nota de Obsidian riesgo-colision-nombre-geomachine).
+ */
+export function buildWebSite(site: string) {
+  return {
+    '@type': 'WebSite',
+    '@id': websiteId(site),
+    url: `${site}/`,
+    name: 'GeoMachine Developer Group',
+    alternateName: 'geomachine.es',
+    inLanguage: Object.keys(languages),
+    publisher: { '@id': orgId(site) },
   };
 }
