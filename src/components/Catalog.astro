@@ -57,6 +57,8 @@ const nbsp = ' ';
 /** Separador de miles según el idioma de quien lee, no según la moneda:
     "1.800 €" en español, "1,800 €" en inglés, espacio duro en ruso y georgiano. */
 const THOUSANDS: Record<Lang, string> = { es: '.', en: ',', ru: nbsp, ka: nbsp };
+/** Pieza 3D de cada línea (src/scripts/stage3d/). Sin entrada, sin pieza. */
+const VISUAL: Record<string, 'web' | 'app' | 'sys'> = { WEB: 'web', APP: 'app', SYS: 'sys' };
 const CURRENCY_SYMBOL: Record<Currency, string> = { eur: '€', rub: '₽', gel: '₾' };
 const CURRENCIES = ['eur', 'rub', 'gel'] as const;
 
@@ -462,7 +464,7 @@ const bundleItems = bundles.map((b): StageItem => ({
         ctaService={line.title[lang]}
         thousands={THOUSANDS[lang]}
         labels={stageLabels}
-        visual={line.prefix === 'WEB' ? 'web' : undefined}
+        visual={VISUAL[line.prefix]}
       />
     </section>
   ))

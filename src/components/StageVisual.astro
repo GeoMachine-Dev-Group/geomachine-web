@@ -1,59 +1,35 @@
 ---
 /**
  * Ilustración estática de la pieza 3D de un servicio: las mismas poses que
- * anima el lienzo (src/scripts/stage3d/web-shapes.ts), proyectadas a SVG en el
+ * anima el lienzo (src/scripts/stage3d/*-shapes.ts), proyectadas a SVG en el
  * build con la misma cámara. Es lo que se ve sin JS, sin WebGL o mientras
  * carga three.js; el lienzo la sustituye con un fundido. Colores por tokens
  * (clases .pv-* en global.css).
  */
-import {
-  CAMERA, CART, PAGE_LINES, PIECE_ROT, SHADOW, SLAB, TILE, cameraEye, cameraTarget, webShapes, type Pose, type Vec3,
-} from '../scripts/stage3d/web-shapes';
+import { CART, PAGE_LINES, SLAB, TILE, webShapes, type Vec3 } from '../scripts/stage3d/web-shapes';
+import { projector } from '../scripts/stage3d/projection';
+import { kitSvg } from '../scripts/stage3d/glass-kit-svg';
+import { APP_KIT } from '../scripts/stage3d/app-shapes';
+import { SYS_KIT } from '../scripts/stage3d/sys-shapes';
+
+/** Líneas hechas con el juego genérico (glass-kit.ts). */
+const KITS = { app: APP_KIT, sys: SYS_KIT };
 
 interface Props {
-  kind: 'web';
+  kind: 'web' | keyof typeof KITS;
   index: number;
   /** 'tall': columna derecha a toda altura (escritorio); 'wide': banda de
       arriba (≤ 860 px). El CSS enseña la que toca. */
   shape: 'tall' | 'wide';
 }
-const { index, shape } = Astro.props;
+const { kind, index, shape } = Astro.props;
 
 const W = shape === 'tall' ? 440 : 460;
 const H = shape === 'tall' ? 560 : 220;
-const f = H / 2 / Math.tan(((CAMERA.fov / 2) * Math.PI) / 180);
 
-// Misma cámara que el lienzo: ojo calculado para esta proporción, mirando a
-// cameraTarget() con el eje Y hacia arriba.
-const eye = cameraEye(W / H);
-const sub = (a: Vec3, b: Vec3): Vec3 => [a[0] - b[0], a[1] - b[1], a[2] - b[2]];
-const dot = (a: Vec3, b: Vec3) => a[0] * b[0] + a[1] * b[1] + a[2] * b[2];
-const cross = (a: Vec3, b: Vec3): Vec3 => [a[1] * b[2] - a[2] * b[1], a[2] * b[0] - a[0] * b[2], a[0] * b[1] - a[1] * b[0]];
-const unit = (v: Vec3): Vec3 => { const l = Math.hypot(...v); return [v[0] / l, v[1] / l, v[2] / l]; };
-const fwd = unit(sub(cameraTarget(W / H), eye));
-const right = unit(cross(fwd, [0, 1, 0]));
-const up = cross(right, fwd);
-
-function rot([x, y, z]: Vec3, [rx, ry, rz]: Vec3): Vec3 {
-  // Euler XYZ de three.js: se aplica Z, luego Y, luego X.
-  let a = x * Math.cos(rz) - y * Math.sin(rz), b = x * Math.sin(rz) + y * Math.cos(rz), c = z;
-  [a, c] = [a * Math.cos(ry) + c * Math.sin(ry), -a * Math.sin(ry) + c * Math.cos(ry)];
-  [b, c] = [b * Math.cos(rx) - c * Math.sin(rx), b * Math.sin(rx) + c * Math.cos(rx)];
-  return [a, b, c];
-}
-function world(local: Vec3, q: Pose): Vec3 {
-  const r = rot([local[0] * q.s, local[1] * q.s, local[2] * q.s], q.r);
-  return rot([r[0] + q.p[0], r[1] + q.p[1], r[2] + q.p[2]], PIECE_ROT);
-}
-function screen(p: Vec3) {
-  const d = sub(p, eye);
-  const k = f / dot(d, fwd);
-  return [W / 2 + dot(d, right) * k, H / 2 - dot(d, up) * k] as const;
-}
-/** Para ordenar de atrás adelante: menos es más lejos. */
-const depthOf = (p: Vec3) => -dot(sub(p, eye), fwd);
-const pts = (corners: Vec3[], q: Pose) =>
-  corners.map((c) => screen(world(c, q)).map((n) => n.toFixed(1)).join(',')).join(' ');
+// Misma cámara que el lienzo (projection.ts).
+const pr = projector(W, H);
+const { world, screen, depthOf, pts } = pr;
 const face = (w: number, h: number, z: number): Vec3[] => [
   [-w / 2, h / 2, z], [w / 2, h / 2, z], [w / 2, -h / 2, z], [-w / 2, -h / 2, z],
 ];
@@ -61,49 +37,44 @@ const face = (w: number, h: number, z: number): Vec3[] => [
 type Shape = { depth: number; svg: string };
 const s = webShapes(index);
 const shapes: Shape[] = [];
-
-s.slabs.forEach((q) => {
-  if (q.o < 0.01) return;
-  const lines = PAGE_LINES.map(([x1, y1, x2, y2]) => {
-    const [a, b] = screen(world([x1, y1, SLAB.d / 2], q));
-    const [c, d] = screen(world([x2, y2, SLAB.d / 2], q));
-    return `M${a.toFixed(1)} ${b.toFixed(1)}L${c.toFixed(1)} ${d.toFixed(1)}`;
-  }).join('');
-  shapes.push({
-    depth: depthOf(world([0, 0, 0], q)),
-    svg: `<g opacity="${q.o.toFixed(2)}" class="${q.dim > 0.5 ? 'pv-dim' : ''}"><polygon class="pv-face" points="${pts(face(SLAB.w, SLAB.h, SLAB.d / 2), q)}"/><path class="pv-line" d="${lines}"/></g>`,
+// WEB lleva su propio dibujo (web-shapes.ts); el resto, el juego genérico.
+if (kind === 'web') {
+  s.slabs.forEach((q) => {
+    if (q.o < 0.01) return;
+    const lines = PAGE_LINES.map(([x1, y1, x2, y2]) => {
+      const [a, b] = screen(world([x1, y1, SLAB.d / 2], q));
+      const [c, d] = screen(world([x2, y2, SLAB.d / 2], q));
+      return `M${a.toFixed(1)} ${b.toFixed(1)}L${c.toFixed(1)} ${d.toFixed(1)}`;
+    }).join('');
+    shapes.push({
+      depth: depthOf(world([0, 0, 0], q)),
+      svg: `<g opacity="${q.o.toFixed(2)}" class="${q.dim > 0.5 ? 'pv-dim' : ''}"><polygon class="pv-face" points="${pts(face(SLAB.w, SLAB.h, SLAB.d / 2), q)}"/><path class="pv-line" d="${lines}"/></g>`,
+    });
   });
-});
-s.tiles.forEach((q) => {
-  if (q.o < 0.01) return;
-  shapes.push({
-    // Las losetas van sobre la hoja: por su centro quedarían detrás de ella.
-    depth: depthOf(world([0, 0, 0], q)) + 0.5,
-    svg: `<polygon class="pv-face pv-tile" opacity="${q.o.toFixed(2)}" points="${pts(face(TILE.w, TILE.h, TILE.d / 2), q)}"/>`,
+  s.tiles.forEach((q) => {
+    if (q.o < 0.01) return;
+    shapes.push({
+      // Las losetas van sobre la hoja: por su centro quedarían detrás de ella.
+      depth: depthOf(world([0, 0, 0], q)) + 0.5,
+      svg: `<polygon class="pv-face pv-tile" opacity="${q.o.toFixed(2)}" points="${pts(face(TILE.w, TILE.h, TILE.d / 2), q)}"/>`,
+    });
   });
-});
-if (s.cart.o > 0.01) {
-  const q = s.cart;
-  const { w, h, d } = CART;
-  const top: Vec3[] = [[-w / 2, h / 2, d / 2], [w / 2, h / 2, d / 2], [w / 2, h / 2, -d / 2], [-w / 2, h / 2, -d / 2]];
-  const side: Vec3[] = [[w / 2, h / 2, d / 2], [w / 2, h / 2, -d / 2], [w / 2, -h / 2, -d / 2], [w / 2, -h / 2, d / 2]];
-  shapes.push({
-    depth: depthOf(world([0, 0, 0], q)) + 0.5,
-    svg: `<g opacity="${q.o.toFixed(2)}"><polygon class="pv-face pv-tile" points="${pts(top, q)}"/><polygon class="pv-face pv-tile" points="${pts(side, q)}"/><polygon class="pv-face pv-tile" points="${pts(face(w, h, d / 2), q)}"/></g>`,
-  });
+  if (s.cart.o > 0.01) {
+    const q = s.cart;
+    const { w, h, d } = CART;
+    const top: Vec3[] = [[-w / 2, h / 2, d / 2], [w / 2, h / 2, d / 2], [w / 2, h / 2, -d / 2], [-w / 2, h / 2, -d / 2]];
+    const side: Vec3[] = [[w / 2, h / 2, d / 2], [w / 2, h / 2, -d / 2], [w / 2, -h / 2, -d / 2], [w / 2, -h / 2, d / 2]];
+    shapes.push({
+      depth: depthOf(world([0, 0, 0], q)) + 0.5,
+      svg: `<g opacity="${q.o.toFixed(2)}"><polygon class="pv-face pv-tile" points="${pts(top, q)}"/><polygon class="pv-face pv-tile" points="${pts(side, q)}"/><polygon class="pv-face pv-tile" points="${pts(face(w, h, d / 2), q)}"/></g>`,
+    });
+  }
 }
 shapes.sort((a, b) => a.depth - b.depth);
 
 // Sombra de contacto: elipse con degradado radial de cobre bajo la pieza.
-const glowId = `pv-glow-${index}-${shape}`;
-const [cx, cy] = screen([0, SHADOW.y, SHADOW.z]);
-const [lx] = screen([-SHADOW.w / 2, SHADOW.y, SHADOW.z]);
-const [, fy] = screen([0, SHADOW.y, SHADOW.z - SHADOW.d / 2]);
-const [, ny] = screen([0, SHADOW.y, SHADOW.z + SHADOW.d / 2]);
-const glow =
-  `<defs><radialGradient id="${glowId}"><stop offset="0" class="pv-glow-stop"/><stop offset="1" class="pv-glow-stop" stop-opacity="0"/></radialGradient></defs>` +
-  `<ellipse cx="${cx.toFixed(1)}" cy="${cy.toFixed(1)}" rx="${Math.abs(cx - lx).toFixed(1)}" ry="${(Math.abs(ny - fy) / 2).toFixed(1)}" fill="url(#${glowId})" opacity=".22"/>`;
-const svg = glow + shapes.map((x) => x.svg).join('');
+const glow = pr.glow(`pv-glow-${kind}-${index}-${shape}`);
+const svg = glow + (kind === 'web' ? shapes.map((x) => x.svg).join('') : kitSvg(KITS[kind], index, pr));
 ---
 
 <svg class={`stage__visual-svg stage__visual-svg--${shape}`} viewBox={`0 0 ${W} ${H}`} preserveAspectRatio="xMidYMid meet" aria-hidden="true" focusable="false" set:html={svg} />
