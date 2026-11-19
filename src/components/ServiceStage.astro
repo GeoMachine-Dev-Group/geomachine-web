@@ -1,5 +1,6 @@
 ---
 import StageVisual from './StageVisual.astro';
+import type { StageKind } from '../scripts/stage3d/kinds';
 
 /**
  * Configurador por línea (diseño C). Sustituye a la rejilla de tarjetas: una
@@ -43,9 +44,9 @@ interface Props {
   /** Separador de miles del idioma, para el contador del precio. */
   thousands: string;
   labels: { benefit: string; eta: string; prev: string; next: string };
-  /** Pieza 3D de la línea (de momento solo 'web'): hueco en cada panel con
+  /** Pieza 3D de la línea (ver stage3d/kinds.ts): hueco en cada panel con
       su ilustración SVG, que el lienzo sustituye al cargar. */
-  visual?: 'web' | 'app' | 'sys';
+  visual?: StageKind;
 }
 
 const { id, label, items, ctaLabel, ctaService, thousands, labels, visual } = Astro.props;
@@ -184,6 +185,7 @@ function priceParts(text: string) {
 </div>
 
 <script>
+  import type { StageKind } from '../scripts/stage3d/kinds';
   const root = document.documentElement;
   const reduce = window.matchMedia('(prefers-reduced-motion: reduce)');
   const NUM = /\d[\d.,   ]*\d|\d/; // separador: punto, coma, espacio duro o fino
@@ -229,10 +231,12 @@ function priceParts(text: string) {
 
   /** Juegos de formas 3D por línea. Cada uno es un trozo aparte que trae
       three.js consigo; añadir una línea es añadir aquí su import(). */
-  const VISUALS: Record<string, () => Promise<{ mount(stage: HTMLElement): (() => void) | null }>> = {
+  const VISUALS: Record<StageKind, () => Promise<{ mount(stage: HTMLElement): (() => void) | null }>> = {
     web: () => import('../scripts/stage3d/web'),
     app: () => import('../scripts/stage3d/app'),
     sys: () => import('../scripts/stage3d/sys'),
+    ia: () => import('../scripts/stage3d/ia'),
+    mnt: () => import('../scripts/stage3d/mnt'),
   };
   new MutationObserver(() => {
     tweens.forEach((raf) => cancelAnimationFrame(raf));
@@ -496,7 +500,7 @@ function priceParts(text: string) {
        Si no hay WebGL o falla la carga, se queda el SVG estático. Se libera
        en pagehide y se vuelve a montar si la página vuelve de la caché. */
     const visual = stage.dataset.visual;
-    const loader = visual ? VISUALS[visual] : undefined;
+    const loader = visual ? VISUALS[visual as StageKind] : undefined;
     if (loader && 'IntersectionObserver' in window) {
       let dispose: (() => void) | null = null;
       let wanted = false;

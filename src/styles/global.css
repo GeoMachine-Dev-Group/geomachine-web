@@ -566,6 +566,17 @@ a { color: inherit; }
 .pv-wire { fill: none; stroke: var(--accent); stroke-width: 1; stroke-linecap: round; }
 .pv-dim .pv-face, .pv-dim .pv-line { stroke: var(--ink-soft); }
 .pv-glow-stop { stop-color: var(--accent); }
+/* IA: nodos, hilos y la caja del servidor. MNT: anillos, latido y cúpula. */
+.pv-thread { stroke-opacity: .5; }
+.pv-node { fill: color-mix(in srgb, var(--panel-2) 70%, transparent); }
+.pv-core { fill: var(--accent); }
+.pv-case .pv-face { fill: color-mix(in srgb, var(--panel-2) 22%, transparent); }
+.pv-band { fill: color-mix(in srgb, var(--panel-2) 40%, transparent); stroke: none; }
+.pv-ring { stroke-opacity: .85; }
+.pv-front { fill: color-mix(in srgb, var(--panel-2) 60%, transparent); }
+.pv-beat { stroke-opacity: .9; }
+.pv-shell { fill: color-mix(in srgb, var(--panel-2) 14%, transparent); stroke-opacity: .7; }
+.pv-faint { stroke-opacity: .3; }
 
 .stage__canvas {
   position: absolute; z-index: 1; top: 0; left: 0; display: block;
