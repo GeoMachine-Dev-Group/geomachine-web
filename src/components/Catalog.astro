@@ -483,11 +483,11 @@ const featuredMap: Record<string, Record<Lang, string>> = {
 
       <label class="contact-form__field">
         <span class="control__label">{t.formName}</span>
-        <input type="text" name="name" required placeholder={t.formNamePh} />
+        <input type="text" name="name" required autocomplete="name" aria-invalid="false" placeholder={t.formNamePh} />
       </label>
       <label class="contact-form__field">
         <span class="control__label">{t.formContact}</span>
-        <input type="text" name="contact" required placeholder={t.formContactPh} />
+        <input type="text" name="contact" required aria-invalid="false" placeholder={t.formContactPh} />
       </label>
       <label class="contact-form__field">
         <span class="control__label">{t.formService}</span>
@@ -502,7 +502,7 @@ const featuredMap: Record<string, Record<Lang, string>> = {
       </label>
       <label class="contact-form__field contact-form__field--wide">
         <span class="control__label">{t.formMessage}</span>
-        <textarea name="message" rows="3" required placeholder={t.formMessagePh}></textarea>
+        <textarea name="message" rows="3" required aria-invalid="false" placeholder={t.formMessagePh}></textarea>
       </label>
 
       <div class="contact-form__consent">
@@ -531,8 +531,10 @@ const featuredMap: Record<string, Record<Lang, string>> = {
 </section>
 
 <!-- Modal de contacto profesional que se abre al pulsar cualquier botón de Presupuesto -->
-<div class="modal-overlay" id="contact-modal" aria-hidden="true">
-  <div class="modal-window" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+<!-- <dialog> nativo abierto con showModal(): el navegador lleva el foco dentro,
+     deja inerte la página de detrás y cierra con Esc. closedby="any" añade el
+     cierre al pulsar fuera (Safari aún no lo tiene: respaldo en Base.astro). -->
+<dialog class="modal-window" id="contact-modal" closedby="any" aria-labelledby="modal-title">
     <button type="button" class="modal-close" data-close-modal aria-label="Cerrar">&times;</button>
     <div class="modal-header">
       <h2 class="modal-title" id="modal-title">{t.modalTitle}</h2>
@@ -554,11 +556,11 @@ const featuredMap: Record<string, Record<Lang, string>> = {
 
       <label class="contact-form__field">
         <span class="control__label">{t.formName}</span>
-        <input type="text" name="name" required placeholder={t.formNamePh} />
+        <input type="text" name="name" required autocomplete="name" aria-invalid="false" placeholder={t.formNamePh} />
       </label>
       <label class="contact-form__field">
         <span class="control__label">{t.formContact}</span>
-        <input type="text" name="contact" required placeholder={t.formContactPh} />
+        <input type="text" name="contact" required aria-invalid="false" placeholder={t.formContactPh} />
       </label>
       <label class="contact-form__field">
         <span class="control__label">{t.formService}</span>
@@ -573,7 +575,7 @@ const featuredMap: Record<string, Record<Lang, string>> = {
       </label>
       <label class="contact-form__field">
         <span class="control__label">{t.formMessage}</span>
-        <textarea name="message" rows="3" required placeholder={t.formMessagePh}></textarea>
+        <textarea name="message" rows="3" required aria-invalid="false" placeholder={t.formMessagePh}></textarea>
       </label>
 
       <div class="contact-form__consent">
@@ -591,8 +593,7 @@ const featuredMap: Record<string, Record<Lang, string>> = {
       </div>
       <p class="contact-form__status" role="status" aria-live="polite" hidden></p>
     </form>
-  </div>
-</div>
+</dialog>
 
 <script>
   document.querySelectorAll<HTMLElement>('[data-cards]').forEach((container) => {
@@ -619,8 +620,29 @@ const featuredMap: Record<string, Record<Lang, string>> = {
     const consent = form.elements.namedItem('consent') as HTMLInputElement | null;
     consent?.addEventListener('change', () => consent.removeAttribute('aria-invalid'));
 
+    /* Mantiene aria-invalid igual que :user-invalid (el CSS solo marca en rojo
+       un campo cuando ya se ha tocado o se ha intentado enviar). */
+    const syncInvalid = (el: Element) => {
+      if (el instanceof HTMLInputElement || el instanceof HTMLTextAreaElement) {
+        if (el.required) el.setAttribute('aria-invalid', String(el.matches(':user-invalid')));
+      }
+    };
+    ['focusout', 'input', 'change'].forEach((type) =>
+      form.addEventListener(type, (e) => syncInvalid(e.target as Element))
+    );
+
     form.addEventListener('submit', async (e) => {
       e.preventDefault();
+      // Campos obligatorios vacíos: el navegador enfoca el primero y explica
+      // qué falta en el idioma de quien lee; no se envía nada.
+      if (!form.checkValidity()) {
+        form.classList.add('was-submitted');
+        form.querySelectorAll('[required]').forEach((el) => {
+          el.setAttribute('aria-invalid', String(!(el as HTMLInputElement).checkValidity()));
+        });
+        form.reportValidity();
+        return;
+      }
       // Sin la casilla no se envía nada (y /api/contact lo rechaza igual).
       if (consent && !consent.checked) {
         consent.setAttribute('aria-invalid', 'true');
@@ -648,6 +670,8 @@ const featuredMap: Record<string, Record<Lang, string>> = {
 
         // No ocultar ningún campo para mantener la estructura perfecta del formulario
         form.reset();
+        form.classList.remove('was-submitted');
+        form.querySelectorAll('[aria-invalid]').forEach((el) => el.setAttribute('aria-invalid', 'false'));
         status.textContent = '✓ ' + (form.dataset.msgSuccess || '¡Solicitud recibida! Te respondo en menos de 24 h.');
         setTimeout(() => {
           submitBtn.disabled = false;

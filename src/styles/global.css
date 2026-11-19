@@ -145,8 +145,8 @@ a { color: inherit; }
   background: var(--accent); margin-left: var(--space-2); animation: plate-pulse 2s infinite ease-in-out;
 }
 @keyframes plate-pulse { 0%,100% { box-shadow: 0 0 0 0 var(--accent-soft); opacity: 1; } 50% { box-shadow: 0 0 0 5px transparent; opacity: .6; } }
-.plate__links a { text-decoration: none; border-bottom: 1px solid var(--rule); padding-bottom: 2px; color: var(--ink-soft); }
-.plate__links a:hover { color: var(--accent); border-color: var(--accent); }
+.plate__links a { text-decoration: underline 1px var(--rule); text-underline-offset: .3em; color: var(--ink-soft); }
+.plate__links a:hover { color: var(--accent); text-decoration-color: var(--accent); }
 
 /* --- Hero (base: la comparte AppAccountsPage.astro) ------------------------ */
 
@@ -219,8 +219,8 @@ a { color: inherit; }
 }
 .proof__list li { display: flex; align-items: baseline; gap: var(--space-2); }
 .proof__tag { color: var(--accent); }
-.proof__list a { color: var(--ink); text-decoration: none; border-bottom: 1px solid var(--rule); }
-.proof__list a:hover { color: var(--accent); border-color: var(--accent); }
+.proof__list a { color: var(--ink); text-decoration: underline 1px var(--rule); text-underline-offset: .2em; }
+.proof__list a:hover { color: var(--accent); text-decoration-color: var(--accent); }
 
 /* Las seis páginas por intención (src/data/intents.ts): bloque de la portada,
    ruta de navegación y «otros servicios» de cada página. Sin georgiano. */
@@ -242,8 +242,8 @@ a { color: inherit; }
 .crumbs { font-family: var(--data); font-size: var(--fs-2xs); letter-spacing: .08em; text-transform: uppercase; color: var(--ink-soft); padding-block: var(--space-4) 0; }
 .crumbs ol { list-style: none; margin: 0; padding: 0; display: flex; flex-wrap: wrap; gap: var(--space-2); }
 .crumbs li + li::before { content: '›'; margin-right: var(--space-2); }
-.crumbs a { color: var(--ink-soft); text-decoration: none; border-bottom: 1px solid var(--rule); }
-.crumbs a:hover { color: var(--accent); border-color: var(--accent); }
+.crumbs a { color: var(--ink-soft); text-decoration: underline 1px var(--rule); text-underline-offset: .2em; }
+.crumbs a:hover { color: var(--accent); text-decoration-color: var(--accent); }
 @media (max-width: 860px) { .intents__list { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 @media (max-width: 480px) { .intents__list, .intents--related .intents__list { grid-template-columns: minmax(0, 1fr); } }
 
@@ -514,6 +514,11 @@ html[data-cardstyle='tilt'] .card:hover .card__inner:after { opacity: 1; }
   background-repeat: no-repeat; background-position: right var(--space-4) center; background-size: .7rem;
 }
 .contact-form textarea { min-height: 7rem; }
+/* Rojo solo tras tocar el campo o intentar enviar (guía
+   validate-input-after-interaction); was-submitted cubre el intento de envío,
+   porque con novalidate el navegador no lo cuenta como interacción. */
+.contact-form :is(input, textarea):user-invalid,
+.contact-form.was-submitted :is(input, textarea):invalid { border-color: #d9705f; } /* --stamp (#6b1f1f) da 1,5:1 sobre --panel-2; este da 3,7:1 */
 .contact-form input:focus-visible,
 .contact-form select:focus-visible,
 .contact-form textarea:focus-visible {
@@ -552,13 +557,27 @@ html[data-cardstyle='tilt'] .card:hover .card__inner:after { opacity: 1; }
   font-family: var(--data); font-size: var(--fs-xs); font-weight: 600; letter-spacing: .1em; text-transform: uppercase;
   box-shadow: 0 10px 28px -6px #00000070; transition: background .2s ease, border-color .2s ease;
 }
-.contact-fab__trigger:hover, .contact-fab__trigger[aria-expanded='true'] { background: var(--ink); border-color: var(--ink); }
+.contact-fab__trigger:hover,
+.contact-fab:has(.contact-fab__menu:popover-open) .contact-fab__trigger { background: var(--ink); border-color: var(--ink); }
+/* El menú es un popover nativo (popover="auto"): Esc, clic fuera y devolver el
+   foco al botón los pone el navegador. Va en el top layer, así que se coloca
+   con coordenadas fijas encima del botón; con anchor positioning se ancla a él. */
 .contact-fab__menu {
-  display: flex; flex-direction: column; gap: .35rem; min-width: 14rem; padding: var(--space-2);
-  background: var(--panel); border: 1px solid var(--rule); border-radius: var(--radius-lg);
+  position: fixed; inset: auto; margin: 0;
+  right: 1.25rem; bottom: calc(1.25rem + 3.25rem);
+  flex-direction: column; gap: .35rem; min-width: 14rem; padding: var(--space-2);
+  background: var(--panel); color: var(--ink); border: 1px solid var(--rule); border-radius: var(--radius-lg);
   box-shadow: 0 18px 40px rgba(0, 0, 0, .6);
 }
-.contact-fab__menu[hidden] { display: none; }
+.contact-fab__menu:popover-open { display: flex; }
+.contact-fab__trigger { anchor-name: --contact-fab; }
+@supports (position-anchor: --a) {
+  .contact-fab__menu {
+    position-anchor: --contact-fab;
+    right: anchor(right); bottom: anchor(top); margin-bottom: var(--space-2);
+  }
+}
+@media (max-width: 480px) { .contact-fab__menu { right: 1rem; bottom: calc(1rem + 3.25rem); } }
 .contact-fab__item {
   display: flex; align-items: center; gap: var(--space-3); padding: var(--space-3) var(--space-3); border-radius: var(--radius-md);
   border: 1px solid transparent; color: var(--ink); text-decoration: none;
@@ -611,33 +630,46 @@ html[data-priceanim='blur'] .price-value {
 }
 
 /* --- Modal de contacto profesional ---------------------------------------- */
-.modal-overlay {
-  position: fixed; inset: 0; z-index: 1000;
-  background: rgba(10, 12, 16, 0.82);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  display: flex; align-items: center; justify-content: center;
-  padding: var(--space-6);
-  opacity: 0; visibility: hidden;
-  transition: opacity .3s cubic-bezier(.2,.8,.2,1), visibility .3s;
-}
-.modal-overlay.is-open {
-  opacity: 1; visibility: visible;
-}
+/* <dialog> nativo abierto con showModal(): el fondo es ::backdrop y la
+   entrada/salida se anima con @starting-style + allow-discrete (guía
+   animate-to-from-top-layer). Sin overflow:hidden en <body>: el scroll de
+   detrás se contiene con overscroll-behavior (guía
+   prevent-page-scroll-under-modal-dialog). */
 .modal-window {
-  background: var(--panel);
+  background: var(--panel); color: var(--ink);
   border: 1px solid var(--rule);
   box-shadow: 0 24px 60px rgba(0,0,0,0.7), 0 0 35px var(--accent-soft);
   border-radius: var(--radius-xl);
-  width: 100%; max-width: 540px;
+  width: calc(100% - 2 * var(--space-6)); max-width: 540px;
   max-height: 90vh; overflow-y: auto;
   padding: var(--space-8);
-  position: relative;
-  transform: scale(.93) translateY(18px);
-  transition: transform .35s cubic-bezier(.2,.8,.2,1);
+  opacity: 0;
+  transition: opacity .3s cubic-bezier(.2,.8,.2,1), display .3s, overlay .3s;
+  transition-behavior: allow-discrete;
 }
-.modal-overlay.is-open .modal-window {
-  transform: scale(1) translateY(0);
+.modal-window:modal { overscroll-behavior: contain; }
+.modal-window[open] { opacity: 1; }
+@starting-style { .modal-window[open] { opacity: 0; } }
+.modal-window::backdrop {
+  background: rgba(10, 12, 16, 0);
+  backdrop-filter: blur(0);
+  overflow: hidden; overscroll-behavior: contain;
+  transition: background .3s ease, backdrop-filter .3s ease, display .3s, overlay .3s;
+  transition-behavior: allow-discrete;
+}
+.modal-window[open]::backdrop { background: rgba(10, 12, 16, 0.82); backdrop-filter: blur(12px); }
+@starting-style { .modal-window[open]::backdrop { background: rgba(10, 12, 16, 0); backdrop-filter: blur(0); } }
+@media (prefers-reduced-motion: no-preference) {
+  .modal-window {
+    transform: scale(.93) translateY(18px);
+    transition: opacity .3s cubic-bezier(.2,.8,.2,1), transform .35s cubic-bezier(.2,.8,.2,1), display .35s, overlay .35s;
+    transition-behavior: allow-discrete;
+  }
+  .modal-window[open] { transform: none; }
+  @starting-style { .modal-window[open] { transform: scale(.93) translateY(18px); } }
+}
+@media (prefers-reduced-motion: reduce) {
+  .modal-window, .modal-window::backdrop { transition-duration: .1s; }
 }
 .modal-close {
   position: absolute; top: 1.2rem; right: 1.2rem;
@@ -680,9 +712,9 @@ html[data-priceanim='blur'] .price-value {
 .blog-nav { display: flex; flex-wrap: wrap; gap: var(--space-5); margin-bottom: var(--space-3); }
 .blog-nav a {
   font-family: var(--data); font-size: var(--fs-2xs); letter-spacing: .1em; text-transform: uppercase;
-  color: var(--ink-soft); text-decoration: none; border-bottom: 1px solid transparent;
+  color: var(--ink-soft); text-decoration: underline 1px transparent; text-underline-offset: .3em;
 }
-.blog-nav a:hover { color: var(--accent); border-color: var(--accent); }
+.blog-nav a:hover { color: var(--accent); text-decoration-color: var(--accent); }
 .breadcrumbs {
   display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-2);
   font-size: var(--fs-xs); color: var(--ink-soft); margin-bottom: var(--space-6);
@@ -698,10 +730,9 @@ html[data-priceanim='blur'] .price-value {
 }
 .blog-related ul { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: var(--space-2); }
 .blog-related a {
-  color: var(--ink); text-decoration: none; border-bottom: 1px solid var(--rule);
-  padding-bottom: .1rem;
+  color: var(--ink); text-decoration: underline 1px var(--rule); text-underline-offset: .25em;
 }
-.blog-related a:hover { color: var(--accent); border-color: var(--accent); }
+.blog-related a:hover { color: var(--accent); text-decoration-color: var(--accent); }
 
 .blog-cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: var(--space-5); margin-top: var(--space-8); }
 .blog-card {
@@ -905,11 +936,11 @@ html[data-priceanim='blur'] .price-value {
 .app-back { text-align: center; }
 .app-back a {
   font-family: var(--data); text-transform: uppercase; font-size: var(--fs-sm);
-  letter-spacing: .1em; color: var(--ink-soft); text-decoration: none;
-  border-bottom: 1px solid var(--rule); padding-bottom: var(--space-1);
-  transition: color .2s, border-color .2s;
+  letter-spacing: .1em; color: var(--ink-soft);
+  text-decoration: underline 1px var(--rule); text-underline-offset: .4em;
+  transition: color .2s, text-decoration-color .2s;
 }
-.app-back a:hover { color: var(--accent); border-color: var(--accent); }
+.app-back a:hover { color: var(--accent); text-decoration-color: var(--accent); }
 
 /* Caso de cliente (CaseKadriLabPage.astro): reutiliza las clases .app-* y solo
    añade la rejilla de capturas y dos ajustes de texto. */

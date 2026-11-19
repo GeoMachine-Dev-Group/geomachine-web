@@ -256,28 +256,20 @@ const preloadFont: Record<Lang, string> = {
 
       paint();
 
-      /* Modal de contacto profesional */
-      const modal = document.getElementById('contact-modal') as HTMLElement | null;
+      /* Modal de contacto profesional: <dialog> nativo (Catalog.astro). */
+      const modal = document.getElementById('contact-modal') as HTMLDialogElement | null;
       const modalServiceSelect = document.getElementById('modal-service-select') as HTMLSelectElement | null;
 
       function openModal(serviceName?: string) {
-        if (!modal) return;
-        modal.classList.add('is-open');
-        modal.setAttribute('aria-hidden', 'false');
-        document.body.style.overflow = 'hidden';
+        if (!modal || modal.open) return;
         if (serviceName && modalServiceSelect) {
           const matchingOpt = Array.from(modalServiceSelect.options).find(
             (opt) => opt.value.toLowerCase().includes(serviceName.toLowerCase()) || serviceName.toLowerCase().includes(opt.value.toLowerCase())
           );
           if (matchingOpt) modalServiceSelect.value = matchingOpt.value;
         }
-      }
-
-      function closeModal() {
-        if (!modal) return;
-        modal.classList.remove('is-open');
-        modal.setAttribute('aria-hidden', 'true');
-        document.body.style.overflow = '';
+        // showModal(): foco dentro, resto de la página inerte y Esc para cerrar.
+        modal.showModal();
       }
 
       document.addEventListener('click', (e) => {
@@ -289,16 +281,19 @@ const preloadFont: Record<Lang, string> = {
           const serviceName = card?.querySelector('.card__name')?.textContent?.trim();
           openModal(serviceName);
         }
-        if (target?.closest('[data-close-modal]') || target === modal) {
-          closeModal();
-        }
+        if (target?.closest('[data-close-modal]')) modal?.close();
       });
 
-      document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape' && modal?.classList.contains('is-open')) {
-          closeModal();
-        }
-      });
+      /* Respaldo de closedby="any" para Safari: un clic cuyo destino es el
+         propio <dialog> y cae fuera de su caja es un clic en el fondo. */
+      if (modal && !('closedBy' in HTMLDialogElement.prototype)) {
+        modal.addEventListener('click', (e) => {
+          if (e.target !== modal) return;
+          const r = modal.getBoundingClientRect();
+          const inside = r.top <= e.clientY && e.clientY <= r.bottom && r.left <= e.clientX && e.clientX <= r.right;
+          if (!inside) modal.close();
+        });
+      }
 
       /* Inclinación 3D siguiendo al cursor: solo en modo tilt, con movimiento
          permitido y en dispositivos con puntero fino de verdad — sin esto el
