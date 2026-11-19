@@ -65,6 +65,12 @@ const hreflangAlternates: HreflangAlt[] =
 /** Fuente del H1 (elemento LCP) que se precarga en cada idioma.
     Al añadir un idioma, apunta aquí a la cara que realmente use su alfabeto:
     el georgiano usa Noto Sans Georgian, no Outfit (que no tiene esos glifos). */
+const speculationWhere = [
+  { href_matches: '/*' },
+  { not: { href_matches: '/api/*' } },
+  { not: { href_matches: '/downloads/*' } },
+  { not: { selector_matches: '[target=_blank], [download], [rel~=nofollow]' } },
+];
 const preloadFont: Record<Lang, string> = {
   es: '/fonts/outfit-700-latin.woff2',
   ru: '/fonts/unbounded-700-cyrillic.woff2',
@@ -135,6 +141,22 @@ const preloadFont: Record<Lang, string> = {
       crossorigin
     />
 
+    <!-- Transiciones entre páginas (global.css, @view-transition): no pintar la
+         página nueva hasta tener el main, para no animar hacia una página en
+         blanco (guía consistent-cross-document-transitions). Solo Chrome/Edge;
+         el resto lo ignora. -->
+    <link rel="expect" href="#main" blocking="render" />
+
+    <!-- Precarga de la página siguiente (guía improve-next-page-load-performance).
+         Prefetch al pasar el ratón ~200 ms por un enlace interno; prerender
+         completo solo al empezar el clic (conservative), para no ejecutar la
+         analítica de páginas que no se llegan a abrir. Fuera /api, descargas y
+         enlaces que abren pestaña. Solo Chrome/Edge; el resto lo ignora. -->
+    <script type="speculationrules" is:inline set:html={JSON.stringify({
+      prefetch: [{ where: { and: speculationWhere }, eagerness: 'moderate' }],
+      prerender: [{ where: { and: speculationWhere }, eagerness: 'conservative' }],
+    })} />
+
     <script is:inline>
       // Modo tarjeta: Inclinación 3D ('tilt')
       try {
@@ -176,7 +198,7 @@ const preloadFont: Record<Lang, string> = {
       </div>
     </header>
 
-    <main>
+    <main id="main">
       <slot />
     </main>
 
@@ -302,21 +324,37 @@ const preloadFont: Record<Lang, string> = {
          por tarjeta. */
       const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
       if (!reduceMotion) {
+        /* Rendimiento: medir la tarjeta una vez al entrar (no en cada
+           movimiento, que obligaba a recalcular el layout tras cada escritura)
+           y escribir como mucho una vez por fotograma. La medida se descarta
+           al hacer scroll o cambiar de tarjeta. */
+        let tiltCard: HTMLElement | null = null;
+        let tiltRect: DOMRect | null = null;
+        let tiltX = 0, tiltY = 0, tiltFrame = 0;
+        const applyTilt = () => {
+          tiltFrame = 0;
+          if (!tiltCard) return;
+          tiltRect ??= tiltCard.getBoundingClientRect();
+          const px = (tiltX - tiltRect.left) / tiltRect.width;
+          const py = (tiltY - tiltRect.top) / tiltRect.height;
+          tiltCard.style.setProperty('--rx', (px - 0.5) * 14 + 'deg');
+          tiltCard.style.setProperty('--ry', -(py - 0.5) * 14 + 'deg');
+          tiltCard.style.setProperty('--mx', px * 100 + '%');
+          tiltCard.style.setProperty('--my', py * 100 + '%');
+        };
+        window.addEventListener('scroll', () => { tiltRect = null; }, { passive: true });
         document.addEventListener('mousemove', (e) => {
           if (root.dataset.cardstyle !== 'tilt') return;
           const card = (e.target as Element | null)?.closest<HTMLElement>('.card');
           if (!card) return;
-          const rect = card.getBoundingClientRect();
-          const px = (e.clientX - rect.left) / rect.width;
-          const py = (e.clientY - rect.top) / rect.height;
-          card.style.setProperty('--rx', (px - 0.5) * 14 + 'deg');
-          card.style.setProperty('--ry', -(py - 0.5) * 14 + 'deg');
-          card.style.setProperty('--mx', px * 100 + '%');
-          card.style.setProperty('--my', py * 100 + '%');
+          if (card !== tiltCard) { tiltCard = card; tiltRect = null; }
+          tiltX = e.clientX; tiltY = e.clientY;
+          tiltFrame ||= requestAnimationFrame(applyTilt);
         });
         document.addEventListener('mouseout', (e) => {
           const card = (e.target as Element | null)?.closest<HTMLElement>('.card');
           if (card && !card.contains(e.relatedTarget as Node | null)) {
+            if (card === tiltCard) { tiltCard = null; tiltRect = null; } // que un fotograma pendiente no la vuelva a inclinar
             card.style.setProperty('--rx', '0deg');
             card.style.setProperty('--ry', '0deg');
           }
@@ -330,19 +368,21 @@ const preloadFont: Record<Lang, string> = {
         });
       }
 
-      // Aparición progresiva de las filas.
-      const io = new IntersectionObserver(
+      // Aparición progresiva de las filas: solo donde el CSS no puede hacerlo
+      // ligado al scroll (global.css, .reveal).
+      const nativeReveal = CSS.supports('(animation-timeline: view()) and (animation-range: entry)');
+      const io = nativeReveal ? null : new IntersectionObserver(
         (entries) => {
           entries.forEach((e) => {
             if (e.isIntersecting) {
               e.target.classList.add('is-in');
-              io.unobserve(e.target);
+              io?.unobserve(e.target);
             }
           });
         },
         { rootMargin: '0px 0px -8% 0px' }
       );
-      document.querySelectorAll('.reveal').forEach((el) => io.observe(el));
+      if (io) document.querySelectorAll('.reveal').forEach((el) => io.observe(el));
 
     </script>
 

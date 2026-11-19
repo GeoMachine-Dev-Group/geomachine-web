@@ -22,6 +22,7 @@ const service = relatedService ? relatedServiceInfo(relatedService, lang) : unde
 ---
 
 <BlogNav lang={lang} currentTitle={title} />
+<div class="read-progress" aria-hidden="true"></div>
 <article class="post shell">
   <header class="post__header">
     <a class="post__pillar" href={`${blogPath[lang]}#${pillar.toLowerCase()}`}>{pillarTitle(pillar, lang)}</a>

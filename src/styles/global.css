@@ -868,12 +868,58 @@ html[data-priceanim='blur'] .price-value {
 
 /* --- Aparición progresiva / accesibilidad de movimiento --------------------- */
 
-.reveal { opacity: 0; transform: translateY(14px); transition: opacity .5s ease, transform .5s ease; }
-.reveal.is-in { opacity: 1; transform: none; }
+/* Respaldo (IntersectionObserver en Base.astro) para navegadores sin
+   animaciones ligadas al scroll. Usa translate y no transform para no pisar
+   el transform de la inclinación 3D de las tarjetas. */
+.reveal { opacity: 0; translate: 0 14px; transition: opacity .5s ease, translate .5s ease; }
+.reveal.is-in { opacity: 1; translate: none; }
+/* Nativo: la animación avanza con el scroll, sin JS (guía
+   scroll-entry-exit-effects). Termina al 60 % de la entrada, cuando la fila ya
+   se lee entera. */
+@media (prefers-reduced-motion: no-preference) {
+  @supports ((animation-timeline: view()) and (animation-range: entry)) {
+    @keyframes reveal-in { from { opacity: 0; translate: 0 14px; } }
+    .reveal, .reveal.is-in {
+      opacity: 1; translate: none; transition: none;
+      animation: reveal-in linear both;
+      animation-timeline: view();
+      animation-range: entry 0% entry 60%;
+    }
+  }
+}
+
+/* --- Transiciones entre páginas (guía cross-document-transitions) ----------
+   Fundido corto entre páginas del sitio; la cabecera se queda quieta porque
+   tiene nombre propio. Solo Chrome/Edge/Safari 18.2+; Firefox navega como
+   siempre. Desactivado con movimiento reducido. */
+@media (prefers-reduced-motion: no-preference) {
+  @view-transition { navigation: auto; }
+  .plate { view-transition-name: site-header; }
+  ::view-transition-old(root) { animation: .18s ease-in both vt-fade-out; }
+  ::view-transition-new(root) { animation: .28s ease-out both vt-fade-in; }
+  @keyframes vt-fade-out { to { opacity: 0; } }
+  @keyframes vt-fade-in { from { opacity: 0; translate: 0 8px; } }
+}
+
+/* --- Barra de progreso de lectura (artículos del blog) ----------------------
+   Ligada al scroll del documento, sin JS (guía scroll-progress-indicator).
+   Decorativa: donde no hay soporte, simplemente no aparece. */
+.read-progress { display: none; }
+@media (prefers-reduced-motion: no-preference) {
+  @supports (animation-timeline: scroll()) {
+    @keyframes read-progress { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+    .read-progress {
+      display: block; position: fixed; inset: 0 0 auto; z-index: 95; height: 3px;
+      background: var(--accent); transform-origin: 0 50%;
+      animation: read-progress auto linear;
+      animation-timeline: scroll(root);
+    }
+  }
+}
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
   *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; }
-  .reveal { opacity: 1; transform: none; }
+  .reveal { opacity: 1; translate: none; }
 }
 
 /* --- GeoMachine Accounts (página de la app de escritorio) ---------------------

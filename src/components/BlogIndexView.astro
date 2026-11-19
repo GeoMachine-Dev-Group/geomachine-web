@@ -65,6 +65,7 @@ const ordered = [...posts.filter((p) => p.data.featured), ...posts.filter((p) =>
                 height="315"
                 alt=""
                 loading={i === 0 ? 'eager' : 'lazy'}
+                fetchpriority={i === 0 ? 'high' : undefined}
                 decoding="async"
               />
               <div class="blog-card__body">
