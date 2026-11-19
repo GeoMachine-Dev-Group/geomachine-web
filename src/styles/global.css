@@ -563,6 +563,7 @@ a { color: inherit; }
 .pv-face { fill: color-mix(in srgb, var(--panel-2) 78%, transparent); stroke: var(--accent); stroke-width: 1; stroke-linejoin: round; }
 .pv-tile { fill: color-mix(in srgb, var(--accent) 16%, var(--panel-2)); }
 .pv-line { fill: none; stroke: var(--accent); stroke-width: .75; stroke-opacity: .55; stroke-linecap: round; }
+.pv-wire { fill: none; stroke: var(--accent); stroke-width: 1; stroke-linecap: round; }
 .pv-dim .pv-face, .pv-dim .pv-line { stroke: var(--ink-soft); }
 .pv-glow-stop { stop-color: var(--accent); }
 

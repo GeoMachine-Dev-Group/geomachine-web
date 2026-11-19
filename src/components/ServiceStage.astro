@@ -45,7 +45,7 @@ interface Props {
   labels: { benefit: string; eta: string; prev: string; next: string };
   /** Pieza 3D de la línea (de momento solo 'web'): hueco en cada panel con
       su ilustración SVG, que el lienzo sustituye al cargar. */
-  visual?: 'web';
+  visual?: 'web' | 'app' | 'sys';
 }
 
 const { id, label, items, ctaLabel, ctaService, thousands, labels, visual } = Astro.props;
@@ -231,6 +231,8 @@ function priceParts(text: string) {
       three.js consigo; añadir una línea es añadir aquí su import(). */
   const VISUALS: Record<string, () => Promise<{ mount(stage: HTMLElement): (() => void) | null }>> = {
     web: () => import('../scripts/stage3d/web'),
+    app: () => import('../scripts/stage3d/app'),
+    sys: () => import('../scripts/stage3d/sys'),
   };
   new MutationObserver(() => {
     tweens.forEach((raf) => cancelAnimationFrame(raf));
@@ -489,7 +491,7 @@ function priceParts(text: string) {
       io.observe(stage);
     }
 
-    /* Pieza 3D (de momento solo WEB): three.js se pide con import() cuando el
+    /* Pieza 3D (las líneas con entrada en VISUALS): three.js se pide con import() cuando el
        escenario se acerca a la pantalla, así que no entra en el JS inicial.
        Si no hay WebGL o falla la carga, se queda el SVG estático. Se libera
        en pagehide y se vuelve a montar si la página vuelve de la caché. */
