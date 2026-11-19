@@ -9,12 +9,16 @@
  *   Catalog.astro los enseña todos apilados y oculta las pestañas.
  * - El precio es un elemento con `data-price` y los data-from/detail/was de
  *   cada moneda, con los mismos hijos .card__price-*: el script de Base.astro
- *   los repinta al cambiar de moneda igual que antes.
+ *   los repinta al cambiar de moneda igual que antes. Base.astro escribe el
+ *   texto entero en .card__price-from; este componente lo vuelve a partir en
+ *   «desde» + cifra + «/mes» para darles tamaños distintos.
  */
 export interface StageItem {
   code: string;
   name: string;
   time?: string;
+  /** Plazo máximo en días naturales, para la fecha estimada (solo con JS). */
+  days?: number;
   /** Lo que incluye, ya partido en líneas para la lista de comprobación. */
   checklist: string[];
   human: string;
@@ -36,147 +40,219 @@ interface Props {
   ctaService: string;
   /** Separador de miles del idioma, para el contador del precio. */
   thousands: string;
+  labels: { benefit: string; eta: string; prev: string; next: string };
 }
 
-const { id, label, items, ctaLabel, ctaService, thousands } = Astro.props;
+const { id, label, items, ctaLabel, ctaService, thousands, labels } = Astro.props;
 const pad = (n: number) => String(n).padStart(2, '0');
-const total = pad(items.length);
+
+/** Mismo reparto que hace el script en el navegador: lo de antes de la cifra
+    ("desde", "от"), la cifra con su moneda y lo de después ("/mes"). */
+const NUM = /\d[\d.,   ]*\d|\d/;
+function priceParts(text: string) {
+  const m = text.match(NUM);
+  if (!m || m.index === undefined) return { pre: '', num: text, post: '' };
+  const pre = text.slice(0, m.index).trim();
+  const rest = text.slice(m.index);
+  const slash = rest.indexOf('/');
+  return slash < 0 ? { pre, num: rest, post: '' } : { pre, num: rest.slice(0, slash), post: rest.slice(slash) };
+}
 ---
 
-<div class="stage reveal" data-stage data-thousands={thousands}>
-  <div class="stage__tabs" role="tablist" aria-label={label}>
-    {
-      items.map((item, i) => (
-        <button
-          type="button"
-          role="tab"
-          class:list={['stage__tab', { 'stage__tab--featured': item.featuredLabel }]}
-          id={`${id}-tab-${i}`}
-          aria-controls={`${id}-panel-${i}`}
-          aria-selected={String(i === 0)}
-          tabindex={i === 0 ? '0' : '-1'}
-        >
-          <span class="stage__tab-code">{item.code}</span>
-          <span class="stage__tab-name">{item.name}</span>
-        </button>
-      ))
-    }
-    <span class="stage__indicator" aria-hidden="true"></span>
+<div class="stage reveal" data-stage data-thousands={thousands} data-eta={labels.eta}>
+  <div class="stage__bar">
+    <div class="stage__tabs" role="tablist" aria-label={label}>
+      {
+        items.map((item, i) => (
+          <button
+            type="button"
+            role="tab"
+            class="stage__tab"
+            id={`${id}-tab-${i}`}
+            aria-controls={`${id}-panel-${i}`}
+            aria-selected={String(i === 0)}
+            tabindex={i === 0 ? '0' : '-1'}
+          >
+            <span class="stage__tab-code">{item.code}</span>
+            <span class="stage__tab-name">{item.name}</span>
+          </button>
+        ))
+      }
+      <span class="stage__indicator" aria-hidden="true"></span>
+    </div>
+    <p class="stage__progress" aria-hidden="true">
+      <span data-stage-index>01</span><span class="stage__progress-sep">/</span>{pad(items.length)}
+    </p>
   </div>
 
   <div class="stage__viewport">
+    <button type="button" class="stage__nav stage__nav--prev" data-stage-step="-1" aria-label={labels.prev} hidden>
+      <svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M10 3.5 5.5 8l4.5 4.5" /></svg>
+    </button>
     {
-      items.map((item, i) => (
-        <section
-          class="stage__panel"
-          role="tabpanel"
-          id={`${id}-panel-${i}`}
-          aria-labelledby={`${id}-tab-${i}`}
-          hidden={i !== 0}
-        >
-          <div class="stage__main">
-            <p class="stage__meta">
-              <span class="stage__code">{item.code}</span>
-              {item.featuredLabel && <span class="stage__badge">{item.featuredLabel}</span>}
-              <span class="stage__count" aria-hidden="true">{pad(i + 1)} / {total}</span>
-            </p>
-            <h3 class="stage__name">{item.name}</h3>
-
-            <div class="stage__price card__price" {...item.priceAttrs}>
-              <span class="price-value card__price-from stage__price-from">{item.initialFrom}</span>
-              <p class="price-value card__price-detail" hidden={!item.initialDetail}>{item.initialDetail}</p>
-              <span class="price-value card__price-was" hidden={!item.initialWas}>{item.initialWas}</span>
-            </div>
-
-            <div class="stage__foot">
-              <a class="btn btn--solid stage__cta" href="#contacto" data-service={ctaService}>{ctaLabel}</a>
-              {item.time && (
-                <p class="stage__time">
-                  <svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><circle cx="8" cy="8" r="6.25" /><path d="M8 4.5V8l2.5 1.5" /></svg>
-                  <span>{item.time}</span>
+      items.map((item, i) => {
+        const price = priceParts(item.initialFrom);
+        return (
+          <section
+            class="stage__panel"
+            role="tabpanel"
+            id={`${id}-panel-${i}`}
+            aria-labelledby={`${id}-tab-${i}`}
+            hidden={i !== 0}
+          >
+            <div class="stage__main">
+              <div class="stage__top">
+                <p class="stage__meta">
+                  <span class="stage__code">{item.code}</span>
+                  {item.featuredLabel && <span class="stage__badge">{item.featuredLabel}</span>}
                 </p>
-              )}
-            </div>
-          </div>
+                <h3 class="stage__name">{item.name}</h3>
 
-          <div class="stage__side">
-            <ul class="stage__check">
-              {item.checklist.map((line, n) => (
-                <li style={`--i: ${n}`}>
-                  <svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M3.5 8.5l3 3 6-7" /></svg>
-                  <span>{line}</span>
-                </li>
-              ))}
-            </ul>
-            <blockquote class="stage__quote">
-              <p>{item.human}</p>
-            </blockquote>
-          </div>
-        </section>
-      ))
+                <div class="stage__price card__price" {...item.priceAttrs}>
+                  <span class="price-value card__price-from stage__price-from">
+                    {price.pre && <span class="stage__price-pre">{price.pre}</span>}
+                    {price.pre && ' '}
+                    <span class="stage__price-num">{price.num}</span>
+                    {price.post && <span class="stage__price-post">{price.post}</span>}
+                  </span>
+                  <p class="price-value card__price-detail" hidden={!item.initialDetail}>{item.initialDetail}</p>
+                  <span class="price-value card__price-was" hidden={!item.initialWas}>{item.initialWas}</span>
+                </div>
+              </div>
+
+              <div class="stage__bottom">
+                <div class="stage__foot">
+                  <a class="btn btn--solid stage__cta" href="#contacto" data-service={ctaService} data-fab-hide-near>
+                    {ctaLabel}
+                  </a>
+                  {item.time && (
+                    <span class="stage__time">
+                      <svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true"><circle cx="8" cy="8" r="6.25" /><path d="M8 4.5V8l2.5 1.5" /></svg>
+                      {item.time}
+                    </span>
+                  )}
+                </div>
+                {item.days && <p class="stage__eta" data-days={item.days} hidden></p>}
+              </div>
+            </div>
+
+            <div class="stage__side">
+              <ul class="stage__check">
+                {item.checklist.map((line, n) => (
+                  <li style={`--i: ${n}`}>
+                    <svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M4 8.5l2.75 2.75L12 5.5" /></svg>
+                    <span>{line}</span>
+                  </li>
+                ))}
+              </ul>
+              <figure class="stage__quote">
+                <figcaption class="stage__quote-label">{labels.benefit}</figcaption>
+                <blockquote>
+                  <p>{item.human}</p>
+                </blockquote>
+              </figure>
+            </div>
+          </section>
+        );
+      })
     }
+    <button type="button" class="stage__nav stage__nav--next" data-stage-step="1" aria-label={labels.next} hidden>
+      <svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M6 3.5 10.5 8 6 12.5" /></svg>
+    </button>
   </div>
 </div>
 
 <script>
   const root = document.documentElement;
   const reduce = window.matchMedia('(prefers-reduced-motion: reduce)');
+  const NUM = /\d[\d.,   ]*\d|\d/; // separador: punto, coma, espacio duro o fino
+
+  function priceParts(text: string) {
+    const m = text.match(NUM);
+    if (!m || m.index === undefined) return { pre: '', num: text, post: '' };
+    const pre = text.slice(0, m.index).trim();
+    const rest = text.slice(m.index);
+    const slash = rest.indexOf('/');
+    return slash < 0 ? { pre, num: rest, post: '' } : { pre, num: rest.slice(0, slash), post: rest.slice(slash) };
+  }
+
+  /** Pinta el precio en tres piezas. El textContent final sigue siendo el
+      mismo texto que escribe Base.astro ("desde 250 €/mes"). */
+  function renderPrice(out: HTMLElement, text: string) {
+    const { pre, num, post } = priceParts(text);
+    const nodes: Node[] = [];
+    const span = (cls: string, txt: string) => {
+      const s = document.createElement('span');
+      s.className = cls;
+      s.textContent = txt;
+      return s;
+    };
+    if (pre) nodes.push(span('stage__price-pre', pre), document.createTextNode(' '));
+    nodes.push(span('stage__price-num', num));
+    if (post) nodes.push(span('stage__price-post', post));
+    out.replaceChildren(...nodes);
+  }
+
+  /* Base.astro repinta con textContent al cargar y al cambiar de moneda; aquí
+     se vuelve a partir. Solo reacciona cuando el texto llega "plano". */
+  const priceObserver = new MutationObserver((records) => {
+    records.forEach((r) => {
+      const out = r.target as HTMLElement;
+      if (!out.querySelector('.stage__price-num')) renderPrice(out, out.textContent ?? '');
+    });
+  });
 
   /* Contadores en curso: se cancelan si cambia la moneda, para que un
-     fotograma tardío no escriba la cifra de la moneda anterior encima de lo
-     que pinta Base.astro. */
+     fotograma tardío no escriba la cifra de la moneda anterior. */
   const tweens = new Map<HTMLElement, number>();
-  let vtSeq = 0;
   new MutationObserver(() => {
     tweens.forEach((raf) => cancelAnimationFrame(raf));
     tweens.clear();
   }).observe(root, { attributes: true, attributeFilter: ['data-currency'] });
-
-  const NUM = /\d[\d.,\u00a0\u202f ]*\d|\d/; // separador: punto, coma, espacio duro o fino
 
   function numberIn(text: string) {
     const m = text.match(NUM);
     return m ? Number(m[0].replace(/\D/g, '')) : 0;
   }
 
-  /** Cuenta la parte numérica visible del precio hasta su valor, releyendo
-      el data-from de la moneda activa. El resto del texto ("desde", "€/mes")
-      no se toca. */
+  /** Cuenta la cifra hasta su valor en 400 ms con salida suave. Los pasos
+      intermedios se redondean a la escala del precio (decenas para 250,
+      centenas para 1.800, millares para 174.000) para que una cifra a medio
+      contar no parezca un precio raro; el último fotograma es el texto real. */
   function tweenPrice(panel: HTMLElement, fromValue: number, sep: string) {
     const cell = panel.querySelector<HTMLElement>('[data-price]');
     const out = cell?.querySelector<HTMLElement>('.card__price-from');
     if (!cell || !out) return;
     const target = cell.dataset['from' + (root.dataset.currency ?? '')] ?? out.textContent ?? '';
-    const m = target.match(NUM);
     const prev = tweens.get(out);
     if (prev) cancelAnimationFrame(prev);
     tweens.delete(out);
-    if (!m || m.index === undefined || reduce.matches) {
-      out.textContent = target;
-      return;
-    }
-    const end = Number(m[0].replace(/\D/g, ''));
-    if (end === fromValue) {
-      out.textContent = target;
+    const m = target.match(NUM);
+    const end = m ? Number(m[0].replace(/\D/g, '')) : 0;
+    if (!m || m.index === undefined || reduce.matches || end === fromValue) {
+      renderPrice(out, target);
       return;
     }
     const own = m[0].match(/[^\d]/)?.[0] ?? sep;
     const head = target.slice(0, m.index);
     const tail = target.slice(m.index + m[0].length);
+    const step = Math.pow(10, Math.max(0, String(end).length - 2));
     const fmt = (n: number) => String(n).replace(/\B(?=(\d{3})+(?!\d))/g, own);
-    const dur = 420;
+    const dur = 400;
     const t0 = performance.now();
-    const step = (now: number) => {
+    const frame = (now: number) => {
       const p = Math.min(1, (now - t0) / dur);
-      const eased = 1 - Math.pow(1 - p, 3);
-      out.textContent = head + fmt(Math.round(fromValue + (end - fromValue) * eased)) + tail;
-      if (p < 1) tweens.set(out, requestAnimationFrame(step));
-      else {
+      if (p >= 1) {
         tweens.delete(out);
-        out.textContent = target;
+        renderPrice(out, target);
+        return;
       }
+      const eased = 1 - Math.pow(1 - p, 3);
+      const v = Math.round((fromValue + (end - fromValue) * eased) / step) * step;
+      renderPrice(out, head + fmt(v) + tail);
+      tweens.set(out, requestAnimationFrame(frame));
     };
-    tweens.set(out, requestAnimationFrame(step));
+    tweens.set(out, requestAnimationFrame(frame));
   }
 
   /** Reinicia la entrada escalonada de la lista de comprobación. */
@@ -187,16 +263,36 @@ const total = pad(items.length);
     panel.classList.add('is-entering');
   }
 
+  /* Fecha estimada: hoy + plazo máximo, con el formato del idioma de la
+     página (día y mes corto). Solo en el navegador: en el HTML estático la
+     fecha se quedaría vieja. */
+  const dateFmt = new Intl.DateTimeFormat(root.lang || undefined, { day: 'numeric', month: 'short' });
+
   document.querySelectorAll<HTMLElement>('[data-stage]').forEach((stage) => {
     const tablist = stage.querySelector<HTMLElement>('[role="tablist"]')!;
     const tabs = [...stage.querySelectorAll<HTMLButtonElement>('[role="tab"]')];
     const panels = tabs.map((t) => document.getElementById(t.getAttribute('aria-controls') ?? '') as HTMLElement);
     const viewport = stage.querySelector<HTMLElement>('.stage__viewport')!;
     const indicator = stage.querySelector<HTMLElement>('.stage__indicator')!;
+    const indexOut = stage.querySelector<HTMLElement>('[data-stage-index]');
     const sep = stage.dataset.thousands ?? '.';
     let current = 0;
 
     stage.classList.add('is-ready');
+
+    stage.querySelectorAll<HTMLElement>('.stage__eta[data-days]').forEach((eta) => {
+      const d = new Date();
+      d.setDate(d.getDate() + Number(eta.dataset.days));
+      eta.textContent = (stage.dataset.eta ?? '').replace('{date}', dateFmt.format(d));
+      eta.hidden = false;
+    });
+
+    panels.forEach((p) => {
+      const out = p.querySelector<HTMLElement>('.card__price-from');
+      if (!out) return;
+      if (!out.querySelector('.stage__price-num')) renderPrice(out, out.textContent ?? '');
+      priceObserver.observe(out, { childList: true });
+    });
 
     /* Indicador de cobre: una barra de 100 px que se mueve y se estira solo con
        transform (translate + scaleX), medida contra la lista de pestañas. */
@@ -212,24 +308,38 @@ const total = pad(items.length);
     /** En móvil la tira se desplaza: lleva la pestaña activa a la vista sin
         mover la página en vertical (scrollIntoView sí la movería). */
     function revealTab(tab: HTMLElement) {
+      const behavior = reduce.matches ? 'auto' : 'smooth';
       const left = tab.offsetLeft - 16;
       const right = tab.offsetLeft + tab.offsetWidth + 16 - tablist.clientWidth;
-      if (tablist.scrollLeft > left) tablist.scrollTo({ left, behavior: reduce.matches ? 'auto' : 'smooth' });
-      else if (tablist.scrollLeft < right) tablist.scrollTo({ left: right, behavior: reduce.matches ? 'auto' : 'smooth' });
+      if (tablist.scrollLeft > left) tablist.scrollTo({ left, behavior });
+      else if (tablist.scrollLeft < right) tablist.scrollTo({ left: right, behavior });
     }
 
-    function swap(next: number) {
+    /** La máscara de la derecha avisa de que la tira sigue; al llegar al
+        final se quita para no difuminar la última pestaña. */
+    function syncScrollEnd() {
+      const end = tablist.scrollLeft + tablist.clientWidth >= tablist.scrollWidth - 2;
+      tablist.classList.toggle('is-scroll-end', end);
+    }
+    tablist.addEventListener('scroll', syncScrollEnd, { passive: true });
+
+    /** Termina en seco cualquier cambio a medias. */
+    function settle() {
       panels.forEach((p, i) => {
         p.getAnimations().forEach((a) => a.cancel());
-        p.hidden = i !== next;
+        p.classList.remove('is-leaving');
+        p.hidden = i !== current;
       });
     }
 
     function select(next: number, focus = false) {
-      if (next === current || next < 0 || next >= tabs.length) return;
+      const n = tabs.length;
+      next = ((next % n) + n) % n;
+      if (next === current) return;
       const dir = next > current ? 1 : -1;
       const prevPanel = panels[current];
       const fromValue = numberIn(prevPanel.querySelector('.card__price-from')?.textContent ?? '');
+      const height = viewport.offsetHeight;
       current = next;
 
       tabs.forEach((t, i) => {
@@ -237,82 +347,58 @@ const total = pad(items.length);
         t.setAttribute('aria-selected', String(on));
         t.tabIndex = on ? 0 : -1;
       });
+      if (indexOut) indexOut.textContent = String(next + 1).padStart(2, '0');
       if (focus) tabs[next].focus({ preventScroll: true });
       placeIndicator();
       revealTab(tabs[next]);
 
-      const after = () => {
-        replayChecklist(panels[current]);
-        tweenPrice(panels[current], fromValue, sep);
-      };
-
-      if (reduce.matches) {
-        swap(next);
-        after();
-        return;
-      }
-
-      /* View Transitions: el escenario recibe un nombre solo mientras dura el
-         cambio y la raíz no se anima (global.css), así que solo se desliza el
-         escenario, hacia el lado al que se viaja. */
-      const doc = document as Document & { startViewTransition?: (cb: () => void) => { finished: Promise<void> } };
-      if (doc.startViewTransition) {
-        // Un cambio rápido tras otro salta la transición anterior: solo limpia
-        // la última, y el nombre lo lleva un único escenario cada vez.
-        const seq = ++vtSeq;
-        document.querySelectorAll<HTMLElement>('.stage__viewport').forEach((v) => { v.style.viewTransitionName = ''; });
-        root.dataset.stageDir = dir > 0 ? 'next' : 'prev';
-        root.classList.add('is-stage-vt');
-        viewport.style.viewTransitionName = 'stage-panel';
-        const vt = doc.startViewTransition(() => {
-          swap(current);
-          after();
-        });
-        vt.finished.finally(() => {
-          if (seq !== vtSeq) return;
-          viewport.style.viewTransitionName = '';
-          root.classList.remove('is-stage-vt');
-          delete root.dataset.stageDir;
-        });
-        return;
-      }
-
-      /* Respaldo: los paneles están apilados en la misma celda, así que el
-         saliente y el entrante se animan a la vez, solo opacidad y transform. */
       const nextPanel = panels[next];
-      panels.forEach((p) => p.getAnimations().forEach((a) => a.cancel()));
-      panels.forEach((p, i) => { if (i !== next && p !== prevPanel) p.hidden = true; });
-      nextPanel.hidden = false;
+      if (reduce.matches) {
+        settle();
+        tweenPrice(nextPanel, fromValue, sep);
+        return;
+      }
+
+      /* El escenario mide lo que el panel activo. Mientras dura el cambio, el
+         saliente sale del flujo (posición absoluta, sin animar posición) y se
+         funde, el entrante entra deslizándose desde el lado al que se viaja,
+         y el contenedor guarda con min-block-size el alto que tenía para que
+         lo de debajo no salte. Ese mínimo se suelta cuando el escenario sale
+         de pantalla, donde un cambio de alto ya no se ve. */
+      settle();
       prevPanel.hidden = false;
       prevPanel.classList.add('is-leaving');
-      const out = prevPanel.animate(
-        [{ opacity: 1, transform: 'none' }, { opacity: 0, transform: `translateX(${-28 * dir}px)` }],
-        { duration: 200, easing: 'ease-in', fill: 'forwards' },
+      const kept = parseFloat(viewport.style.minBlockSize) || 0;
+      viewport.style.minBlockSize = `${Math.max(kept, height)}px`;
+
+      prevPanel.animate(
+        [{ opacity: 1, transform: 'none' }, { opacity: 0, transform: `translateX(${-16 * dir}px)` }],
+        { duration: 220, easing: 'ease-in', fill: 'forwards' },
       );
-      nextPanel.animate(
-        [{ opacity: 0, transform: `translateX(${28 * dir}px)` }, { opacity: 1, transform: 'none' }],
-        { duration: 280, easing: 'cubic-bezier(.2,.8,.2,1)' },
+      const enter = nextPanel.animate(
+        [{ opacity: 0, transform: `translateX(${32 * dir}px)` }, { opacity: 1, transform: 'none' }],
+        { duration: 300, easing: 'cubic-bezier(.2,.8,.2,1)' },
       );
-      out.finished
-        .then(() => {
-          if (panels[current] !== prevPanel) prevPanel.hidden = true;
-          out.cancel();
-        })
-        .catch(() => {})
-        .finally(() => prevPanel.classList.remove('is-leaving'));
-      after();
+      enter.finished.then(settle).catch(() => {});
+      replayChecklist(nextPanel);
+      tweenPrice(nextPanel, fromValue, sep);
     }
 
-    tabs.forEach((tab, i) => {
-      tab.addEventListener('click', () => select(i));
+    tabs.forEach((tab, i) => tab.addEventListener('click', () => select(i)));
+
+    /* Flechas a los lados del escenario: aparecen con el ratón encima o con
+       el foco del teclado, y dan la vuelta como las teclas de flecha. */
+    stage.querySelectorAll<HTMLButtonElement>('[data-stage-step]').forEach((btn) => {
+      btn.hidden = false;
+      btn.addEventListener('click', () => select(current + Number(btn.dataset.stageStep)));
     });
 
     /* Patrón de pestañas de la APG con activación automática: flechas, Inicio
        y Fin mueven el foco y seleccionan a la vez. */
     tablist.addEventListener('keydown', (e) => {
       const keys: Record<string, number> = {
-        ArrowRight: (current + 1) % tabs.length,
-        ArrowLeft: (current - 1 + tabs.length) % tabs.length,
+        ArrowRight: current + 1,
+        ArrowLeft: current - 1,
         Home: 0,
         End: tabs.length - 1,
       };
@@ -340,18 +426,26 @@ const total = pad(items.length);
     });
     viewport.addEventListener('pointercancel', () => { tracking = false; });
 
-    // La primera colocación, sin transición (si no, la barra entra deslizándose desde la izquierda).
+    // Primera colocación sin transición: si no, la barra entra deslizándose.
     indicator.style.transition = 'none';
     placeIndicator();
+    syncScrollEnd();
     requestAnimationFrame(() => requestAnimationFrame(() => { indicator.style.transition = ''; }));
-    new ResizeObserver(placeIndicator).observe(tablist);
+    new ResizeObserver(() => { placeIndicator(); syncScrollEnd(); }).observe(tablist);
     document.fonts?.ready.then(placeIndicator);
+
+    if ('IntersectionObserver' in window) {
+      /* Fuera de pantalla se suelta el alto mínimo que dejan los cambios. */
+      new IntersectionObserver(([entry]) => {
+        if (!entry.isIntersecting) viewport.style.minBlockSize = '';
+      }).observe(viewport);
+    }
 
     /* Primera vez que el escenario entra en pantalla: la lista se marca una a
        una y el precio cuenta desde cero. Con movimiento reducido, nada. */
-    if (reduce.matches) {
+    if (reduce.matches || !('IntersectionObserver' in window)) {
       stage.classList.add('is-played');
-    } else if ('IntersectionObserver' in window) {
+    } else {
       const io = new IntersectionObserver(
         (entries) => {
           if (!entries.some((en) => en.isIntersecting)) return;
@@ -363,8 +457,6 @@ const total = pad(items.length);
         { rootMargin: '0px 0px -15% 0px' },
       );
       io.observe(stage);
-    } else {
-      stage.classList.add('is-played');
     }
   });
 </script>
