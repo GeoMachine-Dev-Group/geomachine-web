@@ -434,21 +434,23 @@ const featuredMap: Record<string, Record<Lang, string>> = {
        de ir dentro de un <summary>, donde algunos lectores de pantalla dejan de
        anunciarlo como encabezado. Sin JS todas las respuestas quedan abiertas;
        el script pliega la 2.ª y la 3.ª con hidden="until-found" (la búsqueda
-       del navegador las sigue encontrando y las abre). El FAQPage de
+       del navegador las sigue encontrando y las abre). Al abrir y cerrar, la
+       respuesta se desliza: .faq__a pasa de grid-template-rows 0fr a 1fr y
+       .faq__a-inner recorta el contenido mientras tanto. El FAQPage de
        Schema.astro sale de ui.ts, así que no depende de este marcado. -->
   <div class="faq__list" data-faq>
     <div class="faq__item">
       <h3 class="faq__q"><button type="button" class="faq__summary" id="faq-q1" aria-expanded="true" aria-controls="faq-a1">{t.faqQ1}</button></h3>
-      <div class="faq__a" id="faq-a1" role="region" aria-labelledby="faq-q1"><p>{t.faqA1}</p></div>
+      <div class="faq__a" id="faq-a1" role="region" aria-labelledby="faq-q1"><div class="faq__a-inner"><p>{t.faqA1}</p></div></div>
     </div>
     <div class="faq__item">
       <h3 class="faq__q"><button type="button" class="faq__summary" id="faq-q2" aria-expanded="true" aria-controls="faq-a2" data-fold>{t.faqQ2}</button></h3>
-      <div class="faq__a" id="faq-a2" role="region" aria-labelledby="faq-q2"><p>{t.faqA2}</p></div>
+      <div class="faq__a" id="faq-a2" role="region" aria-labelledby="faq-q2"><div class="faq__a-inner"><p>{t.faqA2}</p></div></div>
     </div>
     <div class="faq__item">
       <h3 class="faq__q"><button type="button" class="faq__summary" id="faq-q3" aria-expanded="true" aria-controls="faq-a3" data-fold>{t.faqQ3}</button></h3>
       <div class="faq__a" id="faq-a3" role="region" aria-labelledby="faq-q3">
-        <p>{t.faqA3Before}<a href="#mnt">{t.faqMntLink}</a>{t.faqA3After}</p>
+        <div class="faq__a-inner"><p>{t.faqA3Before}<a href="#mnt">{t.faqMntLink}</a>{t.faqA3After}</p></div>
       </div>
     </div>
   </div>
@@ -596,13 +598,48 @@ const featuredMap: Record<string, Record<Lang, string>> = {
 </dialog>
 
 <script>
+  const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+  /* Espera a que acaben las transiciones CSS que acaba de lanzar `el` (no las
+     de sus hijos). Con movimiento reducido no hay ninguna y resuelve enseguida. */
+  const transitionsDone = (el: Element) =>
+    Promise.allSettled(
+      el.getAnimations().filter((a) => a instanceof CSSTransition).map((a) => a.finished)
+    );
+
+  /* «Ver más / Ver menos». El contenedor crece de su altura actual a `auto`
+     con interpolate-size (mejora progresiva: donde no existe, salta como
+     antes) y las tarjetas nuevas entran con un fundido escalonado. */
   document.querySelectorAll<HTMLElement>('[data-cards]').forEach((container) => {
     const toggle = container.nextElementSibling as HTMLButtonElement | null;
     if (!toggle || !toggle.matches('[data-toggle-more]')) return;
+    let run = 0;
     toggle.addEventListener('click', () => {
+      const animate = !reduceMotion.matches;
+      const sizing = animate && CSS.supports('interpolate-size', 'allow-keywords');
+      const id = ++run;
+      if (sizing) container.style.height = container.offsetHeight + 'px';
       const expanded = container.classList.toggle('is-expanded');
       toggle.textContent = expanded ? toggle.dataset.toggleLess ?? '' : toggle.dataset.toggleMore ?? '';
       if (expanded) container.querySelectorAll('.reveal').forEach((el) => el.classList.add('is-in'));
+      if (sizing) {
+        void container.offsetHeight; // fija la altura de partida
+        container.classList.add('is-sizing');
+        container.style.height = '';
+        transitionsDone(container).then(() => {
+          if (id === run) container.classList.remove('is-sizing');
+        });
+      }
+      if (expanded && animate) {
+        container.querySelectorAll<HTMLElement>(':scope > article:nth-child(n+4)').forEach((card, i) => {
+          card.animate(
+            [
+              { opacity: 0, transform: 'translateY(-12px) scale(.98)' },
+              { opacity: 1, transform: 'none' },
+            ],
+            { duration: 320, delay: Math.min(i, 6) * 60, easing: 'cubic-bezier(.2,.8,.2,1)', fill: 'backwards' }
+          );
+        });
+      }
     });
   });
 
@@ -684,17 +721,34 @@ const featuredMap: Record<string, Record<Lang, string>> = {
     });
   });
 
-  /* FAQ: pliega la 2.ª y la 3.ª respuesta y conecta los botones. */
+  /* FAQ: pliega la 2.ª y la 3.ª respuesta y conecta los botones.
+     Abrir: se quita `hidden` (la respuesta sigue a 0fr) y luego .is-collapsed,
+     para que se deslice hasta 1fr. Cerrar: vuelve a 0fr y, cuando termina,
+     se pone hidden="until-found" para que Ctrl+F la siga encontrando.
+     `instant` (al cargar y en beforematch) cambia de estado sin animar. */
   document.querySelectorAll<HTMLElement>('[data-faq] .faq__summary').forEach((btn) => {
     const panel = document.getElementById(btn.getAttribute('aria-controls') ?? '');
     if (!panel) return;
-    const set = (open: boolean) => {
+    const set = (open: boolean, instant = false) => {
       btn.setAttribute('aria-expanded', String(open));
-      if (open) panel.removeAttribute('hidden');
-      else panel.setAttribute('hidden', 'until-found');
+      panel.classList.toggle('is-instant', instant);
+      if (open) {
+        panel.removeAttribute('hidden');
+        void panel.offsetHeight; // fija 0fr como punto de partida
+        panel.classList.remove('is-collapsed');
+      } else {
+        panel.classList.add('is-collapsed');
+      }
+      void panel.offsetHeight;
+      panel.classList.remove('is-instant');
+      if (!open) {
+        transitionsDone(panel).then(() => {
+          if (btn.getAttribute('aria-expanded') === 'false') panel.setAttribute('hidden', 'until-found');
+        });
+      }
     };
-    if (btn.hasAttribute('data-fold')) set(false);
+    if (btn.hasAttribute('data-fold')) set(false, true);
     btn.addEventListener('click', () => set(btn.getAttribute('aria-expanded') !== 'true'));
-    panel.addEventListener('beforematch', () => set(true));
+    panel.addEventListener('beforematch', () => set(true, true));
   });
 </script>
