@@ -15,7 +15,7 @@ import { getCollection } from 'astro:content';
 import { ui, blogPath, kadriLabCasePath, hasBlog, type Lang } from '../i18n/ui';
 import { intents, intentUi } from '../data/intents';
 import { isPublished } from '../lib/blog';
-import ServiceCard from './ServiceCard.astro';
+import ServiceTimeline, { type TimelineEntry } from './ServiceTimeline.astro';
 import { legalPath, legalLangFor, LEGAL_VERSION } from '../data/legal';
 
 interface Props {
@@ -205,6 +205,49 @@ const featuredMap: Record<string, Record<Lang, string>> = {
     ka: '★ მთავარი შეთავაზება',
   },
 };
+
+/** Etiqueta destacada sin la estrella: el mapa de plazos no lleva adornos. */
+const featuredText = (code: string) => featuredMap[code]?.[lang]?.replace(/^★\s*/, '');
+
+/** Servicio → fila del mapa de plazos (ServiceTimeline). La lista de «qué
+    incluye» sale de la ficha técnica partida por comas. */
+function itemEntry(item: Item): TimelineEntry {
+  return {
+    code: item.code,
+    name: item.name[lang],
+    time: item.time?.[lang],
+    timeEs: item.time?.es,
+    checklist: item.spec[lang]
+      .split(',')
+      .map((s) => s.trim())
+      .filter(Boolean)
+      .map((s) => s.charAt(0).toLocaleUpperCase(lang) + s.slice(1)),
+    human: item.human[lang],
+    recurring: item.unit === 'month' && !item.time,
+    priceAttrs: priceData(item),
+    from: initialFrom(item),
+    detail: initialDetail(item),
+    was: initialWas(item, item.unit),
+    featured: featuredText(item.code),
+  };
+}
+
+function bundleEntry(b: Bundle): TimelineEntry {
+  return {
+    code: b.code,
+    name: b.name[lang],
+    time: b.time?.[lang],
+    timeEs: b.time?.es,
+    checklist: b.includes[lang],
+    human: b.human[lang],
+    recurring: false,
+    priceAttrs: bundlePriceData(b),
+    from: moneyFrom(b[DEFAULT_TIER][CUR], CUR, 'once'),
+    detail: priceDetail(b[DEFAULT_TIER][CUR], CUR, 'once'),
+    was: initialWas(b, 'once'),
+    featured: featuredText(b.code),
+  };
+}
 ---
 
 <section class="hero hero--atelier shell">
@@ -345,7 +388,7 @@ const featuredMap: Record<string, Record<Lang, string>> = {
         <span class="line__prefix">{line.prefix}</span>
         <div>
           <h2 class="line__title">{line.title[lang]}</h2>
-          <p class="line__note">{line.hint ? `${line.note[lang]} ${line.hint[lang]}` : line.note[lang]}</p>
+          <p class="line__note">{line.note[lang]}</p>
         </div>
         {hasBlog(lang) && blogPillars.has(line.prefix) && (
           <a href={`${blogPath[lang]}#${line.prefix.toLowerCase()}`} class="line__blog-badge">
@@ -359,32 +402,7 @@ const featuredMap: Record<string, Record<Lang, string>> = {
         )}
       </header>
 
-      <div class="cards" data-cards>
-        {line.items.map((item) => {
-          const featuredText = featuredMap[item.code]?.[lang];
-          return (
-            <ServiceCard
-              code={item.code}
-              name={item.name[lang]}
-              time={item.time?.[lang]}
-              description={item.spec[lang]}
-              humanLabel={t.colService}
-              human={item.human[lang]}
-              priceAttrs={priceData(item)}
-              initialFrom={initialFrom(item)}
-              initialDetail={initialDetail(item)}
-              initialWas={initialWas(item, item.unit)}
-              featured={Boolean(featuredText)}
-              featuredLabel={featuredText}
-            />
-          );
-        })}
-      </div>
-      {line.items.length > 3 && (
-        <button type="button" class="cards-toggle" data-toggle-more={t.showMore} data-toggle-less={t.showLess}>
-          {t.showMore}
-        </button>
-      )}
+      <ServiceTimeline lang={lang} id={line.prefix} entries={line.items.map(itemEntry)} />
     </section>
   ))
 }
@@ -398,34 +416,7 @@ const featuredMap: Record<string, Record<Lang, string>> = {
     </div>
   </header>
 
-  <div class="cards" data-cards>
-    {
-      bundles.map((b) => {
-        const featuredText = featuredMap[b.code]?.[lang];
-        return (
-          <ServiceCard
-            code={b.code}
-            name={b.name[lang]}
-            time={b.time?.[lang]}
-            description={b.includes[lang]}
-            humanLabel={t.bundleIncludes}
-            human={b.human[lang]}
-            priceAttrs={bundlePriceData(b)}
-            initialFrom={moneyFrom(b[DEFAULT_TIER][CUR], CUR, 'once')}
-            initialDetail={priceDetail(b[DEFAULT_TIER][CUR], CUR, 'once')}
-            initialWas={initialWas(b, 'once')}
-            featured={Boolean(featuredText)}
-            featuredLabel={featuredText}
-          />
-        );
-      })
-    }
-  </div>
-  {bundles.length > 3 && (
-    <button type="button" class="cards-toggle" data-toggle-more={t.showMore} data-toggle-less={t.showLess}>
-      {t.showMore}
-    </button>
-  )}
+  <ServiceTimeline lang={lang} id="PACK" entries={bundles.map(bundleEntry)} />
 </section>
 
 <section class="faq shell">
@@ -596,16 +587,6 @@ const featuredMap: Record<string, Record<Lang, string>> = {
 </dialog>
 
 <script>
-  document.querySelectorAll<HTMLElement>('[data-cards]').forEach((container) => {
-    const toggle = container.nextElementSibling as HTMLButtonElement | null;
-    if (!toggle || !toggle.matches('[data-toggle-more]')) return;
-    toggle.addEventListener('click', () => {
-      const expanded = container.classList.toggle('is-expanded');
-      toggle.textContent = expanded ? toggle.dataset.toggleLess ?? '' : toggle.dataset.toggleMore ?? '';
-      if (expanded) container.querySelectorAll('.reveal').forEach((el) => el.classList.add('is-in'));
-    });
-  });
-
   /* Manejo unificado de envío de formularios de contacto (Sección + Modal) */
   ['contact-form', 'modal-contact-form'].forEach((id) => {
     const form = document.getElementById(id) as HTMLFormElement | null;

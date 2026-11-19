@@ -1,0 +1,724 @@
+---
+/**
+ * Diseño B del catálogo: «mapa de plazo y precio».
+ *
+ * Cada línea (WEB, APP, IA…) y los paquetes se pintan como un gráfico: el eje
+ * horizontal es el plazo de entrega en escala logarítmica (1 día … 5 semanas),
+ * cada servicio es una barra que va de su plazo mínimo al máximo, con el
+ * precio al final. Los servicios mensuales sin plazo (mantenimiento) van en
+ * una franja aparte, «cada mes», fuera del eje.
+ *
+ * El plazo se lee en el build del texto ESPAÑOL (`time.es`: «1–2 días»,
+ * «2–4 semanas», «3 semanas», «+1 día»). Si no se puede leer («1 sesión»),
+ * la fila sale sin barra y con el texto del plazo. Todos los gráficos usan la
+ * misma escala, para que se puedan comparar entre líneas.
+ *
+ * Detalle de cada servicio: popover nativo anclado a la barra con CSS anchor
+ * positioning. Sin anchor positioning, o por debajo de 720 px, el script lo
+ * convierte en una fila que se despliega debajo (grid 0fr → 1fr) con
+ * hidden="until-found", así que la búsqueda del navegador lo encuentra. Todo
+ * el texto va en el HTML del servidor.
+ *
+ * Contrato de precios con Base.astro: cada precio es un elemento con
+ * data-price y data-from{eur,rub,gel} (+ detail/was), con los hijos
+ * .card__price-from / .card__price-detail / .card__price-was.
+ */
+import type { Lang } from '../i18n/ui';
+import { ui } from '../i18n/ui';
+import { LAUNCH_OPEN } from '../data/catalog';
+
+export interface TimelineEntry {
+  code: string;
+  name: string;
+  /** Plazo en el idioma de la página (lo que se lee). */
+  time?: string;
+  /** Plazo en español: de aquí sale la barra. */
+  timeEs?: string;
+  checklist: string[];
+  human: string;
+  /** Servicio mensual sin plazo de entrega: va a la franja «cada mes». */
+  recurring: boolean;
+  priceAttrs: Record<string, string>;
+  from: string;
+  detail: string;
+  was: string;
+  featured?: string;
+}
+
+interface Props {
+  lang: Lang;
+  /** Prefijo de la línea, para ids únicos (WEB, PACK…). */
+  id: string;
+  entries: TimelineEntry[];
+}
+
+const { lang, id, entries } = Astro.props;
+const t = ui[lang];
+
+/* Textos propios del gráfico. ka: ka sin revisar. */
+const L = {
+  es: { axis: 'Plazo de entrega', scale: 'escala logarítmica', hint: 'Pasa el cursor, enfoca o toca una barra para ver qué incluye.', d: 'd', w: 'sem', monthly: 'Cada mes', monthlyNote: 'Servicios recurrentes: no tienen plazo de entrega.', onDemand: 'A demanda', fixed: 'plazo fijo', benefit: 'Qué consigues' },
+  ru: { axis: 'Срок сдачи', scale: 'логарифмическая шкала', hint: 'Наведите курсор, выберите или нажмите на полосу, чтобы увидеть, что входит.', d: 'дн', w: 'нед', monthly: 'Каждый месяц', monthlyNote: 'Регулярные услуги: у них нет срока сдачи.', onDemand: 'По запросу', fixed: 'фиксированный срок', benefit: 'Что вы получаете' },
+  en: { axis: 'Delivery time', scale: 'log scale', hint: 'Hover, focus or tap a bar to see what it includes.', d: 'd', w: 'wk', monthly: 'Every month', monthlyNote: 'Recurring services: no delivery date.', onDemand: 'On demand', fixed: 'fixed deadline', benefit: 'What you get' },
+  ka: { axis: 'მიწოდების ვადა', scale: 'ლოგარითმული სკალა', hint: 'გადაატარეთ კურსორი ან შეეხეთ ზოლს, რომ ნახოთ რა შედის.', d: 'დღ', w: 'კვ', monthly: 'ყოველთვიურად', monthlyNote: 'პერიოდული სერვისები: მიწოდების ვადა არ აქვს.', onDemand: 'მოთხოვნით', fixed: 'ფიქსირებული ვადა', benefit: 'რას იღებთ' },
+}[lang];
+
+/* Escala común a todos los gráficos: logarítmica entre 0,75 y 40 días. Con
+   0,75 el «1 día» no queda pegado al borde, y con 40 caben las 5 semanas. */
+const D_MIN = 0.75;
+const D_MAX = 40;
+const pos = (days: number) => Math.log(days / D_MIN) / Math.log(D_MAX / D_MIN);
+const pct = (x: number) => +(x * 100).toFixed(2);
+
+/** «1–2 días» → [1, 2] · «3 semanas» → [21, 21] · «+1 día» → [1, 1] · otro → null */
+function parseDays(s?: string): [number, number] | null {
+  if (!s) return null;
+  const m = s.trim().match(/^\+?\s*(\d+)(?:\s*[–-]\s*(\d+))?\s*(d[ií]as?|semanas?)$/i);
+  if (!m) return null;
+  const k = /^sem/i.test(m[3]) ? 7 : 1;
+  const a = Number(m[1]) * k;
+  const b = Number(m[2] ?? m[1]) * k;
+  return [Math.min(a, b), Math.max(a, b)];
+}
+
+const TICKS: { days: number; label: string; minor?: boolean }[] = [
+  { days: 1, label: `1 ${L.d}` },
+  { days: 2, label: `2 ${L.d}`, minor: true },
+  { days: 3, label: `3 ${L.d}` },
+  { days: 5, label: `5 ${L.d}`, minor: true },
+  { days: 7, label: `1 ${L.w}` },
+  { days: 14, label: `2 ${L.w}`, minor: true },
+  { days: 21, label: `3 ${L.w}`, minor: true },
+  { days: 28, label: `4 ${L.w}` },
+  // 5 semanas: solo la línea de rejilla; su etiqueta chocaría con la de 4.
+  { days: 35, label: '', minor: true },
+].map((tk) => ({ ...tk, p: pct(pos(tk.days)) }));
+
+/* Líneas de rejilla: una capa de fondo de 1 px por marca, para no meter
+   nueve elementos en cada fila. */
+const gridBg = TICKS.map(
+  (tk) => `linear-gradient(var(--tl-grid), var(--tl-grid)) ${tk.p}% 0 / 1px 100% no-repeat`,
+).join(', ');
+
+const slug = (code: string) => code.toLowerCase().replace(/[^a-z0-9]+/g, '-');
+const ctaText = LAUNCH_OPEN ? t.heroCtaSlot : t.ctaButton;
+
+const rows = entries
+  .filter((e) => !e.recurring)
+  .map((e, i) => {
+    const range = parseDays(e.timeEs);
+    const s = slug(e.code);
+    const a = range ? pct(pos(range[0])) : 0;
+    const b = range ? pct(pos(range[1])) : 0;
+    return {
+      ...e,
+      s,
+      i,
+      range,
+      point: Boolean(range && range[0] === range[1]),
+      a,
+      b,
+      timeText: e.time ?? L.onDemand,
+    };
+  });
+const monthly = entries.filter((e) => e.recurring).map((e) => ({ ...e, s: slug(e.code) }));
+---
+
+<div class="tl" data-tl style={`--tl-gridbg: ${gridBg}`}>
+  {rows.length > 0 && (
+    <>
+      <div class="tl__caption">
+        <p class="tl__axis-title"><span>{L.axis}</span> <span class="tl__axis-scale">· {L.scale}</span></p>
+        <p class="tl__hint">{L.hint}</p>
+      </div>
+
+      <div class="tl__axis" aria-hidden="true">
+        <span class="tl__axis-ticks">
+          {TICKS.filter((tk) => tk.label).map((tk) => (
+            <span class:list={['tl__tick', { 'tl__tick--minor': tk.minor }]} style={`--p: ${tk.p}`}>{tk.label}</span>
+          ))}
+        </span>
+      </div>
+
+      <ol class="tl__rows">
+        {rows.map((r) => (
+          <li class:list={['tl__row', { 'tl__row--featured': r.featured, 'tl__row--nobar': !r.range }]} data-tl-item style={`--a: ${r.a}; --b: ${r.b}; --i: ${r.i}`}>
+            <button
+              type="button"
+              class="tl__btn"
+              id={`tl-b-${r.s}`}
+              data-tl-btn
+              aria-expanded="false"
+              aria-controls={`tl-d-${r.s}`}
+              popovertarget={`tl-d-${r.s}`}
+            >
+              <span class="tl__label">
+                <span class="tl__code">{r.code}</span>
+                {r.featured && <span class="tl__badge">{r.featured}</span>}
+                <span class="tl__name">{r.name}</span>
+                <span class="tl__time">{r.timeText}{r.point && <span class="tl__fixed"> · {L.fixed}</span>}</span>
+              </span>
+              <span class="tl__track">
+                {r.range
+                  ? <span class:list={['tl__bar', { 'tl__bar--point': r.point }]} style={`anchor-name: --tl-${r.s}`}></span>
+                  : <span class="tl__na" style={`anchor-name: --tl-${r.s}`}>{r.timeText}</span>}
+              </span>
+              <span class="tl__price" {...r.priceAttrs}>
+                <span class="price-value card__price-from">{r.from}</span>
+              </span>
+            </button>
+
+            <div class="tl__detail" id={`tl-d-${r.s}`} popover="auto" data-tl-detail role="group" style={`position-anchor: --tl-${r.s}`} aria-labelledby={`tl-h-${r.s}`}>
+              <div class="tl__detail-inner" data-tl-inner>
+                <div class="tl__sheet">
+                  <p class="tl__meta"><span class="tl__code">{r.code}</span><span>{r.timeText}</span></p>
+                  <h3 class="tl__dname" id={`tl-h-${r.s}`}>{r.name}</h3>
+                  <p class="tl__dlabel">{t.bundleIncludes}</p>
+                  <ul class="tl__check">
+                    {r.checklist.map((c) => <li>{c}</li>)}
+                  </ul>
+                  <p class="tl__dlabel">{L.benefit}</p>
+                  <p class="tl__human">{r.human}</p>
+                  <div class="tl__dfoot">
+                    <div class="card__price tl__dprice" {...r.priceAttrs}>
+                      <span class="price-value card__price-was" hidden={!r.was}>{r.was}</span>
+                      <span class="price-value card__price-from">{r.from}</span>
+                      <p class="price-value card__price-detail" hidden={!r.detail}>{r.detail}</p>
+                    </div>
+                    <a class="btn btn--solid tl__cta" href="#contacto" data-tl-cta>{ctaText}</a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </li>
+        ))}
+      </ol>
+    </>
+  )}
+
+  {monthly.length > 0 && (
+    <div class:list={['tl__monthly', { 'tl__monthly--solo': rows.length === 0 }]}>
+      <p class="tl__monthly-head"><span class="tl__monthly-title">{L.monthly}</span> <span class="tl__monthly-note">{L.monthlyNote}</span></p>
+      <ul class="tl__cells">
+        {monthly.map((m) => (
+          <li class:list={['tl__cell', { 'tl__row--featured': m.featured }]} data-tl-item>
+            <button
+              type="button"
+              class="tl__cellbtn"
+              id={`tl-b-${m.s}`}
+              data-tl-btn
+              aria-expanded="false"
+              aria-controls={`tl-d-${m.s}`}
+              popovertarget={`tl-d-${m.s}`}
+              style={`anchor-name: --tl-${m.s}`}
+            >
+              <span class="tl__code">{m.code}</span>
+              <span class="tl__name">{m.name}</span>
+              <span class="tl__price" {...m.priceAttrs}>
+                <span class="price-value card__price-from">{m.from}</span>
+              </span>
+            </button>
+
+            <div class="tl__detail" id={`tl-d-${m.s}`} popover="auto" data-tl-detail role="group" style={`position-anchor: --tl-${m.s}`} aria-labelledby={`tl-h-${m.s}`}>
+              <div class="tl__detail-inner" data-tl-inner>
+                <div class="tl__sheet">
+                  <p class="tl__meta"><span class="tl__code">{m.code}</span><span>{L.monthly}</span></p>
+                  <h3 class="tl__dname" id={`tl-h-${m.s}`}>{m.name}</h3>
+                  <p class="tl__dlabel">{t.bundleIncludes}</p>
+                  <ul class="tl__check">
+                    {m.checklist.map((c) => <li>{c}</li>)}
+                  </ul>
+                  <p class="tl__dlabel">{L.benefit}</p>
+                  <p class="tl__human">{m.human}</p>
+                  <div class="tl__dfoot">
+                    <div class="card__price tl__dprice" {...m.priceAttrs}>
+                      <span class="price-value card__price-was" hidden={!m.was}>{m.was}</span>
+                      <span class="price-value card__price-from">{m.from}</span>
+                      <p class="price-value card__price-detail" hidden={!m.detail}>{m.detail}</p>
+                    </div>
+                    <a class="btn btn--solid tl__cta" href="#contacto" data-tl-cta>{ctaText}</a>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </li>
+        ))}
+      </ul>
+    </div>
+  )}
+</div>
+
+<style>
+  /* Columnas del gráfico: etiqueta | área del eje | reserva para el precio al
+     final de la barra. El precio vive en «área + reserva» y se desplaza con
+     margin-inline-start = b × ancho del área (el % del margen se resuelve
+     contra el ancho de su área de rejilla). */
+  .tl {
+    --tl-label: minmax(12rem, 17rem);
+    --tl-reserve: 8.5rem;
+    --tl-grid: var(--rule-soft);
+    --tl-bar-h: .7rem;
+    margin-top: var(--space-10);
+  }
+
+  .tl__caption {
+    display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline;
+    gap: var(--space-2) var(--space-6);
+    padding-bottom: var(--space-3);
+    border-bottom: 1px solid var(--rule);
+  }
+  .tl__axis-title {
+    margin: 0; font-family: var(--data); font-size: var(--fs-2xs); letter-spacing: .14em;
+    text-transform: uppercase; color: var(--ink);
+  }
+  .tl__axis-scale { color: var(--ink-soft); }
+  .tl__hint { margin: 0; font-size: var(--fs-xs); color: var(--ink-soft); }
+
+  /* Eje: mismas columnas que las filas. */
+  .tl__axis,
+  .tl__btn {
+    display: grid;
+    grid-template-columns: [label] var(--tl-label) [plot] minmax(0, 1fr) [reserve] var(--tl-reserve) [end];
+    column-gap: var(--space-6);
+  }
+  .tl__axis { height: 2rem; }
+  .tl__axis-ticks {
+    grid-column: plot; position: relative;
+    background: var(--tl-gridbg);
+    border-bottom: 1px solid var(--rule);
+  }
+  .tl__tick {
+    position: absolute; left: calc(var(--p) * 1%); bottom: .35rem;
+    translate: -50% 0;
+    font-family: var(--data); font-size: var(--fs-3xs); color: var(--ink-soft);
+    white-space: nowrap; padding-inline: .2rem; background: var(--paper);
+  }
+  .tl__tick::after {
+    content: ''; position: absolute; left: 50%; bottom: -.4rem; width: 1px; height: .3rem; background: var(--rule);
+  }
+
+  .tl__rows { list-style: none; margin: 0; padding: 0; }
+  .tl__row { border-bottom: 1px solid var(--rule-soft); view-timeline: --tl-row block; }
+
+  .tl__btn {
+    width: 100%; min-height: 3.5rem; padding: 0; margin: 0;
+    align-items: stretch;
+    font: inherit; color: inherit; text-align: start;
+    background: transparent; border: 0; cursor: pointer;
+    transition: background-color .18s ease;
+  }
+  .tl__btn:hover, .tl__row[data-open] .tl__btn { background: color-mix(in srgb, var(--panel) 75%, transparent); }
+  .tl__btn:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
+
+  .tl__label {
+    grid-column: label; align-self: center;
+    display: flex; flex-wrap: wrap; align-items: baseline; column-gap: var(--space-2);
+    padding-block: var(--space-3); padding-inline-start: var(--space-2);
+  }
+  .tl__code { font-family: var(--data); font-size: var(--fs-3xs); font-weight: 600; letter-spacing: .1em; color: var(--accent); }
+  .tl__name { font-family: var(--display); font-weight: 600; font-size: var(--fs-md); line-height: 1.25; color: var(--ink); }
+  .tl__label .tl__name { flex-basis: 100%; order: 2; }
+  .tl__time { order: 3; font-family: var(--data); font-size: var(--fs-3xs); color: var(--ink-soft); }
+  .tl__badge {
+    font-family: var(--data); font-size: var(--fs-3xs); letter-spacing: .1em; text-transform: uppercase;
+    color: var(--paper); background: var(--accent); padding: .1rem .35rem; border-radius: var(--radius-xs);
+  }
+
+  .tl__track {
+    grid-column: plot; grid-row: 1; position: relative;
+    background: var(--tl-gridbg);
+  }
+
+  /* La barra: tramo mínimo–máximo, relleno tenue y topes macizos, como una
+     barra de error. */
+  .tl__bar {
+    position: absolute; top: 50%; height: var(--tl-bar-h); margin-top: calc(var(--tl-bar-h) / -2);
+    left: calc(var(--a) * 1%);
+    width: calc((var(--b) - var(--a)) * 1%);
+    background: color-mix(in srgb, var(--accent) 55%, transparent);
+    border-inline: 2px solid var(--accent);
+    transform-origin: left center;
+    transition: background-color .18s ease;
+  }
+  /* Plazo fijo: un hito, no un tramo. Una marca maciza y una línea a toda la
+     altura de la fila. */
+  .tl__bar--point {
+    width: .5rem; margin-left: -.25rem; border: 0; background: var(--accent);
+    height: 1rem; margin-top: -.5rem;
+  }
+  .tl__bar--point::after {
+    content: ''; position: absolute; left: 50%; top: -1rem; bottom: -1rem; width: 1px;
+    background: color-mix(in srgb, var(--accent) 55%, transparent);
+  }
+  .tl__btn:hover .tl__bar, .tl__row[data-open] .tl__bar { background: color-mix(in srgb, var(--accent) 88%, transparent); }
+  .tl__btn:hover .tl__bar--point, .tl__row[data-open] .tl__bar--point { background: var(--ink); }
+  .tl__row--featured .tl__bar { background: var(--accent); box-shadow: 0 0 18px -2px var(--accent-soft); }
+
+  .tl__na {
+    position: absolute; top: 50%; left: 0; translate: 0 -50%;
+    font-family: var(--data); font-size: var(--fs-2xs); color: var(--ink-soft);
+    border: 1px dashed var(--rule); padding: .1rem var(--space-2); border-radius: var(--radius-xs);
+    background: var(--paper);
+  }
+
+  .tl__price {
+    grid-column: plot / end; grid-row: 1; align-self: center; justify-self: start;
+    margin-inline-start: calc(var(--b) * (100% - var(--tl-reserve) - var(--space-6)) / 100 + var(--space-3));
+    white-space: nowrap; pointer-events: none;
+  }
+  .tl__row--nobar .tl__price { grid-column: reserve; margin-inline-start: 0; }
+  .tl__price .card__price-from {
+    font-family: var(--data); font-size: var(--fs-sm); font-weight: 600; color: var(--ink);
+  }
+  .tl__row--featured .tl__price .card__price-from { color: var(--accent); }
+
+  /* --- Crecimiento de las barras ---------------------------------------- */
+  @keyframes tl-grow { from { scale: 0 1; } to { scale: 1 1; } }
+  @keyframes tl-fade { from { opacity: 0; translate: -.5rem 0; } to { opacity: 1; translate: none; } }
+
+  @media (prefers-reduced-motion: no-preference) {
+    @supports ((animation-timeline: view()) and (animation-range: entry)) {
+      .tl__bar {
+        animation: tl-grow linear both;
+        animation-timeline: --tl-row;
+        animation-range: entry 40% cover 22%;
+      }
+      .tl__track .tl__na, .tl__price {
+        animation: tl-fade linear both;
+        animation-timeline: --tl-row;
+        animation-range: cover 12% cover 26%;
+      }
+    }
+    /* Respaldo con IntersectionObserver: el script añade .tl--io (y luego
+       .is-in) solo donde no hay animaciones ligadas al scroll. Sin JS las
+       barras se ven tal cual. */
+    .tl--io .tl__bar { scale: 0 1; transition: scale .7s cubic-bezier(.2, .7, .2, 1) calc(var(--i, 0) * 55ms), background-color .18s ease; }
+    .tl--io .tl__price { opacity: 0; transition: opacity .4s ease calc(var(--i, 0) * 55ms + 450ms); }
+    .tl--io.is-in .tl__bar { scale: 1 1; }
+    .tl--io.is-in .tl__price { opacity: 1; }
+  }
+
+  /* --- Franja «cada mes» -------------------------------------------------- */
+  .tl__monthly { margin-top: var(--space-8); }
+  .tl__monthly--solo { margin-top: 0; }
+  .tl__monthly-head {
+    margin: 0 0 var(--space-3); display: flex; flex-wrap: wrap; gap: var(--space-1) var(--space-3); align-items: baseline;
+    padding-bottom: var(--space-3); border-bottom: 1px solid var(--rule);
+  }
+  .tl__monthly-title { font-family: var(--data); font-size: var(--fs-2xs); letter-spacing: .14em; text-transform: uppercase; color: var(--ink); }
+  .tl__monthly-note { font-size: var(--fs-xs); color: var(--ink-soft); }
+  .tl__cells {
+    list-style: none; margin: 0; padding: 0;
+    display: grid; grid-template-columns: repeat(auto-fill, minmax(13rem, 1fr));
+    border-left: 1px solid var(--rule-soft);
+  }
+  .tl__cell { border-right: 1px solid var(--rule-soft); border-bottom: 1px solid var(--rule-soft); }
+  .tl__cellbtn {
+    display: grid; gap: var(--space-1); width: 100%; height: 100%; margin: 0;
+    padding: var(--space-4); text-align: start; font: inherit; color: inherit;
+    background: transparent; border: 0; cursor: pointer;
+    transition: background-color .18s ease;
+  }
+  .tl__cellbtn:hover, .tl__cell[data-open] .tl__cellbtn { background: color-mix(in srgb, var(--panel) 75%, transparent); }
+  .tl__cellbtn:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
+  .tl__cellbtn .tl__price { grid-column: auto; grid-row: auto; margin: var(--space-2) 0 0; justify-self: start; }
+  .tl__cellbtn .tl__price .card__price-from { color: var(--accent); font-size: var(--fs-md); }
+
+  /* --- Ficha de detalle --------------------------------------------------- */
+  .tl__sheet {
+    background: var(--panel);
+    border: 1px solid var(--rule);
+    border-top: 2px solid var(--accent);
+    padding: var(--space-5);
+    color: var(--ink);
+  }
+  .tl__meta { margin: 0; display: flex; justify-content: space-between; gap: var(--space-3); font-family: var(--data); font-size: var(--fs-3xs); color: var(--ink-soft); }
+  .tl__dname { margin: var(--space-1) 0 0; font-family: var(--display); font-weight: 600; font-size: var(--fs-xl); line-height: 1.15; }
+  .tl__dlabel { margin: var(--space-4) 0 var(--space-2); font-family: var(--data); font-size: var(--fs-3xs); letter-spacing: .16em; text-transform: uppercase; color: var(--accent); }
+  .tl__check { list-style: none; margin: 0; padding: 0; display: grid; gap: .35rem; font-size: var(--fs-sm); color: var(--ink); }
+  .tl__check li { position: relative; padding-left: var(--space-6); line-height: 1.45; }
+  /* Marca de verificación dibujada con dos bordes: sin emoji ni iconos. */
+  .tl__check li::before {
+    content: ''; position: absolute; left: .2rem; top: .3em;
+    width: .35rem; height: .65rem;
+    border-right: 2px solid var(--accent); border-bottom: 2px solid var(--accent);
+    rotate: 45deg;
+  }
+  .tl__human { margin: 0; font-size: var(--fs-sm); line-height: 1.55; color: var(--ink-soft); }
+  .tl__dfoot {
+    margin-top: var(--space-5); padding-top: var(--space-4); border-top: 1px solid var(--rule-soft);
+    display: flex; flex-wrap: wrap; align-items: end; justify-content: space-between; gap: var(--space-3);
+  }
+  .tl__dprice .card__price-from { font-size: var(--fs-lg); }
+  .tl__cta { padding: var(--space-2) var(--space-4); }
+  .tl__cta:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
+
+  /* Popover: centrado por defecto (UA); anclado a la barra donde hay anchor
+     positioning. */
+  .tl__detail[popover] {
+    padding: 0; border: 0; background: transparent; color: var(--ink);
+    width: min(25rem, calc(100vw - 2rem));
+    max-height: min(80vh, 36rem); overflow: auto;
+    box-shadow: 0 18px 40px -12px rgba(0, 0, 0, .6);
+    opacity: 1; translate: none;
+  }
+  @supports (anchor-name: --a) {
+    .tl__detail[popover] {
+      inset: auto; margin: var(--space-2) 0;
+      position-area: bottom span-right;
+      position-try-fallbacks: flip-block, flip-inline, flip-block flip-inline;
+    }
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .tl__detail[popover] {
+      transition: opacity .18s ease, translate .18s ease, overlay .18s allow-discrete, display .18s allow-discrete;
+    }
+    .tl__detail[popover]:not(:popover-open) { opacity: 0; translate: 0 -.35rem; }
+    @starting-style {
+      .tl__detail[popover]:popover-open { opacity: 0; translate: 0 -.35rem; }
+    }
+  }
+
+  /* Fila desplegable (sin anchor positioning, o por debajo de 720 px): grid
+     0fr → 1fr, sin animar la altura. */
+  .tl__detail:not([popover]) {
+    display: grid; grid-template-rows: 0fr;
+  }
+  .tl__detail:not([popover]).is-open { grid-template-rows: 1fr; }
+  .tl__detail:not([popover]) > .tl__detail-inner { overflow: hidden; min-height: 0; }
+  .tl__detail:not([popover]) .tl__sheet { margin: 0 0 var(--space-4); }
+  .tl__cell .tl__detail:not([popover]) .tl__sheet { margin: 0 var(--space-3) var(--space-3); }
+  @media (prefers-reduced-motion: no-preference) {
+    .tl__detail:not([popover]) { transition: grid-template-rows .32s cubic-bezier(.2, .7, .2, 1); }
+  }
+
+  /* --- Móvil: lista vertical ------------------------------------------- */
+  @media (max-width: 720px) {
+    .tl__hint { display: none; }
+    .tl__axis, .tl__btn {
+      grid-template-columns: minmax(0, 1fr) auto;
+      column-gap: var(--space-3);
+    }
+    .tl__axis { height: 1.75rem; }
+    .tl__axis-ticks { grid-column: 1 / -1; }
+    .tl__tick--minor { display: none; }
+    .tl__btn { min-height: 0; padding-block: var(--space-3); row-gap: var(--space-2); }
+    .tl__label { grid-column: 1; grid-row: 1; padding: 0; }
+    .tl__price {
+      grid-column: 2; grid-row: 1; align-self: start; margin: 0; justify-self: end;
+    }
+    .tl__row--nobar .tl__price { grid-column: 2; }
+    .tl__track { grid-column: 1 / -1; grid-row: 2; height: 1.1rem; }
+    .tl__bar { --tl-bar-h: .4rem; }
+    .tl__bar--point { height: .75rem; margin-top: -.375rem; }
+    .tl__bar--point::after { display: none; }
+    .tl__na { font-size: var(--fs-3xs); padding-block: 0; }
+    .tl__label .tl__name { font-size: var(--fs-base); }
+  }
+</style>
+
+<script>
+  /* Comportamiento del mapa de plazos. Dos modos por fila:
+     - «popover»: popover nativo anclado a la barra (ancho > 720 px y anchor
+       positioning disponible). Se abre al pasar el cursor, al enfocar con
+       teclado o al pulsar; pulsar lo fija.
+     - «inline»: la ficha se despliega debajo de la fila (grid 0fr → 1fr) y
+       queda hidden="until-found" cuando está cerrada.
+     Sin JS, el popover sigue funcionando con popovertarget. */
+  const supportsPopover = typeof HTMLElement !== 'undefined' && 'popover' in HTMLElement.prototype;
+  const supportsAnchor = CSS.supports('anchor-name: --a');
+  const wide = matchMedia('(min-width: 721px)');
+  const fineHover = matchMedia('(hover: hover) and (pointer: fine)');
+  const reduced = matchMedia('(prefers-reduced-motion: reduce)');
+
+  type Row = {
+    li: HTMLElement;
+    btn: HTMLButtonElement;
+    pop: HTMLElement;
+    inner: HTMLElement;
+    pinned: boolean;
+    openT?: number;
+    closeT?: number;
+  };
+
+  const rows: Row[] = [];
+  document.querySelectorAll<HTMLElement>('[data-tl] [data-tl-item]').forEach((li) => {
+    const btn = li.querySelector<HTMLButtonElement>('[data-tl-btn]');
+    const pop = li.querySelector<HTMLElement>('[data-tl-detail]');
+    const inner = li.querySelector<HTMLElement>('[data-tl-inner]');
+    if (btn && pop && inner) rows.push({ li, btn, pop, inner, pinned: false });
+  });
+
+  let mode: 'popover' | 'inline' = 'popover';
+  const isOpen = (r: Row) =>
+    mode === 'popover' ? r.pop.matches(':popover-open') : r.pop.classList.contains('is-open');
+
+  function mark(r: Row, open: boolean) {
+    r.btn.setAttribute('aria-expanded', String(open));
+    r.li.toggleAttribute('data-open', open);
+    if (!open) r.pinned = false;
+  }
+
+  function showPop(r: Row) {
+    if (mode !== 'popover' || r.pop.matches(':popover-open')) return;
+    try {
+      (r.pop as HTMLElement & { showPopover(o?: { source?: HTMLElement }): void }).showPopover({ source: r.btn });
+    } catch {
+      r.pop.showPopover();
+    }
+  }
+  function hidePop(r: Row) {
+    if (mode === 'popover' && r.pop.matches(':popover-open')) r.pop.hidePopover();
+  }
+
+  function openInline(r: Row) {
+    r.inner.removeAttribute('hidden');
+    requestAnimationFrame(() => r.pop.classList.add('is-open'));
+    mark(r, true);
+  }
+  function closeInline(r: Row) {
+    r.pop.classList.remove('is-open');
+    mark(r, false);
+    const done = () => {
+      if (!r.pop.classList.contains('is-open')) r.inner.setAttribute('hidden', 'until-found');
+    };
+    if (reduced.matches) done();
+    else r.pop.addEventListener('transitionend', done, { once: true });
+  }
+
+  function setMode() {
+    const next = supportsPopover && supportsAnchor && wide.matches ? 'popover' : 'inline';
+    if (next === mode && rows.length && rows[0].li.dataset.tlMode === next) return;
+    rows.forEach((r) => {
+      if (mode === 'popover') hidePop(r);
+      r.pop.classList.remove('is-open');
+      mark(r, false);
+      if (next === 'popover') {
+        r.pop.setAttribute('popover', 'auto');
+        r.btn.setAttribute('popovertarget', r.pop.id);
+        r.inner.removeAttribute('hidden');
+      } else {
+        r.pop.removeAttribute('popover');
+        r.btn.removeAttribute('popovertarget');
+        r.inner.setAttribute('hidden', 'until-found');
+      }
+      r.li.dataset.tlMode = next;
+    });
+    mode = next;
+  }
+
+  rows.forEach((r) => {
+    r.pop.addEventListener('toggle', (e) => {
+      if (mode === 'popover') mark(r, (e as ToggleEvent).newState === 'open');
+    });
+
+    r.btn.addEventListener('click', (e) => {
+      if (mode === 'popover') {
+        // Abierto por hover o foco: el clic lo fija en vez de cerrarlo.
+        if (r.pop.matches(':popover-open') && !r.pinned) {
+          e.preventDefault();
+          r.pinned = true;
+          return;
+        }
+        if (!r.pop.matches(':popover-open')) r.pinned = true;
+        return; // popovertarget hace el resto
+      }
+      if (isOpen(r)) closeInline(r);
+      else openInline(r);
+    });
+
+    // Hover (solo con ratón).
+    const cancel = () => {
+      window.clearTimeout(r.openT);
+      window.clearTimeout(r.closeT);
+    };
+    const scheduleClose = () => {
+      window.clearTimeout(r.openT);
+      if (r.pinned) return;
+      r.closeT = window.setTimeout(() => {
+        if (!r.pinned && !r.pop.matches(':hover') && !r.pop.contains(document.activeElement)) hidePop(r);
+      }, 180);
+    };
+    r.btn.addEventListener('pointerenter', () => {
+      if (mode !== 'popover' || !fineHover.matches) return;
+      cancel();
+      r.openT = window.setTimeout(() => showPop(r), 140);
+    });
+    r.btn.addEventListener('pointerleave', () => {
+      if (mode === 'popover' && fineHover.matches) scheduleClose();
+    });
+    r.pop.addEventListener('pointerenter', cancel);
+    r.pop.addEventListener('pointerleave', () => {
+      if (mode === 'popover' && fineHover.matches) scheduleClose();
+    });
+
+    // Foco con teclado: abre sin fijar; al salir (y no entrar en la ficha) cierra.
+    r.btn.addEventListener('focus', () => {
+      if (mode === 'popover' && r.btn.matches(':focus-visible')) showPop(r);
+    });
+    const leaveFocus = (e: FocusEvent) => {
+      const to = e.relatedTarget as Node | null;
+      if (mode !== 'popover' || r.pinned) return;
+      if (to && (r.pop.contains(to) || to === r.btn)) return;
+      hidePop(r);
+    };
+    r.btn.addEventListener('blur', leaveFocus);
+    r.pop.addEventListener('focusout', leaveFocus);
+
+    // Teclado: flechas entre filas del mismo gráfico; Escape cierra la ficha.
+    r.btn.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+        const chart = r.li.closest('[data-tl]');
+        const list = rows.filter((x) => x.li.closest('[data-tl]') === chart);
+        const i = list.indexOf(r) + (e.key === 'ArrowDown' ? 1 : -1);
+        if (list[i]) {
+          e.preventDefault();
+          list[i].btn.focus();
+        }
+      } else if (e.key === 'Escape' && mode === 'inline' && isOpen(r)) {
+        closeInline(r);
+      }
+    });
+    r.pop.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && mode === 'inline') {
+        closeInline(r);
+        r.btn.focus();
+      }
+    });
+
+    // Búsqueda del navegador dentro de una ficha plegada.
+    r.inner.addEventListener('beforematch', () => {
+      if (mode === 'inline' && !isOpen(r)) openInline(r);
+    });
+
+    // «Solicitar plaza»: cierra la ficha; Base.astro abre el formulario.
+    r.pop.querySelector('[data-tl-cta]')?.addEventListener('click', () => {
+      if (mode === 'popover') hidePop(r);
+    });
+  });
+
+  setMode();
+  wide.addEventListener('change', setMode);
+
+  // Respaldo de la animación de las barras sin animation-timeline.
+  const nativeGrow = CSS.supports('(animation-timeline: view()) and (animation-range: entry)');
+  if (!nativeGrow && !reduced.matches && 'IntersectionObserver' in window) {
+    const io = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((e) => {
+          if (e.isIntersecting) {
+            e.target.classList.add('is-in');
+            io.unobserve(e.target);
+          }
+        });
+      },
+      { rootMargin: '0px 0px -12% 0px' },
+    );
+    document.querySelectorAll<HTMLElement>('[data-tl]').forEach((el) => {
+      const r = el.getBoundingClientRect();
+      if (r.top < innerHeight && r.bottom > 0) return; // ya visible: no lo escondas
+      el.classList.add('tl--io');
+      io.observe(el);
+    });
+  }
+</script>
