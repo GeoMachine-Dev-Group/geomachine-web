@@ -370,6 +370,21 @@ a { color: inherit; }
 .card__human { font-size: var(--fs-md); line-height: 1.5; color: var(--ink); margin: var(--space-2) 0 0; }
 .price-value { transition: opacity .18s ease, filter .18s ease, transform .18s cubic-bezier(.4,0,.2,1); display: inline-block; }
 .is-swapping .price-value { opacity: 0; filter: blur(4px); transform: scale(.92) translateY(2px); }
+/* Cambio de moneda con View Transition (Base.astro, swapPrices): cada precio
+   visible lleva un view-transition-name propio y la clase "price"; el viejo
+   sube y se va, el nuevo entra desde abajo, recortados por su caja. El resto
+   de la página (root) no se funde: se cambia sin más. Con movimiento
+   reducido el JS no lanza la transición. */
+.price-value { view-transition-class: price; }
+.is-currency-vt::view-transition-old(root) { display: none; }
+.is-currency-vt::view-transition-new(root) { animation: none; }
+.is-currency-vt::view-transition-group(*.price) { overflow: clip; animation-duration: .3s; }
+.is-currency-vt::view-transition-old(*.price),
+.is-currency-vt::view-transition-new(*.price) { inline-size: auto; block-size: 100%; mix-blend-mode: normal; }
+.is-currency-vt::view-transition-old(*.price) { animation: .3s cubic-bezier(.4,0,.2,1) both price-out; }
+.is-currency-vt::view-transition-new(*.price) { animation: .3s cubic-bezier(.4,0,.2,1) both price-in; }
+@keyframes price-out { to { transform: translateY(-100%); opacity: 0; } }
+@keyframes price-in { from { transform: translateY(100%); opacity: 0; } }
 .card__price-from { display: block; font-family: var(--data); font-size: var(--fs-xl); font-weight: 600; color: var(--accent); }
 .card__price-detail { display: block; margin-top: .3rem; font-size: var(--fs-xs); color: var(--ink-soft); }
 .card__price-detail[hidden] { display: none; }

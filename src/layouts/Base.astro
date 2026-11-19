@@ -245,16 +245,56 @@ const preloadFont: Record<Lang, string> = {
         });
       }
 
-      /** Cambia la moneda con el desenfoque de 160 ms que ya define el CSS. La
-          tarifa ya no se elige: la deciden las plazas libres (catalog.ts). */
-      function setVal(key: 'currency', val: string) {
+      const reducedMotionQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
+
+      /** Repinta los precios con una View Transition del mismo documento (guía
+          same-document-transitions): el número viejo sale hacia arriba y el
+          nuevo entra desde abajo (CSS: .is-currency-vt en global.css). Solo
+          reciben view-transition-name los precios visibles en pantalla, cada
+          uno con un nombre distinto, y se les quita al terminar; la clase
+          común "price" (view-transition-class) lleva la animación. Sin
+          soporte, el desenfoque de 160 ms de siempre (.is-swapping); con
+          movimiento reducido, cambio instantáneo. */
+      function swapPrices() {
+        if (reducedMotionQuery.matches) {
+          paint();
+          return;
+        }
+        if (!document.startViewTransition) {
+          document.body.classList.add('is-swapping');
+          window.setTimeout(() => {
+            paint();
+            document.body.classList.remove('is-swapping');
+          }, 160);
+          return;
+        }
+
+        const named: HTMLElement[] = [];
+        document.querySelectorAll<HTMLElement>('.price-value').forEach((el) => {
+          // Los precios de una tarjeta abierta están casi transparentes y la
+          // instantánea no hereda esa opacidad: esos cambian sin animación.
+          if (el.closest('.card:hover, .card:focus-within, .card.is-active')) return;
+          const box = el.getBoundingClientRect();
+          if (!box.width || box.bottom < 0 || box.top > window.innerHeight) return;
+          el.style.viewTransitionName = 'price-' + named.length;
+          named.push(el);
+        });
+
+        root.classList.add('is-currency-vt');
+        const transition = document.startViewTransition(() => paint());
+        transition.finished.finally(() => {
+          root.classList.remove('is-currency-vt');
+          named.forEach((el) => (el.style.viewTransitionName = ''));
+        });
+      }
+
+      /** Cambia la moneda. La tarifa ya no se elige: la deciden las plazas
+          libres (catalog.ts). Al cargar (animate = false) no se anima. */
+      function setVal(key: 'currency', val: string, animate = true) {
         if (root.dataset[key] === val) return;
         root.dataset[key] = val;
-        document.body.classList.add('is-swapping');
-        window.setTimeout(() => {
-          paint();
-          document.body.classList.remove('is-swapping');
-        }, 160);
+        if (animate) swapPrices();
+        else paint();
 
         document.querySelectorAll<HTMLElement>(`[data-set="${key}"]`).forEach((btn) => {
           btn.setAttribute('aria-pressed', String(btn.dataset.value === val));
@@ -276,7 +316,7 @@ const preloadFont: Record<Lang, string> = {
         // guardado ya no significa nada y no debe quedarse en el navegador.
         localStorage.removeItem('gm-tier');
         const savedCurrency = localStorage.getItem('gm-currency');
-        if (savedCurrency) setVal('currency', savedCurrency);
+        if (savedCurrency) setVal('currency', savedCurrency, false);
       } catch (e) {}
 
       paint();
