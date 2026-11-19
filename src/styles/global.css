@@ -20,8 +20,8 @@
   --stamp: #6b1f1f;
   --bg-glow: #212b1d;
 
-  --display: 'Outfit', 'Noto Sans Georgian', sans-serif;
-  --body: 'Plus Jakarta Sans', 'Noto Sans Georgian', sans-serif;
+  --display: 'Outfit', 'Outfit Fallback', 'Noto Sans Georgian', sans-serif;
+  --body: 'Plus Jakarta Sans', 'Jakarta Fallback', 'Noto Sans Georgian', sans-serif;
   --data: 'IBM Plex Mono', 'Noto Sans Georgian', ui-monospace, 'Cascadia Mono', monospace;
 
   --pad: clamp(1.25rem, 4vw, 3.5rem);
@@ -86,7 +86,19 @@
    puntos de corte: son consultas de capacidad y pueden darse a cualquier ancho. */
 
 *, *::before, *::after { box-sizing: border-box; }
-html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; }
+/* La web es solo oscura: color-scheme hace que la barra de scroll, los
+   desplegables, las casillas y el autorrelleno del navegador salgan en oscuro
+   (guía browser-ui-theming). scrollbar-color le pone los colores de la marca
+   (guía customize-scrollbar-color-and-thickness). */
+html {
+  -webkit-text-size-adjust: 100%; scroll-behavior: smooth;
+  color-scheme: dark;
+  scrollbar-color: color-mix(in srgb, var(--accent) 70%, var(--paper)) var(--paper);
+}
+/* Títulos sin palabras sueltas en la última línea; párrafos sin "viudas"
+   (guía improve-text-layout-and-legibility). */
+h1, h2, h3, h4, h5, h6, [class*='__title'] { text-wrap: balance; }
+p, li, dd, blockquote, figcaption { text-wrap: pretty; }
 body {
   margin: 0;
   background: var(--paper);
@@ -513,7 +525,8 @@ html[data-cardstyle='tilt'] .card:hover .card__inner:after { opacity: 1; }
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 8' fill='none' stroke='%239c9a80' stroke-width='1.5'%3E%3Cpath d='M1 1.5 6 6.5l5-5'/%3E%3C/svg%3E");
   background-repeat: no-repeat; background-position: right var(--space-4) center; background-size: .7rem;
 }
-.contact-form textarea { min-height: 7rem; }
+/* Crece con el texto hasta 20 rem; después, scroll (guía form-fields-automatically-fit-contents). */
+.contact-form textarea { min-height: 7rem; field-sizing: content; max-height: 20rem; }
 /* Rojo solo tras tocar el campo o intentar enviar (guía
    validate-input-after-interaction); was-submitted cubre el intento de envío,
    porque con novalidate el navegador no lo cuenta como interacción. */

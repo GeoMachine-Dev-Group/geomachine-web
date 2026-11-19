@@ -404,3 +404,29 @@
   src: url('/fonts/noto-sans-georgian-700-georgian.woff2') format('woff2');
   unicode-range: U+0589, U+10A0-10FF, U+1C90-1CBA, U+1CBD-1CBF, U+205A, U+2D00-2D2F, U+2E31;
 }
+
+/* --- Respaldo calibrado (Modern Web Guidance: visually-stable-font-fallbacks)
+   Mientras las fuentes de arriba se descargan (font-display: swap), el texto
+   sale en Arial/Liberation Sans escalada para ocupar lo mismo que la fuente
+   final: al cambiar no se mueve el diseño (CLS). No uso font-size-adjust:
+   from-font porque mientras se descarga la fuente "primaria" ya es la de
+   respaldo y no corregiría nada. Valores medidos con fontTools sobre los
+   woff2 de /fonts y Liberation Sans (métricas de Arial), 2026-11-19, y afinados
+   midiendo en Chrome una frase real es/ru a 40 px; ascent/descent del hhea. Si cambia una fuente,
+   hay que recalcularlos. El cirílico va en caras aparte por unicode-range,
+   como las fuentes de arriba. */
+@font-face { font-family: 'Jakarta Fallback'; src: local('Arial'), local('Liberation Sans'), local('Arimo');
+  size-adjust: 104.1%; ascent-override: 99.7%; descent-override: 21.3%; line-gap-override: 0%; }
+@font-face { font-family: 'Jakarta Fallback'; src: local('Arial'), local('Liberation Sans'), local('Arimo');
+  unicode-range: U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+  size-adjust: 102.5%; ascent-override: 95.6%; descent-override: 21.5%; line-gap-override: 0%; }
+@font-face { font-family: 'Outfit Fallback'; font-weight: 100 599; src: local('Arial'), local('Liberation Sans'), local('Arimo');
+  size-adjust: 96.2%; ascent-override: 104%; descent-override: 27%; line-gap-override: 0%; }
+@font-face { font-family: 'Outfit Fallback'; font-weight: 600 900; src: local('Arial Bold'), local('Arial-BoldMT'), local('Liberation Sans Bold'), local('Arimo Bold');
+  size-adjust: 93.1%; ascent-override: 107.4%; descent-override: 27.9%; line-gap-override: 0%; }
+@font-face { font-family: 'Outfit Fallback'; font-weight: 100 599; src: local('Arial'), local('Liberation Sans'), local('Arimo');
+  unicode-range: U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+  size-adjust: 137.3%; ascent-override: 72.5%; descent-override: 17.8%; line-gap-override: 0%; }
+@font-face { font-family: 'Outfit Fallback'; font-weight: 600 900; src: local('Arial Bold'), local('Arial-BoldMT'), local('Liberation Sans Bold'), local('Arimo Bold');
+  unicode-range: U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+  size-adjust: 132.3%; ascent-override: 75.2%; descent-override: 18.5%; line-gap-override: 0%; }
