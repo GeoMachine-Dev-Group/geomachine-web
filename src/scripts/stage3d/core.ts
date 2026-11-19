@@ -9,14 +9,18 @@
  * encarga de lo demás, igual para todas las líneas:
  * - un renderer y un lienzo por escenario, colocado sobre el hueco
  *   .stage__visual-box del panel activo (nunca encima de texto);
- * - el cambio de forma al recibir `stage:change` (700 ms, se puede cortar);
- * - reposo, inclinación hacia el puntero, arrastre táctil con muelle;
+ * - la entrada la primera vez que se ve (900 ms, las piezas se montan desde
+ *   posiciones algo dispersas) y el cambio de forma al recibir `stage:change`
+ *   (700 ms, se puede cortar);
+ * - reposo, inclinación hacia el puntero con paralaje entre capas, arrastre
+ *   táctil con muelle y una sombra de contacto de cobre;
  * - parar el bucle fuera de pantalla o con la pestaña oculta;
  * - movimiento reducido: un fotograma quieto por servicio, sin bucle;
  * - liberar todo en pagehide.
  */
 import {
   ACESFilmicToneMapping,
+  CanvasTexture,
   Color,
   DirectionalLight,
   Euler,
@@ -24,8 +28,10 @@ import {
   HemisphereLight,
   Material,
   Mesh,
+  MeshBasicMaterial,
   Object3D,
   PerspectiveCamera,
+  PlaneGeometry,
   PMREMGenerator,
   Scene,
   SRGBColorSpace,
@@ -41,6 +47,8 @@ export interface Tokens {
   panel2: Color;
   ink: Color;
   inkSoft: Color;
+  /** El valor CSS tal cual, para pintar en un <canvas> 2D. */
+  accentCss: string;
 }
 
 export interface PieceItem {
@@ -51,24 +59,50 @@ export interface PieceItem {
 
 export interface ShapePlugin {
   pieceRotation: Vec3;
-  camera: { z: number; fov: number };
+  camera: { fov: number; target: Vec3; eye(aspect: number): Vec3 };
+  /** Sombra de contacto bajo la pieza (plano horizontal). */
+  shadow?: { y: number; z: number; w: number; d: number };
   /** Construye las piezas; todo lo que cree debe colgar de `root`. */
   build(root: Group, tokens: Tokens): PieceItem[];
   /** Una pose por pieza, en el mismo orden que build(). */
   poses(index: number): Pose[];
+  /** Pose "desmontada" de la que parte la entrada. */
+  scattered?(pose: Pose, n: number): Pose;
 }
 
 const MORPH_MS = 700;
+const ENTER_MS = 900;
 const DPR_MAX = 1.75;
 
 function readTokens(): Tokens {
   const css = getComputedStyle(document.documentElement);
-  const c = (name: string) => new Color(css.getPropertyValue(name).trim());
-  return { accent: c('--accent'), panel: c('--panel'), panel2: c('--panel-2'), ink: c('--ink'), inkSoft: c('--ink-soft') };
+  const raw = (name: string) => css.getPropertyValue(name).trim();
+  const c = (name: string) => new Color(raw(name));
+  return {
+    accent: c('--accent'), panel: c('--panel'), panel2: c('--panel-2'), ink: c('--ink'), inkSoft: c('--ink-soft'),
+    accentCss: raw('--accent'),
+  };
 }
 
 const ease = (t: number) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
+const easeOut = (t: number) => 1 - Math.pow(1 - t, 4);
 const lerp = (a: number, b: number, t: number) => a + (b - a) * t;
+
+/** Degradado radial de cobre para la sombra de contacto. */
+function glowTexture(color: string) {
+  const c = document.createElement('canvas');
+  c.width = c.height = 128;
+  const g = c.getContext('2d')!;
+  const grad = g.createRadialGradient(64, 64, 0, 64, 64, 64);
+  grad.addColorStop(0, color);
+  grad.addColorStop(1, 'transparent');
+  g.globalAlpha = 1;
+  g.fillStyle = grad;
+  g.fillRect(0, 0, 128, 128);
+  const tex = new CanvasTexture(c);
+  tex.colorSpace = SRGBColorSpace;
+  return tex;
+}
 
 /** Monta la pieza en un escenario. Devuelve la función que lo libera todo, o
     null si no hay WebGL (se queda el SVG estático). */
@@ -105,9 +139,7 @@ export function mountStage3D(stage: HTMLElement, plugin: ShapePlugin): (() => vo
   scene.environmentIntensity = 0.5;
   pmrem.dispose();
 
-  const camera = new PerspectiveCamera(plugin.camera.fov, 2, 0.1, 50);
-  camera.position.set(0, 0, plugin.camera.z);
-  camera.lookAt(0, 0, 0);
+  const camera = new PerspectiveCamera(plugin.camera.fov, 1, 0.1, 60);
 
   // Luz suave de frente y un contraluz de cobre que dibuja los cantos.
   scene.add(new HemisphereLight(tokens.ink, tokens.panel, 0.3));
@@ -117,6 +149,19 @@ export function mountStage3D(stage: HTMLElement, plugin: ShapePlugin): (() => vo
   const rim = new DirectionalLight(tokens.accent, 3.6);
   rim.position.set(4, 1.5, -4);
   scene.add(rim);
+
+  // Sombra de contacto: un resplandor de cobre muy suave en el "suelo".
+  let shadow: Mesh<PlaneGeometry, MeshBasicMaterial> | null = null;
+  if (plugin.shadow) {
+    const { y, z, w, d } = plugin.shadow;
+    shadow = new Mesh(
+      new PlaneGeometry(w, d),
+      new MeshBasicMaterial({ map: glowTexture(tokens.accentCss), transparent: true, opacity: 0.22, depthWrite: false }),
+    );
+    shadow.rotation.x = -Math.PI / 2;
+    shadow.position.set(0, y, z);
+    scene.add(shadow);
+  }
 
   const piece = new Group();
   const baseRot = new Euler(...plugin.pieceRotation);
@@ -131,15 +176,22 @@ export function mountStage3D(stage: HTMLElement, plugin: ShapePlugin): (() => vo
   const clone = (q: Pose): State => ({ p: [...q.p] as Vec3, r: [...q.r] as Vec3, s: q.s, o: q.o, dim: q.dim });
   const tabs = [...stage.querySelectorAll('[role="tab"]')];
   let index = Math.max(0, tabs.findIndex((t) => t.getAttribute('aria-selected') === 'true'));
-  let current: State[] = plugin.poses(index).map(clone);
+  let to: State[] = plugin.poses(index).map(clone);
+  // Con movimiento permitido se parte "desmontado" y la entrada lo monta.
+  let entered = reduce.matches || !plugin.scattered;
+  let current: State[] = entered ? to.map(clone) : to.map((q, n) => clone(plugin.scattered!(q, n)));
   let from: State[] = current.map(clone);
-  let to: State[] = current.map(clone);
   let morphStart = -1;
+  let morphMs = MORPH_MS;
+  let morphEase = ease;
 
+  // Paralaje: con el puntero, las capas de delante se mueven más que las de atrás.
+  let parX = 0, parY = 0;
   function apply(states: State[]) {
     items.forEach((it, i) => {
       const q = states[i];
-      it.object.position.set(...q.p);
+      const depth = q.p[2] + 0.6;
+      it.object.position.set(q.p[0] + parX * depth, q.p[1] + parY * depth, q.p[2]);
       it.object.rotation.set(...q.r);
       it.object.scale.setScalar(q.s);
       it.look(q.o, q.dim);
@@ -148,9 +200,9 @@ export function mountStage3D(stage: HTMLElement, plugin: ShapePlugin): (() => vo
   apply(current);
 
   function stepMorph(now: number) {
-    if (morphStart < 0) return false;
-    const t = Math.min(1, (now - morphStart) / MORPH_MS);
-    const k = ease(t);
+    if (morphStart < 0) return;
+    const t = Math.min(1, (now - morphStart) / morphMs);
+    const k = morphEase(t);
     current = from.map((a, i) => {
       const b = to[i];
       return {
@@ -161,25 +213,30 @@ export function mountStage3D(stage: HTMLElement, plugin: ShapePlugin): (() => vo
         dim: lerp(a.dim, b.dim, k),
       };
     });
-    apply(current);
     if (t >= 1) morphStart = -1;
-    return true;
+  }
+
+  function startMorph(ms: number, curve: (t: number) => number) {
+    // Arranca desde donde esté ahora: un cambio rápido corta el anterior.
+    from = current.map(clone);
+    morphStart = performance.now();
+    morphMs = ms;
+    morphEase = curve;
   }
 
   function onChange(e: Event) {
     const next = (e as CustomEvent<{ index: number }>).detail?.index ?? 0;
     if (next === index) return;
     index = next;
-    // Arranca desde donde esté ahora: un cambio rápido corta el anterior.
-    from = current.map(clone);
     to = plugin.poses(index).map(clone);
-    if (reduce.matches || !running) {
+    if (reduce.matches || !running || !entered) {
       morphStart = -1;
       current = to.map(clone);
+      entered = true;
       apply(current);
       render();
     } else {
-      morphStart = performance.now();
+      startMorph(MORPH_MS, ease);
     }
     requestAnimationFrame(place);
   }
@@ -202,8 +259,8 @@ export function mountStage3D(stage: HTMLElement, plugin: ShapePlugin): (() => vo
       canvas.style.height = `${h}px`;
       renderer.setSize(w, h, false);
       camera.aspect = w / Math.max(1, h);
-      // En lienzos estrechos se aleja la cámara para que quepa la pieza entera.
-      camera.position.z = plugin.camera.z * Math.max(1, 1.9 / camera.aspect);
+      camera.position.set(...plugin.camera.eye(camera.aspect));
+      camera.lookAt(...plugin.camera.target);
       camera.updateProjectionMatrix();
       render();
     }
@@ -276,12 +333,18 @@ export function mountStage3D(stage: HTMLElement, plugin: ShapePlugin): (() => vo
     }
     tiltX = lerp(tiltX, tiltTX, 0.06);
     tiltY = lerp(tiltY, tiltTY, 0.06);
+    parX = tiltY * 0.35;
+    parY = -tiltX * 0.35;
+    apply(current);
     piece.rotation.set(
       baseRot.x + tiltX + Math.sin(idle * 0.5) * 0.02,
       baseRot.y + tiltY + drag + Math.sin(idle * 0.31) * 0.05,
       baseRot.z,
     );
-    piece.position.y = Math.sin(idle * 0.7) * 0.05;
+    const float = Math.sin(idle * 0.7) * 0.05;
+    piece.position.y = float;
+    // La sombra se abre y se apaga un poco cuando la pieza sube.
+    if (shadow) shadow.material.opacity = 0.22 - float * 0.6;
     render();
     raf = requestAnimationFrame(frame);
   }
@@ -292,6 +355,11 @@ export function mountStage3D(stage: HTMLElement, plugin: ShapePlugin): (() => vo
     running = should;
     if (running) {
       last = performance.now();
+      // Primera vez a la vista: las piezas se montan.
+      if (!entered) {
+        entered = true;
+        startMorph(ENTER_MS, easeOut);
+      }
       raf ||= requestAnimationFrame(frame);
     } else {
       if (raf) cancelAnimationFrame(raf);
@@ -300,8 +368,15 @@ export function mountStage3D(stage: HTMLElement, plugin: ShapePlugin): (() => vo
       if (morphStart >= 0) {
         morphStart = -1;
         current = to.map(clone);
-        apply(current);
       }
+      if (reduce.matches) {
+        entered = true;
+        current = to.map(clone);
+        parX = parY = 0;
+        piece.rotation.copy(baseRot);
+        piece.position.y = 0;
+      }
+      apply(current);
       render();
     }
   }
@@ -339,7 +414,10 @@ export function mountStage3D(stage: HTMLElement, plugin: ShapePlugin): (() => vo
       if (m.material) (Array.isArray(m.material) ? m.material : [m.material]).forEach((x) => mats.add(x));
     });
     geos.forEach((g) => g.dispose());
-    mats.forEach((m) => m.dispose());
+    mats.forEach((m) => {
+      (m as MeshBasicMaterial).map?.dispose();
+      m.dispose();
+    });
     envTarget.dispose();
     renderer.dispose();
     renderer.forceContextLoss();

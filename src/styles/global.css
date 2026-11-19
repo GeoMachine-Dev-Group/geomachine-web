@@ -396,8 +396,9 @@ a { color: inherit; }
    de cobre como las del hero y los corchetes del logo [▪]. */
 .stage__panel {
   position: relative; isolation: isolate;
+  --stage-pad: clamp(1.75rem, 4vw, 3rem);
   display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: clamp(2rem, 5vw, 4rem);
-  padding: clamp(1.75rem, 4vw, 3rem);
+  padding: var(--stage-pad);
   background: var(--panel); border: 1px solid var(--rule); border-radius: var(--radius-xl);
 }
 .stage__panel::before {
@@ -540,21 +541,38 @@ a { color: inherit; }
 }
 
 /* --- Pieza 3D del configurador (stage--visual; piloto en WEB) ---------------
-   Cada panel reserva un hueco (.stage__visual) en la columna izquierda, entre
-   el precio y el CTA: es el espacio que la columna ya dejaba libre al
-   alinearse por abajo con la derecha. Por debajo de 860 px pasa a ser una
-   banda arriba del todo. Dentro va la ilustración SVG (sin JS, sin WebGL o
-   mientras carga); el lienzo único del escenario se coloca encima del hueco
-   con transform y la sustituye con un fundido. Nunca cubre texto. */
-.stage__visual { min-width: 0; }
-.stage__visual-box { position: relative; height: 13.5rem; }
-.stage__visual-svg { display: block; width: 100%; height: 100%; transition: opacity .4s ease; }
+   La columna derecha se aplana (display: contents) para que lista, cita y
+   pieza sean filas de la rejilla del panel: la pieza va debajo de la cita y
+   ocupa todo lo que queda hasta el borde inferior y el derecho del panel
+   (mínimo 16 rem). La línea que separaba las columnas pasa a ser el borde
+   derecho de la columna izquierda, que abarca las tres filas.
+   Por debajo de 860 px la pieza es una banda arriba del panel (≤ 200 px).
+   Dentro va la ilustración SVG (sin JS, sin WebGL o mientras carga); el
+   lienzo único del escenario se coloca encima con transform y la sustituye
+   con un fundido. Nunca cubre texto: el hueco no tiene otra cosa. */
+.stage--visual .stage__side { display: contents; }
+.stage--visual .stage__panel {
+  grid-template-areas: 'main check' 'main quote' 'main visual';
+  grid-template-rows: auto auto 1fr; row-gap: 0; min-block-size: 48rem;
+}
+.stage--visual .stage__main {
+  grid-area: main; padding-right: clamp(2rem, 5vw, 4rem); border-right: 1px solid var(--rule-soft);
+}
+.stage--visual .stage__check { grid-area: check; }
+.stage--visual .stage__quote { grid-area: quote; margin-top: var(--space-8); align-self: start; }
+.stage__visual {
+  grid-area: visual; display: grid; min-width: 0;
+  margin: var(--space-6) calc(var(--stage-pad) * -1) calc(var(--stage-pad) * -1) 0;
+}
+.stage__visual-box { position: relative; min-height: 16rem; }
+.stage__visual-svg { position: absolute; inset: 0; display: block; width: 100%; height: 100%; transition: opacity .4s ease; }
 .stage.has-3d .stage__visual-svg { opacity: 0; }
 
 .pv-face { fill: color-mix(in srgb, var(--panel-2) 78%, transparent); stroke: var(--accent); stroke-width: 1; stroke-linejoin: round; }
-.pv-tile { fill: color-mix(in srgb, var(--accent) 22%, var(--panel-2)); }
+.pv-tile { fill: color-mix(in srgb, var(--accent) 16%, var(--panel-2)); }
 .pv-line { fill: none; stroke: var(--accent); stroke-width: .75; stroke-opacity: .55; stroke-linecap: round; }
 .pv-dim .pv-face, .pv-dim .pv-line { stroke: var(--ink-soft); }
+.pv-glow-stop { stop-color: var(--accent); }
 
 .stage__canvas {
   position: absolute; z-index: 1; top: 0; left: 0; display: block;
@@ -563,11 +581,19 @@ a { color: inherit; }
 .stage__canvas.is-live { opacity: 1; }
 
 @media (max-width: 860px) {
-  .stage__visual { order: -1; }
-  .stage__visual-box { height: 12rem; }
+  .stage--visual .stage__panel {
+    grid-template-areas: 'visual' 'main' 'check' 'quote'; grid-template-rows: auto; min-block-size: 0;
+  }
+  .stage--visual .stage__main { padding-right: 0; border-right: 0; }
+  .stage--visual .stage__check { margin-top: var(--space-8); padding-top: var(--space-8); border-top: 1px solid var(--rule-soft); }
+  .stage__visual { margin: calc(var(--stage-pad) * -1) calc(var(--stage-pad) * -1) var(--space-2); }
+  .stage__visual-box { min-height: 0; height: 12.5rem; }
 }
 @media (max-width: 720px) {
-  .stage__visual-box { height: 10rem; }
+  .stage__visual { margin: calc(var(--space-6) * -1) calc(var(--space-5) * -1) var(--space-1); }
+  .stage__visual-box { height: 11.5rem; }
+  .stage--visual .stage__check { margin-top: var(--space-6); padding-top: var(--space-6); }
+  .stage--visual .stage__quote { margin-top: var(--space-6); }
 }
 @media (prefers-reduced-motion: reduce) {
   .stage__visual-svg, .stage__canvas { transition: none; }

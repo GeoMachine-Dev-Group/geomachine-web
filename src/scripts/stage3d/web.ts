@@ -18,16 +18,20 @@ import {
 } from 'three';
 import { mountStage3D, type PieceItem, type ShapePlugin, type Tokens } from './core';
 import {
-  CAMERA, CART, PAGE_LINES, PIECE_ROT, SLAB, SLAB_COUNT, TILE, TILE_COUNT, webShapes,
+  CAMERA, CART, PAGE_LINES, PIECE_ROT, SHADOW, SLAB, SLAB_COUNT, TILE, TILE_COUNT,
+  cameraEye, scattered, webShapes,
 } from './web-shapes';
 
-function glass(tint: Color) {
+/** Vidrio. `soft` para las piezas pequeñas (losetas y carrito): menos barniz
+    y menos reflejo del entorno, para que no brillen más que las hojas. */
+function glass(tint: Color, soft = false) {
   return new MeshPhysicalMaterial({
+    envMapIntensity: soft ? 0.35 : 1,
     color: tint,
     metalness: 0,
     roughness: 0.28,
-    clearcoat: 1,
-    clearcoatRoughness: 0.18,
+    clearcoat: soft ? 0.25 : 1,
+    clearcoatRoughness: soft ? 0.5 : 0.18,
     transparent: true,
     depthWrite: false,
     side: DoubleSide,
@@ -40,7 +44,9 @@ function lines(color: Color) {
 
 const webPlugin: ShapePlugin = {
   pieceRotation: PIECE_ROT,
-  camera: CAMERA,
+  camera: { fov: CAMERA.fov, target: CAMERA.target, eye: cameraEye },
+  shadow: SHADOW,
+  scattered,
 
   build(root: Group, t: Tokens): PieceItem[] {
     // Vidrio verde oscuro: el panel con un punto de cobre y algo de luz.
@@ -90,10 +96,10 @@ const webPlugin: ShapePlugin = {
       });
     }
 
-    const tileTint = tint.clone().lerp(t.accent, 0.22);
+    const tileTint = tint.clone().lerp(t.accent, 0.16);
     for (let n = 0; n < TILE_COUNT; n++) {
       const g = new Group();
-      const body = glass(tileTint.clone());
+      const body = glass(tileTint.clone(), true);
       const edge = lines(t.accent.clone());
       g.add(new Mesh(tileGeo, body), new LineSegments(tileEdges, edge));
       root.add(g);
@@ -101,7 +107,7 @@ const webPlugin: ShapePlugin = {
         object: g,
         look(o) {
           g.visible = o > 0.005;
-          body.opacity = o * 0.75;
+          body.opacity = o * 0.6;
           edge.opacity = o;
         },
       });
@@ -109,7 +115,7 @@ const webPlugin: ShapePlugin = {
 
     {
       const g = new Group();
-      const body = glass(tileTint.clone());
+      const body = glass(tileTint.clone(), true);
       const edge = lines(t.accent.clone());
       g.add(new Mesh(cartGeo, body), new LineSegments(cartEdges, edge), new LineSegments(handleGeo, edge));
       root.add(g);
@@ -117,7 +123,7 @@ const webPlugin: ShapePlugin = {
         object: g,
         look(o) {
           g.visible = o > 0.005;
-          body.opacity = o * 0.7;
+          body.opacity = o * 0.5;
           edge.opacity = o;
         },
       });

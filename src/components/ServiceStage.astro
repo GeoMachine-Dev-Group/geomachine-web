@@ -125,14 +125,6 @@ function priceParts(text: string) {
                 </div>
               </div>
 
-              {visual && (
-                <div class="stage__visual" aria-hidden="true">
-                  <div class="stage__visual-box">
-                    <StageVisual kind={visual} index={i} />
-                  </div>
-                </div>
-              )}
-
               <div class="stage__bottom">
                 <div class="stage__foot">
                   <a class="btn btn--solid stage__cta" href="#contacto" data-service={ctaService} data-fab-hide-near>
@@ -164,6 +156,13 @@ function priceParts(text: string) {
                   <p>{item.human}</p>
                 </blockquote>
               </figure>
+              {visual && (
+                <div class="stage__visual" aria-hidden="true">
+                  <div class="stage__visual-box">
+                    <StageVisual kind={visual} index={i} />
+                  </div>
+                </div>
+              )}
             </div>
           </section>
         );
