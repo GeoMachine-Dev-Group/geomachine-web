@@ -1,0 +1,82 @@
+---
+/**
+ * Ilustración estática de la pieza 3D de un servicio: las mismas poses que
+ * anima el lienzo (src/scripts/stage3d/web-shapes.ts), proyectadas a SVG en el
+ * build con la misma cámara. Es lo que se ve sin JS, sin WebGL o mientras
+ * carga three.js; el lienzo la sustituye con un fundido. Colores por tokens
+ * (clases .pv-* en global.css).
+ */
+import {
+  CAMERA, CART, PAGE_LINES, PIECE_ROT, SLAB, TILE, webShapes, type Pose, type Vec3,
+} from '../scripts/stage3d/web-shapes';
+
+interface Props {
+  kind: 'web';
+  index: number;
+}
+const { index } = Astro.props;
+
+const W = 480;
+const H = 220;
+const f = H / 2 / Math.tan(((CAMERA.fov / 2) * Math.PI) / 180);
+
+function rot([x, y, z]: Vec3, [rx, ry, rz]: Vec3): Vec3 {
+  // Euler XYZ de three.js: se aplica Z, luego Y, luego X.
+  let a = x * Math.cos(rz) - y * Math.sin(rz), b = x * Math.sin(rz) + y * Math.cos(rz), c = z;
+  [a, c] = [a * Math.cos(ry) + c * Math.sin(ry), -a * Math.sin(ry) + c * Math.cos(ry)];
+  [b, c] = [b * Math.cos(rx) - c * Math.sin(rx), b * Math.sin(rx) + c * Math.cos(rx)];
+  return [a, b, c];
+}
+function world(local: Vec3, q: Pose): Vec3 {
+  const r = rot([local[0] * q.s, local[1] * q.s, local[2] * q.s], q.r);
+  return rot([r[0] + q.p[0], r[1] + q.p[1], r[2] + q.p[2]], PIECE_ROT);
+}
+function screen([x, y, z]: Vec3) {
+  const k = f / (CAMERA.z - z);
+  return [W / 2 + x * k, H / 2 - y * k] as const;
+}
+const pts = (corners: Vec3[], q: Pose) =>
+  corners.map((c) => screen(world(c, q)).map((n) => n.toFixed(1)).join(',')).join(' ');
+const face = (w: number, h: number, z: number): Vec3[] => [
+  [-w / 2, h / 2, z], [w / 2, h / 2, z], [w / 2, -h / 2, z], [-w / 2, -h / 2, z],
+];
+
+type Shape = { depth: number; svg: string };
+const s = webShapes(index);
+const shapes: Shape[] = [];
+
+s.slabs.forEach((q) => {
+  if (q.o < 0.01) return;
+  const lines = PAGE_LINES.map(([x1, y1, x2, y2]) => {
+    const [a, b] = screen(world([x1, y1, SLAB.d / 2], q));
+    const [c, d] = screen(world([x2, y2, SLAB.d / 2], q));
+    return `M${a.toFixed(1)} ${b.toFixed(1)}L${c.toFixed(1)} ${d.toFixed(1)}`;
+  }).join('');
+  shapes.push({
+    depth: world([0, 0, 0], q)[2],
+    svg: `<g opacity="${q.o.toFixed(2)}" class="${q.dim > 0.5 ? 'pv-dim' : ''}"><polygon class="pv-face" points="${pts(face(SLAB.w, SLAB.h, SLAB.d / 2), q)}"/><path class="pv-line" d="${lines}"/></g>`,
+  });
+});
+s.tiles.forEach((q) => {
+  if (q.o < 0.01) return;
+  shapes.push({
+    // Las losetas van sobre la hoja: por su centro quedarían detrás de ella.
+    depth: world([0, 0, 0], q)[2] + 0.5,
+    svg: `<polygon class="pv-face pv-tile" opacity="${q.o.toFixed(2)}" points="${pts(face(TILE.w, TILE.h, TILE.d / 2), q)}"/>`,
+  });
+});
+if (s.cart.o > 0.01) {
+  const q = s.cart;
+  const { w, h, d } = CART;
+  const top: Vec3[] = [[-w / 2, h / 2, d / 2], [w / 2, h / 2, d / 2], [w / 2, h / 2, -d / 2], [-w / 2, h / 2, -d / 2]];
+  const side: Vec3[] = [[w / 2, h / 2, d / 2], [w / 2, h / 2, -d / 2], [w / 2, -h / 2, -d / 2], [w / 2, -h / 2, d / 2]];
+  shapes.push({
+    depth: world([0, 0, 0], q)[2] + 0.5,
+    svg: `<g opacity="${q.o.toFixed(2)}"><polygon class="pv-face pv-tile" points="${pts(top, q)}"/><polygon class="pv-face pv-tile" points="${pts(side, q)}"/><polygon class="pv-face pv-tile" points="${pts(face(w, h, d / 2), q)}"/></g>`,
+  });
+}
+shapes.sort((a, b) => a.depth - b.depth);
+const svg = shapes.map((x) => x.svg).join('');
+---
+
+<svg class="stage__visual-svg" viewBox={`0 0 ${W} ${H}`} preserveAspectRatio="xMidYMid meet" aria-hidden="true" focusable="false" set:html={svg} />

@@ -462,6 +462,7 @@ const bundleItems = bundles.map((b): StageItem => ({
         ctaService={line.title[lang]}
         thousands={THOUSANDS[lang]}
         labels={stageLabels}
+        visual={line.prefix === 'WEB' ? 'web' : undefined}
       />
     </section>
   ))

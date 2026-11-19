@@ -539,6 +539,40 @@ a { color: inherit; }
   .stage__indicator, .stage__tab, .stage__tab-name, .stage__nav { transition: none; }
 }
 
+/* --- Pieza 3D del configurador (stage--visual; piloto en WEB) ---------------
+   Cada panel reserva un hueco (.stage__visual) en la columna izquierda, entre
+   el precio y el CTA: es el espacio que la columna ya dejaba libre al
+   alinearse por abajo con la derecha. Por debajo de 860 px pasa a ser una
+   banda arriba del todo. Dentro va la ilustración SVG (sin JS, sin WebGL o
+   mientras carga); el lienzo único del escenario se coloca encima del hueco
+   con transform y la sustituye con un fundido. Nunca cubre texto. */
+.stage__visual { min-width: 0; }
+.stage__visual-box { position: relative; height: 13.5rem; }
+.stage__visual-svg { display: block; width: 100%; height: 100%; transition: opacity .4s ease; }
+.stage.has-3d .stage__visual-svg { opacity: 0; }
+
+.pv-face { fill: color-mix(in srgb, var(--panel-2) 78%, transparent); stroke: var(--accent); stroke-width: 1; stroke-linejoin: round; }
+.pv-tile { fill: color-mix(in srgb, var(--accent) 22%, var(--panel-2)); }
+.pv-line { fill: none; stroke: var(--accent); stroke-width: .75; stroke-opacity: .55; stroke-linecap: round; }
+.pv-dim .pv-face, .pv-dim .pv-line { stroke: var(--ink-soft); }
+
+.stage__canvas {
+  position: absolute; z-index: 1; top: 0; left: 0; display: block;
+  opacity: 0; transition: opacity .4s ease; touch-action: pan-y;
+}
+.stage__canvas.is-live { opacity: 1; }
+
+@media (max-width: 860px) {
+  .stage__visual { order: -1; }
+  .stage__visual-box { height: 12rem; }
+}
+@media (max-width: 720px) {
+  .stage__visual-box { height: 10rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .stage__visual-svg, .stage__canvas { transition: none; }
+}
+
 /* --- FAQ --------------------------------------------------------------------- */
 
 /* FAQ: el título ancla la columna izquierda y el acordeón ocupa el resto del

@@ -1,4 +1,6 @@
 ---
+import StageVisual from './StageVisual.astro';
+
 /**
  * Configurador por línea (diseño C). Sustituye a la rejilla de tarjetas: una
  * pestaña por servicio y un "escenario" grande con el servicio activo.
@@ -41,9 +43,12 @@ interface Props {
   /** Separador de miles del idioma, para el contador del precio. */
   thousands: string;
   labels: { benefit: string; eta: string; prev: string; next: string };
+  /** Pieza 3D de la línea (de momento solo 'web'): hueco en cada panel con
+      su ilustración SVG, que el lienzo sustituye al cargar. */
+  visual?: 'web';
 }
 
-const { id, label, items, ctaLabel, ctaService, thousands, labels } = Astro.props;
+const { id, label, items, ctaLabel, ctaService, thousands, labels, visual } = Astro.props;
 const pad = (n: number) => String(n).padStart(2, '0');
 
 /** Mismo reparto que hace el script en el navegador: lo de antes de la cifra
@@ -59,7 +64,7 @@ function priceParts(text: string) {
 }
 ---
 
-<div class="stage reveal" data-stage data-thousands={thousands} data-eta={labels.eta}>
+<div class:list={['stage', 'reveal', { 'stage--visual': visual }]} data-stage data-thousands={thousands} data-eta={labels.eta} data-visual={visual}>
   <div class="stage__bar">
     <div class="stage__tabs" role="tablist" aria-label={label}>
       {
@@ -119,6 +124,14 @@ function priceParts(text: string) {
                   <span class="price-value card__price-was" hidden={!item.initialWas}>{item.initialWas}</span>
                 </div>
               </div>
+
+              {visual && (
+                <div class="stage__visual" aria-hidden="true">
+                  <div class="stage__visual-box">
+                    <StageVisual kind={visual} index={i} />
+                  </div>
+                </div>
+              )}
 
               <div class="stage__bottom">
                 <div class="stage__foot">
@@ -205,6 +218,12 @@ function priceParts(text: string) {
   /* Contadores en curso: se cancelan si cambia la moneda, para que un
      fotograma tardío no escriba la cifra de la moneda anterior. */
   const tweens = new Map<HTMLElement, number>();
+
+  /** Juegos de formas 3D por línea. Cada uno es un trozo aparte que trae
+      three.js consigo; añadir una línea es añadir aquí su import(). */
+  const VISUALS: Record<string, () => Promise<{ mount(stage: HTMLElement): (() => void) | null }>> = {
+    web: () => import('../scripts/stage3d/web'),
+  };
   new MutationObserver(() => {
     tweens.forEach((raf) => cancelAnimationFrame(raf));
     tweens.clear();
@@ -353,6 +372,9 @@ function priceParts(text: string) {
       revealTab(tabs[next]);
 
       const nextPanel = panels[next];
+      /* Gancho para lo que quiera seguir al servicio activo (la pieza 3D de
+         src/scripts/stage3d/ lo escucha). */
+      stage.dispatchEvent(new CustomEvent('stage:change', { detail: { index: next, direction: dir } }));
       if (reduce.matches) {
         settle();
         tweenPrice(nextPanel, fromValue, sep);
@@ -457,6 +479,42 @@ function priceParts(text: string) {
         { rootMargin: '0px 0px -15% 0px' },
       );
       io.observe(stage);
+    }
+
+    /* Pieza 3D (de momento solo WEB): three.js se pide con import() cuando el
+       escenario se acerca a la pantalla, así que no entra en el JS inicial.
+       Si no hay WebGL o falla la carga, se queda el SVG estático. Se libera
+       en pagehide y se vuelve a montar si la página vuelve de la caché. */
+    const visual = stage.dataset.visual;
+    const loader = visual ? VISUALS[visual] : undefined;
+    if (loader && 'IntersectionObserver' in window) {
+      let dispose: (() => void) | null = null;
+      let wanted = false;
+      const mount = async () => {
+        try {
+          const mod = await loader();
+          if (wanted && !dispose) dispose = mod.mount(stage);
+        } catch {
+          /* sin pieza 3D: se queda la ilustración SVG */
+        }
+      };
+      const near = new IntersectionObserver(
+        (entries) => {
+          if (!entries.some((en) => en.isIntersecting)) return;
+          near.disconnect();
+          wanted = true;
+          mount();
+        },
+        { rootMargin: '400px 0px' },
+      );
+      near.observe(stage);
+      window.addEventListener('pagehide', () => {
+        dispose?.();
+        dispose = null;
+      });
+      window.addEventListener('pageshow', (e) => {
+        if (e.persisted && wanted && !dispose) mount();
+      });
     }
   });
 </script>
