@@ -150,6 +150,8 @@ export const ui = {
     bundlesTitle: 'Paquetes',
     bundlesNote: 'Combinaciones cerradas, ya con descuento aplicado.',
     bundleIncludes: 'Incluye',
+    founderName: 'Romeo Mikava',
+    founderPhotoPending: 'Foto de Romeo',
     ctaTitle: '¿Cuál de estos necesitas?',
     ctaBody:
       'Escríbeme qué quieres montar y te devuelvo un presupuesto cerrado con fecha de entrega. Sin llamada previa si no te apetece.',
@@ -267,6 +269,8 @@ export const ui = {
     bundlesTitle: 'Пакеты',
     bundlesNote: 'Готовые связки, скидка уже внутри.',
     bundleIncludes: 'Входит',
+    founderName: 'Ромео Микава',
+    founderPhotoPending: 'Фото Ромео',
     ctaTitle: 'Что из этого вам нужно?',
     ctaBody:
       'Напишите, что хотите построить, и я пришлю фиксированную смету со сроком. Созвон — только если сами захотите.',
@@ -384,6 +388,8 @@ export const ui = {
     bundlesTitle: 'Packages',
     bundlesNote: 'Closed combinations, discount already applied.',
     bundleIncludes: 'Includes',
+    founderName: 'Romeo Mikava',
+    founderPhotoPending: "Romeo's photo",
     ctaTitle: 'Which of these do you need?',
     ctaBody:
       "Tell me what you want to build and I'll send back a closed quote with a delivery date. No call needed unless you want one.",
@@ -514,6 +520,9 @@ export const ui = {
     bundlesTitle: 'პაკეტები',
     bundlesNote: 'დახურული კომბინაციები, ფასდაკლებით.',
     bundleIncludes: 'შედის',
+    // ka sin revisar: founderName y founderPhotoPending (2026-11-19).
+    founderName: 'რომეო მიქავა',
+    founderPhotoPending: 'რომეოს ფოტო',
     ctaTitle: 'რომელი მათგანი გჭირდებათ?',
     ctaBody:
       'მომწერეთ რისი აშენება გინდათ და დაგიბრუნებთ დახურულ ხარჯთაღრიცხვას მიწოდების თარიღით. ზარი საჭირო არ არის, თუ თავად არ გსურთ.',

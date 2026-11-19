@@ -10,6 +10,7 @@
  * referencian `{ '@id': orgId(site) }`.
  */
 import { lines, bundles, DEFAULT_TIER, DEFAULT_CURRENCY } from './catalog';
+import { founderImagePath } from './founder';
 import { ui, servicesPath, languages, aboutPath, aboutLangFor, type Lang } from '../i18n/ui';
 
 export function orgId(site: string): string {
@@ -24,12 +25,15 @@ export function founderId(site: string): string {
 }
 
 export function buildFounder(site: string, lang: Lang = 'es') {
+  // `image` solo si el archivo existe en public/ (ver src/data/founder.ts):
+  // la foto definitiva si ya está, si no el selfi provisional, si no nada.
+  const image = founderImagePath();
   return {
     '@type': 'Person',
     '@id': founderId(site),
     name: 'Romeo Mikava',
     url: `${site}${aboutPath[aboutLangFor(lang)]}`,
-    image: `${site}/romeo-mikava.webp`,
+    ...(image ? { image: `${site}${image}` } : {}),
     jobTitle: 'Founder & developer',
     worksFor: { '@id': orgId(site) },
     knowsLanguage: ['ka', 'es', 'ru', 'en'],

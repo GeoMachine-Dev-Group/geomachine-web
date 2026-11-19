@@ -17,12 +17,16 @@ import { intents, intentUi } from '../data/intents';
 import { isPublished } from '../lib/blog';
 import ServiceCard from './ServiceCard.astro';
 import { legalPath, legalLangFor, LEGAL_VERSION } from '../data/legal';
+import { FOUNDER_PHOTO_SRC, FOUNDER_PHOTO_SIZE, hasFounderPhoto } from '../data/founder';
 
 interface Props {
   lang: Lang;
 }
 const { lang } = Astro.props;
 const t = ui[lang];
+/* Foto del fundador en el cierre: se usa sola en cuanto exista
+   public/images/romeo.webp (800×1000, .webp). Detalles en src/data/founder.ts. */
+const founderPhoto = hasFounderPhoto();
 const privacyHref = legalPath('privacy', lang);
 
 // gagraservis.ru no está publicado ahora mismo, así que la franja no puede
@@ -456,8 +460,33 @@ const featuredMap: Record<string, Record<Lang, string>> = {
 
 <section class="close shell" id="contacto" data-fab-hide-near>
   <div>
-    <h2 class="close__title">{t.ctaTitle}</h2>
-    <p class="close__body">{t.ctaBody}</p>
+    <div class="close__intro">
+      <!-- Retrato de Romeo. FOTO: dejar public/images/romeo.webp (800×1000,
+           .webp, vertical 4:5); el build la detecta y sustituye el recuadro
+           de espera sin tocar este código. Ver src/data/founder.ts. -->
+      <figure class="close__portrait">
+        {founderPhoto ? (
+          <img
+            src={FOUNDER_PHOTO_SRC}
+            alt={t.founderName}
+            width={FOUNDER_PHOTO_SIZE.width}
+            height={FOUNDER_PHOTO_SIZE.height}
+            loading="lazy"
+            decoding="async"
+          />
+        ) : (
+          <div class="close__portrait-pending" role="img" aria-label={`${t.founderPhotoPending} — ${t.founderName}`}>
+            <span class="close__portrait-initials" aria-hidden="true">RM</span>
+            <span class="close__portrait-note" aria-hidden="true">{t.founderPhotoPending}</span>
+          </div>
+        )}
+        <figcaption class="close__portrait-name">{t.founderName}</figcaption>
+      </figure>
+      <div class="close__intro-text">
+        <h2 class="close__title">{t.ctaTitle}</h2>
+        <p class="close__body">{t.ctaBody}</p>
+      </div>
+    </div>
     <div class="close__steps">
       {t.closeSteps.map((step, i) => (
         <div>

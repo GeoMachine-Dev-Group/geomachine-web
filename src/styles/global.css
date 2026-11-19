@@ -490,6 +490,33 @@ html[data-cardstyle='tilt'] .card:hover .card__inner:after { opacity: 1; }
 @media (max-width: 860px) { .close { grid-template-columns: 1fr; } }
 .close__title { font-family: var(--display); font-weight: 600; font-size: clamp(1.5rem, 3.2vw, 2.1rem); letter-spacing: -.02em; line-height: 1.08; margin: 0; }
 .close__body { margin: var(--space-4) 0 var(--space-8); color: var(--ink-soft); max-width: 44ch; }
+
+/* Retrato de Romeo junto al texto de cierre. Foto: public/images/romeo.webp
+   (800×1000, 4:5); mientras no exista, recuadro de espera con «RM». Ver
+   src/data/founder.ts. */
+.close__intro { display: grid; grid-template-columns: clamp(7.5rem, 14vw, 10rem) minmax(0, 1fr); gap: var(--space-8); align-items: start; }
+.close__intro .close__body { margin-bottom: 0; }
+.close__portrait { margin: 0; display: grid; gap: var(--space-2); }
+.close__portrait img,
+.close__portrait-pending {
+  display: block; width: 100%; height: auto; aspect-ratio: 4 / 5; max-width: 100%;
+  border: 1px solid var(--rule); border-radius: var(--radius-lg); object-fit: cover; background: var(--panel);
+}
+.close__portrait-pending {
+  display: grid; place-content: center; justify-items: center; gap: var(--space-2); padding: var(--space-3);
+  background:
+    radial-gradient(ellipse at 50% 30%, var(--accent-soft) 0%, transparent 65%),
+    linear-gradient(160deg, var(--panel-2), var(--panel));
+  border-style: dashed;
+}
+.close__portrait-initials { font-family: var(--display); font-weight: 600; font-size: var(--fs-3xl); letter-spacing: .04em; line-height: 1; color: var(--ink); }
+.close__portrait-note { font-family: var(--data); font-size: var(--fs-3xs); letter-spacing: .12em; text-transform: uppercase; color: var(--ink-soft); text-align: center; }
+.close__portrait-name { font-family: var(--data); font-size: var(--fs-3xs); letter-spacing: .12em; text-transform: uppercase; color: var(--accent); }
+@media (max-width: 720px) { .close__intro { gap: var(--space-6); } }
+@media (max-width: 480px) {
+  .close__intro { grid-template-columns: 6rem minmax(0, 1fr); gap: var(--space-4); }
+  .close__portrait-initials { font-size: var(--fs-2xl); }
+}
 .actions { display: flex; flex-wrap: wrap; gap: var(--space-3); align-items: center; }
 .actions__note { flex-basis: 100%; margin: .35rem 0 0; font-size: var(--fs-xs); color: var(--ink-soft); }
 
