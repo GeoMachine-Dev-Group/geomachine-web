@@ -1,0 +1,370 @@
+---
+/**
+ * Configurador por línea (diseño C). Sustituye a la rejilla de tarjetas: una
+ * pestaña por servicio y un "escenario" grande con el servicio activo.
+ *
+ * Contrato que no se puede romper:
+ * - Todo el contenido de todos los servicios sale en el HTML (un tabpanel por
+ *   servicio, los inactivos con `hidden`). Sin JS, el <noscript> de
+ *   Catalog.astro los enseña todos apilados y oculta las pestañas.
+ * - El precio es un elemento con `data-price` y los data-from/detail/was de
+ *   cada moneda, con los mismos hijos .card__price-*: el script de Base.astro
+ *   los repinta al cambiar de moneda igual que antes.
+ */
+export interface StageItem {
+  code: string;
+  name: string;
+  time?: string;
+  /** Lo que incluye, ya partido en líneas para la lista de comprobación. */
+  checklist: string[];
+  human: string;
+  priceAttrs: Record<string, string>;
+  initialFrom: string;
+  initialDetail: string;
+  initialWas?: string;
+  featuredLabel?: string;
+}
+
+interface Props {
+  /** Prefijo de la línea en minúsculas (web, app, paquetes…): base de los id. */
+  id: string;
+  /** Nombre accesible de la lista de pestañas (el título de la línea). */
+  label: string;
+  items: StageItem[];
+  ctaLabel: string;
+  /** Opción del selector "qué necesitas" del modal que se preselecciona. */
+  ctaService: string;
+  /** Separador de miles del idioma, para el contador del precio. */
+  thousands: string;
+}
+
+const { id, label, items, ctaLabel, ctaService, thousands } = Astro.props;
+const pad = (n: number) => String(n).padStart(2, '0');
+const total = pad(items.length);
+---
+
+<div class="stage reveal" data-stage data-thousands={thousands}>
+  <div class="stage__tabs" role="tablist" aria-label={label}>
+    {
+      items.map((item, i) => (
+        <button
+          type="button"
+          role="tab"
+          class:list={['stage__tab', { 'stage__tab--featured': item.featuredLabel }]}
+          id={`${id}-tab-${i}`}
+          aria-controls={`${id}-panel-${i}`}
+          aria-selected={String(i === 0)}
+          tabindex={i === 0 ? '0' : '-1'}
+        >
+          <span class="stage__tab-code">{item.code}</span>
+          <span class="stage__tab-name">{item.name}</span>
+        </button>
+      ))
+    }
+    <span class="stage__indicator" aria-hidden="true"></span>
+  </div>
+
+  <div class="stage__viewport">
+    {
+      items.map((item, i) => (
+        <section
+          class="stage__panel"
+          role="tabpanel"
+          id={`${id}-panel-${i}`}
+          aria-labelledby={`${id}-tab-${i}`}
+          hidden={i !== 0}
+        >
+          <div class="stage__main">
+            <p class="stage__meta">
+              <span class="stage__code">{item.code}</span>
+              {item.featuredLabel && <span class="stage__badge">{item.featuredLabel}</span>}
+              <span class="stage__count" aria-hidden="true">{pad(i + 1)} / {total}</span>
+            </p>
+            <h3 class="stage__name">{item.name}</h3>
+
+            <div class="stage__price card__price" {...item.priceAttrs}>
+              <span class="price-value card__price-from stage__price-from">{item.initialFrom}</span>
+              <p class="price-value card__price-detail" hidden={!item.initialDetail}>{item.initialDetail}</p>
+              <span class="price-value card__price-was" hidden={!item.initialWas}>{item.initialWas}</span>
+            </div>
+
+            <div class="stage__foot">
+              <a class="btn btn--solid stage__cta" href="#contacto" data-service={ctaService}>{ctaLabel}</a>
+              {item.time && (
+                <p class="stage__time">
+                  <svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><circle cx="8" cy="8" r="6.25" /><path d="M8 4.5V8l2.5 1.5" /></svg>
+                  <span>{item.time}</span>
+                </p>
+              )}
+            </div>
+          </div>
+
+          <div class="stage__side">
+            <ul class="stage__check">
+              {item.checklist.map((line, n) => (
+                <li style={`--i: ${n}`}>
+                  <svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true"><path d="M3.5 8.5l3 3 6-7" /></svg>
+                  <span>{line}</span>
+                </li>
+              ))}
+            </ul>
+            <blockquote class="stage__quote">
+              <p>{item.human}</p>
+            </blockquote>
+          </div>
+        </section>
+      ))
+    }
+  </div>
+</div>
+
+<script>
+  const root = document.documentElement;
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)');
+
+  /* Contadores en curso: se cancelan si cambia la moneda, para que un
+     fotograma tardío no escriba la cifra de la moneda anterior encima de lo
+     que pinta Base.astro. */
+  const tweens = new Map<HTMLElement, number>();
+  let vtSeq = 0;
+  new MutationObserver(() => {
+    tweens.forEach((raf) => cancelAnimationFrame(raf));
+    tweens.clear();
+  }).observe(root, { attributes: true, attributeFilter: ['data-currency'] });
+
+  const NUM = /\d[\d.,\u00a0\u202f ]*\d|\d/; // separador: punto, coma, espacio duro o fino
+
+  function numberIn(text: string) {
+    const m = text.match(NUM);
+    return m ? Number(m[0].replace(/\D/g, '')) : 0;
+  }
+
+  /** Cuenta la parte numérica visible del precio hasta su valor, releyendo
+      el data-from de la moneda activa. El resto del texto ("desde", "€/mes")
+      no se toca. */
+  function tweenPrice(panel: HTMLElement, fromValue: number, sep: string) {
+    const cell = panel.querySelector<HTMLElement>('[data-price]');
+    const out = cell?.querySelector<HTMLElement>('.card__price-from');
+    if (!cell || !out) return;
+    const target = cell.dataset['from' + (root.dataset.currency ?? '')] ?? out.textContent ?? '';
+    const m = target.match(NUM);
+    const prev = tweens.get(out);
+    if (prev) cancelAnimationFrame(prev);
+    tweens.delete(out);
+    if (!m || m.index === undefined || reduce.matches) {
+      out.textContent = target;
+      return;
+    }
+    const end = Number(m[0].replace(/\D/g, ''));
+    if (end === fromValue) {
+      out.textContent = target;
+      return;
+    }
+    const own = m[0].match(/[^\d]/)?.[0] ?? sep;
+    const head = target.slice(0, m.index);
+    const tail = target.slice(m.index + m[0].length);
+    const fmt = (n: number) => String(n).replace(/\B(?=(\d{3})+(?!\d))/g, own);
+    const dur = 420;
+    const t0 = performance.now();
+    const step = (now: number) => {
+      const p = Math.min(1, (now - t0) / dur);
+      const eased = 1 - Math.pow(1 - p, 3);
+      out.textContent = head + fmt(Math.round(fromValue + (end - fromValue) * eased)) + tail;
+      if (p < 1) tweens.set(out, requestAnimationFrame(step));
+      else {
+        tweens.delete(out);
+        out.textContent = target;
+      }
+    };
+    tweens.set(out, requestAnimationFrame(step));
+  }
+
+  /** Reinicia la entrada escalonada de la lista de comprobación. */
+  function replayChecklist(panel: HTMLElement) {
+    if (reduce.matches) return;
+    panel.classList.remove('is-entering');
+    void panel.offsetWidth;
+    panel.classList.add('is-entering');
+  }
+
+  document.querySelectorAll<HTMLElement>('[data-stage]').forEach((stage) => {
+    const tablist = stage.querySelector<HTMLElement>('[role="tablist"]')!;
+    const tabs = [...stage.querySelectorAll<HTMLButtonElement>('[role="tab"]')];
+    const panels = tabs.map((t) => document.getElementById(t.getAttribute('aria-controls') ?? '') as HTMLElement);
+    const viewport = stage.querySelector<HTMLElement>('.stage__viewport')!;
+    const indicator = stage.querySelector<HTMLElement>('.stage__indicator')!;
+    const sep = stage.dataset.thousands ?? '.';
+    let current = 0;
+
+    stage.classList.add('is-ready');
+
+    /* Indicador de cobre: una barra de 100 px que se mueve y se estira solo con
+       transform (translate + scaleX), medida contra la lista de pestañas. */
+    function placeIndicator() {
+      const tab = tabs[current];
+      const inset = parseFloat(getComputedStyle(tab).paddingLeft) || 0;
+      const x = tab.offsetLeft + inset;
+      const y = tab.offsetTop + tab.offsetHeight;
+      const w = Math.max(8, tab.offsetWidth - inset * 2);
+      indicator.style.transform = `translate(${x}px, ${y}px) scaleX(${w / 100})`;
+    }
+
+    /** En móvil la tira se desplaza: lleva la pestaña activa a la vista sin
+        mover la página en vertical (scrollIntoView sí la movería). */
+    function revealTab(tab: HTMLElement) {
+      const left = tab.offsetLeft - 16;
+      const right = tab.offsetLeft + tab.offsetWidth + 16 - tablist.clientWidth;
+      if (tablist.scrollLeft > left) tablist.scrollTo({ left, behavior: reduce.matches ? 'auto' : 'smooth' });
+      else if (tablist.scrollLeft < right) tablist.scrollTo({ left: right, behavior: reduce.matches ? 'auto' : 'smooth' });
+    }
+
+    function swap(next: number) {
+      panels.forEach((p, i) => {
+        p.getAnimations().forEach((a) => a.cancel());
+        p.hidden = i !== next;
+      });
+    }
+
+    function select(next: number, focus = false) {
+      if (next === current || next < 0 || next >= tabs.length) return;
+      const dir = next > current ? 1 : -1;
+      const prevPanel = panels[current];
+      const fromValue = numberIn(prevPanel.querySelector('.card__price-from')?.textContent ?? '');
+      current = next;
+
+      tabs.forEach((t, i) => {
+        const on = i === next;
+        t.setAttribute('aria-selected', String(on));
+        t.tabIndex = on ? 0 : -1;
+      });
+      if (focus) tabs[next].focus({ preventScroll: true });
+      placeIndicator();
+      revealTab(tabs[next]);
+
+      const after = () => {
+        replayChecklist(panels[current]);
+        tweenPrice(panels[current], fromValue, sep);
+      };
+
+      if (reduce.matches) {
+        swap(next);
+        after();
+        return;
+      }
+
+      /* View Transitions: el escenario recibe un nombre solo mientras dura el
+         cambio y la raíz no se anima (global.css), así que solo se desliza el
+         escenario, hacia el lado al que se viaja. */
+      const doc = document as Document & { startViewTransition?: (cb: () => void) => { finished: Promise<void> } };
+      if (doc.startViewTransition) {
+        // Un cambio rápido tras otro salta la transición anterior: solo limpia
+        // la última, y el nombre lo lleva un único escenario cada vez.
+        const seq = ++vtSeq;
+        document.querySelectorAll<HTMLElement>('.stage__viewport').forEach((v) => { v.style.viewTransitionName = ''; });
+        root.dataset.stageDir = dir > 0 ? 'next' : 'prev';
+        root.classList.add('is-stage-vt');
+        viewport.style.viewTransitionName = 'stage-panel';
+        const vt = doc.startViewTransition(() => {
+          swap(current);
+          after();
+        });
+        vt.finished.finally(() => {
+          if (seq !== vtSeq) return;
+          viewport.style.viewTransitionName = '';
+          root.classList.remove('is-stage-vt');
+          delete root.dataset.stageDir;
+        });
+        return;
+      }
+
+      /* Respaldo: los paneles están apilados en la misma celda, así que el
+         saliente y el entrante se animan a la vez, solo opacidad y transform. */
+      const nextPanel = panels[next];
+      panels.forEach((p) => p.getAnimations().forEach((a) => a.cancel()));
+      panels.forEach((p, i) => { if (i !== next && p !== prevPanel) p.hidden = true; });
+      nextPanel.hidden = false;
+      prevPanel.hidden = false;
+      prevPanel.classList.add('is-leaving');
+      const out = prevPanel.animate(
+        [{ opacity: 1, transform: 'none' }, { opacity: 0, transform: `translateX(${-28 * dir}px)` }],
+        { duration: 200, easing: 'ease-in', fill: 'forwards' },
+      );
+      nextPanel.animate(
+        [{ opacity: 0, transform: `translateX(${28 * dir}px)` }, { opacity: 1, transform: 'none' }],
+        { duration: 280, easing: 'cubic-bezier(.2,.8,.2,1)' },
+      );
+      out.finished
+        .then(() => {
+          if (panels[current] !== prevPanel) prevPanel.hidden = true;
+          out.cancel();
+        })
+        .catch(() => {})
+        .finally(() => prevPanel.classList.remove('is-leaving'));
+      after();
+    }
+
+    tabs.forEach((tab, i) => {
+      tab.addEventListener('click', () => select(i));
+    });
+
+    /* Patrón de pestañas de la APG con activación automática: flechas, Inicio
+       y Fin mueven el foco y seleccionan a la vez. */
+    tablist.addEventListener('keydown', (e) => {
+      const keys: Record<string, number> = {
+        ArrowRight: (current + 1) % tabs.length,
+        ArrowLeft: (current - 1 + tabs.length) % tabs.length,
+        Home: 0,
+        End: tabs.length - 1,
+      };
+      if (!(e.key in keys)) return;
+      e.preventDefault();
+      select(keys[e.key], true);
+    });
+
+    /* Deslizar el escenario con el dedo: horizontal cambia de servicio, el
+       vertical lo sigue haciendo el navegador (touch-action: pan-y). */
+    let sx = 0, sy = 0, tracking = false;
+    viewport.addEventListener('pointerdown', (e) => {
+      if (e.pointerType === 'mouse') return;
+      tracking = true;
+      sx = e.clientX;
+      sy = e.clientY;
+    });
+    viewport.addEventListener('pointerup', (e) => {
+      if (!tracking) return;
+      tracking = false;
+      const dx = e.clientX - sx;
+      const dy = e.clientY - sy;
+      if (Math.abs(dx) < 48 || Math.abs(dx) < Math.abs(dy) * 1.4) return;
+      select(current + (dx < 0 ? 1 : -1));
+    });
+    viewport.addEventListener('pointercancel', () => { tracking = false; });
+
+    // La primera colocación, sin transición (si no, la barra entra deslizándose desde la izquierda).
+    indicator.style.transition = 'none';
+    placeIndicator();
+    requestAnimationFrame(() => requestAnimationFrame(() => { indicator.style.transition = ''; }));
+    new ResizeObserver(placeIndicator).observe(tablist);
+    document.fonts?.ready.then(placeIndicator);
+
+    /* Primera vez que el escenario entra en pantalla: la lista se marca una a
+       una y el precio cuenta desde cero. Con movimiento reducido, nada. */
+    if (reduce.matches) {
+      stage.classList.add('is-played');
+    } else if ('IntersectionObserver' in window) {
+      const io = new IntersectionObserver(
+        (entries) => {
+          if (!entries.some((en) => en.isIntersecting)) return;
+          io.disconnect();
+          stage.classList.add('is-played');
+          replayChecklist(panels[current]);
+          tweenPrice(panels[current], 0, sep);
+        },
+        { rootMargin: '0px 0px -15% 0px' },
+      );
+      io.observe(stage);
+    } else {
+      stage.classList.add('is-played');
+    }
+  });
+</script>

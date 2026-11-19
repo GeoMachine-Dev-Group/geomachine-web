@@ -15,7 +15,7 @@ import { getCollection } from 'astro:content';
 import { ui, blogPath, kadriLabCasePath, hasBlog, type Lang } from '../i18n/ui';
 import { intents, intentUi } from '../data/intents';
 import { isPublished } from '../lib/blog';
-import ServiceCard from './ServiceCard.astro';
+import ServiceStage, { type StageItem } from './ServiceStage.astro';
 import { legalPath, legalLangFor, LEGAL_VERSION } from '../data/legal';
 
 interface Props {
@@ -205,6 +205,57 @@ const featuredMap: Record<string, Record<Lang, string>> = {
     ka: '★ მთავარი შეთავაზება',
   },
 };
+
+/** La descripción de un servicio es una frase con comas ("Una página,
+    formulario de contacto, analítica instalada"): en el configurador se lee
+    como lista de comprobación, una línea por tramo. Solo se parte por coma
+    seguida de espacio y fuera de paréntesis; el texto no cambia. */
+function checklistOf(spec: string) {
+  const out: string[] = [];
+  let depth = 0, start = 0;
+  for (let i = 0; i < spec.length; i++) {
+    const ch = spec[i];
+    if (ch === '(') depth++;
+    else if (ch === ')') depth = Math.max(0, depth - 1);
+    else if (ch === ',' && spec[i + 1] === ' ' && depth === 0) {
+      out.push(spec.slice(start, i).trim());
+      start = i + 1;
+    }
+  }
+  out.push(spec.slice(start).trim());
+  return out.filter(Boolean);
+}
+
+const ctaLabel = LAUNCH_OPEN ? t.heroCtaSlot : t.ctaButton;
+
+const lineStages = lines.map((line) => ({
+  line,
+  items: line.items.map((item): StageItem => ({
+    code: item.code,
+    name: item.name[lang],
+    time: item.time?.[lang],
+    checklist: checklistOf(item.spec[lang]),
+    human: item.human[lang],
+    priceAttrs: priceData(item),
+    initialFrom: initialFrom(item),
+    initialDetail: initialDetail(item),
+    initialWas: initialWas(item, item.unit),
+    featuredLabel: featuredMap[item.code]?.[lang],
+  })),
+}));
+
+const bundleItems = bundles.map((b): StageItem => ({
+  code: b.code,
+  name: b.name[lang],
+  time: b.time?.[lang],
+  checklist: b.includes[lang],
+  human: b.human[lang],
+  priceAttrs: bundlePriceData(b),
+  initialFrom: moneyFrom(b[DEFAULT_TIER][CUR], CUR, 'once'),
+  initialDetail: priceDetail(b[DEFAULT_TIER][CUR], CUR, 'once'),
+  initialWas: initialWas(b, 'once'),
+  featuredLabel: featuredMap[b.code]?.[lang],
+}));
 ---
 
 <section class="hero hero--atelier shell">
@@ -338,14 +389,24 @@ const featuredMap: Record<string, Record<Lang, string>> = {
   </div>
 </div>
 
+<!-- Sin JS no hay pestañas que pulsar: se ocultan y se enseñan todos los
+     servicios apilados, así no se pierde nada (ServiceStage.astro). -->
+<noscript>
+  <style is:inline>
+    .stage__tabs { display: none; }
+    .stage__panel[hidden] { display: grid; }
+    .stage__panel + .stage__panel { border-top: 1px solid var(--rule); }
+  </style>
+</noscript>
+
 {
-  lines.map((line) => (
+  lineStages.map(({ line, items }) => (
     <section class="line shell" id={line.prefix.toLowerCase()}>
       <header class="line__head">
         <span class="line__prefix">{line.prefix}</span>
         <div>
           <h2 class="line__title">{line.title[lang]}</h2>
-          <p class="line__note">{line.hint ? `${line.note[lang]} ${line.hint[lang]}` : line.note[lang]}</p>
+          <p class="line__note">{line.note[lang]}</p>
         </div>
         {hasBlog(lang) && blogPillars.has(line.prefix) && (
           <a href={`${blogPath[lang]}#${line.prefix.toLowerCase()}`} class="line__blog-badge">
@@ -359,32 +420,14 @@ const featuredMap: Record<string, Record<Lang, string>> = {
         )}
       </header>
 
-      <div class="cards" data-cards>
-        {line.items.map((item) => {
-          const featuredText = featuredMap[item.code]?.[lang];
-          return (
-            <ServiceCard
-              code={item.code}
-              name={item.name[lang]}
-              time={item.time?.[lang]}
-              description={item.spec[lang]}
-              humanLabel={t.colService}
-              human={item.human[lang]}
-              priceAttrs={priceData(item)}
-              initialFrom={initialFrom(item)}
-              initialDetail={initialDetail(item)}
-              initialWas={initialWas(item, item.unit)}
-              featured={Boolean(featuredText)}
-              featuredLabel={featuredText}
-            />
-          );
-        })}
-      </div>
-      {line.items.length > 3 && (
-        <button type="button" class="cards-toggle" data-toggle-more={t.showMore} data-toggle-less={t.showLess}>
-          {t.showMore}
-        </button>
-      )}
+      <ServiceStage
+        id={line.prefix.toLowerCase()}
+        label={line.title[lang]}
+        items={items}
+        ctaLabel={ctaLabel}
+        ctaService={line.title[lang]}
+        thousands={THOUSANDS[lang]}
+      />
     </section>
   ))
 }
@@ -398,34 +441,14 @@ const featuredMap: Record<string, Record<Lang, string>> = {
     </div>
   </header>
 
-  <div class="cards" data-cards>
-    {
-      bundles.map((b) => {
-        const featuredText = featuredMap[b.code]?.[lang];
-        return (
-          <ServiceCard
-            code={b.code}
-            name={b.name[lang]}
-            time={b.time?.[lang]}
-            description={b.includes[lang]}
-            humanLabel={t.bundleIncludes}
-            human={b.human[lang]}
-            priceAttrs={bundlePriceData(b)}
-            initialFrom={moneyFrom(b[DEFAULT_TIER][CUR], CUR, 'once')}
-            initialDetail={priceDetail(b[DEFAULT_TIER][CUR], CUR, 'once')}
-            initialWas={initialWas(b, 'once')}
-            featured={Boolean(featuredText)}
-            featuredLabel={featuredText}
-          />
-        );
-      })
-    }
-  </div>
-  {bundles.length > 3 && (
-    <button type="button" class="cards-toggle" data-toggle-more={t.showMore} data-toggle-less={t.showLess}>
-      {t.showMore}
-    </button>
-  )}
+  <ServiceStage
+    id="paquetes"
+    label={t.bundlesTitle}
+    items={bundleItems}
+    ctaLabel={ctaLabel}
+    ctaService={t.bundlesTitle}
+    thousands={THOUSANDS[lang]}
+  />
 </section>
 
 <section class="faq shell">
@@ -596,16 +619,6 @@ const featuredMap: Record<string, Record<Lang, string>> = {
 </dialog>
 
 <script>
-  document.querySelectorAll<HTMLElement>('[data-cards]').forEach((container) => {
-    const toggle = container.nextElementSibling as HTMLButtonElement | null;
-    if (!toggle || !toggle.matches('[data-toggle-more]')) return;
-    toggle.addEventListener('click', () => {
-      const expanded = container.classList.toggle('is-expanded');
-      toggle.textContent = expanded ? toggle.dataset.toggleLess ?? '' : toggle.dataset.toggleMore ?? '';
-      if (expanded) container.querySelectorAll('.reveal').forEach((el) => el.classList.add('is-in'));
-    });
-  });
-
   /* Manejo unificado de envío de formularios de contacto (Sección + Modal) */
   ['contact-form', 'modal-contact-form'].forEach((id) => {
     const form = document.getElementById(id) as HTMLFormElement | null;

@@ -302,8 +302,10 @@ const preloadFont: Record<Lang, string> = {
         const trigger = target?.closest<HTMLElement>('a[href="#contacto"], [data-open-modal], .fab');
         if (trigger && modal) {
           e.preventDefault();
+          // El configurador (ServiceStage.astro) dice en data-service qué línea
+          // preseleccionar; las tarjetas antiguas, por su .card__name.
           const card = trigger.closest<HTMLElement>('.card');
-          const serviceName = card?.querySelector('.card__name')?.textContent?.trim();
+          const serviceName = trigger.dataset.service ?? card?.querySelector('.card__name')?.textContent?.trim();
           openModal(serviceName);
         }
         if (target?.closest('[data-close-modal]')) modal?.close();
