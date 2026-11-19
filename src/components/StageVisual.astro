@@ -9,15 +9,24 @@
 import {
   CAMERA, CART, PAGE_LINES, PIECE_ROT, SHADOW, SLAB, TILE, cameraEye, cameraTarget, webShapes, type Pose, type Vec3,
 } from '../scripts/stage3d/web-shapes';
+import { seoSvg } from '../scripts/stage3d/seo-shapes';
+import { packSvg } from '../scripts/stage3d/pack-shapes';
+
+/** Ilustración de las líneas que no son WEB: cada juego de formas trae la
+    suya (misma cámara y mismas poses que su lienzo, vía projection.ts). */
+const FALLBACKS: Record<string, (index: number, W: number, H: number, glowId: string) => string> = {
+  seo: seoSvg,
+  pack: packSvg,
+};
 
 interface Props {
-  kind: 'web';
+  kind: 'web' | 'seo' | 'pack';
   index: number;
   /** 'tall': columna derecha a toda altura (escritorio); 'wide': banda de
       arriba (≤ 860 px). El CSS enseña la que toca. */
   shape: 'tall' | 'wide';
 }
-const { index, shape } = Astro.props;
+const { kind, index, shape } = Astro.props;
 
 const W = shape === 'tall' ? 440 : 460;
 const H = shape === 'tall' ? 560 : 220;
@@ -103,7 +112,7 @@ const [, ny] = screen([0, SHADOW.y, SHADOW.z + SHADOW.d / 2]);
 const glow =
   `<defs><radialGradient id="${glowId}"><stop offset="0" class="pv-glow-stop"/><stop offset="1" class="pv-glow-stop" stop-opacity="0"/></radialGradient></defs>` +
   `<ellipse cx="${cx.toFixed(1)}" cy="${cy.toFixed(1)}" rx="${Math.abs(cx - lx).toFixed(1)}" ry="${(Math.abs(ny - fy) / 2).toFixed(1)}" fill="url(#${glowId})" opacity=".22"/>`;
-const svg = glow + shapes.map((x) => x.svg).join('');
+const svg = FALLBACKS[kind]?.(index, W, H, `pv-glow-${kind}-${index}-${shape}`) ?? glow + shapes.map((x) => x.svg).join('');
 ---
 
 <svg class={`stage__visual-svg stage__visual-svg--${shape}`} viewBox={`0 0 ${W} ${H}`} preserveAspectRatio="xMidYMid meet" aria-hidden="true" focusable="false" set:html={svg} />

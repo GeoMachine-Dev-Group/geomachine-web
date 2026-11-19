@@ -273,6 +273,12 @@ const lineStages = lines.map((line) => ({
   })),
 }));
 
+// Pieza 3D de cada línea en ServiceStage (los paquetes llevan 'pack' aparte).
+const LINE_VISUAL: Record<string, 'web' | 'seo' | undefined> = {
+  WEB: 'web',
+  SEO: 'seo',
+};
+
 const bundleItems = bundles.map((b): StageItem => ({
   code: b.code,
   name: b.name[lang],
@@ -462,7 +468,7 @@ const bundleItems = bundles.map((b): StageItem => ({
         ctaService={line.title[lang]}
         thousands={THOUSANDS[lang]}
         labels={stageLabels}
-        visual={line.prefix === 'WEB' ? 'web' : undefined}
+        visual={LINE_VISUAL[line.prefix]}
       />
     </section>
   ))
@@ -485,6 +491,7 @@ const bundleItems = bundles.map((b): StageItem => ({
     ctaService={t.bundlesTitle}
     thousands={THOUSANDS[lang]}
     labels={stageLabels}
+    visual="pack"
   />
 </section>
 
