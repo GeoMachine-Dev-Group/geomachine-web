@@ -59,8 +59,10 @@ const nbsp = ' ';
     "1.800 €" en español, "1,800 €" en inglés, espacio duro en ruso y georgiano. */
 const THOUSANDS: Record<Lang, string> = { es: '.', en: ',', ru: nbsp, ka: nbsp };
 /** Pieza 3D de cada línea (src/scripts/stage3d/kinds.ts). Sin entrada, sin
-    pieza. Los paquetes llevan la suya aparte, en su propio escenario. */
-const LINE_VISUAL: Partial<Record<string, StageKind>> = { WEB: 'web', APP: 'app', SYS: 'sys', IA: 'ia', MNT: 'mnt' };
+    pieza. Los paquetes llevan la suya ('pack') en su propio escenario. */
+const LINE_VISUAL: Partial<Record<string, StageKind>> = {
+  WEB: 'web', APP: 'app', SYS: 'sys', IA: 'ia', MNT: 'mnt', SEO: 'seo',
+};
 const CURRENCY_SYMBOL: Record<Currency, string> = { eur: '€', rub: '₽', gel: '₾' };
 const CURRENCIES = ['eur', 'rub', 'gel'] as const;
 
@@ -489,6 +491,7 @@ const bundleItems = bundles.map((b): StageItem => ({
     ctaService={t.bundlesTitle}
     thousands={THOUSANDS[lang]}
     labels={stageLabels}
+    visual="pack"
   />
 </section>
 

@@ -237,6 +237,8 @@ function priceParts(text: string) {
     sys: () => import('../scripts/stage3d/sys'),
     ia: () => import('../scripts/stage3d/ia'),
     mnt: () => import('../scripts/stage3d/mnt'),
+    seo: () => import('../scripts/stage3d/seo'),
+    pack: () => import('../scripts/stage3d/pack'),
   };
   new MutationObserver(() => {
     tweens.forEach((raf) => cancelAnimationFrame(raf));
@@ -495,7 +497,7 @@ function priceParts(text: string) {
       io.observe(stage);
     }
 
-    /* Pieza 3D (las líneas con entrada en VISUALS): three.js se pide con import() cuando el
+    /* Pieza 3D (una por línea, de VISUALS): three.js se pide con import() cuando el
        escenario se acerca a la pantalla, así que no entra en el JS inicial.
        Si no hay WebGL o falla la carga, se queda el SVG estático. Se libera
        en pagehide y se vuelve a montar si la página vuelve de la caché. */

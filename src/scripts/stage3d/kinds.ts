@@ -4,4 +4,4 @@
  * StageVisual.astro (mapa DRAW del SVG estático) y en Catalog.astro (qué
  * línea lleva cuál). Sin three.js: se puede importar desde cualquier sitio.
  */
-export type StageKind = 'web' | 'app' | 'sys' | 'ia' | 'mnt';
+export type StageKind = 'web' | 'app' | 'sys' | 'ia' | 'mnt' | 'seo' | 'pack';

@@ -18,6 +18,8 @@ import { APP_KIT } from '../scripts/stage3d/app-shapes';
 import { SYS_KIT } from '../scripts/stage3d/sys-shapes';
 import { iaSvg } from '../scripts/stage3d/ia-svg';
 import { mntSvg } from '../scripts/stage3d/mnt-svg';
+import { seoSvg } from '../scripts/stage3d/seo-shapes';
+import { packSvg } from '../scripts/stage3d/pack-shapes';
 
 type Draw = (index: number, W: number, H: number, key: string) => string;
 
@@ -34,6 +36,9 @@ const DRAW: Record<StageKind, Draw> = {
   sys: withWebCamera((i, pr) => kitSvg(SYS_KIT, i, pr)),
   ia: withWebCamera(iaSvg),
   mnt: withWebCamera(mntSvg),
+  // SEO y PACK traen cámara propia (makeCamera) y dibujan ellos su sombra.
+  seo: (i, W, H, key) => seoSvg(i, W, H, `pv-glow-${key}`),
+  pack: (i, W, H, key) => packSvg(i, W, H, `pv-glow-${key}`),
 };
 
 interface Props {
