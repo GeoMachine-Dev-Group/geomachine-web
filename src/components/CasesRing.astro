@@ -1,0 +1,335 @@
+---
+/**
+ * Anillo de casos en CSS 3D (sin WebGL ni librerías), adaptado del prototipo
+ * aprobado en .superpowers/demo/casos-3d.html («Prototipo 2»).
+ *
+ * Es solo una mejora visual de la franja .proof: la lista de texto de
+ * Catalog.astro sigue en el HTML y es la que leen Google y los lectores de
+ * pantalla. Por eso el anillo va con aria-hidden y sus tarjetas no entran en
+ * el orden de tabulación (repetirían los mismos enlaces); con teclado se
+ * maneja con los dos botones, que sí son accesibles, y con las flechas ← →.
+ *
+ * Sin JS se ve la primera tarjeta de frente y los botones quedan ocultos.
+ */
+import { ui, type Lang } from '../i18n/ui';
+
+export interface RingCase {
+  name: string;
+  tag: string;
+  href: string | null;
+  img: string;
+  width: number;
+  height: number;
+}
+
+interface Props {
+  lang: Lang;
+  items: RingCase[];
+}
+const { lang, items } = Astro.props;
+const t = ui[lang];
+const step = 360 / items.length;
+---
+
+<div class="cases-ring" role="group" aria-label={t.ringLabel} data-cases-ring>
+  <div class="cases-ring__stage">
+    <span class="cases-ring__hint" aria-hidden="true">{t.ringHint}</span>
+    <div class="cases-ring__glow" aria-hidden="true"></div>
+    <div class="cases-ring__ring" style={`--step:${step}deg`} aria-hidden="true">
+      {
+        items.map((c, i) => {
+          const Tag = c.href ? 'a' : 'div';
+          return (
+            <Tag
+              class:list={['cases-ring__item', { 'is-front': i === 0 }]}
+              style={`--i:${i}`}
+              data-i={i}
+              href={c.href ?? undefined}
+              {...(c.href?.startsWith('http') ? { target: '_blank', rel: 'noopener' } : {})}
+              tabindex={c.href ? '-1' : undefined}
+              draggable="false"
+            >
+              <img
+                src={c.img}
+                alt=""
+                width={c.width}
+                height={c.height}
+                loading="lazy"
+                decoding="async"
+                draggable="false"
+              />
+              <span class="cases-ring__caption">
+                <span class="cases-ring__tag">{c.tag}</span>
+                <span class="cases-ring__name">{c.name}</span>
+              </span>
+            </Tag>
+          );
+        })
+      }
+    </div>
+  </div>
+  <div class="cases-ring__controls" hidden>
+    <button type="button" class="cases-ring__btn" data-go="-1" aria-label={t.ringPrev}>←</button>
+    <button type="button" class="cases-ring__btn" data-go="1" aria-label={t.ringNext}>→</button>
+  </div>
+</div>
+
+<style>
+  .cases-ring {
+    --card-w: 340px;
+    --card-h: 212px;
+    --r: 274px; /* radio por defecto para 5 tarjetas; el JS lo recalcula */
+    position: relative;
+    margin-block-start: var(--space-6);
+  }
+  .cases-ring__stage {
+    position: relative;
+    height: 340px;
+    display: grid;
+    place-items: center;
+    perspective: 1600px;
+    overflow: hidden;
+    border: 1px solid var(--rule-soft);
+    border-radius: var(--radius-xl);
+    background:
+      radial-gradient(60% 55% at 50% 110%, var(--accent-soft), transparent 70%),
+      var(--panel);
+    touch-action: pan-y; /* el scroll vertical sigue funcionando en móvil */
+    cursor: grab;
+    user-select: none;
+    -webkit-user-select: none;
+  }
+  .cases-ring__stage:active { cursor: grabbing; }
+  .cases-ring__hint {
+    position: absolute;
+    top: var(--space-3);
+    left: 50%;
+    translate: -50% 0;
+    font: 500 var(--fs-3xs) / 1 var(--data);
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    color: var(--ink-soft);
+    white-space: nowrap;
+    pointer-events: none;
+  }
+  .cases-ring__glow {
+    position: absolute;
+    inset: auto 10% 8%;
+    height: 30%;
+    background: radial-gradient(closest-side, var(--accent-soft), transparent);
+    filter: blur(20px);
+    pointer-events: none;
+  }
+  .cases-ring__ring {
+    position: relative;
+    width: var(--card-w);
+    height: var(--card-h);
+    transform-style: preserve-3d;
+    transform: translateZ(calc(var(--r) * -1)) rotateX(-6deg) rotateY(var(--rot, 0deg));
+    transition: transform .9s cubic-bezier(.2, .8, .2, 1);
+  }
+  .cases-ring__ring.is-dragging { transition: none; }
+  .cases-ring__item {
+    position: absolute;
+    inset: 0;
+    display: block;
+    overflow: hidden;
+    border: 1px solid var(--rule);
+    border-radius: var(--radius-lg);
+    background: var(--paper);
+    color: var(--ink);
+    text-decoration: none;
+    transform: rotateY(calc(var(--i) * var(--step))) translateZ(var(--r));
+    box-shadow: 0 30px 60px -20px rgba(0, 0, 0, .65);
+    backface-visibility: hidden;
+    transition: filter .6s, border-color .6s;
+    -webkit-user-drag: none;
+  }
+  .cases-ring__item:not(.is-front) { filter: brightness(.45) saturate(.6); }
+  .cases-ring__item.is-front { border-color: var(--accent); }
+  .cases-ring__item img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: top;
+    pointer-events: none;
+  }
+  .cases-ring__caption {
+    position: absolute;
+    inset: auto 0 0;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    padding: var(--space-6) var(--space-4) var(--space-3);
+    background: linear-gradient(transparent, rgba(16, 22, 15, .92));
+  }
+  .cases-ring__tag {
+    font: 500 var(--fs-3xs) / 1.2 var(--data);
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: var(--accent);
+  }
+  .cases-ring__name { font: 600 var(--fs-lg) / 1.2 var(--display); }
+
+  .cases-ring__controls {
+    position: absolute;
+    right: var(--space-4);
+    bottom: var(--space-4);
+    display: flex;
+    gap: var(--space-2);
+  }
+  .cases-ring__controls[hidden] { display: none; }
+  .cases-ring__btn {
+    width: 2.75rem;
+    height: 2.75rem;
+    display: grid;
+    place-items: center;
+    padding: 0;
+    border: 1px solid var(--rule);
+    border-radius: var(--radius-pill);
+    background: color-mix(in srgb, var(--paper) 75%, transparent);
+    color: var(--ink);
+    font: 500 var(--fs-lg) / 1 var(--body);
+    cursor: pointer;
+    backdrop-filter: blur(8px);
+  }
+  .cases-ring__btn:hover { border-color: var(--accent); color: var(--accent); }
+  .cases-ring__btn:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+  @media (max-width: 720px) {
+    .cases-ring { --card-w: 260px; --card-h: 162px; --r: 219px; }
+    .cases-ring__stage { height: 290px; }
+  }
+  @media (max-width: 480px) {
+    .cases-ring { --card-w: 200px; --card-h: 125px; --r: 178px; }
+    .cases-ring__stage { height: 240px; }
+    .cases-ring__name { font-size: var(--fs-md); }
+    .cases-ring__caption { padding: var(--space-4) var(--space-3) var(--space-2); }
+    .cases-ring__controls { position: static; justify-content: center; margin-block-start: var(--space-3); }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .cases-ring__ring { transition-duration: .01ms; }
+    .cases-ring__item { transition: none; }
+  }
+</style>
+
+<script>
+  const AUTO_MS = 5000; // autogiro lento
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)');
+
+  document.querySelectorAll<HTMLElement>('[data-cases-ring]').forEach((root) => {
+    const stage = root.querySelector<HTMLElement>('.cases-ring__stage');
+    const ring = root.querySelector<HTMLElement>('.cases-ring__ring');
+    const controls = root.querySelector<HTMLElement>('.cases-ring__controls');
+    if (!stage || !ring || !controls) return;
+    const items = [...ring.querySelectorAll<HTMLElement>('.cases-ring__item')];
+    const N = items.length;
+    if (N < 2) return;
+    const step = 360 / N;
+    controls.hidden = false;
+
+    // Radio: que las tarjetas queden pegadas sin solaparse, más un margen.
+    const setR = () => {
+      const w = ring.offsetWidth;
+      root.style.setProperty('--r', `${Math.round(w / 2 / Math.tan(Math.PI / N) + 40)}px`);
+    };
+    setR();
+    new ResizeObserver(setR).observe(ring);
+
+    let idx = 0;
+    let rot = 0;
+    let dragging = false;
+    let moved = false;
+    let sx = 0;
+    let base = 0;
+    const norm = (i: number) => ((i % N) + N) % N;
+    const go = (i: number) => {
+      idx = i;
+      rot = -idx * step;
+      ring.style.setProperty('--rot', `${rot}deg`);
+      items.forEach((el) => el.classList.toggle('is-front', Number(el.dataset.i) === norm(idx)));
+    };
+
+    // Autogiro: se pausa al pasar el ratón, al enfocar, fuera de pantalla y
+    // con la pestaña oculta. Con prefers-reduced-motion no arranca nunca.
+    let timer: number | undefined;
+    let hover = false;
+    let focus = false;
+    let visible = false;
+    const stop = () => {
+      window.clearInterval(timer);
+      timer = undefined;
+    };
+    const sync = () => {
+      stop();
+      if (reduce.matches || hover || focus || dragging || !visible || document.hidden) return;
+      timer = window.setInterval(() => go(idx + 1), AUTO_MS);
+    };
+    root.addEventListener('pointerenter', (e) => { if (e.pointerType === 'mouse') { hover = true; sync(); } });
+    root.addEventListener('pointerleave', (e) => { if (e.pointerType === 'mouse') { hover = false; sync(); } });
+    root.addEventListener('focusin', () => { focus = true; sync(); });
+    root.addEventListener('focusout', (e) => {
+      if (!root.contains(e.relatedTarget as Node | null)) { focus = false; sync(); }
+    });
+    document.addEventListener('visibilitychange', sync);
+    reduce.addEventListener('change', sync);
+    new IntersectionObserver(([entry]) => { visible = entry.isIntersecting; sync(); }).observe(root);
+
+    // Botones y teclado.
+    controls.querySelectorAll<HTMLButtonElement>('[data-go]').forEach((b) =>
+      b.addEventListener('click', () => { go(idx + Number(b.dataset.go)); sync(); }),
+    );
+    root.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowLeft') { e.preventDefault(); go(idx - 1); sync(); }
+      else if (e.key === 'ArrowRight') { e.preventDefault(); go(idx + 1); sync(); }
+    });
+
+    // Arrastrar (ratón y dedo). touch-action: pan-y deja el scroll vertical.
+    stage.addEventListener('pointerdown', (e) => {
+      if (e.button !== 0) return;
+      dragging = true;
+      moved = false;
+      sx = e.clientX;
+      base = rot;
+      ring.classList.add('is-dragging');
+      sync();
+    });
+    stage.addEventListener('pointermove', (e) => {
+      if (!dragging) return;
+      const dx = e.clientX - sx;
+      if (!moved && Math.abs(dx) > 6) {
+        moved = true;
+        stage.setPointerCapture(e.pointerId);
+      }
+      if (!moved) return;
+      rot = base + dx * 0.35;
+      ring.style.setProperty('--rot', `${rot}deg`);
+    });
+    const end = () => {
+      if (!dragging) return;
+      dragging = false;
+      ring.classList.remove('is-dragging');
+      if (moved) go(Math.round(-rot / step));
+      sync();
+    };
+    stage.addEventListener('pointerup', end);
+    stage.addEventListener('pointercancel', end);
+
+    // Un clic en una tarjeta lateral la trae al frente; en la de frente
+    // sigue el enlace. Tras arrastrar, el clic no navega.
+    ring.addEventListener('click', (e) => {
+      const card = (e.target as HTMLElement).closest<HTMLElement>('.cases-ring__item');
+      if (!card) return;
+      if (moved) { e.preventDefault(); moved = false; return; }
+      let d = norm(Number(card.dataset.i) - norm(idx));
+      if (d === 0) return;
+      e.preventDefault();
+      if (d > N / 2) d -= N;
+      go(idx + d);
+      sync();
+    });
+
+    go(0);
+  });
+</script>

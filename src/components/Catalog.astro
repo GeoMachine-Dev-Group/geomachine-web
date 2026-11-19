@@ -16,6 +16,7 @@ import { ui, blogPath, kadriLabCasePath, hasBlog, type Lang } from '../i18n/ui';
 import { intents, intentUi } from '../data/intents';
 import { isPublished } from '../lib/blog';
 import ServiceCard from './ServiceCard.astro';
+import CasesRing, { type RingCase } from './CasesRing.astro';
 import { legalPath, legalLangFor, LEGAL_VERSION } from '../data/legal';
 
 interface Props {
@@ -186,6 +187,23 @@ const accountsHref: Record<Lang, string> = {
   ka: '/ka/momsakhurebebi/app-accounts/',
 };
 
+/** Tarjetas del anillo 3D (CasesRing): los mismos trabajos y enlaces que la
+    lista .proof, menos el MVP en desarrollo, que no tiene captura. */
+const ringCases: RingCase[] = [
+  { name: 'gagraservis.ru', tag: t.statusDelivered, href: gagraCase, img: '/images/casos/gagralet-desktop.webp', width: 1440, height: 900 },
+  { name: 'abhazservis.com', tag: t.proofOwnProject, href: 'https://abhazservis.com/', img: '/images/casos/abhaz-desktop.webp', width: 1280, height: 800 },
+  {
+    name: 'kadrilab.com',
+    tag: t.statusDelivered,
+    href: kadriLabCasePath[lang],
+    img: `/images/casos/kadrilab-${lang === 'ka' ? 'ka' : 'en'}-desktop.webp`,
+    width: 1440,
+    height: 900,
+  },
+  { name: 'GeoMachine Accounts', tag: t.proofDesktopApp, href: accountsHref[lang], img: '/images/casos/accounts-desktop.webp', width: 1280, height: 800 },
+  { name: 'Optimus', tag: t.proofTruckApp, href: optimusHref[lang], img: '/images/casos/optimus-desktop.webp', width: 1280, height: 800 },
+];
+
 const heroAnchors = ['WEB', 'APP', 'IA']
   .map((prefix) => lines.find((l) => l.prefix === prefix))
   .filter((l): l is (typeof lines)[number] => Boolean(l))
@@ -287,6 +305,7 @@ const featuredMap: Record<string, Record<Lang, string>> = {
       <span>{t.devProjectName}</span>
     </li>
   </ul>
+  <CasesRing lang={lang} items={ringCases} />
 </div>
 
 {
