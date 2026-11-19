@@ -15,7 +15,7 @@ import { getCollection } from 'astro:content';
 import { ui, blogPath, kadriLabCasePath, hasBlog, type Lang } from '../i18n/ui';
 import { intents, intentUi } from '../data/intents';
 import { isPublished } from '../lib/blog';
-import ServiceCard from './ServiceCard.astro';
+import ServiceLedger, { type LedgerEntry } from './ServiceLedger.astro';
 import { legalPath, legalLangFor, LEGAL_VERSION } from '../data/legal';
 
 interface Props {
@@ -160,6 +160,64 @@ function initialDetail(item: Item) {
 function initialWas(item: { launch: Item['launch']; standard: Item['standard'] }, unit: Unit) {
   return LAUNCH_OPEN ? wasFor(item, CUR, unit) : '';
 }
+
+/** Plazo máximo en días naturales, para la barra del panel. Se lee del texto
+    inglés ("1–2 days", "3–5 weeks", "+1 day") porque es el más fácil de
+    analizar y dice lo mismo que los otros tres. Si no hay número y unidad
+    reconocibles ("1 session"), null: el panel enseña el plazo sin barra. */
+function maxDays(time?: { en: string }) {
+  if (!time) return null;
+  const nums = time.en.match(/\d+/g)?.map(Number);
+  if (!nums?.length) return null;
+  const unit = /week/i.test(time.en) ? 7 : /day/i.test(time.en) ? 1 : 0;
+  return unit ? Math.max(...nums) * unit : null;
+}
+
+/** "Una página, formulario de contacto, analítica instalada" → lista. Solo
+    parte en coma seguida de espacio, así que "1,5" no se rompería. */
+function splitSpec(spec: string) {
+  return spec.split(/,\s+/).map((s) => s.trim()).filter(Boolean);
+}
+
+function itemEntry(item: Item): LedgerEntry {
+  return {
+    code: item.code,
+    name: item.name[lang],
+    time: item.time?.[lang],
+    days: maxDays(item.time),
+    includes: splitSpec(item.spec[lang]),
+    human: item.human[lang],
+    priceAttrs: priceData(item),
+    initialFrom: initialFrom(item),
+    initialDetail: initialDetail(item),
+    initialWas: initialWas(item, item.unit),
+    featuredLabel: featuredMap[item.code]?.[lang],
+  };
+}
+
+function bundleEntry(b: Bundle): LedgerEntry {
+  return {
+    code: b.code,
+    name: b.name[lang],
+    time: b.time?.[lang],
+    days: maxDays(b.time),
+    includes: b.includes[lang],
+    human: b.human[lang],
+    priceAttrs: bundlePriceData(b),
+    initialFrom: moneyFrom(b[DEFAULT_TIER][CUR], CUR, 'once'),
+    initialDetail: priceDetail(b[DEFAULT_TIER][CUR], CUR, 'once'),
+    initialWas: initialWas(b, 'once'),
+    featuredLabel: featuredMap[b.code]?.[lang],
+  };
+}
+
+const ledgerText = {
+  colService: t.colService,
+  colTime: t.colTime,
+  colPrice: t.colPrice,
+  includesLabel: t.bundleIncludes,
+  ctaLabel: t.heroCtaSlot,
+};
 
 /** Precios de entrada del hero: el PRIMER servicio de cada línea (Landing page,
     MVP web, Auditoría de procesos), no el más barato — el mínimo de Webs sería
@@ -359,32 +417,13 @@ const featuredMap: Record<string, Record<Lang, string>> = {
         )}
       </header>
 
-      <div class="cards" data-cards>
-        {line.items.map((item) => {
-          const featuredText = featuredMap[item.code]?.[lang];
-          return (
-            <ServiceCard
-              code={item.code}
-              name={item.name[lang]}
-              time={item.time?.[lang]}
-              description={item.spec[lang]}
-              humanLabel={t.colService}
-              human={item.human[lang]}
-              priceAttrs={priceData(item)}
-              initialFrom={initialFrom(item)}
-              initialDetail={initialDetail(item)}
-              initialWas={initialWas(item, item.unit)}
-              featured={Boolean(featuredText)}
-              featuredLabel={featuredText}
-            />
-          );
-        })}
-      </div>
-      {line.items.length > 3 && (
-        <button type="button" class="cards-toggle" data-toggle-more={t.showMore} data-toggle-less={t.showLess}>
-          {t.showMore}
-        </button>
-      )}
+      <ServiceLedger
+        id={line.prefix.toLowerCase()}
+        label={line.title[lang]}
+        service={line.title[lang]}
+        entries={line.items.map(itemEntry)}
+        {...ledgerText}
+      />
     </section>
   ))
 }
@@ -398,34 +437,13 @@ const featuredMap: Record<string, Record<Lang, string>> = {
     </div>
   </header>
 
-  <div class="cards" data-cards>
-    {
-      bundles.map((b) => {
-        const featuredText = featuredMap[b.code]?.[lang];
-        return (
-          <ServiceCard
-            code={b.code}
-            name={b.name[lang]}
-            time={b.time?.[lang]}
-            description={b.includes[lang]}
-            humanLabel={t.bundleIncludes}
-            human={b.human[lang]}
-            priceAttrs={bundlePriceData(b)}
-            initialFrom={moneyFrom(b[DEFAULT_TIER][CUR], CUR, 'once')}
-            initialDetail={priceDetail(b[DEFAULT_TIER][CUR], CUR, 'once')}
-            initialWas={initialWas(b, 'once')}
-            featured={Boolean(featuredText)}
-            featuredLabel={featuredText}
-          />
-        );
-      })
-    }
-  </div>
-  {bundles.length > 3 && (
-    <button type="button" class="cards-toggle" data-toggle-more={t.showMore} data-toggle-less={t.showLess}>
-      {t.showMore}
-    </button>
-  )}
+  <ServiceLedger
+    id="pack"
+    label={t.bundlesTitle}
+    service={t.bundlesTitle}
+    entries={bundles.map(bundleEntry)}
+    {...ledgerText}
+  />
 </section>
 
 <section class="faq shell">
@@ -596,16 +614,6 @@ const featuredMap: Record<string, Record<Lang, string>> = {
 </dialog>
 
 <script>
-  document.querySelectorAll<HTMLElement>('[data-cards]').forEach((container) => {
-    const toggle = container.nextElementSibling as HTMLButtonElement | null;
-    if (!toggle || !toggle.matches('[data-toggle-more]')) return;
-    toggle.addEventListener('click', () => {
-      const expanded = container.classList.toggle('is-expanded');
-      toggle.textContent = expanded ? toggle.dataset.toggleLess ?? '' : toggle.dataset.toggleMore ?? '';
-      if (expanded) container.querySelectorAll('.reveal').forEach((el) => el.classList.add('is-in'));
-    });
-  });
-
   /* Manejo unificado de envío de formularios de contacto (Sección + Modal) */
   ['contact-form', 'modal-contact-form'].forEach((id) => {
     const form = document.getElementById(id) as HTMLFormElement | null;

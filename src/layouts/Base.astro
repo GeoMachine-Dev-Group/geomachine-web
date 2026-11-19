@@ -161,10 +161,9 @@ const preloadFont: Record<Lang, string> = {
     })} />
 
     <script is:inline>
-      // Modo tarjeta: Inclinación 3D ('tilt')
-      try {
-        document.documentElement.dataset.cardstyle = 'tilt';
-      } catch (e) {}
+      // Hay JS: el catálogo (ServiceLedger.astro) pasa de fichas apiladas a
+      // lista con panel antes del primer pintado, sin salto de maquetación.
+      document.documentElement.classList.add('js');
     </script>
 
     {schema === 'catalog' && <Schema lang={lang} />}
@@ -302,9 +301,7 @@ const preloadFont: Record<Lang, string> = {
         const trigger = target?.closest<HTMLElement>('a[href="#contacto"], [data-open-modal], .fab');
         if (trigger && modal) {
           e.preventDefault();
-          const card = trigger.closest<HTMLElement>('.card');
-          const serviceName = card?.querySelector('.card__name')?.textContent?.trim();
-          openModal(serviceName);
+          openModal(trigger.dataset.service);
         }
         if (target?.closest('[data-close-modal]')) modal?.close();
       });
@@ -317,57 +314,6 @@ const preloadFont: Record<Lang, string> = {
           const r = modal.getBoundingClientRect();
           const inside = r.top <= e.clientY && e.clientY <= r.bottom && r.left <= e.clientX && e.clientX <= r.right;
           if (!inside) modal.close();
-        });
-      }
-
-      /* Inclinación 3D siguiendo al cursor: solo en modo tilt, con movimiento
-         permitido y en dispositivos con puntero fino de verdad — sin esto el
-         listener se registraba en toda visita táctil aunque el tilt nunca
-         fuera a activarse ahí. Delegado en document para no atar un oyente
-         por tarjeta. */
-      const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-      if (!reduceMotion) {
-        /* Rendimiento: medir la tarjeta una vez al entrar (no en cada
-           movimiento, que obligaba a recalcular el layout tras cada escritura)
-           y escribir como mucho una vez por fotograma. La medida se descarta
-           al hacer scroll o cambiar de tarjeta. */
-        let tiltCard: HTMLElement | null = null;
-        let tiltRect: DOMRect | null = null;
-        let tiltX = 0, tiltY = 0, tiltFrame = 0;
-        const applyTilt = () => {
-          tiltFrame = 0;
-          if (!tiltCard) return;
-          tiltRect ??= tiltCard.getBoundingClientRect();
-          const px = (tiltX - tiltRect.left) / tiltRect.width;
-          const py = (tiltY - tiltRect.top) / tiltRect.height;
-          tiltCard.style.setProperty('--rx', (px - 0.5) * 14 + 'deg');
-          tiltCard.style.setProperty('--ry', -(py - 0.5) * 14 + 'deg');
-          tiltCard.style.setProperty('--mx', px * 100 + '%');
-          tiltCard.style.setProperty('--my', py * 100 + '%');
-        };
-        window.addEventListener('scroll', () => { tiltRect = null; }, { passive: true });
-        document.addEventListener('mousemove', (e) => {
-          if (root.dataset.cardstyle !== 'tilt') return;
-          const card = (e.target as Element | null)?.closest<HTMLElement>('.card');
-          if (!card) return;
-          if (card !== tiltCard) { tiltCard = card; tiltRect = null; }
-          tiltX = e.clientX; tiltY = e.clientY;
-          tiltFrame ||= requestAnimationFrame(applyTilt);
-        });
-        document.addEventListener('mouseout', (e) => {
-          const card = (e.target as Element | null)?.closest<HTMLElement>('.card');
-          if (card && !card.contains(e.relatedTarget as Node | null)) {
-            if (card === tiltCard) { tiltCard = null; tiltRect = null; } // que un fotograma pendiente no la vuelva a inclinar
-            card.style.setProperty('--rx', '0deg');
-            card.style.setProperty('--ry', '0deg');
-          }
-        });
-        document.addEventListener('click', (e) => {
-          const targetCard = (e.target as Element | null)?.closest<HTMLElement>('.card');
-          document.querySelectorAll('.card.is-active').forEach((c) => {
-            if (c !== targetCard) c.classList.remove('is-active');
-          });
-          if (targetCard) targetCard.classList.toggle('is-active');
         });
       }
 

@@ -1,0 +1,253 @@
+---
+/**
+ * Lista de taller con panel vivo (diseño A, 2026-11-19).
+ *
+ * Una línea del catálogo (WEB, APP, IA… o los paquetes) como lista de precios:
+ * a la izquierda una fila por servicio, todas visibles; a la derecha, un panel
+ * fijo con el servicio elegido (precio grande, plazo como barra, qué incluye,
+ * para qué te sirve y el botón de pedir plaza).
+ *
+ * Todo el texto sale renderizado en el HTML, servicio por servicio: cada fila
+ * lleva debajo su ficha. Sin JS (sin la clase .js en <html>, que pone el script
+ * inline de Base.astro) se ven todas las fichas abiertas, una detrás de otra.
+ * Con JS, por encima de 720 px las fichas comparten la columna derecha y solo
+ * se ve la elegida; por debajo, cada fila se abre en su sitio como acordeón.
+ *
+ * Precios: cada precio que se ve vive en un elemento [data-price] con los
+ * data-from/detail/was{eur,rub,gel} y los hijos .card__price-*, que es el
+ * contrato del script de moneda de Base.astro. Hay dos por servicio (fila y
+ * ficha) y el script los repinta igual.
+ */
+export interface LedgerEntry {
+  code: string;
+  name: string;
+  time?: string;
+  /** Plazo máximo en días naturales, para la barra. null si no se puede
+      deducir del texto (p. ej. "1 sesión"): entonces no se dibuja barra. */
+  days: number | null;
+  includes: string[];
+  human: string;
+  priceAttrs: Record<string, string>;
+  initialFrom: string;
+  initialDetail: string;
+  initialWas: string;
+  featuredLabel?: string;
+}
+
+interface Props {
+  /** Prefijo único en la página para los id (p. ej. "web", "pack"). */
+  id: string;
+  /** Nombre accesible de la lista: el título de la línea. */
+  label: string;
+  /** Valor del selector "Qué necesitas" del modal que se preselecciona al pedir. */
+  service: string;
+  entries: LedgerEntry[];
+  colService: string;
+  colTime: string;
+  colPrice: string;
+  includesLabel: string;
+  ctaLabel: string;
+}
+
+const { id, label, service, entries, colService, colTime, colPrice, includesLabel, ctaLabel } = Astro.props;
+const maxDays = Math.max(0, ...entries.map((e) => e.days ?? 0));
+---
+
+<div class="ledger" data-ledger style={`--rows: ${entries.length + 1}`} role="group" aria-label={label}>
+  <div class="ledger__cols" aria-hidden="true">
+    <span>{colService}</span>
+    <span class="ledger__cols-time">{colTime}</span>
+    <span>{colPrice}</span>
+  </div>
+
+  {
+    entries.map((e, i) => {
+      const rowId = `${id}-row-${i}`;
+      const sheetId = `${id}-sheet-${i}`;
+      const ratio = e.days && maxDays ? Math.max(0.06, e.days / maxDays) : 0;
+      return (
+        <div class:list={['ledger__item', { 'is-open': i === 0 }]} data-ledger-item>
+          <h3 class="ledger__head">
+            <button
+              type="button"
+              class="ledger__row"
+              id={rowId}
+              aria-controls={sheetId}
+              aria-expanded={i === 0 ? 'true' : 'false'}
+            >
+              <span class="ledger__code">{e.code}</span>
+              <span class="ledger__name">
+                <span class="ledger__name-text">{e.name}</span>
+                {e.featuredLabel && <span class="ledger__star" aria-hidden="true">★</span>}
+              </span>
+              <span class="ledger__time">{e.time}</span>
+              <span class="ledger__price" {...e.priceAttrs}>
+                <span class="price-value card__price-was" hidden>{e.initialWas}</span>
+                <span class="price-value card__price-from">{e.initialFrom}</span>
+                <span class="price-value card__price-detail" hidden>{e.initialDetail}</span>
+              </span>
+              <span class="ledger__chev" aria-hidden="true" />
+            </button>
+          </h3>
+
+          <div class="ledger__detail" id={sheetId} role="region" aria-labelledby={rowId}>
+            <div class="ledger__clip">
+              <div class="ledger__sheet">
+                <p class="ledger__sheet-head">
+                  <span class="ledger__sheet-code">{e.code}</span>
+                  {e.featuredLabel && <span class="ledger__sheet-flag">{e.featuredLabel.replace(/^★\s*/, '')}</span>}
+                </p>
+                <p class="ledger__sheet-name">{e.name}</p>
+
+                <div class="ledger__sheet-price" {...e.priceAttrs}>
+                  <span class="price-value card__price-from">{e.initialFrom}</span>
+                  <p class="price-value card__price-detail" hidden={!e.initialDetail}>{e.initialDetail}</p>
+                  <span class="price-value card__price-was" hidden={!e.initialWas}>{e.initialWas}</span>
+                </div>
+
+                {e.time && (
+                  <div class="ledger__term">
+                    <p class="ledger__term-text">
+                      <span class="ledger__label">{colTime}</span>
+                      <span>{e.time}</span>
+                    </p>
+                    {ratio > 0 && (
+                      <span class="ledger__track" aria-hidden="true">
+                        <span class="ledger__fill" style={`--ratio: ${ratio.toFixed(3)}`} />
+                      </span>
+                    )}
+                  </div>
+                )}
+
+                <p class="ledger__label">{includesLabel}</p>
+                <ul class="ledger__checks">
+                  {e.includes.map((line) => (
+                    <li>{line}</li>
+                  ))}
+                </ul>
+
+                <p class="ledger__human">{e.human}</p>
+
+                <a class="btn btn--solid ledger__cta" href="#contacto" data-service={service}>
+                  {ctaLabel}
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      );
+    })
+  }
+
+  <span class="ledger__marker" aria-hidden="true"></span>
+</div>
+
+<script>
+  const root = document.documentElement;
+  const mobile = window.matchMedia('(max-width: 720px)');
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)');
+
+  /* Nombres de view-transition puestos por el último cambio. Se limpian antes
+     de cada cambio nuevo: si dos fichas quedaran con el mismo nombre, la
+     transición se cancelaría. */
+  let named: HTMLElement[] = [];
+  let vtToken = 0;
+  const clearNames = () => {
+    named.forEach((el) => el.style.removeProperty('view-transition-name'));
+    named = [];
+  };
+
+  document.querySelectorAll<HTMLElement>('[data-ledger]').forEach((ledger) => {
+    const items = [...ledger.querySelectorAll<HTMLElement>('[data-ledger-item]')];
+    const rows = items.map((it) => it.querySelector<HTMLButtonElement>('.ledger__row')!);
+    const sheets = items.map((it) => it.querySelector<HTMLElement>('.ledger__detail')!);
+    const marker = ledger.querySelector<HTMLElement>('.ledger__marker');
+    let current = items.findIndex((it) => it.classList.contains('is-open'));
+
+    /* La marca de cobre se desliza con transform: translateY hasta la fila y
+       scaleY con su alto (el elemento mide 1 px). Sin width/height/top. */
+    const placeMarker = () => {
+      if (!marker || mobile.matches || current < 0) return;
+      const row = rows[current];
+      const head = row.parentElement as HTMLElement;
+      marker.style.transform = `translateY(${head.offsetTop}px) scaleY(${head.offsetHeight})`;
+    };
+
+    const apply = (next: number) => {
+      items.forEach((it, i) => {
+        const on = i === next;
+        it.classList.toggle('is-open', on);
+        rows[i].setAttribute('aria-expanded', String(on));
+      });
+      current = next;
+      placeMarker();
+    };
+
+    const select = (next: number) => {
+      if (next === current) return;
+      const prev = current;
+      if (reduce.matches || mobile.matches || !document.startViewTransition || prev < 0) {
+        apply(next);
+        return;
+      }
+      /* Transición del documento, pero acotada: solo llevan nombre la ficha que
+         sale y la que entra, y la raíz no se anima (global.css, .is-ledger-vt). */
+      clearNames();
+      sheets[prev].style.setProperty('view-transition-name', 'ledger-out');
+      sheets[next].style.setProperty('view-transition-name', 'ledger-in');
+      named = [sheets[prev], sheets[next]];
+      root.classList.add('is-ledger-vt');
+      const token = ++vtToken;
+      const vt = document.startViewTransition(() => apply(next));
+      vt.finished.finally(() => {
+        if (token !== vtToken) return;
+        clearNames();
+        root.classList.remove('is-ledger-vt');
+      });
+    };
+
+    let hoverTimer = 0;
+    rows.forEach((row, i) => {
+      row.addEventListener('click', () => {
+        // En móvil es un acordeón: un segundo toque cierra la ficha.
+        if (mobile.matches && current === i) apply(-1);
+        else select(i);
+      });
+      // Ratón por encima (no táctil): con un respiro para que barrer la lista
+      // de arriba abajo no dispare un cambio por fila.
+      row.addEventListener('pointerenter', (e) => {
+        if (e.pointerType !== 'mouse' || mobile.matches) return;
+        window.clearTimeout(hoverTimer);
+        hoverTimer = window.setTimeout(() => select(i), 70);
+      });
+      row.addEventListener('pointerleave', () => window.clearTimeout(hoverTimer));
+      row.addEventListener('focus', () => {
+        if (!mobile.matches) select(i);
+      });
+      row.addEventListener('keydown', (e) => {
+        const last = rows.length - 1;
+        const to =
+          e.key === 'ArrowDown' ? Math.min(i + 1, last)
+          : e.key === 'ArrowUp' ? Math.max(i - 1, 0)
+          : e.key === 'Home' ? 0
+          : e.key === 'End' ? last
+          : -1;
+        if (to < 0) return;
+        e.preventDefault();
+        rows[to].focus();
+      });
+    });
+
+    // Al volver de móvil a escritorio con todo cerrado, el panel no puede
+    // quedarse vacío.
+    mobile.addEventListener('change', () => {
+      if (!mobile.matches && current < 0) apply(0);
+      placeMarker();
+    });
+
+    // Las fuentes y el ancho cambian el alto de las filas: recolocar la marca.
+    new ResizeObserver(() => placeMarker()).observe(ledger);
+    placeMarker();
+    requestAnimationFrame(() => ledger.classList.add('is-ready'));
+  });
+</script>
