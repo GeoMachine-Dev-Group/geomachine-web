@@ -49,7 +49,7 @@ export const LANG_CURRENCY: Record<Lang, Currency> = { es: 'eur', en: 'eur', ru:
 /** Precio: [mínimo, máximo] o [exacto] si solo hay un número. */
 type Range = [number] | [number, number];
 
-interface Money {
+export interface Money {
   eur: Range;
   rub: Range;
   gel: Range;

@@ -16,6 +16,7 @@ import { ui, blogPath, kadriLabCasePath, hasBlog, type Lang } from '../i18n/ui';
 import { intents, intentUi } from '../data/intents';
 import { isPublished } from '../lib/blog';
 import ServiceCard from './ServiceCard.astro';
+import QuoteCalculator from './QuoteCalculator.astro';
 import { legalPath, legalLangFor, LEGAL_VERSION } from '../data/legal';
 
 interface Props {
@@ -427,6 +428,8 @@ const featuredMap: Record<string, Record<Lang, string>> = {
     </button>
   )}
 </section>
+
+<QuoteCalculator lang={lang} thousands={THOUSANDS[lang]} symbols={CURRENCY_SYMBOL} />
 
 <section class="faq shell">
   <h2 class="faq__title">{t.faqTitle}</h2>

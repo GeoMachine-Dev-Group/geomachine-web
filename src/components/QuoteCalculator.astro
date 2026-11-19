@@ -1,0 +1,524 @@
+---
+/**
+ * Calculadora de presupuesto: tres faders verticales (Web, App, IA), un
+ * interruptor de segundo idioma y la lectura del total con su desglose.
+ *
+ * Ningún precio está escrito aquí: todo sale de src/data/catalog.ts con la
+ * tarifa que ya se aplica (DEFAULT_TIER) y viaja al script en data-quote. Si
+ * cambian los precios del catálogo o se llenan las plazas, la calculadora
+ * cambia sola. La moneda la decide el selector del catálogo (data-currency en
+ * <html>, que repinta Base.astro); el script la observa y repinta también.
+ *
+ * Los faders son <input type="range"> nativos puestos en vertical con
+ * writing-mode: el navegador les da el rol slider y el manejo con flechas,
+ * Inicio, Fin y puntero; el script solo pone aria-valuetext con el nombre del
+ * servicio. Sin JS se ve una tabla con el precio de cada opción.
+ */
+import { lines, DEFAULT_TIER, LANG_CURRENCY, type Item, type Currency, type Money } from '../data/catalog';
+import { ui, type Lang } from '../i18n/ui';
+
+interface Props {
+  lang: Lang;
+  /** Separador de miles por idioma (THOUSANDS en Catalog.astro). */
+  thousands: string;
+  symbols: Record<Currency, string>;
+}
+const { lang, thousands, symbols } = Astro.props;
+const t = ui[lang];
+const CUR = LANG_CURRENCY[lang];
+
+const allItems = lines.flatMap((l) => l.items);
+function item(code: string): Item {
+  const found = allItems.find((i) => i.code === code);
+  if (!found) throw new Error(`[QuoteCalculator] ${code} no existe en catalog.ts`);
+  return found;
+}
+
+const recKey = DEFAULT_TIER === 'launch' ? 'launchRecurring' : 'standardRecurring';
+function option(i: Item) {
+  return {
+    code: i.code,
+    name: i.name[lang],
+    time: i.time?.[lang] ?? '',
+    price: i[DEFAULT_TIER],
+    rec: i[recKey] ?? null,
+  };
+}
+type Option = ReturnType<typeof option>;
+
+/** Escalones de cada fader, de abajo arriba. El primero siempre es "Nada". */
+const FADERS = [
+  { key: 'web', prefix: 'WEB', codes: ['WEB-01', 'WEB-02', 'WEB-03'], start: 1 },
+  { key: 'app', prefix: 'APP', codes: ['APP-05', 'APP-04', 'APP-01'], start: 0 },
+  { key: 'ia', prefix: 'IA', codes: ['IA-01', 'IA-03', 'IA-02', 'IA-04'], start: 0 },
+].map((f) => ({
+  ...f,
+  label: lines.find((l) => l.prefix === f.prefix)?.title[lang] ?? f.prefix,
+  options: f.codes.map((c) => option(item(c))),
+}));
+const extra = option(item('WEB-04'));
+
+const config = {
+  sep: thousands,
+  symbols,
+  fallbackCurrency: CUR,
+  perMonth: t.perMonth,
+  none: t.calcNone,
+  empty: t.calcEmpty,
+  recurring: t.calcRecurring,
+  thenMonthly: t.thenMonthly,
+  totalLabel: t.calcTotalLabel,
+  summary: t.calcSummary,
+  faders: FADERS.map((f) => ({ key: f.key, label: f.label, options: f.options })),
+  extra,
+};
+
+/** Precio para la tabla sin JS, en la moneda del idioma. */
+function range(m: Money, unit = '') {
+  const g = (n: number) => String(n).replace(/\B(?=(\d{3})+(?!\d))/g, thousands);
+  const r = m[CUR];
+  const nums = r.length > 1 && r[0] !== r[r.length - 1] ? `${g(r[0])}–${g(r[r.length - 1])}` : g(r[0]);
+  return `${nums} ${symbols[CUR]}${unit}`;
+}
+function fallbackPrice(o: Option) {
+  return o.rec ? `${range(o.price)} · ${t.thenMonthly} ${range(o.rec, t.perMonth)}` : range(o.price);
+}
+const tierNote = DEFAULT_TIER === 'launch' ? t.calcTierLaunch : t.calcTierStandard;
+---
+
+<section class="quote line shell" id="calculadora" aria-labelledby="quote-title" data-quote={JSON.stringify(config)}>
+  <header class="line__head">
+    <span class="line__prefix">CALC</span>
+    <div>
+      <h2 class="line__title" id="quote-title">{t.calcTitle}</h2>
+      <p class="line__note">{t.calcLead}</p>
+    </div>
+  </header>
+
+  <div class="quote__fallback" data-quote-fallback>
+    <p class="quote__nojs">{t.calcNoJs}</p>
+    <div class="quote__table-wrap">
+      <table class="quote__table">
+        <caption class="visually-hidden">{t.calcGroup} · {tierNote}</caption>
+        <tbody>
+          {FADERS.map((f) =>
+            f.options.map((o, i) => (
+              <tr>
+                {i === 0 && <th scope="rowgroup" rowspan={f.options.length}>{f.label}</th>}
+                <td>{o.name}</td>
+                <td class="quote__table-price">{fallbackPrice(o)}</td>
+              </tr>
+            ))
+          )}
+          <tr>
+            <th scope="row">+</th>
+            <td>{extra.name}</td>
+            <td class="quote__table-price">{fallbackPrice(extra)}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="quote__bench" data-quote-bench hidden>
+    <div class="quote__panel" role="group" aria-label={t.calcGroup}>
+      <div class="quote__panel-top">
+        <span class="quote__panel-name">{t.calcPanel}</span>
+        <span class="quote__panel-note">{tierNote}</span>
+      </div>
+      <div class="quote__bed">
+        {FADERS.map((f) => {
+          const max = f.options.length; // + "Nada" en el escalón 0
+          return (
+            <div class="quote__strip">
+              <span class="quote__val" aria-hidden="true" data-quote-val={f.key} />
+              <div class="quote__fader">
+                <span class="quote__ticks" aria-hidden="true">
+                  {Array.from({ length: max + 1 }, () => <span />)}
+                </span>
+                <input
+                  type="range"
+                  class="quote__range"
+                  id={`quote-${f.key}`}
+                  min="0"
+                  max={max}
+                  step="1"
+                  value={f.start}
+                  data-quote-line={f.key}
+                />
+              </div>
+              <label class="quote__label" for={`quote-${f.key}`}>
+                <span aria-hidden="true">{f.prefix}</span>
+                <span class="visually-hidden">{f.label}</span>
+              </label>
+            </div>
+          );
+        })}
+      </div>
+      <div class="quote__toggle">
+        <span class="quote__toggle-text" id="quote-lang-label">
+          {extra.name}
+          <span>{t.calcLangHint}</span>
+        </span>
+        <button type="button" role="switch" aria-checked="false" aria-labelledby="quote-lang-label" data-quote-lang></button>
+      </div>
+    </div>
+
+    <div class="quote__readout">
+      <div>
+        <p class="quote__fig-label">{t.calcTotalLabel}</p>
+        <p class="quote__fig" aria-live="polite" aria-atomic="true">
+          <span data-quote-total></span>
+          <span class="quote__rec" data-quote-rec hidden></span>
+        </p>
+      </div>
+      <dl class="quote__parts" data-quote-parts></dl>
+      <div>
+        <button type="button" class="btn btn--solid" data-open-modal data-quote-ask>{t.calcAsk}</button>
+      </div>
+      <p class="quote__note">{t.calcNote}</p>
+    </div>
+  </div>
+</section>
+
+<style>
+  .quote__bench:not([hidden]) {
+    display: grid;
+    grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+    gap: var(--space-10);
+    align-items: stretch;
+    margin-top: var(--space-8);
+  }
+  @media (max-width: 860px) {
+    .quote__bench:not([hidden]) { grid-template-columns: minmax(0, 1fr); gap: var(--space-8); }
+  }
+  .quote__fallback[hidden] { display: none; }
+
+  /* --- Sin JS: tabla de precios ------------------------------------------ */
+  .quote__fallback { margin-top: var(--space-6); }
+  .quote__nojs { color: var(--ink-soft); font-size: var(--fs-md); margin: 0 0 var(--space-4); }
+  .quote__table-wrap { overflow-x: auto; }
+  .quote__table { border-collapse: collapse; width: 100%; max-width: 44rem; font-size: var(--fs-sm); }
+  .quote__table th, .quote__table td { text-align: left; padding: var(--space-2) var(--space-3); border-top: 1px solid var(--rule-soft); vertical-align: top; }
+  .quote__table th { font-family: var(--data); font-size: var(--fs-2xs); letter-spacing: .14em; text-transform: uppercase; color: var(--accent); font-weight: 500; }
+  .quote__table-price { font-family: var(--data); color: var(--ink-soft); white-space: nowrap; }
+
+  /* --- El instrumento ------------------------------------------------------ */
+  .quote__panel {
+    position: relative;
+    border: 1px solid var(--rule);
+    border-radius: var(--radius-lg);
+    background: linear-gradient(var(--panel-2), var(--panel));
+    box-shadow: inset 0 1px 0 rgba(238, 230, 211, .06), 0 18px 40px -24px rgba(0, 0, 0, .7);
+    padding: var(--space-5);
+  }
+  .quote__panel-top { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: baseline; gap: var(--space-2); margin-bottom: var(--space-4); }
+  .quote__panel-name { font-family: var(--display); font-size: var(--fs-lg); font-weight: 500; }
+  .quote__panel-note { font-family: var(--data); font-size: var(--fs-2xs); letter-spacing: .14em; text-transform: uppercase; color: var(--accent); }
+
+  .quote__bed {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    border-radius: var(--radius-md);
+    background: var(--paper);
+    box-shadow: inset 0 2px 6px rgba(0, 0, 0, .55), inset 0 0 0 1px var(--rule-soft);
+    padding: var(--space-5) var(--space-1) var(--space-4);
+  }
+  .quote__strip { display: grid; justify-items: center; align-content: start; gap: var(--space-3); min-width: 0; }
+  .quote__strip + .quote__strip { border-left: 1px solid var(--rule-soft); }
+  .quote__val { font-size: var(--fs-xs); line-height: 1.25; text-align: center; min-height: 2.5em; padding-inline: var(--space-1); color: var(--ink); }
+  .quote__label { font-family: var(--data); font-size: var(--fs-2xs); letter-spacing: .16em; text-transform: uppercase; color: var(--ink-soft); }
+
+  .quote__fader { position: relative; width: 64px; height: 220px; }
+  /* Muescas: una por escalón, alineadas con el centro del mando en cada parada
+     (el mando mide 28 px a lo largo de la ranura, de ahí los 14 px). */
+  .quote__ticks {
+    position: absolute;
+    inset: 14px 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    pointer-events: none;
+  }
+  .quote__ticks span {
+    display: block;
+    height: 1px;
+    background: linear-gradient(to right, var(--ink-soft) 0 10px, transparent 10px calc(100% - 10px), var(--ink-soft) calc(100% - 10px));
+    opacity: .55;
+  }
+
+  /* Range nativo en vertical: de abajo (mín.) arriba (máx.). Guía: modern-web-guidance "slider". */
+  .quote__range {
+    --track: 6px;
+    --cap-i: 28px;   /* a lo largo de la ranura */
+    --cap-b: 46px;   /* de lado a lado */
+    --fill: 0%;
+    --groove: #0a0e09;
+    --cap: repeating-linear-gradient(to bottom, rgba(238, 230, 211, .16) 0 2px, rgba(0, 0, 0, .28) 2px 3px),
+      linear-gradient(to bottom, #4a4636, #23281e);
+    --cap-line: linear-gradient(to bottom, transparent calc(50% - 1px), var(--accent) calc(50% - 1px) calc(50% + 1px), transparent calc(50% + 1px));
+    position: relative;
+    writing-mode: vertical-lr;
+    direction: rtl;
+    appearance: none;
+    -webkit-appearance: none;
+    inline-size: 100%;
+    block-size: 100%;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    cursor: grab;
+    touch-action: none;
+  }
+  .quote__range:active { cursor: grabbing; }
+  .quote__range:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; border-radius: var(--radius-sm); }
+
+  .quote__range::-webkit-slider-runnable-track {
+    inline-size: 100%;
+    block-size: var(--track);
+    border-radius: 3px;
+    background: linear-gradient(to top, var(--accent) var(--fill), var(--groove) var(--fill));
+    box-shadow: inset 0 1px 2px rgba(0, 0, 0, .8), 0 0 0 1px var(--rule-soft);
+  }
+  .quote__range::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    inline-size: var(--cap-i);
+    block-size: var(--cap-b);
+    margin-block-start: calc((var(--track) - var(--cap-b)) / 2);
+    border: 1px solid #5b5440;
+    border-radius: var(--radius-xs);
+    background: var(--cap-line), var(--cap);
+    box-shadow: inset 0 1px 0 rgba(238, 230, 211, .25), 0 4px 10px rgba(0, 0, 0, .6);
+  }
+  .quote__range::-moz-range-track {
+    inline-size: 100%;
+    block-size: var(--track);
+    border-radius: 3px;
+    background: var(--groove);
+    box-shadow: inset 0 1px 2px rgba(0, 0, 0, .8), 0 0 0 1px var(--rule-soft);
+  }
+  .quote__range::-moz-range-progress {
+    block-size: var(--track);
+    border-radius: 3px;
+    background: var(--accent);
+  }
+  .quote__range::-moz-range-thumb {
+    inline-size: var(--cap-i);
+    block-size: var(--cap-b);
+    border: 1px solid #5b5440;
+    border-radius: var(--radius-xs);
+    background: var(--cap-line), var(--cap);
+    box-shadow: inset 0 1px 0 rgba(238, 230, 211, .25), 0 4px 10px rgba(0, 0, 0, .6);
+  }
+
+  .quote__toggle {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-4);
+    margin-top: var(--space-4);
+    padding: var(--space-3) var(--space-1) 0;
+    border-top: 1px solid var(--rule-soft);
+  }
+  .quote__toggle-text { font-size: var(--fs-sm); font-weight: 500; line-height: 1.3; }
+  .quote__toggle-text span { display: block; color: var(--ink-soft); font-weight: 400; font-size: var(--fs-xs); }
+  .quote__toggle button {
+    position: relative;
+    flex-shrink: 0;
+    width: 58px;
+    height: 32px;
+    border-radius: var(--radius-pill);
+    border: 1px solid var(--rule);
+    background: #0a0e09;
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, .8);
+    cursor: pointer;
+    transition: background-color .15s ease-out;
+  }
+  .quote__toggle button::after {
+    content: '';
+    position: absolute;
+    top: 3px;
+    left: 3px;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: linear-gradient(#4a4636, #23281e);
+    box-shadow: inset 0 1px 0 rgba(238, 230, 211, .25), 0 2px 6px rgba(0, 0, 0, .6);
+    transition: transform .2s ease-in-out;
+  }
+  .quote__toggle button[aria-checked='true'] { background: var(--accent); border-color: var(--accent); }
+  .quote__toggle button[aria-checked='true']::after { transform: translateX(26px); }
+  .quote__toggle button:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+  @media (prefers-reduced-motion: reduce) {
+    .quote__toggle button, .quote__toggle button::after { transition: none; }
+  }
+
+  /* --- La lectura -------------------------------------------------------- */
+  .quote__readout { display: grid; align-content: space-between; gap: var(--space-6); }
+  .quote__fig-label { font-family: var(--data); font-size: var(--fs-2xs); letter-spacing: .16em; text-transform: uppercase; color: var(--ink-soft); margin: 0 0 var(--space-2); }
+  .quote__fig {
+    margin: 0;
+    font-family: var(--display);
+    font-weight: 500;
+    font-size: clamp(2rem, 3vw + 1rem, 3.25rem);
+    line-height: 1.05;
+    letter-spacing: -.02em;
+    color: var(--ink);
+    font-variant-numeric: tabular-nums lining-nums;
+  }
+  .quote__rec { display: block; margin-top: var(--space-2); font-family: var(--data); font-size: var(--fs-sm); letter-spacing: 0; color: var(--accent); }
+  .quote__rec[hidden] { display: none; }
+  .quote__parts { margin: 0; display: grid; }
+  .quote__parts :global(div) {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: var(--space-4);
+    padding-block: var(--space-2);
+    border-top: 1px solid var(--rule-soft);
+    font-size: var(--fs-sm);
+  }
+  .quote__parts :global(dt) { font-weight: 500; }
+  .quote__parts :global(dd) { margin: 0; color: var(--ink-soft); font-family: var(--data); font-size: var(--fs-xs); text-align: right; }
+  .quote__note { color: var(--ink-soft); font-size: var(--fs-sm); max-width: 40ch; margin: 0; }
+</style>
+
+<script>
+  type Range = number[];
+  type Opt = { code: string; name: string; time: string; price: Record<string, Range>; rec: Record<string, Range> | null };
+  type Config = {
+    sep: string;
+    symbols: Record<string, string>;
+    fallbackCurrency: string;
+    perMonth: string;
+    none: string;
+    empty: string;
+    recurring: string;
+    thenMonthly: string;
+    totalLabel: string;
+    summary: string;
+    faders: { key: string; label: string; options: Opt[] }[];
+    extra: Opt;
+  };
+
+  const section = document.querySelector<HTMLElement>('[data-quote]');
+  if (section) {
+    const cfg = JSON.parse(section.dataset.quote ?? '{}') as Config;
+    const html = document.documentElement;
+    const bench = section.querySelector<HTMLElement>('[data-quote-bench]')!;
+    section.querySelector<HTMLElement>('[data-quote-fallback]')!.hidden = true;
+    bench.hidden = false;
+
+    const totalEl = section.querySelector<HTMLElement>('[data-quote-total]')!;
+    const recEl = section.querySelector<HTMLElement>('[data-quote-rec]')!;
+    const partsEl = section.querySelector<HTMLElement>('[data-quote-parts]')!;
+    const langBtn = section.querySelector<HTMLButtonElement>('[data-quote-lang]')!;
+    const ranges = [...section.querySelectorAll<HTMLInputElement>('[data-quote-line]')];
+
+    const nbsp = ' ';
+    const group = (n: number) => String(n).replace(/\B(?=(\d{3})+(?!\d))/g, cfg.sep);
+    const currency = () => {
+      const c = html.dataset.currency ?? '';
+      return c in cfg.symbols ? c : cfg.fallbackCurrency;
+    };
+    /** "250–400 €", o un solo valor si mínimo y máximo coinciden. */
+    const money = (lo: number, hi: number, unit = '') =>
+      `${lo === hi ? group(lo) : `${group(lo)}–${group(hi)}`}${nbsp}${cfg.symbols[currency()]}${unit}`;
+    const ends = (r: Range) => [r[0], r[r.length - 1]] as const;
+
+    /** Opciones elegidas ahora mismo, en orden (Web, App, IA, idioma). */
+    function chosen(): Opt[] {
+      const picked: Opt[] = [];
+      ranges.forEach((input) => {
+        const fader = cfg.faders.find((f) => f.key === input.dataset.quoteLine);
+        const i = Number(input.value);
+        if (fader && i > 0) picked.push(fader.options[i - 1]);
+      });
+      if (picked.length && langBtn.getAttribute('aria-checked') === 'true') picked.push(cfg.extra);
+      return picked;
+    }
+
+    function optPrice(o: Opt) {
+      const cur = currency();
+      const [lo, hi] = ends(o.price[cur]);
+      let text = money(lo, hi);
+      if (o.rec) {
+        const [rlo, rhi] = ends(o.rec[cur]);
+        text += ` · ${cfg.thenMonthly} ${money(rlo, rhi, cfg.perMonth)}`;
+      }
+      return text;
+    }
+
+    let lastSummary = '';
+
+    function render() {
+      const cur = currency();
+
+      ranges.forEach((input) => {
+        const fader = cfg.faders.find((f) => f.key === input.dataset.quoteLine);
+        if (!fader) return;
+        const i = Number(input.value);
+        const opt = i > 0 ? fader.options[i - 1] : null;
+        const name = opt ? opt.name : cfg.none;
+        input.style.setProperty('--fill', `${(i / Number(input.max)) * 100}%`);
+        input.setAttribute('aria-valuetext', opt ? `${name}, ${optPrice(opt)}` : name);
+        const val = section!.querySelector<HTMLElement>(`[data-quote-val="${fader.key}"]`);
+        if (val) val.textContent = name;
+      });
+
+      const picked = chosen();
+      let lo = 0, hi = 0, rlo = 0, rhi = 0;
+      partsEl.replaceChildren();
+      for (const o of picked) {
+        const [a, b] = ends(o.price[cur]);
+        lo += a;
+        hi += b;
+        if (o.rec) {
+          const [c, d] = ends(o.rec[cur]);
+          rlo += c;
+          rhi += d;
+        }
+        const row = document.createElement('div');
+        const dt = document.createElement('dt');
+        const dd = document.createElement('dd');
+        dt.textContent = o.name;
+        dd.textContent = o.time ? `${optPrice(o)} · ${o.time}` : optPrice(o);
+        row.append(dt, dd);
+        partsEl.append(row);
+      }
+
+      totalEl.textContent = picked.length ? money(lo, hi) : cfg.empty;
+      recEl.hidden = !rlo;
+      recEl.textContent = rlo ? cfg.recurring.replace('{price}', money(rlo, rhi, cfg.perMonth)) : '';
+    }
+
+    ranges.forEach((input) => input.addEventListener('input', render));
+    langBtn.addEventListener('click', () => {
+      langBtn.setAttribute('aria-checked', String(langBtn.getAttribute('aria-checked') !== 'true'));
+      render();
+    });
+
+    // El selector de moneda cambia data-currency en <html> (Base.astro).
+    new MutationObserver(render).observe(html, { attributes: true, attributeFilter: ['data-currency'] });
+
+    // El botón lleva data-open-modal: Base.astro abre la ventana. Este oyente
+    // corre antes (está en el propio botón) y deja el resumen en el mensaje,
+    // sin pisar lo que la persona ya hubiera escrito a mano.
+    section.querySelector('[data-quote-ask]')?.addEventListener('click', () => {
+      const picked = chosen();
+      if (!picked.length) return;
+      const textarea = document.querySelector<HTMLTextAreaElement>('#modal-contact-form textarea[name="message"]');
+      if (!textarea) return;
+      const totalLine = `${cfg.totalLabel}: ${totalEl.textContent}${recEl.textContent ? ` (${recEl.textContent})` : ''}`;
+      const summary = [cfg.summary, ...picked.map((o) => `- ${o.name} (${o.code}): ${optPrice(o)}`), totalLine].join('\n');
+      if (textarea.value.trim() === '' || textarea.value === lastSummary) {
+        textarea.value = summary;
+        lastSummary = summary;
+        textarea.dispatchEvent(new Event('input', { bubbles: true }));
+      }
+    });
+
+    render();
+  }
+</script>
