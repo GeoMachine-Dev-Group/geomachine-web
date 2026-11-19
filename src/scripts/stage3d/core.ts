@@ -68,6 +68,10 @@ export interface ShapePlugin {
   poses(index: number): Pose[];
   /** Pose "desmontada" de la que parte la entrada. */
   scattered?(pose: Pose, n: number): Pose;
+  /** Opcional: animación propia de la línea (pulsos, latido). Se llama tras
+      colocar las piezas en cada fotograma; `still` es true cuando no hay
+      bucle (movimiento reducido, fuera de pantalla): toca un fotograma quieto. */
+  update?(time: number, still: boolean): void;
 }
 
 const MORPH_MS = 700;
@@ -89,7 +93,7 @@ const easeOut = (t: number) => 1 - Math.pow(1 - t, 4);
 const lerp = (a: number, b: number, t: number) => a + (b - a) * t;
 
 /** Degradado radial de cobre para la sombra de contacto. */
-function glowTexture(color: string) {
+export function glowTexture(color: string) {
   const c = document.createElement('canvas');
   c.width = c.height = 128;
   const g = c.getContext('2d')!;
@@ -187,6 +191,8 @@ export function mountStage3D(stage: HTMLElement, plugin: ShapePlugin): (() => vo
 
   // Paralaje: con el puntero, las capas de delante se mueven más que las de atrás.
   let parX = 0, parY = 0;
+  // Reloj y modo quieto que se pasan a plugin.update().
+  let clock = 0, still = true;
   function apply(states: State[]) {
     items.forEach((it, i) => {
       const q = states[i];
@@ -196,6 +202,7 @@ export function mountStage3D(stage: HTMLElement, plugin: ShapePlugin): (() => vo
       it.object.scale.setScalar(q.s);
       it.look(q.o, q.dim);
     });
+    plugin.update?.(clock, still);
   }
   apply(current);
 
@@ -335,6 +342,8 @@ export function mountStage3D(stage: HTMLElement, plugin: ShapePlugin): (() => vo
     tiltY = lerp(tiltY, tiltTY, 0.06);
     parX = tiltY * 0.35;
     parY = -tiltX * 0.35;
+    clock = idle;
+    still = false;
     apply(current);
     piece.rotation.set(
       baseRot.x + tiltX + Math.sin(idle * 0.5) * 0.02,
@@ -364,6 +373,7 @@ export function mountStage3D(stage: HTMLElement, plugin: ShapePlugin): (() => vo
     } else {
       if (raf) cancelAnimationFrame(raf);
       raf = 0;
+      still = true;
       // Al parar a medio cambio, se termina en seco.
       if (morphStart >= 0) {
         morphStart = -1;

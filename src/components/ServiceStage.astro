@@ -43,9 +43,9 @@ interface Props {
   /** Separador de miles del idioma, para el contador del precio. */
   thousands: string;
   labels: { benefit: string; eta: string; prev: string; next: string };
-  /** Pieza 3D de la línea (de momento solo 'web'): hueco en cada panel con
-      su ilustración SVG, que el lienzo sustituye al cargar. */
-  visual?: 'web';
+  /** Pieza 3D de la línea: hueco en cada panel con su ilustración SVG, que
+      el lienzo sustituye al cargar. */
+  visual?: 'web' | 'ia' | 'mnt';
 }
 
 const { id, label, items, ctaLabel, ctaService, thousands, labels, visual } = Astro.props;
@@ -231,6 +231,8 @@ function priceParts(text: string) {
       three.js consigo; añadir una línea es añadir aquí su import(). */
   const VISUALS: Record<string, () => Promise<{ mount(stage: HTMLElement): (() => void) | null }>> = {
     web: () => import('../scripts/stage3d/web'),
+    ia: () => import('../scripts/stage3d/ia'),
+    mnt: () => import('../scripts/stage3d/mnt'),
   };
   new MutationObserver(() => {
     tweens.forEach((raf) => cancelAnimationFrame(raf));
