@@ -185,6 +185,7 @@ a { color: inherit; }
 .hero__corner--bl { bottom: clamp(1rem, 3vw, 2.25rem); left: var(--pad); border-bottom-width: 1px; border-left-width: 1px; }
 .hero__corner--br { bottom: clamp(1rem, 3vw, 2.25rem); right: var(--pad); border-bottom-width: 1px; border-right-width: 1px; }
 .hero--atelier .hero__title { font-weight: 600; font-size: clamp(2.6rem, 6.4vw, 5.75rem); line-height: 1; letter-spacing: -.035em; max-width: 15ch; white-space: normal; text-wrap: balance; }
+.hero--atelier .hero__kicker { display: block; margin-bottom: var(--space-4); font-family: var(--body); font-size: var(--fs-sm); font-weight: 500; line-height: 1.3; letter-spacing: .14em; text-transform: uppercase; color: var(--ink-soft); }
 .hero--atelier .hero__body { margin: 0; max-width: 52ch; font-size: clamp(1rem, 1.5vw, 1.2rem); line-height: 1.6; text-wrap: pretty; }
 
 /* Marca animada. --mark es el tamaño de "GeoMachine": corchetes, hueco y la firma

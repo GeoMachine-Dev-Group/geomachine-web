@@ -235,7 +235,10 @@ const featuredMap: Record<string, Record<Lang, string>> = {
     )
   }
 
-  <h1 class="hero__title">{t.heroTitle}</h1>
+  {/* La línea pequeña va dentro del h1 para que Google lea qué hacemos (el
+      eslogan solo no lleva palabras clave). Los dos puntos ocultos separan las
+      dos frases al leerlas en voz alta. */}
+  <h1 class="hero__title"><span class="hero__kicker">{t.heroKicker}</span><span class="visually-hidden">: </span>{t.heroTitle}</h1>
   <p class="hero__body">{t.heroBody}</p>
 
   <div class="hero__actions">

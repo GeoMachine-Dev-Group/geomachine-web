@@ -116,6 +116,7 @@ export const ui = {
       'Webs, aplicaciones, inteligencia artificial, mantenimiento y SEO. Precio cerrado desde el primer mensaje, entrega en días. Precios en euros, rublos y lari.',
     plate: 'Catálogo de servicios',
     company: 'GeoMachine Developer Group',
+    heroKicker: 'Desarrollo de webs, apps e IA',
     heroTitle: 'El que te atiende es el que escribe el código.',
     heroBody:
       'Webs, aplicaciones e IA que corre en tu propio servidor. Precio cerrado desde el primer mensaje y entrega en días, no en trimestres.',
@@ -233,6 +234,7 @@ export const ui = {
       'Сайты, приложения, искусственный интеллект, обслуживание и SEO. Цена фиксируется с первого сообщения, результат — за дни. Цены в евро, рублях и грузинском лари.',
     plate: 'Каталог услуг',
     company: 'GeoMachine Developer Group',
+    heroKicker: 'Разработка сайтов, приложений и ИИ',
     heroTitle: 'Вы общаетесь напрямую с разработчиком.',
     heroBody:
       'Сайты, приложения и ИИ на вашем собственном сервере. Точная цена с первого сообщения, сроки — дни, а не кварталы.',
@@ -350,6 +352,7 @@ export const ui = {
       'Websites, applications, artificial intelligence, maintenance and SEO. Price closed from the first message, delivered in days. Pricing in euros, rubles and lari.',
     plate: 'Service catalog',
     company: 'GeoMachine Developer Group',
+    heroKicker: 'Web, app and AI development',
     heroTitle: 'You talk to the person who writes the code.',
     heroBody:
       'Websites, apps, and AI that runs on your own server. Fixed price from the first message, delivered in days, not quarters.',
@@ -467,6 +470,8 @@ export const ui = {
       'ვებგვერდები, აპლიკაციები, ხელოვნური ინტელექტი, მოვლა და SEO. ფასი ფიქსირდება პირველივე შეტყობინებიდან, მზადდება დღეებში. ფასები ევროში, რუბლში და ლარში.',
     plate: 'სერვისების კატალოგი',
     company: 'GeoMachine Developer Group',
+    // ka sin revisar:
+    heroKicker: 'ვებგვერდების, აპებისა და AI-ის შექმნა',
     heroTitle: 'თქვენ პირდაპირ ესაუბრებით დეველოპერს.',
     heroBody:
       'ვებგვერდები, აპლიკაციები და ხელოვნური ინტელექტი თქვენს საკუთარ სერვერზე. ფიქსირებული ფასი პირველივე შეტყობინებიდან, ჩაბარება დღეებში და არა კვარტლებში.',

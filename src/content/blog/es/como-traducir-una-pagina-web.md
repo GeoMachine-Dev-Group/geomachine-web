@@ -2,10 +2,13 @@
 title: "Cómo traducir una página web: para leerla o para tu negocio"
 description: "Traducir una web ajena en el móvil o el ordenador en un minuto, y qué cambia si la web es tuya: tres formas de hacerlo y lo que aprendimos con cuatro idiomas."
 pubDate: 2026-11-07
+updatedDate: 2026-11-24
 pillar: "WEB"
 relatedService: "WEB-04"
 draft: false
 ---
+
+**Respuesta corta:** para leer una web en otro idioma, en Chrome haz clic derecho en la página y elige «Traducir a español»; en el móvil, menú ⋮ → «Traducir…» (Android) o botón «aA» → «Traducir» (iPhone). Es gratis. Si la web es tuya y quieres clientes en otro idioma, necesitas páginas reales por idioma, revisadas por alguien que lo hable: un botón de traducción automática no lo ve Google.
 
 «Cómo traducir una página web» puede querer decir dos cosas muy distintas:
 
@@ -64,6 +67,16 @@ Es lo que hicimos en esta web, que está en español, ruso, inglés y georgiano:
 
 Es la única de las tres maneras que te trae clientes del otro idioma desde Google.
 
+### Las tres maneras, de un vistazo
+
+| | Botón de traducción automática | Complemento que crea páginas traducidas | Versiones por idioma revisadas |
+|---|---|---|---|
+| **¿Google la encuentra en el otro idioma?** | No | Sí | Sí |
+| **¿Quién revisa la traducción?** | Nadie | Nadie | Una persona que habla el idioma |
+| **Tiempo de montaje** | Minutos | Horas | Días |
+| **Coste** | Gratis o cuota mensual | Cuota del complemento | Trabajo de desarrollo y revisión |
+| **Sirve para** | Que te entienda quien ya llegó | Aparecer, con riesgo de errores | Conseguir clientes en otro idioma |
+
 ## Lo que se olvida traducir
 
 El texto de las páginas es lo fácil. Lo que se olvida es todo lo demás:
@@ -81,6 +94,24 @@ Si quieres ver los errores técnicos que hacen que Google confunda los idiomas, 
 1. Busca tu negocio en Google en el otro idioma. ¿Sale la página traducida o la original?
 2. Recorre la web en ese idioma como lo haría un cliente: menú, botones, formulario y el mensaje que sale al enviarlo.
 3. Pide a alguien que hable el idioma que lea un párrafo en voz alta. ¿Suena a persona o a máquina?
+
+## Preguntas frecuentes
+
+### ¿Traducir una web con Google Translate es gratis?
+
+Sí, para leerla: el navegador o la pestaña «Sitios web» del traductor de Google la traducen sin coste. Lo que no es buena idea es publicar esa traducción como la versión oficial de tu web sin que nadie la revise.
+
+### ¿Por qué Chrome no me ofrece traducir la página?
+
+Normalmente porque la página ya está en un idioma que Chrome considera tuyo, o porque desactivaste la oferta para ese idioma. Haz clic derecho en la página y elige «Traducir a español»: funciona aunque no salga el aviso.
+
+### ¿Un botón de traducción automática perjudica el SEO?
+
+No lo perjudica, pero tampoco ayuda: las traducciones solo existen en la pantalla del visitante y Google no las indexa. Tu web sigue apareciendo solo en su idioma original.
+
+### ¿Cuánto tarda añadir un idioma a una web?
+
+Depende del tamaño. En una web de pocas páginas, el montaje técnico (direcciones, hreflang, formularios) es cuestión de un día; lo que más tarda es escribir y revisar los textos.
 
 ## Cómo lo hago yo
 
