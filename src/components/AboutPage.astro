@@ -10,7 +10,7 @@
  * vacías, su bloque no se pinta; nada de texto de relleno.
  */
 import Base from '../layouts/Base.astro';
-import { servicesPath, blogPath, aboutPath, kadriLabCasePath, type AboutLang } from '../i18n/ui';
+import { servicesPath, blogPath, aboutPath, kadriLabCasePath, taxiAppPath, type AboutLang } from '../i18n/ui';
 import { orgId as buildOrgId, buildFounder } from '../data/organization';
 import { legalPath } from '../data/legal';
 
@@ -24,26 +24,32 @@ const PROFILE: {
   photo: { src: string; width: number; height: number } | null;
   career: Record<AboutLang, string[]>;
 } = {
-  // Selfi provisional (2026-11-01), recortado a 660×660; Romeo la sustituirá.
+  // Foto elegida por Romeo (enero de 2024), recortada a 660×660 y sin EXIF.
   photo: { src: '/romeo-mikava.webp', width: 660, height: 660 },
   career: {
     es: [
       'Nací en Abjasia. Terminé el colegio en Zugdidi y la carrera de Derecho en Tiflis.',
       'Hace cinco años me vine a España y volví a estudiar: aprendí el idioma y ahora curso el segundo y último año del FP de grado medio de Sistemas Microinformáticos y Redes. Después quiero hacer el grado superior.',
       'La informática me apasiona desde niño, y aprendí por mi cuenta, a base de probar. Llevo unos dos años programando en serio y aprendiendo a trabajar con IA: a guiarla, estructurar el trabajo y revisar lo que hace. Con ella hago en días lo que antes me costaba semanas.',
+      'Desde agosto consulto las notas de todos mis proyectos con una IA que corre en mi propio equipo: una tarjeta AMD de 16 GB y un modelo Qwen3 de 14B, sin que nada salga de la máquina. Es lo mismo que instalo a clientes, así que sé dónde compensa y dónde no.',
       'Monté GeoMachine Developer Group porque veía negocios que necesitaban una web, una app o una automatización bien hecha y a un precio razonable. Atiendo en georgiano, mi lengua materna, y en español, ruso e inglés.',
+      'Cuento también lo que no ha salido todavía. Mi app de taxi para Abjasia tuvo la base técnica en tres semanas y a 1 de noviembre aún no había hecho un viaje con un pasajero real; mi directorio abhazservis.com no ha facturado nada. El código suele ser la parte fácil: lo difícil es que la gente lo use, y eso es lo que te ayudo a pensar desde el principio.',
     ],
     ru: [
       'Я родился в Абхазии. Окончил школу в Зугдиди и юридический факультет в Тбилиси.',
       'Пять лет назад переехал в Испанию и снова пошёл учиться: выучил язык и сейчас заканчиваю второй, последний курс колледжа по специальности «Микрокомпьютерные системы и сети» (FP de grado medio SMR). Дальше планирую высшую ступень (grado superior).',
       'Информатикой увлекаюсь с детства и всему учился сам, на практике. Около двух лет программирую всерьёз и учусь работать с ИИ: направлять его, выстраивать работу и проверять результат. С ним я делаю за дни то, на что раньше уходили недели.',
+      'С августа я задаю вопросы по заметкам всех своих проектов ИИ, который работает на моём собственном компьютере: видеокарта AMD на 16 ГБ и модель Qwen3 на 14B, и ничего не уходит за пределы машины. То же самое я ставлю клиентам, поэтому знаю, когда это окупается, а когда нет.',
       'Я основал GeoMachine Developer Group, потому что видел бизнесы, которым нужны хорошо сделанные сайт, приложение или автоматизация по разумной цене. Общаюсь на грузинском (родной язык), русском, испанском и английском.',
+      'Рассказываю и о том, что пока не получилось. Техническая основа моего такси-приложения для Абхазии была готова за три недели, но на 1 ноября оно ещё не выполнило ни одной поездки с реальным пассажиром; мой каталог abhazservis.com пока ничего не заработал. Код обычно самая простая часть: сложнее всего, чтобы им пользовались, и об этом я помогаю подумать с самого начала.',
     ],
     en: [
       'I was born in Abkhazia. I finished school in Zugdidi and studied Law at university in Tbilisi.',
       "Five years ago I moved to Spain and went back to studying: I learned the language and I'm now in the second and final year of a vocational IT qualification in microcomputer systems and networks (FP de grado medio SMR). Next I plan to take the higher-level diploma.",
       "I've loved computing since I was a child and taught myself by trying things. I've been programming seriously for about two years and learning to work with AI: steering it, structuring the work and reviewing what it produces. With it, I get done in days what used to take me weeks.",
+      'Since August I have been querying the notes of all my projects with an AI that runs on my own machine: a 16 GB AMD graphics card and a 14B Qwen3 model, with nothing leaving the computer. It is the same setup I install for clients, so I know where it pays off and where it does not.',
       'I started GeoMachine Developer Group because I saw businesses that needed a well-built website, app or automation at a fair price. I work in Georgian, my native language, and in Spanish, Russian and English.',
+      "I also talk about what has not worked yet. My taxi app for Abkhazia had its technical base in three weeks, and by 1 November it had still not completed a trip with a real passenger; my directory abhazservis.com has not earned anything. The code is usually the easy part: the hard part is getting people to use it, and that is what I help you think through from the start.",
     ],
   },
 };
@@ -78,7 +84,8 @@ const content = {
       kadrilab: 'Estudio de foto y vídeo de Tbilisi. Cliente.',
       abhaz: 'Directorio de negocios de Abjasia. Proyecto propio.',
       accounts: 'App de escritorio de contabilidad. Proyecto propio.',
-      optimus: 'App GPS para camioneros. Proyecto propio.',
+      taxi: 'Plataforma de taxi para Abjasia: app del conductor, app del pasajero y despacho en tiempo real. Proyecto propio.',
+      optimus: 'Navegador Android para camioneros: ruta según alto, peso, ejes y ADR en toda la UE, con copiloto de IA por voz. En piloto. Proyecto propio.',
     },
     whereTitle: 'Desde dónde',
     where: 'Trabajo desde El Escorial (Madrid, España). La web y el catálogo están en español, ruso, inglés y georgiano, y los precios en euros, rublos y lari.',
@@ -117,7 +124,8 @@ const content = {
       kadrilab: 'Фото- и видеостудия из Тбилиси. Клиент.',
       abhaz: 'Каталог бизнесов Абхазии. Собственный проект.',
       accounts: 'Десктопное приложение для учёта. Собственный проект.',
-      optimus: 'GPS-приложение для дальнобойщиков. Собственный проект.',
+      taxi: 'Платформа такси для Абхазии: приложение водителя, приложение пассажира и диспетчерская в реальном времени. Собственный проект.',
+      optimus: 'Android-навигатор для дальнобойщиков: маршрут с учётом высоты, веса, осей и ADR по всему ЕС, с голосовым ИИ-помощником. На пилоте. Собственный проект.',
     },
     whereTitle: 'Откуда я работаю',
     where: 'Работаю из Эль-Эскориала (Мадрид, Испания). Сайт и каталог — на испанском, русском, английском и грузинском, цены — в евро, рублях и лари.',
@@ -156,7 +164,8 @@ const content = {
       kadrilab: 'Photo and video studio in Tbilisi. Client.',
       abhaz: 'Business directory for Abkhazia. Own project.',
       accounts: 'Desktop bookkeeping app. Own project.',
-      optimus: 'GPS app for truck drivers. Own project.',
+      taxi: 'Taxi platform for Abkhazia: driver app, passenger app and real-time dispatch. Own project.',
+      optimus: 'Android navigator for truck drivers: routes by height, weight, axles and ADR across the EU, with a voice AI co-pilot. In pilot. Own project.',
     },
     whereTitle: 'Where I work from',
     where: 'I work from El Escorial (Madrid, Spain). The site and catalogue are in Spanish, Russian, English and Georgian, with prices in euros, rubles and lari.',
@@ -198,6 +207,7 @@ const work = [
   { name: 'ГаграЛЁТ · gagraservis', href: blogCase ? `${blogPath[lang]}${blogCase.gagra}/` : null, text: t.work.gagra },
   { name: 'KADRI LAB · kadrilab.com', href: kadriLabCasePath[lang], text: t.work.kadrilab },
   { name: 'abhazservis.com', href: blogCase ? `${blogPath[lang]}${blogCase.abhaz}/` : 'https://abhazservis.com/', text: t.work.abhaz },
+  { name: 'Abhazservis Taxi', href: taxiAppPath[lang], text: t.work.taxi },
   { name: 'GeoMachine Accounts', href: accountsHref[lang], text: t.work.accounts },
   { name: 'Optimus', href: optimusHref[lang], text: t.work.optimus },
 ];
