@@ -2,7 +2,7 @@
  * Textos de interfaz — 4 idiomas (ES/RU/EN/KA).
  *
  * Georgiano (ka): traducido por IA y revisado por Romeo Mikava el
- * 2026-10-31 (interfaz y catálogo). Un texto ka nuevo se marca con
+ * 2026-10-31 (interfaz y catálogo); el resto del sitio, el 2026-11-24. Un texto ka nuevo se marca con
  * "ka sin revisar" hasta que él lo repase.
  *
  * Copy del hero (2026-09-10): título + un solo párrafo, sin eyebrow ni
@@ -34,8 +34,7 @@ export const kadriLabCasePath: Record<Lang, string> = {
   ka: `${servicesPath.ka}case-kadrilab/`,
 };
 
-/** Páginas por intención (IntentPage.astro, B5). Sin georgiano: todo el ka del
-    sitio está sin revisar y estas páginas hablan de precios y plazos. */
+/** Páginas por intención (IntentPage.astro, B5), en los cuatro idiomas. */
 export type IntentLang = 'es' | 'ru' | 'en' | 'ka';
 export type TaxiAppLang = IntentLang;
 export const taxiAppPath: Record<IntentLang, string> = {
@@ -76,10 +75,10 @@ export const tourismPath: Record<IntentLang, string> = {
 };
 
 /**
- * El blog existe en es, ru y en. En georgiano no: todo el `ka` del sitio va
- * traducido por IA y sin revisar por un nativo, y doce artículos largos en esas
- * condiciones hacen más daño a la marca que no tenerlos. Cuando haya revisor,
- * se añade 'ka' aquí y las rutas de src/pages/ka/blog/.
+ * El blog existe en es, ru y en. En georgiano no: el `ka` del sitio está
+ * revisado por Romeo (2026-11-24), pero los artículos no están traducidos, y
+ * doce artículos largos sin revisar harían más daño que no tenerlos. Para
+ * abrirlo: añadir 'ka' aquí y las rutas de src/pages/ka/blog/.
  */
 export type BlogLang = 'es' | 'ru' | 'en';
 
@@ -479,7 +478,6 @@ export const ui = {
     slotsLeft: 'თავისუფალი ადგილები: {free} / {total}',
     heroCtaSlot: 'ადგილის მოთხოვნა',
     proofLabel: 'ნამუშევრები',
-    // ka sin revisar: proofOwnProject y priceAfterLaunch (2026-10-31).
     proofOwnProject: 'საკუთარი პროექტი',
     priceAfterLaunch: 'სტანდარტული ფასი გაშვების შემდეგ: {price}',
     proofDesktopApp: 'დესკტოპ აპლიკაცია',
@@ -490,7 +488,6 @@ export const ui = {
     cardStyles: { stack: 'დაწყობილი შრეები', tilt: '3D დახრა' },
     priceAnims: { blur: 'რბილი გაბუნდოვნება', odometer: 'ვერტიკალური სრიალი', glow: 'განათება', flip: '3D ტრიალი' },
     modalTitle: 'ფასის მოთხოვნა',
-    // ka sin revisar: modalSubtitle en primera persona del singular (2026-10-31).
     modalSubtitle: 'მომწერეთ პროექტის შესახებ და 24 საათში მიიღებთ ზუსტ ფასს.',
     launchNote:
       'გაშვების ტარიფი ვრცელდება პირველ კლიენტებზე, სანაცვლოდ ვაქვეყნებ შედეგს, როგორც კეისს. შემდეგ ფასი სტანდარტულზე გადადის.',
@@ -560,7 +557,7 @@ export const ui = {
     legalPrivacy: 'კონფიდენციალურობა',
     legalCookies: 'Cookies',
     legalNav: 'სამართლებრივი ინფორმაცია',
-    // ka sin revisar: aboutNav (2026-10-31). Enlaza a la página inglesa.
+    // aboutNav enlaza a la página inglesa (no hay «Sobre mí» en ka).
     aboutNav: 'ჩემ შესახებ',
     formConsentBefore: 'წავიკითხე ',
     formConsentLink: 'კონფიდენციალურობის პოლიტიკა (ინგლისურად)',

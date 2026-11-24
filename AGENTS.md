@@ -180,10 +180,10 @@ Historial reciente, todo por fast-forward y con la rama borrada después:
   ven abiertas.
 
 **Pendientes:**
-- Georgiano: `ui.ts` y `catalog.ts` revisados por Romeo el 2026-10-31 (se
-  quitaron las marcas). Siguen marcados como sin revisar: `NavCamPage`,
-  `AppAccountsPage`, `CaseKadriLabPage`, `FloatingChat` y un texto de
-  `Catalog.astro`. Lo ka nuevo se marca "ka sin revisar".
+- Georgiano: todo el ka publicado está revisado por Romeo (`ui.ts` y
+  `catalog.ts` el 2026-10-31; `NavCamPage`, `AppAccountsPage`,
+  `CaseKadriLabPage`, `FloatingChat` y `Catalog.astro` el 2026-11-24). Lo ka
+  nuevo se marca "ka sin revisar" hasta que él lo repase. El blog sigue sin ka.
 - Decidir si se reinstala el hook `post-commit` de auto-push (ver más abajo).
 - Falta foto del fundador en la sección `.close`.
 - `gagraservis.ru` **vuelve a estar publicada desde el 2026-10-24** (rediseño v3,

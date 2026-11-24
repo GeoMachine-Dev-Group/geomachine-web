@@ -10,7 +10,7 @@
  *   - Nueva categoría SYS (Sistemas y Backend) y paquetes PACK-04/05/06.
  *
  * Georgiano (ka): traducido por IA y revisado por Romeo Mikava el
- *   2026-10-31. Un texto ka nuevo se marca con "ka sin revisar" hasta que
+ *   2026-10-31 (todo el sitio, el 2026-11-24). Un texto ka nuevo se marca con "ka sin revisar" hasta que
  *   él lo repase, sobre todo si toca precios o condiciones.
  *
  * Lari georgiano (₾): igual que el rublo, NO es una conversión exacta del
